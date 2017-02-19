@@ -1,0 +1,82 @@
+/* This class interfaces with various input
+methods and handles response data and
+callbacks to the threejs environment.
+The input list is defined in config/index.js*/
+
+import _ from 'lodash'
+
+import config from './../config'
+
+import Myo from './Myo'
+import KinectTransport from './KinectTransport'
+import KeyboardController from './KeyboardController'
+import NeuroSky from './NeuroSky'
+import PerceptionNeuron from './PerceptionNeuron'
+
+class InputManager {
+	constructor(inputList, threeScene, parent) {
+		this.inputs = {};
+		this.scene = threeScene; //bridge to threejs environment 
+		this.parent = parent; //bridge to react environment
+
+		//connect all inputs in the input list
+		_.forEach(inputList, this.connectInputs.bind(this)); //input list defined in config/index.js
+	}
+
+	connectInputs(type) {
+		switch (type) { //input list defined in config/index.js
+		case 'keyboard':
+			this.inputs[type] = new KeyboardController();
+			this.initKeyboardCallbacks();
+			break;
+		case 'kinecttransport':
+			this.inputs[type] = new KinectTransport();
+			this.initKinectTransportCallbacks();
+			break;
+		case 'myo':
+			this.inputs[type] = new Myo();
+			this.initMyoCallbacks();
+			break;
+		case 'neurosky':
+			this.inputs[type] = new NeuroSky();
+			this.initNeuroSkyCallbacks();
+			break;
+		case 'perceptionNeuron':
+			this.inputs[type] = new PerceptionNeuron('ws://'+config.perceptionNeuron.ip+':' + config.perceptionNeuron.port + "/service");
+			this.initPerceptionNeuronCallbacks();
+			break;
+		};
+	}
+
+	registerCallback(input, event, callback) {
+		if (this.inputs[input]) {
+			this.inputs[input].on(event, callback);
+		}
+	}
+
+	initPerceptionNeuronCallbacks() {
+		this.registerCallback('perceptionNeuron', 'message', this.parent.updatePerformers);
+	}
+
+	initNeuroSkyCallbacks() { //https://github.com/elsehow/mindwave
+		this.registerCallback('mindwave', 'data', function(data) { console.log(data); });
+	}
+
+	initMyoCallbacks() { //https://github.com/thalmiclabs/myo.js/blob/master/docs.md
+		this.registerCallback('myo', 'imu', function(data) { console.log(data); });
+	}
+
+	initKinectTransportCallbacks() { //Reuires Kinect Transport app.
+		/*https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
+		Returns either depth or bodies object.*/
+		this.registerCallback('kinecttransport', 'depth', this.scene.viewKinectTransportDepth.bind(this.scene));
+		this.registerCallback('kinecttransport', 'bodies', this.scene.viewKinectTransportBodies.bind(this.scene));
+	}
+
+	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
+		this.registerCallback('keyboard', 'h', this.parent.toggleOverlay);
+		this.registerCallback('keyboard', 'f', this.parent.toggleFullscreen);
+	}
+}
+
+module.exports = InputManager;

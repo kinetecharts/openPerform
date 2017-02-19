@@ -1,0 +1,9 @@
+/node_modules
+/build
+/data/db
+/server/config.js
+/server/keys
+/app
+.idea
+/src/.idea
+Dockerfile
