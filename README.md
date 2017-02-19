@@ -2,7 +2,7 @@ First Run Setup
 1. In Ternimal, run "npm install"  
 2. Copy ./server/config_example.js to ./server/config.js  
 3. In Ternimal, run "gulp build"
-4. In Ternimal, run "gulp"  
+4. In Ternimal, run "gulp"
   a. Browser will automatically open to webserver when running.
 
 Normal Use  
@@ -15,14 +15,14 @@ Use MongoDB
 
 Use Mapzen API (Requires MongoDB)  
 1. Obtain Mapzen crendentials: https://mapzen.com/developers  
-2. Update ./server/config.js  
+2. Update ./server/config.js
   a. Update mapzen.api_key  
 
 Input with the Perpection Neuron  
 1. Install and run Axis Neuron app on Windows: https://www.neuronmocap.com/downloads  
 2. On Windows, run Fabien's stream convertion app  
-3. Update ./src/config/index.js  
-  a. Add "perceptionNeuron" to inputs list in 
+3. Update ./src/config/index.js
+  a. Add "perceptionNeuron" to inputs list in
   b. Add IP address and port of Windows Computer / streaming app  
 4. Callback functions available in the ./src/inputs/index.js  
 
