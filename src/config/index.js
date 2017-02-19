@@ -16,6 +16,16 @@ var defaults = {
 		port:9000,
 		ip:'192.168.1.250'
 	},
+	data: [],
+	home: {
+		target: {lat: 24.525961, lon: 15.255119},
+		look: new THREE.Vector3(0,0,0),
+		center:{lat: 48.425555, lon: 11.777344},
+		zoom: 1835,
+		data:[],
+		title: "Europe",
+		key: "europe"
+	},
 	defaultLocation: {
 		lat: 37.795546, //Ferry Building
 		lon: -122.393420
