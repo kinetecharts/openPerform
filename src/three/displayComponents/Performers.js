@@ -1,6 +1,4 @@
 //Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
-
-var THREE = require('three');
 import _ from 'lodash'
 
 import Performer from './Performer'

@@ -53,6 +53,12 @@ module.exports = {
 			src + '/inputs/**/**'
 		]
 	},
+	effects: {
+		src: src + '/effects/**/**',
+		watch: [
+			src + '/effects/**/**'
+		]
+	},
 	less: {
 		src: src + '/less/**',
 		watch: [
@@ -111,6 +117,10 @@ module.exports = {
 		glsl: {
 			src: [src + '/glsl/**'],
 			dest: dest + '/glsl/'
+		},
+		textures: {
+			src: [src + '/textures/**'],
+			dest: dest + '/textures/'
 		}
 	},
 	app: {

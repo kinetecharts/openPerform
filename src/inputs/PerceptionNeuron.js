@@ -139,7 +139,7 @@ class PerceptionNeuron {
 			}
 		};
 
-		this.boneNames = Common.getKeys(bvhStructure, "Robot_");
+		this.boneNames = Common.getKeys(bvhStructure, "");
 
 		var datas = JSON.parse(msg.data);
 		_.each(datas,function(data, key) {

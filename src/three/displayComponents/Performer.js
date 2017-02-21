@@ -5,6 +5,8 @@ var bvhLoader = require('./../../libs/three/loaders/BVHLoader.js');
 var sceneLoader = require('./../../libs/three/loaders/SceneLoader.js');
 import Common from './../../util/Common'
 
+import PerformerEffects from './../../effects/performer'
+
 import _ from 'lodash'
 
 class Performer {
@@ -19,6 +21,9 @@ class Performer {
 		console.log("New Performer: ", this.inputId);
 
 		this.loadSceneBody('./models/json/avatar.json');
+
+		this.performerEffects = new PerformerEffects(this.parent);
+		this.addEffect();
 	}
 
 	loadSceneBody(filename) {
@@ -60,11 +65,13 @@ class Performer {
 				this.updateFromPN(data);
 			break;
 		}
+
+		this.performerEffects.update(data);
 	}
 
 	updateFromPN(data) {
-		for (var i=0;i<data.length;i++) {
-			var jointName = data[i].name;
+		for (var i=0; i<data.length; i++) {
+			var jointName = "Robot_" + data[i].name;
 			if (this.robot[jointName]) {
 				this.robot[jointName].position.set(
 					data[i].position.x,
@@ -73,8 +80,15 @@ class Performer {
 				);
 
 				this.robot[jointName].quaternion.copy(data[i].quaternion);
-				// this.robot[jointName].rotation.copy(data[i].rotation);
 			}
+		}
+	}
+
+	addEffect(effect) {
+		switch(effect) {
+			default:
+				this.performerEffects.add("pointCloudJoints");
+			break;
 		}
 	}
 }
