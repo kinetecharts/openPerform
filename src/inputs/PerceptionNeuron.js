@@ -32,58 +32,58 @@ class PerceptionNeuron {
 	
 	onMessage(msg) {
 		var bvhStructure = {
-			Hips: {
-				RightUpLeg: {
-					RightLeg: {
-						RightFoot: {}
+			hips: {
+				rightupleg: {
+					rightleg: {
+						rightfoot: {}
 					}
 				},
-				LeftUpLeg: {
-					LeftLeg: {
-						LeftFoot: {}
+				leftupleg: {
+					leftleg: {
+						leftfoot: {}
 					}
 				},
-				Spine: {
-					Spine1: {
-						Spine2: {
-							Spine3: {
-								Neck: {
-									Head: {}
+				spine: {
+					spine1: {
+						spine2: {
+							spine3: {
+								neck: {
+									head: {}
 								},
-								RightShoulder: {
-									RightArm: {
-										RightForeArm: {
-											RightHand: {
-												RightHandThumb1: {
-													RightHandThumb2: {
-														RightHandThumb3: {}
+								rightshoulder: {
+									rightarm: {
+										rightforearm: {
+											righthand: {
+												righthandthumb1: {
+													righthandthumb2: {
+														righthandthumb3: {}
 													}
 												},
-												RightInHandIndex: {
-													RightHandIndex1: {
-														RightHandIndex2: {
-															RightHandIndex3: {}
+												rightinhandindex: {
+													righthandindex1: {
+														righthandindex2: {
+															righthandindex3: {}
 														}
 													}
 												},
-												RightInHandMiddle: {
-													RightHandMiddle1: {
-														RightHandMiddle2: {
-															RightHandMiddle3: {}
+												rightinhandmiddle: {
+													righthandmiddle1: {
+														righthandmiddle2: {
+															righthandmiddle3: {}
 														}
 													}
 												},
-												RightInHandRing: {
-													RightHandRing1: {
-														RightHandRing2: {
-															RightHandRing3: {}
+												rightinhandring: {
+													righthandring1: {
+														righthandring2: {
+															righthandring3: {}
 														}
 													}
 												},
-												RightInHandPinky: {
-													RightHandPinky1: {
-														RightHandPinky2: {
-															RightHandPinky3: {}
+												rightinhandpinky: {
+													righthandpinky1: {
+														righthandpinky2: {
+															righthandpinky3: {}
 														}
 													}
 												}
@@ -91,40 +91,40 @@ class PerceptionNeuron {
 										}
 									}
 								},
-								LeftShoulder: {
-									LeftArm: {
-										LeftForeArm: {
-											LeftHand: {
-												LeftHandThumb1: {
-													LeftHandThumb2: {
-														LeftHandThumb3: {}
+								leftshoulder: {
+									leftarm: {
+										leftforearm: {
+											lefthand: {
+												lefthandthumb1: {
+													lefthandthumb2: {
+														lefthandthumb3: {}
 													}
 												},
-												LeftInHandIndex: {
-													LeftHandIndex1: {
-														LeftHandIndex2: {
-															LeftHandIndex3: {}
+												leftinhandindex: {
+													lefthandindex1: {
+														lefthandindex2: {
+															lefthandindex3: {}
 														}
 													}
 												},
-												LeftInHandMiddle: {
-													LeftHandMiddle1: {
-														LeftHandMiddle2: {
-															LeftHandMiddle3: {}
+												leftinhandmiddle: {
+													lefthandmiddle1: {
+														lefthandmiddle2: {
+															lefthandmiddle3: {}
 														}
 													}
 												},
-												LeftInHandRing: {
-													LeftHandRing1: {
-														LeftHandRing2: {
-															LeftHandRing3: {}
+												leftinhandring: {
+													lefthandring1: {
+														lefthandring2: {
+															lefthandring3: {}
 														}
 													}
 												},
-												LeftInHandPinky: {
-													LeftHandPinky1: {
-														LeftHandPinky2: {
-															LeftHandPinky3: {}
+												leftinhandpinky: {
+													lefthandpinky1: {
+														lefthandpinky2: {
+															lefthandpinky3: {}
 														}
 													}
 												}

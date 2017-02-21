@@ -8,6 +8,7 @@ import Common from './../../util/Common'
 import PerformerEffects from './../../effects/performer'
 
 import _ from 'lodash'
+import dat from 'dat-gui'
 
 class Performer {
 	constructor(parent, inputId, performerId, type, color) {
@@ -22,7 +23,10 @@ class Performer {
 
 		this.loadSceneBody('./models/json/avatar.json');
 
-		this.performerEffects = new PerformerEffects(this.parent);
+		this.gui = new dat.GUI();
+		this.guiFolder = this.gui.addFolder(this.name);
+
+		this.performerEffects = new PerformerEffects(this.parent, this.color, this.guiFolder);
 		this.addEffect();
 	}
 
@@ -34,13 +38,13 @@ class Performer {
 		};
 		loader.load( filename, function ( result ) {
 			result.scene.traverse( function ( object ) {
-				if ( object.name.match(/Robot_/g)) {
+				if ( object.name.toLowerCase().match(/robot_/g)) {
 					if (!this.robot) {
 						this.robot = {};
 						this.robotKeys = {};
 					}
-					this.robot[object.name] = object;
-					this.robotKeys[object.name] = object.name;
+					this.robot[object.name.toLowerCase()] = object;
+					this.robotKeys[object.name.toLowerCase()] = object.name.toLowerCase();
 
 					object.castShadow = true;
 					object.receiveShadow = true;
@@ -71,7 +75,7 @@ class Performer {
 
 	updateFromPN(data) {
 		for (var i=0; i<data.length; i++) {
-			var jointName = "Robot_" + data[i].name;
+			var jointName = "robot_" + data[i].name;
 			if (this.robot[jointName]) {
 				this.robot[jointName].position.set(
 					data[i].position.x,

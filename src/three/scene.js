@@ -74,18 +74,10 @@ class Scene {
 		
 		// this.camera.position.copy(src);
 		this.camera.position.set( 0, 800, 1600 );
+		this.camera.lookAt(new THREE.Vector3(0,800,0));
 
 
 		var floorSize = 5000;
-
-		this.floorGeo = new THREE.PlaneGeometry( floorSize, floorSize, 50 );
-		this.floorMat = new THREE.MeshPhongMaterial( {color: 0xffffff, shading: THREE.FlatShading} );
-		this.floor = new THREE.Mesh( this.floorGeo, this.floorMat );
-		this.floor.castShadow = true;
-		this.floor.receiveShadow = true;
-		this.floor.rotateX(-Math.PI/2);
-
-		this.scene.add( this.floor );
 
 		this.gridFloor = new THREE.GridHelper( floorSize/2, 50 );
 		this.gridFloor.castShadow = true;
