@@ -18,15 +18,17 @@ class Performer {
 		this.name = "Performer " + performerId;
 		this.color = color;
 		this.showWireframe = true;
+		this.visible = true;
 
 		console.log("New Performer: ", this.inputId);
 
 		this.loadSceneBody('./models/json/avatar.json');
 
 		this.gui = new dat.GUI();
+		this.guiDOM = this.gui.domElement;
 		this.guiFolder = this.gui.addFolder(this.name);
 
-		this.performerEffects = new PerformerEffects(this.parent, this.color, this.guiFolder);
+		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
 		this.addEffect();
 	}
 
@@ -39,26 +41,27 @@ class Performer {
 		loader.load( filename, function ( result ) {
 			result.scene.traverse( function ( object ) {
 				if ( object.name.toLowerCase().match(/robot_/g)) {
-					if (!this.robot) {
-						this.robot = {};
-						this.robotKeys = {};
+					if (!this.performer) {
+						this.performer = {};
+						this.performerKeys = {};
 					}
-					this.robot[object.name.toLowerCase()] = object;
-					this.robotKeys[object.name.toLowerCase()] = object.name.toLowerCase();
+					this.performer[object.name.toLowerCase()] = object;
+					this.performerKeys[object.name.toLowerCase()] = object.name.toLowerCase();
 
 					object.castShadow = true;
 					object.receiveShadow = true;
+					object.visible = this.visible;
 				} else {
 					if(object.hasOwnProperty("material")){ 
 						object.material = new THREE.MeshPhongMaterial();
 						object.material.wireframe = this.showWireframe;
-						object.material.color.set(this.color);
+						object.material.color.set(parseInt(this.color,16));
 						object.material.needsUpdate = true;
 					}
 				}
 			}.bind(this) );
 			
-			this.robotKeys= Common.getKeys(this.robotKeys, "");
+			this.performerKeys= Common.getKeys(this.performerKeys, "");
 			this.parent.add(result.scene);
 		}.bind(this) );
 	}
@@ -70,20 +73,20 @@ class Performer {
 			break;
 		}
 
-		this.performerEffects.update(data);
+		this.performerEffects.update(this.performer);
 	}
 
 	updateFromPN(data) {
 		for (var i=0; i<data.length; i++) {
 			var jointName = "robot_" + data[i].name;
-			if (this.robot[jointName]) {
-				this.robot[jointName].position.set(
+			if (this.performer[jointName]) {
+				this.performer[jointName].position.set(
 					data[i].position.x,
 					data[i].position.y,
 					data[i].position.z
 				);
 
-				this.robot[jointName].quaternion.copy(data[i].quaternion);
+				this.performer[jointName].quaternion.copy(data[i].quaternion);
 			}
 		}
 	}

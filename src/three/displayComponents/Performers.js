@@ -32,7 +32,8 @@ class Performers {
 		return _.map(this.list, function(p) {
 			return {
 				name: p.name + ' (' + p.type + ')',
-				color: p.color
+				color: '#' + p.color,
+				gui: p.guiDOM
 			};
 		});
 	}
