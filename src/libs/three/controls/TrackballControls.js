@@ -4,7 +4,7 @@
  * @author Simone Manini / http://daron1337.github.io
  * @author Luca Antiga 	/ http://lantiga.github.io
  */
- 
+
  var THREE = require('three');
 
 THREE.TrackballControls = function ( object, domElement ) {
@@ -422,8 +422,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		}
 
-		document.addEventListener( 'mousemove', mousemove, false );
-		document.addEventListener( 'mouseup', mouseup, false );
+		this.domElement.addEventListener( 'mousemove', mousemove, false );
+		this.domElement.addEventListener( 'mouseup', mouseup, false );
 
 		_this.dispatchEvent( startEvent );
 
@@ -588,7 +588,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 	this.dispose = function() {
 
 		this.domElement.removeEventListener( 'contextmenu', contextmenu, false );
-		this.domElement.removeEventListener( 'mousedown', mousedown, false );
+		// this.domElement.removeEventListener( 'mousedown', mousedown, false );
 		this.domElement.removeEventListener( 'wheel', mousewheel, false );
 
 		this.domElement.removeEventListener( 'touchstart', touchstart, false );

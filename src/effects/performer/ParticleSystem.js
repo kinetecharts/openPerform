@@ -23,19 +23,19 @@ class ParticleSystem {
 			position: new THREE.Vector3(),
 			positionRandomness: 0,
 			velocity: new THREE.Vector3(),
-			velocityRandomness: 0,
+			velocityRandomness: 3,
 			color: this.color,
-			colorRandomness: 0,
-			turbulence: 1,
-			lifetime: 5,
-			size: 20,
-			sizeRandomness: 1
+			colorRandomness: 1,
+			turbulence: 0,
+			lifetime: 4.5,
+			size: 36,
+			sizeRandomness: 0
 		};
 		this.spawnerOptions = {
-			spawnRate: 1,
-			horizontalSpeed: 1.5,
-			verticalSpeed: 1.33,
-			timeScale: 1
+			spawnRate: 10,
+			horizontalSpeed: 1,
+			verticalSpeed: 5,
+			timeScale: 3.6
 		};
 
 		this.addToDatGui(this.options, this.spawnerOptions, this.guiFolder);
