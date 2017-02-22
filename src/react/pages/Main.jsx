@@ -85,16 +85,18 @@ var Main = React.createClass({
 	},
 
 	updatePerformers(id, data, type) {
-		if(!this.performers.exists(id)) {
-			this.performers.add(id, type);
-		}
-		else {
-			this.performers.update(id, data);
-		}
+		if (this.performers) {
+			if(!this.performers.exists(id)) {
+				this.performers.add(id, type);
+			}
+			else {
+				this.performers.update(id, data);
+			}
 
-		this.setState({
-			performers: this.performers.getPerformers()
-		});
+			this.setState({
+				performers: this.performers.getPerformers()
+			});
+		}
 	},
 
 	render() {

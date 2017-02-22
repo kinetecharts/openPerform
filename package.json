@@ -105,7 +105,6 @@
     "serve-favicon": "^2.3.0",
     "stats.js": "^0.17.0",
     "three": "^0.82.1",
-    "three-orbit-controls": "^72.0.0",
     "tween": "^0.9.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0",

@@ -6,7 +6,7 @@ import _ from 'lodash'
 
 import CoordinateTZ from 'coordinate-tz';
 
-var OrbitControls = require('three-orbit-controls')(THREE);
+import TrackballControls from './../libs/three/controls/TrackballControls.js'
 
 import Globe from './features/globe'
 import Earth from './features/earth'
@@ -73,8 +73,8 @@ class Scene {
 		// var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
 		
 		// this.camera.position.copy(src);
-		this.camera.position.set( 0, 800, 1600 );
-		this.camera.lookAt(new THREE.Vector3(0,800,0));
+		this.camera.position.set( 0, 50, 1600 );
+		// this.camera.lookAt(new THREE.Vector3(0,1000,0));
 
 
 		var floorSize = 5000;
@@ -84,26 +84,20 @@ class Scene {
 		this.gridFloor.receiveShadow = true;
 
 		this.scene.add( this.gridFloor );
-		// this.camera.up.set(0,1,0);
-
-		// this.camera.lookAt(Common.convertLatLonToVec3(startPos.lat, startPos.lon));
 
 		this.scene.add( this.camera );
 
 		this.initLights(this.scene, this.camera);
 
-		//orbit control
-		this.controls = new OrbitControls(this.camera)
-
-		this.controls.enableDamping = false;
-		this.controls.enableZoom = (inputs.indexOf("mouse")>=0);
-		this.controls.enableRotate = (inputs.indexOf("mouse")>=0);
-		this.controls.enablePan = (inputs.indexOf("mouse")>=0);
-		
-		// this.controls.autoRotate = true;
-		this.controls.autoRotateSpeed = 1.25;
-
-		this.controls.enableKeys = false;
+		this.controls = new THREE.TrackballControls( this.camera );
+		// this.controls.rotateSpeed = 1.0;
+		// this.controls.zoomSpeed = 1.2;
+		// this.controls.panSpeed = 0.8;
+		// this.controls.noZoom = false;
+		// this.controls.noPan = false;
+		// this.controls.staticMoving = true;
+		// this.controls.dynamicDampingFactor = 0.3;
+		this.controls.keys = [ 65, 83, 68 ];
 
 		this.stats = new Stats();
 		if (statsEnabled) {
