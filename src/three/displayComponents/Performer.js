@@ -26,7 +26,8 @@ class Performer {
 
 		this.gui = new dat.GUI();
 		this.guiDOM = this.gui.domElement;
-		this.guiFolder = this.gui.addFolder(this.name);
+		this.guiFolder = this.gui.addFolder(this.name + ' Effects');
+		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
 		this.addEffect();

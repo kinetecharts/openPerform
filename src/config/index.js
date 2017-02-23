@@ -7,14 +7,15 @@ var defaults = {
 	stats: true,
 	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron
 	performers:[],
-	performerColors: ['FF0000', '00FF00', '0000FF'],
+	performerColors: ['0DA8F3', 'A735D0', 'F0F7FA', '5992AE', 'FF009B'],
+	// performerColors: ['FF0000', '00FF00', '0000FF'],
 	myo:null,
 	kinectTransport:{
 		port:config.kinectTransport.ports.outgoing
 	},
 	perceptionNeuron:{
 		port:9000,
-		ip:'192.168.1.250'
+		ip:'192.168.2.5'
 	},
 	data: [],
 	home: {

@@ -28,7 +28,7 @@ class ParticleSystem {
 			colorRandomness: 1,
 			turbulence: 0,
 			lifetime: 4.5,
-			size: 36,
+			size: 100,
 			sizeRandomness: 0
 		};
 		this.spawnerOptions = {

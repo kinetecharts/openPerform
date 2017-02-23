@@ -155,6 +155,8 @@ class PerceptionNeuron {
 			}
 
 			this.callbacks["message"]('PN_User_' + key, bones, 'perceptionNeuron');
+			// bones[0].position.x += 100;
+			// this.callbacks["message"]('PN_User_2', bones, 'perceptionNeuron');
 		}.bind(this));
 	}
 
@@ -187,10 +189,10 @@ class PerceptionNeuron {
 		keyframe.position.y = parseFloat( data[1] );
 		keyframe.position.z = parseFloat( data[2] );
 		
-		quat.setFromAxisAngle( vx, parseFloat( data[4] ) * Math.PI / 180 );
-		keyframe.quaternion.multiply( quat );
-		
 		quat.setFromAxisAngle( vy, parseFloat( data[3] ) * Math.PI / 180 );
+		keyframe.quaternion.multiply( quat );
+
+		quat.setFromAxisAngle( vx, parseFloat( data[4] ) * Math.PI / 180 );
 		keyframe.quaternion.multiply( quat );
 		
 		quat.setFromAxisAngle( vz, parseFloat( data[5] ) * Math.PI / 180 );
