@@ -157,6 +157,8 @@ class PerceptionNeuron {
 			this.callbacks["message"]('PN_User_' + key, bones, 'perceptionNeuron');
 			// bones[0].position.x += 100;
 			// this.callbacks["message"]('PN_User_2', bones, 'perceptionNeuron');
+			// bones[0].position.x += 100;
+			// this.callbacks["message"]('PN_User_2', bones, 'perceptionNeuron');
 		}.bind(this));
 	}
 
