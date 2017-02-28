@@ -53,7 +53,7 @@ class ParticleSystem {
 		f.add(spawnerOptions, "timeScale", -2, 2);
 	}
 	update(data) {
-		this.parent.updateMatrixWorld();
+		// this.parent.updateMatrixWorld();
 
 		_.each(_.filter(data, function(d, key){
 			return _.filter(this.targets,function(t){return "robot_"+t == key;}).length>0;
