@@ -42,7 +42,7 @@ class InputManager {
 			this.initNeuroSkyCallbacks();
 			break;
 		case 'perceptionNeuron':
-			this.inputs[type] = new PerceptionNeuron('ws://'+config.perceptionNeuron.ip+':' + config.perceptionNeuron.port + "/service");
+			this.inputs[type] = new PerceptionNeuron('ws://'+window.location.hostname+':' + config.perceptionNeuron.port);
 			this.initPerceptionNeuronCallbacks();
 			break;
 		};

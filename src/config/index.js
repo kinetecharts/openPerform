@@ -14,8 +14,7 @@ var defaults = {
 		port:config.kinectTransport.ports.outgoing
 	},
 	perceptionNeuron:{
-		port:9000,
-		ip:'192.168.2.5'
+		port:config.perceptionNeuron.ports.outgoing
 	},
 	data: [],
 	home: {

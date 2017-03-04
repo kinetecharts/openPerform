@@ -33,6 +33,14 @@ var config = {
 			outgoing:9999
 		}
 	},
+	perceptionNeuron: {
+		enabled: true,
+		ip:'10.0.1.18',
+		ports: {
+			incoming:9000,
+			outgoing:9099
+		}
+	},
 	mapzen: {
 		enabled: false,
 		baseURL: 'https://tile.mapzen.com/mapzen/vector/v1',

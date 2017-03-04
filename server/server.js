@@ -80,3 +80,11 @@ if (config.kinectTransport.enabled) {
     var KTServer = require('./sockets/KinectTransport');
 }
 /* eslint-enable */
+
+//init kinect server
+/* eslint-disable */
+if (config.perceptionNeuron.enabled) {
+    var PNServer = require('./sockets/PerceptionNeuron');
+    var pnServer = new PNServer();
+}
+/* eslint-enable */
