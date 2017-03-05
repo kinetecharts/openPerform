@@ -7,7 +7,7 @@ class Gamepads {
 		this.websocket = null;
 
 		this.initializeWebSocket(url);
-		// this.update();
+		this.update();
 	}
 
 	initializeWebSocket(url) {
@@ -24,8 +24,6 @@ class Gamepads {
 	onOpen(evt) {
 		console.log('Gamepad Server connected:', evt);
 		this.connected = true;
-
-		this.send(navigator.getGamepads());
 	}
 
 	onClose(evt) {
@@ -46,7 +44,7 @@ class Gamepads {
 	}
 
 	send(msg) {
-		if (this.connected /*&& _.filter(msg).length>0*/) {
+		if (this.connected) {
 			try {
 				this.websocket.send(JSON.stringify(msg), this.onError);
 			}
@@ -59,7 +57,10 @@ class Gamepads {
 	}
 
 	update() {
-		this.send(navigator.getGamepads());
+		var gamepads = navigator.getGamepads();
+		if (_.filter(gamepads).length>0) {
+			this.send(gamepads);
+		}
 		requestAnimationFrame(this.update.bind(this));
 	}
 }
