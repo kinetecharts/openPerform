@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import ParticleSystem from './ParticleSystem'
+import Cloner from './Cloner'
 
 import config from './../../config'
 
@@ -14,7 +15,10 @@ class PerformerEffects {
 
 	add(effect) {
 		switch(effect) {
-			default:
+			case 'cloner':
+				this.effects.push(new Cloner(this.parent, this.color, this.guiFolder));
+			break;
+			case 'particleSystem':
 				this.effects.push(new ParticleSystem(this.parent, this.color, this.guiFolder));
 			break;
 		}

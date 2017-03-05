@@ -30,7 +30,7 @@ class Performer {
 		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
-		this.addEffect();
+		this.addEffects(['particleSystem', 'cloner']);
 	}
 
 	loadSceneBody(filename) {
@@ -92,10 +92,19 @@ class Performer {
 		}
 	}
 
+	addEffects(effects) {
+		_.each(effects, (effect) => {
+			this.addEffect(effect);
+		});
+	}
+
 	addEffect(effect) {
 		switch(effect) {
-			default:
-				this.performerEffects.add("pointCloudJoints");
+			case 'cloner':
+				this.performerEffects.add("cloner");
+			break;
+			case 'particleSystem':
+				this.performerEffects.add("particleSystem");
 			break;
 		}
 	}
