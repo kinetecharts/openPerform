@@ -34,11 +34,17 @@ var config = {
 		}
 	},
 	perceptionNeuron: {
-		enabled: true,
-		ip:'10.0.1.18',
+		enabled: false,
+		ip:'192.168.1.250', //ip the Axis Neuron translation app is broadcasting from
 		ports: {
-			incoming:9000,
-			outgoing:9099
+			incoming:9000, //port the Axis Neuron translation app is broadcasting on
+			outgoing:9100 //port the browser connects on
+		}
+	},
+	gamepads: {
+		enabled: false,
+		ports: {
+			outgoing:9101 //port the browser connects on
 		}
 	},
 	mapzen: {

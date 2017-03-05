@@ -1,38 +1,65 @@
-const WebSocket = require('ws');
-const _ = require('lodash');
+var WebSocket = require('ws');
+var _ = require('lodash');
 
-const config = require('./../config.js').perceptionNeuron;
+var config = require('./../config.js').perceptionNeuron;
 
 class PerceptionNeuron {
 	constructor() {
 		this.url = 'ws://'+config.ip+':' + config.ports.incoming + "/service";
 
-		console.log("Connecting to the Perception Neuron at " + this.url);
+		console.log('Connecting to the Perception Neuron at ' + this.url);
 		this.ws = new WebSocket(this.url);
-		this.ws.on('open', this.onOpen.bind(this));
-		this.ws.on('close', this.onClose.bind(this));
-		this.ws.on('message', this.onMessage.bind(this));
-		this.ws.on('error', this.onError.bind(this));
-	}
-	onOpen() {
-		console.log("Perception Neuron Connected!");
+		this.ws.on('open', this.onListenOpen.bind(this));
+		this.ws.on('message', this.onListenMessage.bind(this));
+		this.ws.on('error', this.onListenError.bind(this));
+
+		console.log('Perception Neuron Server broadasting on ' + config.ports.outgoing);
 		this.wss = new WebSocket.Server({ port: config.ports.outgoing });
+		this.wss.on('connection', this.onBroadcastConnection.bind(this));
+		this.wss.on('error', this.onBroadcastError.bind(this));
+		this.wss.on('listening', this.onBroadcastListening.bind(this));
 	}
-	onClose() {
-		console.log('disconnected');
+
+	onBroadcastConnection() {
+		console.log('Perception Neuron Server Connected!');
 	}
-	onError(err) {
-		console.log(err);
+	
+	onBroadcastError() {
+		console.log('Perception Neuron Server Error!');
 	}
-	onMessage(msg) {
+	
+	onBroadcastListening() {
+		console.log('Perception Neuron Server Listening!');
+	}
+
+	onListenOpen() {
+		console.log('Perception Neuron Connected!');
+	}
+	
+	onListenClose() {
+		console.log('Perception Neuron Disconnected!');
+	}
+	
+	onListenError(err) {
+		console.log('Perception Neuron Error ', err);
+	}
+	
+	onListenMessage(msg) {
 		this.broadcast(msg);
 	}
+	
 	broadcast(data) {
 		this.wss.clients.forEach(function each(client) {
 			if (client.readyState === WebSocket.OPEN) {
-				client.send(data);
+				try {
+					client.send(data, this.onError);
+				}
+				catch(err) {
+					this.onError(err);
+				}
+				finally {}
 			}
-		});
+		}.bind(this));
 	}
 }
 

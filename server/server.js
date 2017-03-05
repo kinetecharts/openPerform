@@ -81,10 +81,18 @@ if (config.kinectTransport.enabled) {
 }
 /* eslint-enable */
 
-//init kinect server
+//init perception neuron server
 /* eslint-disable */
 if (config.perceptionNeuron.enabled) {
     var PNServer = require('./sockets/PerceptionNeuron');
     var pnServer = new PNServer();
+}
+/* eslint-enable */
+
+//init gamepad server
+/* eslint-disable */
+if (config.gamepads.enabled) {
+    var GPServer = require('./sockets/Gamepads');
+    var gpServer = new GPServer();
 }
 /* eslint-enable */

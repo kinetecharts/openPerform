@@ -13,21 +13,21 @@ class PerceptionNeuron {
 	}
 
 	initializeWebSocket(url) {
-		console.log("Connecting to: ", url);
+		console.log("Perception Neuron connecting to: ", url);
 
 		this.websocket = new WebSocket(url);
 		this.websocket.onopen = this.onOpen.bind(this);
-		this.websocket.onclose = this.oClose;
+		this.websocket.onclose = this.onClose.bind(this);
 		this.websocket.onmessage = this.onMessage.bind(this);
-		this.websocket.onerror = this.onError;
+		this.websocket.onerror = this.onError.bind(this);
 	}
 
 	onOpen(evt) {
-		console.log('PerceptionNeuron connected:', evt)
+		console.log('Perception Neuron connected:', evt)
 	}
 
 	onClose(evt) {
-		console.log('PerceptionNeuron disconnected:', evt);
+		console.log('Perception Neuron  disconnected:', evt);
 	}
 	
 	onMessage(msg) {
@@ -163,7 +163,7 @@ class PerceptionNeuron {
 	}
 
 	onError(evt) {
-		console.log('PerceptionNeuron error:', evt);
+		console.log('Perception Neuron  error:', evt);
 	}
 
 	on(name, cb) {

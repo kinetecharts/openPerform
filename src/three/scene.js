@@ -401,37 +401,11 @@ class Scene {
 			this.performer.update(this.clock.getDelta());
 		}
 
-		// console.log("skeletonHelper", this.skeletonHelper);
-
-		/*****************************************/
-		// update lat long based on camera location
-		// var location = Common.convertVec3ToLatLon(this.camera.position.clone());
-		// if (location !== this.prevLocation) {
-		// 	this.camera.location = location;
-		// }
-		// this.prevLocation = location;
-		/*****************************************/
-
-		/*****************************************/
-		// update timezone based on camera location
-		// var timezone = Common.getTZ(location[0],location[1]);
-		// if (timezone !== this.prevTimezone) {
-		// 	this.camera.timezone = timezone
-		// 	if (this.camera.updateTimezone) {
-		// 		console.log("w00t!");
-		// 		this.camera.updateTimezone(timezone);
-		// 	}
-		// }
-		// this.prevTimezone = timezone;
-		/*****************************************/
-
 		this.renderer.render( this.scene, this.camera );
 
 		this.stats.update();
 
 		requestAnimationFrame(this.render.bind(this));
-
-		// this.map.rotation.z += 0.01;
 	}
 
 	onWindowResize() {

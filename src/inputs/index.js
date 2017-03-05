@@ -12,6 +12,7 @@ import KinectTransport from './KinectTransport'
 import KeyboardController from './KeyboardController'
 import NeuroSky from './NeuroSky'
 import PerceptionNeuron from './PerceptionNeuron'
+import Gamepads from './Gamepads'
 
 class InputManager {
 	constructor(inputList, threeScene, parent) {
@@ -44,6 +45,9 @@ class InputManager {
 		case 'perceptionNeuron':
 			this.inputs[type] = new PerceptionNeuron('ws://'+window.location.hostname+':' + config.perceptionNeuron.port);
 			this.initPerceptionNeuronCallbacks();
+			break;
+		case 'gamepads':
+			this.inputs[type] = new Gamepads('ws://'+window.location.hostname+':' + config.gamepads.ports.outgoing);
 			break;
 		};
 	}
