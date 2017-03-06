@@ -76,11 +76,11 @@ class Scene {
 		// var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
 		
 		// this.camera.position.copy(src);
-		this.camera.position.set( 0, 50, 1600 );
+		this.camera.position.set( 0, 0.5, 16 );
 		// this.camera.lookAt(new THREE.Vector3(0,1000,0));
 
 
-		var floorSize = 5000;
+		var floorSize = 50;
 
 		this.gridFloor = new THREE.GridHelper( floorSize/2, 50 );
 		this.gridFloor.castShadow = true;

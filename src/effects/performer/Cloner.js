@@ -30,7 +30,7 @@ class Cloner {
 
 	clonePerformer() {
 		if (this.performer) {
-			var clone = this.performer.robot_hips.clone();
+			var clone = this.performer.clone();
 			clone.traverse( function ( part ) {
 				if ( part instanceof THREE.Mesh ) {
 					part.material = part.material.clone();

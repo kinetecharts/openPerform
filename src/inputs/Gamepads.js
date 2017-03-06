@@ -32,7 +32,7 @@ class Gamepads {
 	}
 	
 	onMessage(msg) {
-		console.log(JSON.parse(msg.data));
+		// console.log(JSON.parse(msg.data));
 	}
 
 	onError(evt) {
