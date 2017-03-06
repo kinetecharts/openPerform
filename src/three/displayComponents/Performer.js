@@ -114,6 +114,10 @@ class Performer {
 			break;
 		}
 	}
+
+	getScene() {
+		return this.scene;
+	}
 }
 
 module.exports = Performer;
