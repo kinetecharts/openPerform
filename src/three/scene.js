@@ -20,6 +20,9 @@ import Transit from './features/transit'
 import Water from './features/water'
 // import Sky from './features/sky'
 
+
+import VR from './vr/vr'
+
 import DepthDisplay from './displayComponents/DepthDisplay'
 
 import CameraControl from './camera/cameraControl'
@@ -103,6 +106,8 @@ class Scene {
 		this.clock = new THREE.Clock();
 		
 		this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
+
+		this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
 		//initiating renderer
 		this.render();
@@ -399,6 +404,10 @@ class Scene {
 
 		if (this.performer) {
 			this.performer.update(this.clock.getDelta());
+		}
+
+		if (this.vr) {
+			this.vr.update();
 		}
 
 		this.renderer.render( this.scene, this.camera );

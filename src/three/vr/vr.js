@@ -3,8 +3,12 @@
 var THREE = require('three');
 import _ from 'lodash'
 
-import Paint from '../vr/tools/paint'
-import Sculpt from '../vr/tools/sculpt'
+import WEBVR from './WebVR'
+import VREffect from './VREffect'
+import VRControls from './VRControls'
+
+import Paint from './tools/paint'
+import Sculpt from './tools/sculpt'
 
 class VR {
 	constructor(renderer, camera, parent, controls) {
@@ -112,7 +116,6 @@ class VR {
 	}
 
 	initEffect() {
-		var scope = this;
 		this.vrEffect = new THREE.VREffect( this.renderer );
 		// this.vrEffect.setFullScreen( true );
 		if ( WEBVR.isAvailable() === true ) {
@@ -129,27 +132,27 @@ class VR {
 				+ '</i>';
 
 			window.addEventListener( 'vrdisplaypresentchange', function( event ) {
-				vrButton.innerHTML = scope.vrEffect.isPresenting ? '<i title="Exit VR" class="vr-on" aria-hidden="true">'
+				vrButton.innerHTML = this.vrEffect.isPresenting ? '<i title="Exit VR" class="vr-on" aria-hidden="true">'
 					+ '<img src="images/vr_active.png" height="100%" width="auto"/>'
 				+ '</i>' : '<i title="Enter VR" class="vr-off" aria-hidden="true">'
 					+ '<img src="images/vr_inactive.png" height="100%" width="auto"/>'
 				+ '</i>';
-				scope.vrEffect.isPresenting ? $(vrButton).addClass('active') : $(vrButton).removeClass('active');
-			});
+				this.vrEffect.isPresenting ? $(vrButton).addClass('active') : $(vrButton).removeClass('active');
+			}.bind(this));
 
-			$('#bottom_buttonsLi .bottom_buttons').append( vrButton );
-			$('#bottom_buttonsLi .bottom_buttons').click(function() {
+			$('#vrButton').append( vrButton );
+			$(vrButton).click(function() {
 				// RootObj.vrOffset = new THREE.Vector3();
 				
 				// RootObj.nodeSizeScale = RootObj.vrScale = 0.125;
 				// RootObj.nodeSizeScale = 0.5;
 				// RootObj.vrOffset.y = 200;
 
-				scope.initVRControls();
-				scope.addController(0);
-				scope.addController(1);
-				scope.loadControllerModel();
-			});
+				this.initVRControls();
+				this.addController(0);
+				this.addController(1);
+				this.loadControllerModel();
+			}.bind(this));
 		}
 	}
 
