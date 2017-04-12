@@ -22,6 +22,8 @@ class Performer {
 
 		console.log("New Performer: ", this.inputId);
 
+		this.scene = null;
+		this.modelShrink = 100;
 		this.loadSceneBody('./models/json/avatar.json');
 
 		this.gui = new dat.GUI();
@@ -30,7 +32,7 @@ class Performer {
 		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
-		this.addEffect();
+		this.addEffects(['particleSystem', 'cloner']);
 	}
 
 	loadSceneBody(filename) {
@@ -40,7 +42,10 @@ class Performer {
 			console.log(progress);
 		};
 		loader.load( filename, function ( result ) {
-			result.scene.traverse( function ( object ) {
+			this.scene = result.scene;
+			this.scene.scale.set(1/this.modelShrink,1/this.modelShrink,1/this.modelShrink);
+
+			this.scene.traverse( function ( object ) {
 				if ( object.name.toLowerCase().match(/robot_/g)) {
 					if (!this.performer) {
 						this.performer = {};
@@ -63,7 +68,8 @@ class Performer {
 			}.bind(this) );
 			
 			this.performerKeys= Common.getKeys(this.performerKeys, "");
-			this.parent.add(result.scene);
+			
+			this.parent.add(this.scene);
 		}.bind(this) );
 	}
 
@@ -74,7 +80,7 @@ class Performer {
 			break;
 		}
 
-		this.performerEffects.update(this.performer);
+		this.performerEffects.update(this.scene);
 	}
 
 	updateFromPN(data) {
@@ -92,12 +98,25 @@ class Performer {
 		}
 	}
 
+	addEffects(effects) {
+		_.each(effects, (effect) => {
+			this.addEffect(effect);
+		});
+	}
+
 	addEffect(effect) {
 		switch(effect) {
-			default:
-				this.performerEffects.add("pointCloudJoints");
+			case 'cloner':
+				this.performerEffects.add("cloner");
+			break;
+			case 'particleSystem':
+				this.performerEffects.add("particleSystem");
 			break;
 		}
+	}
+
+	getScene() {
+		return this.scene;
 	}
 }
 

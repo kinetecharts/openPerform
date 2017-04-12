@@ -20,6 +20,9 @@ import Transit from './features/transit'
 import Water from './features/water'
 // import Sky from './features/sky'
 
+
+import VR from './vr/vr'
+
 import DepthDisplay from './displayComponents/DepthDisplay'
 
 import CameraControl from './camera/cameraControl'
@@ -73,11 +76,11 @@ class Scene {
 		// var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
 		
 		// this.camera.position.copy(src);
-		this.camera.position.set( 0, 50, 1600 );
+		this.camera.position.set( 0, 0.5, 16 );
 		// this.camera.lookAt(new THREE.Vector3(0,1000,0));
 
 
-		var floorSize = 5000;
+		var floorSize = 50;
 
 		this.gridFloor = new THREE.GridHelper( floorSize/2, 50 );
 		this.gridFloor.castShadow = true;
@@ -103,6 +106,8 @@ class Scene {
 		this.clock = new THREE.Clock();
 		
 		this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
+
+		this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
 		//initiating renderer
 		this.render();
@@ -401,37 +406,15 @@ class Scene {
 			this.performer.update(this.clock.getDelta());
 		}
 
-		// console.log("skeletonHelper", this.skeletonHelper);
-
-		/*****************************************/
-		// update lat long based on camera location
-		// var location = Common.convertVec3ToLatLon(this.camera.position.clone());
-		// if (location !== this.prevLocation) {
-		// 	this.camera.location = location;
-		// }
-		// this.prevLocation = location;
-		/*****************************************/
-
-		/*****************************************/
-		// update timezone based on camera location
-		// var timezone = Common.getTZ(location[0],location[1]);
-		// if (timezone !== this.prevTimezone) {
-		// 	this.camera.timezone = timezone
-		// 	if (this.camera.updateTimezone) {
-		// 		console.log("w00t!");
-		// 		this.camera.updateTimezone(timezone);
-		// 	}
-		// }
-		// this.prevTimezone = timezone;
-		/*****************************************/
+		if (this.vr) {
+			this.vr.update();
+		}
 
 		this.renderer.render( this.scene, this.camera );
 
 		this.stats.update();
 
 		requestAnimationFrame(this.render.bind(this));
-
-		// this.map.rotation.z += 0.01;
 	}
 
 	onWindowResize() {
