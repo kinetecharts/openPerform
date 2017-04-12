@@ -5,7 +5,7 @@ import config from './../../server/config.js'
 var defaults = {
 	scene:null,
 	stats: true,
-	inputs:['keyboard', 'mouse', 'perceptionNeuron', 'gamepads'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads
+	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron
 	performers:[],
 	performerColors: ['0DA8F3', 'A735D0', 'F0F7FA', '5992AE', 'FF009B'],
 	// performerColors: ['FF0000', '00FF00', '0000FF'],
@@ -14,13 +14,8 @@ var defaults = {
 		port:config.kinectTransport.ports.outgoing
 	},
 	perceptionNeuron:{
-		port:config.perceptionNeuron.ports.outgoing
-	},
-	gamepads:{
-		ports: {
-			incoming: config.gamepads.ports.incoming,
-			outgoing: config.gamepads.ports.outgoing
-		}
+		port:9000,
+		ip:'192.168.2.96'
 	},
 	data: [],
 	home: {

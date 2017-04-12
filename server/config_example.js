@@ -34,7 +34,7 @@ var config = {
 		}
 	},
 	perceptionNeuron: {
-		enabled: false,
+		enabled: true,
 		ip:'192.168.1.250', //ip the Axis Neuron translation app is broadcasting from
 		ports: {
 			incoming:9000, //port the Axis Neuron translation app is broadcasting on
