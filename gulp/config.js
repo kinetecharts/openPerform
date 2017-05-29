@@ -59,6 +59,18 @@ module.exports = {
 			src + '/effects/**/**'
 		]
 	},
+	performers: {
+		src: src + '/performers/**/**',
+		watch: [
+			src + '/performers/**/**'
+		]
+	},
+	environments: {
+		src: src + '/environments/**/**',
+		watch: [
+			src + '/environments/**/**'
+		]
+	},
 	less: {
 		src: src + '/less/**',
 		watch: [

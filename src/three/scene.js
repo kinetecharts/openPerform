@@ -29,6 +29,8 @@ import CameraControl from './camera/cameraControl'
 
 import Common from './../util/Common'
 
+import Environments from './../environments'
+
 class Scene {
 	constructor() {
 		this.renderer = null;
@@ -79,18 +81,13 @@ class Scene {
 		this.camera.position.set( 0, 0.5, 16 );
 		// this.camera.lookAt(new THREE.Vector3(0,1000,0));
 
-
-		var floorSize = 50;
-
-		this.gridFloor = new THREE.GridHelper( floorSize/2, 50 );
-		this.gridFloor.castShadow = true;
-		this.gridFloor.receiveShadow = true;
-
-		this.scene.add( this.gridFloor );
-
 		this.scene.add( this.camera );
 
-		this.initLights(this.scene, this.camera);
+
+		if (!this.environments) {
+			this.environments = new Environments(this.scene);
+			window.environments = this.environments;
+		}
 
 		this.controls = new THREE.TrackballControls( this.camera );
 
@@ -113,40 +110,6 @@ class Scene {
 		this.render();
 
 		window.addEventListener( 'resize', this.onWindowResize, false );
-	}
-
-	initLights(scene, camera) {
-		var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-		hemiLight.color.setHSL( 0.6250011825856442, 60.75949367088608, 30.980392156862745 );
-		hemiLight.groundColor.setHSL( 4.190951334017909e-8, 33.68421052631579, 37.254901960784316 );
-		hemiLight.position.set( 0, 500, 0 );
-		scene.add( hemiLight );
-
-		var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-		dirLight.position.set( -1, 0.75, 1 );
-		dirLight.position.multiplyScalar( 50);
-		dirLight.name = 'dirlight';
-
-		this.scene.add( dirLight );
-
-		dirLight.castShadow = true;
-
-		dirLight.shadow.mapSize.width = dirLight.shadow.mapSize.height = 1024 * 2;
-
-		var d = 300;
-
-		dirLight.shadow.camera.left = -d;
-		dirLight.shadow.camera.right = d;
-		dirLight.shadow.camera.top = d;
-		dirLight.shadow.camera.bottom = -d;
-
-		dirLight.shadow.camera.far = 3500;
-		dirLight.shadow.bias = -0.0001;
-		dirLight.shadow.darkness = 0.35;
-
-		dirLight.shadow.camera.visible = true;
-		// this.sky = new Sky(this.map);
-		// this.layers.push(this.sky);
 	}
 
 	flyTo(lat, lon, radius, look, cb) {

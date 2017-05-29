@@ -12,5 +12,5 @@ gulp.task('watch', ['setWatch', 'browserSync'], function() {
 		config.copy.data.src, config.copy.glsl.src, config.copy.textures.src], ['copy']);
 	gulp.watch([config.markup.src], ['markup']);
 	gulp.watch([config.less.src], ['less']);
-	gulp.watch([config.three.src, config.config.src, config.react.src, config.inputs.src, config.effects.src], ['browserify']);
+	gulp.watch([config.three.src, config.performers.src, config.environments.src, config.config.src, config.react.src, config.inputs.src, config.effects.src], ['browserify']);
 });
