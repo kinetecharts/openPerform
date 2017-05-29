@@ -1,11 +1,11 @@
 //Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 
 var THREE = require('three');
-var bvhLoader = require('./../../libs/three/loaders/BVHLoader.js');
-var sceneLoader = require('./../../libs/three/loaders/SceneLoader.js');
-import Common from './../../util/Common'
+var bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
+var sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
+import Common from './../util/Common'
 
-import PerformerEffects from './../../effects/performer'
+import PerformerEffects from './../effects/performer'
 
 import _ from 'lodash'
 import dat from 'dat-gui'

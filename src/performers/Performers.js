@@ -3,9 +3,9 @@ import _ from 'lodash'
 import dat from 'dat-gui'
 
 import Performer from './Performer'
-import GroupEffects from './../../effects/group'
+import GroupEffects from './../effects/group'
 
-import config from './../../config'
+import config from './../config'
 
 class Performers {
 	constructor(parent) {

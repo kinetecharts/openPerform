@@ -10,7 +10,7 @@ import Common from './../../util/Common'
 import Scene from './../../three/scene'
 import InputManager from './../../inputs'
 
-import Performers from './../../three/displayComponents/Performers'
+import Performers from './../../performers/Performers'
 
 import config from '../../config'
 
