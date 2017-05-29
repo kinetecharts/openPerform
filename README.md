@@ -9,22 +9,16 @@
 1. In Ternimal, run "gulp"
   1. Browser will automatically open to webserver when running.
 
-#Use MongoDB  
-1. Create ./data/db directories in main project directory  
-2. In ./server/config.js, update mongodb.dbName  
-
-#Use Mapzen API (Requires MongoDB)  
-1. Obtain Mapzen crendentials: https://mapzen.com/developers  
-2. Update ./server/config.js
-  1. Update mapzen.api_key  
-
 #Input with the Perpection Neuron  
 1. Install and run Axis Neuron app on Windows: https://www.neuronmocap.com/downloads  
 2. On Windows, run Fabien's stream convertion app  
 3. Update ./src/config/index.js
   1. Add "perceptionNeuron" to inputs list in
-  2. Add IP address and port of Windows Computer / streaming app  
-4. Callback functions available in the ./src/inputs/index.js  
+3. Update ./server/config.js
+  1. Set Perception Neuron enabled setting to true  
+  2. Add IP address of Windows Computer / streaming app  
+4. In Ternimal, quit and restart gulp process  
+5. Callback functions available in the ./src/inputs/index.js  
 
 #Input with the Myo  
 1. Open Myo Connect app (https://www.myo.com/start/)  
@@ -37,3 +31,12 @@
 3. Enable kinect server in ./server/config.js  
 4. Add "kinecttransport" to inputs list in ./src/config/index.js  
 5. Callback functions available in the ./src/inputs/index.js  
+
+#Use MongoDB  
+1. Create ./data/db directories in main project directory  
+2. In ./server/config.js, update mongodb.dbName  
+
+#Use Mapzen API (Requires MongoDB)  
+1. Obtain Mapzen crendentials: https://mapzen.com/developers  
+2. Update ./server/config.js
+  1. Update mapzen.api_key  
