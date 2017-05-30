@@ -16,10 +16,11 @@ class Environments {
 		this.guiFolder = this.gui.addFolder('Environments');
 		this.guiFolder.open()
 
-		this.add("gradient");
+		this.add("grid");
 	}
 
 	add(type) {
+		this.removeAll();
 		switch(type) {
 			case 'grid':
 				this.environments.push(new GridEnvironment(this.parent, this.guiFolder));
@@ -33,9 +34,11 @@ class Environments {
 
 	removeAll () {
 		_.each(this.environments, function(environment) {
-			environment.remove();
-			delete this.environments[this.environments.indexOf(environment)];
+			if (environment) {
+				environment.remove();
+			}
 		}.bind(this));
+		this.environments = [];
 	}
 
 	remove (inputId) {

@@ -9,6 +9,7 @@ import config from './../config'
 class GradientEnvironment {
 	constructor(parent, guiFolder) {
 		this.parent = parent;
+		this.guiFolder = guiFolder;
 
 		this.hemiLight;
 		this.dirLight;
@@ -29,7 +30,7 @@ class GradientEnvironment {
 		this.sky;
 		this.sunSphere;
 
-		var f = guiFolder.addFolder("Gradient");
+		var f = this.guiFolder.addFolder("Gradient");
 		f.add( this, "turbidity", 1.0, 20.0, 0.1 ).onChange( this.guiChanged.bind(this) );
 		f.add( this, "rayleigh", 0.0, 4, 0.001 ).onChange( this.guiChanged.bind(this) );
 		f.add( this, "mieCoefficient", 0.0, 0.1, 0.001 ).onChange( this.guiChanged.bind(this) );
@@ -103,6 +104,15 @@ class GradientEnvironment {
 		this.parent.add(this.skyGroup);
 
 		return this.skyGroup;
+	}
+
+	remove() {
+		this.parent.remove( this.initFloor );
+		this.parent.remove( this.hemiLight );
+		this.parent.remove( this.dirLight );
+		this.parent.remove( this.skyGroup );
+
+		this.guiFolder.removeFolder("Gradient");
 	}
 
 	guiChanged() {

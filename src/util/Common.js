@@ -2,7 +2,7 @@
 
 var THREE = require('three');
 var CoordinateTZ = require('coordinate-tz');
-
+import dat from 'dat-gui'
 
 function Common() {
 	var self = this;
@@ -60,6 +60,17 @@ function Common() {
 
 	this.getTZ = function(lat, lon) {
 		return CoordinateTZ.calculate(lat, lon).timezone;
+	}
+
+	dat.GUI.prototype.removeFolder = function(name) {
+	  var folder = this.__folders[name];
+	  if (!folder) {
+	    return;
+	  }
+	  folder.close();
+	  this.__ul.removeChild(folder.domElement.parentNode);
+	  delete this.__folders[name];
+	  this.onResize();
 	}
 }
 

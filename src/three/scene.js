@@ -49,6 +49,8 @@ class Scene {
 
 		this.prevLocation = '';
 		this.prevTimezone = '';
+
+		this.environments = null;
 	}
 	initScene(startPos, radius, inputs, statsEnabled) {
 		this.container = $('#scenes');
@@ -84,10 +86,8 @@ class Scene {
 		this.scene.add( this.camera );
 
 
-		if (!this.environments) {
-			this.environments = new Environments(this.scene);
-			window.environments = this.environments;
-		}
+		this.environments = new Environments(this.scene);
+		window.environments = this.environments;
 
 		this.controls = new THREE.TrackballControls( this.camera );
 
@@ -133,6 +133,13 @@ class Scene {
 
 	toggleRotation() {
 		this.controls.autoRotate = !this.controls.autoRotate;
+	}
+
+	switchEnvironment(env) {
+		if (this.environments) {
+			console.log("Switching Environment to: " + env);
+			this.environments.add(env);
+		}
 	}
 
 	viewKinectTransportDepth(depthObj) {

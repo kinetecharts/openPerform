@@ -7,6 +7,7 @@ import config from './../config'
 class GridEnvironment {
 	constructor(parent, guiFolder) {
 		this.parent = parent;
+		this.guiFolder = guiFolder;
 
 		this.floorSize = 50;
 		this.numLines = 50;
@@ -15,7 +16,7 @@ class GridEnvironment {
 		this.hemiLight;
 		this.dirLight;
 
-		var f = guiFolder.addFolder("Grid");
+		var f = this.guiFolder.addFolder("Grid");
 		f.add(this, "floorSize", 1, 100).step(1).name("Size").onChange(this.redrawGrid.bind(this));
 		f.add(this, "numLines", 1, 100).step(1).name("# Lines").onChange(this.redrawGrid.bind(this));
 
@@ -67,6 +68,8 @@ class GridEnvironment {
 		this.parent.remove( this.gridFloor );
 		this.parent.remove( this.hemiLight );
 		this.parent.remove( this.dirLight );
+
+		this.guiFolder.removeFolder("Grid");
 	}
 
 	redrawGrid() {
