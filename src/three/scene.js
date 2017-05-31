@@ -25,7 +25,7 @@ import VR from './vr/vr'
 
 import DepthDisplay from './displayComponents/DepthDisplay'
 
-import CameraControl from './camera/cameraControl'
+import CameraControl from './../camera/cameraControl'
 
 import Common from './../util/Common'
 
@@ -110,6 +110,19 @@ class Scene {
 		this.render();
 
 		window.addEventListener( 'resize', this.onWindowResize, false );
+	}
+
+	switchCameraPosition(target, offset, look, radius, cb) {
+		this.cameraControl.fly_to(
+			target,
+			offset,
+			look,
+			TWEEN.Easing.Quadratic.InOut,
+			'path',
+			3000,
+			radius,
+			cb
+		);
 	}
 
 	flyTo(lat, lon, radius, look, cb) {

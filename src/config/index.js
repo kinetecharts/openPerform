@@ -4,6 +4,26 @@ import config from './../../server/config.js'
 
 var defaults = {
 	scene:null,
+	camera: {
+		target: {
+			position: new THREE.Vector3(0,0,0)
+		},
+		closeShot: {
+			position: new THREE.Vector3(0,3,3),
+			offset: new THREE.Vector3(0,0,0),
+			look: new THREE.Vector3(0,3,0)
+		},
+		mediumShot: {
+			position: new THREE.Vector3(0,3,6),
+			offset: new THREE.Vector3(0,1,0),
+			look: new THREE.Vector3(0,3,0)
+		},
+		wideShot: {
+			position: new THREE.Vector3(0,3,9),
+			offset: new THREE.Vector3(0,3,0),
+			look: new THREE.Vector3(0,3,0)
+		}
+	},
 	stats: true,
 	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads
 	performers:[],

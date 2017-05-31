@@ -3,6 +3,7 @@ methods and handles response data and
 callbacks to the threejs environment.
 The input list is defined in config/index.js*/
 
+var THREE = require('three');
 import _ from 'lodash'
 
 import config from './../config'
@@ -80,9 +81,40 @@ class InputManager {
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
 		this.registerCallback('keyboard', 'h', this.parent.toggleOverlay);
 		this.registerCallback('keyboard', 'f', this.parent.toggleFullscreen);
-
+		
 		this.registerCallback('keyboard', '1', function() { this.switchEnvironment("grid"); }.bind(this.scene));
 		this.registerCallback('keyboard', '2', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
+
+		// (target, offset, look, radius, cb)
+		this.registerCallback('keyboard', 'q', function() {
+			this.switchCameraPosition(
+				config.camera.target.position,
+				config.camera.closeShot.position.add(config.camera.closeShot.offset),
+				config.camera.closeShot.look,
+				10,
+				function(){ console.log('done!'); }
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'w', function() {
+			this.switchCameraPosition(
+				config.camera.target.position,
+				config.camera.mediumShot.position.add(config.camera.mediumShot.offset),
+				config.camera.mediumShot.look,
+				10,
+				function(){ console.log('done!'); }
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'e', function() {
+			this.switchCameraPosition(
+				config.camera.target.position,
+				config.camera.wideShot.position.add(config.camera.wideShot.offset),
+				config.camera.wideShot.look,
+				10,
+				function(){ console.log('done!'); }
+			);
+		}.bind(this.scene));
 	}
 }
 

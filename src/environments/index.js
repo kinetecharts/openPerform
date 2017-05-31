@@ -16,7 +16,7 @@ class Environments {
 		this.guiFolder = this.gui.addFolder('Environments');
 		this.guiFolder.open()
 
-		this.add("grid");
+		this.add("grid"); //default
 	}
 
 	add(type) {
