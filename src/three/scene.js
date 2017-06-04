@@ -89,7 +89,18 @@ class Scene {
 		this.environments = new Environments(this.scene);
 		window.environments = this.environments;
 
-		this.controls = new THREE.TrackballControls( this.camera );
+		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement );
+
+		this.controls.rotateSpeed = 1.0;
+		this.controls.zoomSpeed = 1.2;
+		this.controls.panSpeed = 0.8;
+		this.controls.noZoom = false;
+		this.controls.noPan = false;
+		this.controls.staticMoving = true;
+		this.controls.dynamicDampingFactor = 0.3;
+		this.controls.keys = [ 65, 83, 68 ];
+		
+		this.controls.addEventListener( 'change', this.render );
 
 		this.stats = new Stats();
 		if (statsEnabled) {
