@@ -6,7 +6,8 @@ import _ from 'lodash'
 
 import CoordinateTZ from 'coordinate-tz';
 
-import TrackballControls from './../libs/three/controls/TrackballControls.js'
+// import TrackballControls from './../libs/three/controls/TrackballControls.js'
+var OrbitControls = require('three-orbit-controls')(THREE);
 
 import Globe from './features/globe'
 import Earth from './features/earth'
@@ -21,7 +22,7 @@ import Water from './features/water'
 // import Sky from './features/sky'
 
 
-import VR from './vr/vr'
+// import VR from './vr/vr'
 
 import DepthDisplay from './displayComponents/DepthDisplay'
 
@@ -89,19 +90,19 @@ class Scene {
 		this.environments = new Environments(this.scene);
 		window.environments = this.environments;
 
-		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement );
+		//orbit control
+		this.controls = new OrbitControls(this.camera)
 
-		this.controls.rotateSpeed = 1.0;
-		this.controls.zoomSpeed = 1.2;
-		this.controls.panSpeed = 0.8;
-		this.controls.noZoom = false;
-		this.controls.noPan = false;
-		this.controls.staticMoving = true;
-		this.controls.dynamicDampingFactor = 0.3;
-		this.controls.keys = [ 65, 83, 68 ];
+		this.controls.enableDamping = false;
+		this.controls.enableZoom = (inputs.indexOf("mouse")>=0);
+		this.controls.enableRotate = (inputs.indexOf("mouse")>=0);
+		this.controls.enablePan = (inputs.indexOf("mouse")>=0);
 		
-		this.controls.addEventListener( 'change', this.render );
-
+		this.controls.autoRotate = false;
+		this.controls.autoRotateSpeed = 0.9375;
+		
+		this.controls.enableKeys = false;
+		
 		this.stats = new Stats();
 		if (statsEnabled) {
 			this.stats.dom.id = "stats";
@@ -115,12 +116,12 @@ class Scene {
 		
 		this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 
-		this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
+		// this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
 		//initiating renderer
 		this.render();
 
-		window.addEventListener( 'resize', this.onWindowResize, false );
+		window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 	}
 
 	switchCameraPosition(target, offset, look, radius, cb) {
@@ -400,9 +401,9 @@ class Scene {
 			this.performer.update(this.clock.getDelta());
 		}
 
-		if (this.vr) {
-			this.vr.update();
-		}
+		// if (this.vr) {
+		// 	this.vr.update();
+		// }
 
 		this.renderer.render( this.scene, this.camera );
 
@@ -412,6 +413,8 @@ class Scene {
 	}
 
 	onWindowResize() {
+		this.controls.update();
+
 		this.w = this.container.width();
 		this.h = this.container.height();
 		

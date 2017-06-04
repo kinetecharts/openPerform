@@ -85,6 +85,8 @@ class InputManager {
 		this.registerCallback('keyboard', '1', function() { this.switchEnvironment("grid"); }.bind(this.scene));
 		this.registerCallback('keyboard', '2', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
 
+		this.registerCallback('keyboard', 'r', this.scene.toggleRotation.bind(this.scene));
+
 		// (target, offset, look, radius, cb)
 		this.registerCallback('keyboard', 'q', function() {
 			this.switchCameraPosition(

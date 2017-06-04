@@ -107,7 +107,7 @@ var Main = React.createClass({
 					<InputList inputs={this.state.inputs}></InputList>
 					<PerformerList performers={this.state.performers}></PerformerList>
 					<div id="statsBox"><h5>Stats</h5></div>
-					<div id="vrButton"></div>
+					{/*<div id="vrButton"></div>*/}
 				</div>
 				<div id="loadingOverlay">
 					<div id="loadingIcon">
