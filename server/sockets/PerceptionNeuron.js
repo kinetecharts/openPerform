@@ -7,7 +7,7 @@ class PerceptionNeuron {
 	constructor() {
 		this.url = 'ws://'+config.ip+':' + config.ports.incoming + "/service";
 
-		console.log('Connecting to the Perception Neuron at ' + this.url);
+		console.log('Perception Neuron listening at ' + this.url);
 		this.ws = new WebSocket(this.url);
 		this.ws.on('open', this.onListenOpen.bind(this));
 		this.ws.on('message', this.onListenMessage.bind(this));
@@ -21,27 +21,27 @@ class PerceptionNeuron {
 	}
 
 	onBroadcastConnection() {
-		console.log('Perception Neuron Server Connected!');
+		console.log('Perception Neuron Broadcast Server Connected!');
 	}
 	
 	onBroadcastError() {
-		console.log('Perception Neuron Server Error!');
+		console.log('Perception Neuron Broadcast Server Error!');
 	}
 	
 	onBroadcastListening() {
-		console.log('Perception Neuron Server Listening!');
+		console.log('Perception Neuron Broadcast Server Listening!');
 	}
 
 	onListenOpen() {
-		console.log('Perception Neuron Connected!');
+		console.log('Perception Neuron Listener Connected!');
 	}
 	
 	onListenClose() {
-		console.log('Perception Neuron Disconnected!');
+		console.log('Perception Neuron Listener Disconnected!');
 	}
 	
 	onListenError(err) {
-		console.log('Perception Neuron Error ', err);
+		console.log('Perception Neuron Listener Error ', err);
 	}
 	
 	onListenMessage(msg) {
