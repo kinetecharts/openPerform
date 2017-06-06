@@ -76,6 +76,10 @@ class GridEnvironment {
 		this.parent.remove( this.gridFloor );
 		this.initFloor(this.floorSize, this.numLines);
 	}
+
+	update(timeDelta) {
+		//put frame updates here.
+	}
 }
 
 module.exports = GridEnvironment;

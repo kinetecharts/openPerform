@@ -138,6 +138,10 @@ class GradientEnvironment {
 
 		this.dirLight.position.copy( this.sunSphere.position );
 	}
+
+	update(timeDelta) {
+		//put frame updates here.
+	}
 }
 
 module.exports = GradientEnvironment;

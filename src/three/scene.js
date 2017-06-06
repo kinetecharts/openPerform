@@ -401,6 +401,10 @@ class Scene {
 			this.performer.update(this.clock.getDelta());
 		}
 
+		if (this.environments) {
+			this.environments.update(this.clock.getDelta());
+		}
+
 		// if (this.vr) {
 		// 	this.vr.update();
 		// }
