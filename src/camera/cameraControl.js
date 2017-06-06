@@ -130,11 +130,11 @@ class CameraControl{
 
 		//to prevent shaking camera bug
 		var dTo = this.camera.position.clone().distanceTo(targetPos.clone().add(offset));
-		if (dTo < 65) {
+		if (dTo < 1) {
 			this.stop();
 			return false;
 		}
-		
+
 		switch(type) {
 			case "direct":
 				this.fly_direct(targetPos, offset, lookAt, {
@@ -224,6 +224,8 @@ class CameraControl{
 		else if (this.allowOverwrite){
 			this.stop();
 		}
+
+		console.log("Switching camera position...");
 		
 		var scope = this;
 		this.isAnimating = true;
@@ -245,6 +247,22 @@ class CameraControl{
 		})
 		.start();
 
+	}
+
+	jump (position, look) {
+		if (this.isAnimating && !this.allowOverwrite) {
+			return;
+		}
+		else if (this.allowOverwrite){
+			this.stop();
+		}
+
+		console.log("Switching camera position...");
+
+		this.controls.object.position.copy(position);
+		this.controls.target = look;
+
+		console.log("Done!");
 	}
 }
 

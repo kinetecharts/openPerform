@@ -6,7 +6,6 @@ import _ from 'lodash'
 
 import CoordinateTZ from 'coordinate-tz';
 
-// import TrackballControls from './../libs/three/controls/TrackballControls.js'
 var OrbitControls = require('three-orbit-controls')(THREE);
 
 import Globe from './features/globe'
@@ -99,7 +98,7 @@ class Scene {
 		this.controls.enablePan = (inputs.indexOf("mouse")>=0);
 		
 		this.controls.autoRotate = false;
-		this.controls.autoRotateSpeed = 0.9375;
+		this.controls.autoRotateSpeed = 1.5;
 		
 		this.controls.enableKeys = false;
 		
@@ -122,38 +121,6 @@ class Scene {
 		this.render();
 
 		window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
-	}
-
-	switchCameraPosition(target, offset, look, radius, cb) {
-		this.cameraControl.fly_to(
-			target,
-			offset,
-			look,
-			TWEEN.Easing.Quadratic.InOut,
-			'path',
-			3000,
-			radius,
-			cb
-		);
-	}
-
-	flyTo(lat, lon, radius, look, cb) {
-		// this.controls.autoRotate = false;
-		$('.globeDonutBox').fadeOut();
-		$('.globalCallDisplay > div.numberDisplayBox > div.smallCube').fadeOut();
-
-		var trg = Common.convertLatLonToVec3(lat,lon).multiplyScalar(radius);
-		
-		this.cameraControl.fly_to(
-			trg,
-			new THREE.Vector3(0,0,0),
-			look,
-			TWEEN.Easing.Quadratic.InOut,
-			'path',
-			3000,
-			radius,
-			cb
-		);
 	}
 
 	toggleRotation() {

@@ -5,6 +5,7 @@ The input list is defined in config/index.js*/
 
 var THREE = require('three');
 import _ from 'lodash'
+import TWEEN from 'tween'
 
 import config from './../config'
 
@@ -85,36 +86,66 @@ class InputManager {
 		this.registerCallback('keyboard', '1', function() { this.switchEnvironment("grid"); }.bind(this.scene));
 		this.registerCallback('keyboard', '2', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
 
+		//Camera positions
 		this.registerCallback('keyboard', 'r', this.scene.toggleRotation.bind(this.scene));
 
-		// (target, offset, look, radius, cb)
 		this.registerCallback('keyboard', 'q', function() {
-			this.switchCameraPosition(
-				config.camera.target.position,
-				config.camera.closeShot.position.add(config.camera.closeShot.offset),
+			this.cameraControl.fly_to(
+				config.camera.closeShot.position,
+				new THREE.Vector3(0,0,0),
 				config.camera.closeShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
 				10,
-				function(){ console.log('done!'); }
+				function(){ console.log("Camera moved!"); }
 			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'w', function() {
-			this.switchCameraPosition(
-				config.camera.target.position,
-				config.camera.mediumShot.position.add(config.camera.mediumShot.offset),
+			this.cameraControl.fly_to(
+				config.camera.mediumShot.position,
+				new THREE.Vector3(0,0,0),
 				config.camera.mediumShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
 				10,
-				function(){ console.log('done!'); }
+				function(){ console.log("Camera moved!"); }
 			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'e', function() {
-			this.switchCameraPosition(
-				config.camera.target.position,
-				config.camera.wideShot.position.add(config.camera.wideShot.offset),
+			this.cameraControl.fly_to(
+				config.camera.wideShot.position,
+				new THREE.Vector3(0,0,0),
 				config.camera.wideShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
 				10,
-				function(){ console.log('done!'); }
+				function(){ console.log("Camera moved!"); }
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'a', function() {
+			this.cameraControl.jump(
+				config.camera.closeShot.position,
+				config.camera.closeShot.look
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 's', function() {
+			this.cameraControl.jump(
+				config.camera.mediumShot.position,
+				config.camera.mediumShot.look
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'd', function() {
+			this.cameraControl.jump(
+				config.camera.wideShot.position,
+				config.camera.wideShot.look
 			);
 		}.bind(this.scene));
 	}

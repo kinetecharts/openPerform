@@ -5,29 +5,23 @@ import config from './../../server/config.js'
 var defaults = {
 	scene:null,
 	camera: {
-		target: {
-			position: new THREE.Vector3(0,0,0)
-		},
 		closeShot: {
-			position: new THREE.Vector3(0,3,3),
-			offset: new THREE.Vector3(0,0,0),
-			look: new THREE.Vector3(0,3,0)
+			position: new THREE.Vector3(0,1.5,5),
+			look: new THREE.Vector3(0,1,0)
 		},
 		mediumShot: {
-			position: new THREE.Vector3(0,3,6),
-			offset: new THREE.Vector3(0,1,0),
-			look: new THREE.Vector3(0,3,0)
+			position: new THREE.Vector3(0,1.5,10),
+			look: new THREE.Vector3(0,1,0)
 		},
 		wideShot: {
-			position: new THREE.Vector3(0,3,9),
-			offset: new THREE.Vector3(0,3,0),
-			look: new THREE.Vector3(0,3,0)
+			position: new THREE.Vector3(0,1.5,15),
+			look: new THREE.Vector3(0,1.5,0)
 		}
 	},
 	stats: true,
 	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads
 	performers:[],
-	performerColors: ['0DA8F3', 'A735D0', 'F0F7FA', '5992AE', 'FF009B'],
+	performerColors: ['FFFFFF', 'A735D0', 'F0F7FA', '5992AE', 'FF009B'],
 	// performerColors: ['FF0000', '00FF00', '0000FF'],
 	myo:null,
 	kinectTransport:{
