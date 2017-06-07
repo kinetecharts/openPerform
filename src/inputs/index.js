@@ -87,67 +87,141 @@ class InputManager {
 		this.registerCallback('keyboard', '2', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
 
 		//Camera positions
-		this.registerCallback('keyboard', 'r', this.scene.toggleRotation.bind(this.scene));
+		this.registerCallback('keyboard', 'r', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
 
-		this.registerCallback('keyboard', 'q', function() {
-			this.cameraControl.fly_to(
-				config.camera.closeShot.position,
-				new THREE.Vector3(0,0,0),
-				config.camera.closeShot.look,
-				TWEEN.Easing.Quadratic.InOut,
-				'path',
-				3000,
-				10,
-				function(){ console.log("Camera moved!"); }
-			);
+		this.registerCallback('keyboard', 'q', function() { //fly to close up shot
+			if (this.camera.parent.type == "Scene") {
+				this.cameraControl.fly_to(
+					config.camera.closeShot.position,
+					new THREE.Vector3(0,0,0),
+					config.camera.closeShot.look,
+					TWEEN.Easing.Quadratic.InOut,
+					'path',
+					3000,
+					10,
+					function(){ console.log("Camera moved!"); }
+				);
+			} else {
+				console.log("Camera position not available in this mode.");
+			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'w', function() {
-			this.cameraControl.fly_to(
-				config.camera.mediumShot.position,
-				new THREE.Vector3(0,0,0),
-				config.camera.mediumShot.look,
-				TWEEN.Easing.Quadratic.InOut,
-				'path',
-				3000,
-				10,
-				function(){ console.log("Camera moved!"); }
-			);
+		this.registerCallback('keyboard', 'w', function() { //fly to medium shot
+			if (this.camera.parent.type == "Scene") {
+				this.cameraControl.fly_to(
+					config.camera.mediumShot.position,
+					new THREE.Vector3(0,0,0),
+					config.camera.mediumShot.look,
+					TWEEN.Easing.Quadratic.InOut,
+					'path',
+					3000,
+					10,
+					function(){ console.log("Camera moved!");}
+				);
+			} else {
+				console.log("Camera position not available in this mode.");
+			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'e', function() {
-			this.cameraControl.fly_to(
-				config.camera.wideShot.position,
-				new THREE.Vector3(0,0,0),
-				config.camera.wideShot.look,
-				TWEEN.Easing.Quadratic.InOut,
-				'path',
-				3000,
-				10,
-				function(){ console.log("Camera moved!"); }
-			);
+		this.registerCallback('keyboard', 'e', function() { //fly to wide shot
+			if (this.camera.parent.type == "Scene") {
+				this.cameraControl.fly_to(
+					config.camera.wideShot.position,
+					new THREE.Vector3(0,0,0),
+					config.camera.wideShot.look,
+					TWEEN.Easing.Quadratic.InOut,
+					'path',
+					3000,
+					10,
+					function(){ console.log("Camera moved!"); }
+				);
+			} else {
+				console.log("Camera position not available in this mode.");
+			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'a', function() {
-			this.cameraControl.jump(
-				config.camera.closeShot.position,
-				config.camera.closeShot.look
-			);
+		this.registerCallback('keyboard', 'a', function() { //cut to close up shot
+			if (this.camera.parent.type == "Scene") {
+				this.cameraControl.jump(
+					config.camera.closeShot.position,
+					config.camera.closeShot.look
+				);
+			} else {
+				console.log("Camera position not available in this mode.");
+			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 's', function() {
-			this.cameraControl.jump(
-				config.camera.mediumShot.position,
-				config.camera.mediumShot.look
-			);
+		this.registerCallback('keyboard', 's', function() { //cut to medium shot
+			if (this.camera.parent.type == "Scene") {
+				this.cameraControl.jump(
+					config.camera.mediumShot.position,
+					config.camera.mediumShot.look
+				);
+			} else {
+				console.log("Camera position not available in this mode.");
+			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'd', function() {
-			this.cameraControl.jump(
-				config.camera.wideShot.position,
-				config.camera.wideShot.look
-			);
+		this.registerCallback('keyboard', 'd', function() { //cut to wide shot
+			if (this.camera.parent.type == "Scene") {
+				this.cameraControl.jump(
+					config.camera.wideShot.position,
+					config.camera.wideShot.look
+				);
+			} else {
+				console.log("Camera position not available in this mode.");
+			}
 		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'g', function() { //look at face
+			if (this.scene.camera.parent.type == "Scene") {
+				this.scene.cameraControl.changeParent(
+					this.parent.performers.list[Object.keys(this.parent.performers.list)[0]].performer['robot_head']
+				);
+
+				this.scene.cameraControl.jump(
+					new THREE.Vector3(0, 5, 150),
+					new THREE.Vector3(0, 5, 0),
+				);
+			} else {
+				this.scene.cameraControl.changeParent(
+					this.scene.scene
+				);
+
+				this.scene.cameraControl.jump(
+					config.camera.mediumShot.position,
+					config.camera.mediumShot.look
+				);
+			}
+		}.bind(this));
+
+		this.registerCallback('keyboard', 'f', function() { //first person view
+			if (this.scene.camera.parent.type == "Scene") {
+				this.scene.cameraControl.changeParent(
+					this.parent.performers.list[Object.keys(this.parent.performers.list)[0]].performer['robot_head']
+				);
+
+				this.scene.cameraControl.jump(
+					new THREE.Vector3(0, 5, 0.25),
+					new THREE.Vector3(0, 5, 1),
+				);
+			} else {
+				this.scene.cameraControl.changeParent(
+					this.scene.scene
+				);
+
+				this.scene.cameraControl.jump(
+					config.camera.mediumShot.position,
+					config.camera.mediumShot.look
+				);
+			}
+		}.bind(this));
+
+		this.registerCallback('keyboard', 't', function() { //first person view
+			this.scene.cameraControl.track(
+				this.parent.performers.list[Object.keys(this.parent.performers.list)[0]].performer['robot_hips']
+			);
+		}.bind(this));
 	}
 }
 

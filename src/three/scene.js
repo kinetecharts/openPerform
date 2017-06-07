@@ -372,6 +372,8 @@ class Scene {
 			this.environments.update(this.clock.getDelta());
 		}
 
+		this.cameraControl.update();
+
 		// if (this.vr) {
 		// 	this.vr.update();
 		// }

@@ -18,6 +18,8 @@ class CameraControl{
 
 		this.centerCam = null;
 		this.posCamera = null;
+
+		this.trackingObj = null;
 	}
 
 	pause() {
@@ -263,6 +265,37 @@ class CameraControl{
 		this.controls.target = look;
 
 		console.log("Done!");
+	}
+
+	changeParent(parent) {
+		// this.controls.object.parent.remove(this.controls.object);
+		this.controls.object.parent = parent;
+	}
+
+	lookAt(look) {
+		this.controls.target = look;
+	}
+
+	track(target) {
+		if (this.trackingObj) {
+			this.trackingObj = null;
+		} else {
+			this.trackingObj = target;
+		}
+	}
+
+	update(timeDelta) {
+		if (this.trackingObj) {
+			var cam = this.camera.position.clone();
+			cam.z = 0;
+			var track = this.trackingObj.position.clone();
+			track.z = 0;
+			var dTo = cam.distanceTo(track);
+			if (dTo > 1.5) {
+				this.controls.object.position.x = this.trackingObj.position.x;
+				// this.controls.target = this.trackingObj;
+			}
+		}
 	}
 }
 
