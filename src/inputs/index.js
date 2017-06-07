@@ -83,8 +83,10 @@ class InputManager {
 		this.registerCallback('keyboard', 'space', this.parent.toggleOverlay);
 		this.registerCallback('keyboard', 'f', this.parent.toggleFullscreen);
 		
-		this.registerCallback('keyboard', '1', function() { this.switchEnvironment("grid"); }.bind(this.scene));
-		this.registerCallback('keyboard', '2', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
+		this.registerCallback('keyboard', '1', function() { this.switchEnvironment("island"); }.bind(this.scene));
+		this.registerCallback('keyboard', '2', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
+		this.registerCallback('keyboard', '3', function() { this.switchEnvironment("grid-light"); }.bind(this.scene));
+		this.registerCallback('keyboard', '4', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
 
 		//Camera positions
 		this.registerCallback('keyboard', 'r', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
@@ -202,8 +204,8 @@ class InputManager {
 				);
 
 				this.scene.cameraControl.jump(
-					new THREE.Vector3(0, 5, 0.25),
-					new THREE.Vector3(0, 5, 1),
+					new THREE.Vector3(0, 0, 1),
+					new THREE.Vector3(0, 0, 2),
 				);
 			} else {
 				this.scene.cameraControl.changeParent(

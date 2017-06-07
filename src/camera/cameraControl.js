@@ -292,8 +292,13 @@ class CameraControl{
 			track.z = 0;
 			var dTo = cam.distanceTo(track);
 			if (dTo > 1.5) {
-				this.controls.object.position.x = this.trackingObj.position.x;
-				// this.controls.target = this.trackingObj;
+
+
+				var vector = new THREE.Vector3();
+				vector.setFromMatrixPosition( this.trackingObj.matrixWorld );
+
+				this.controls.object.position.x = vector.x;
+				this.controls.target = vector;
 			}
 		}
 	}

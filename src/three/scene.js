@@ -61,7 +61,7 @@ class Scene {
 		/// Global : this.renderer
 		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
 		
-		this.renderer.setClearColor( 0x333 );
+		this.renderer.setClearColor( 0x000000 );
 		this.renderer.setSize( this.w, this.h );
 
 		this.renderer.shadowMap.enabled = true;
@@ -86,7 +86,7 @@ class Scene {
 		this.scene.add( this.camera );
 
 
-		this.environments = new Environments(this.scene);
+		this.environments = new Environments(this.renderer, this.scene);
 		window.environments = this.environments;
 
 		//orbit control

@@ -7,7 +7,8 @@ require("./../libs/three/SkyShader.js");
 import config from './../config'
 
 class GradientEnvironment {
-	constructor(parent, guiFolder) {
+	constructor(renderer, parent, guiFolder) {
+		this.renderer = renderer;
 		this.parent = parent;
 		this.guiFolder = guiFolder;
 
@@ -107,7 +108,7 @@ class GradientEnvironment {
 	}
 
 	remove() {
-		this.parent.remove( this.initFloor );
+		this.parent.remove( this.floor );
 		this.parent.remove( this.hemiLight );
 		this.parent.remove( this.dirLight );
 		this.parent.remove( this.skyGroup );

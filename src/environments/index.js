@@ -1,13 +1,15 @@
 import _ from 'lodash'
 import dat from 'dat-gui'
 
+import IslandEnvironment from './islandEnvironment'
 import GridEnvironment from './gridEnvironment'
 import GradientEnvironment from './gradientEnvironment'
 
 import config from './../config'
 
 class Environments {
-	constructor(parent) {
+	constructor(renderer, parent) {
+		this.renderer = renderer;
 		this.parent = parent;
 		this.environments = [];
 		
@@ -16,17 +18,23 @@ class Environments {
 		this.guiFolder = this.gui.addFolder('Environments');
 		this.guiFolder.open()
 
-		this.add("grid"); //default
+		this.add("island"); //default
 	}
 
 	add(type) {
 		this.removeAll();
 		switch(type) {
-			case 'grid':
-				this.environments.push(new GridEnvironment(this.parent, this.guiFolder));
+			case 'island':
+				this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.guiFolder));
+			break;
+			case 'grid-dark':
+				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.guiFolder, "dark"));
+			break;
+			case 'grid-light':
+				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.guiFolder, "light"));
 			break;
 			case 'gradient':
-				this.environments.push(new GradientEnvironment(this.parent, this.guiFolder));
+				this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.guiFolder));
 			break;
 		}
 		console.log(this.environments);

@@ -5,7 +5,8 @@ var THREE = require('three');
 import config from './../config'
 
 class GridEnvironment {
-	constructor(parent, guiFolder) {
+	constructor(renderer, parent, guiFolder, type) {
+		this.renderer = renderer;
 		this.parent = parent;
 		this.guiFolder = guiFolder;
 
@@ -20,12 +21,25 @@ class GridEnvironment {
 		f.add(this, "floorSize", 1, 100).step(1).name("Size").onChange(this.redrawGrid.bind(this));
 		f.add(this, "numLines", 1, 100).step(1).name("# Lines").onChange(this.redrawGrid.bind(this));
 
-		this.initFloor(this.floorSize, this.numLines);
+		this.colors = {
+			light: {
+				floor: 0x000000,
+				background: 0xFFFFFF
+			},
+			dark: {
+				floor: 0xFFFFFF,
+				background: 0x000000,
+			}
+		}
+
+		this.renderer.setClearColor( this.colors[type].background );
+
+		this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
 		this.initLights();
 	}
 
-	initFloor(floorSize, numLines) {
-		this.gridFloor = new THREE.GridHelper( floorSize/2, numLines);
+	initFloor(floorSize, numLines, color) {
+		this.gridFloor = new THREE.GridHelper( floorSize/2, numLines, color, color);
 		this.gridFloor.castShadow = true;
 		this.gridFloor.receiveShadow = true;
 
