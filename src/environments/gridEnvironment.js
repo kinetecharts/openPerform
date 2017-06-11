@@ -91,6 +91,12 @@ class GridEnvironment {
 		this.initFloor(this.floorSize, this.numLines);
 	}
 
+    toggle(variableName) {
+        if (this.toggles[variableName]) {
+            this.toggles[variableName] = !this.toggles[variableName];
+        }
+    }
+
 	update(timeDelta) {
 		//put frame updates here.
 	}

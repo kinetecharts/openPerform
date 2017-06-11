@@ -13,7 +13,10 @@ class IslandEnvironment {
         this.performers = performers;
 		this.guiFolder = guiFolder;
 
-        this.usePerformerInput = true;
+        this.toggles = {
+            usePerformerInput: true
+        };
+
         this.distanceRange = [0,0];
 
 		this.floorSize = 50;
@@ -262,9 +265,15 @@ class IslandEnvironment {
 		this.initFloor(this.floorSize, this.numLines);
 	}
 
+    toggle(variableName) {
+        if (this.toggles[variableName]) {
+            this.toggles[variableName] = !this.toggles[variableName];
+        }
+    }
+
 	update() {
         var userZ = null;
-        if (this.usePerformerInput && _.size(this.performers.performers) > 0) {//don't use if there are no performers or if disabled
+        if (this.toggles["usePerformerInput"] && _.size(this.performers.performers) > 0) {//don't use if there are no performers or if disabled
             var firstPerformer = this.performers.performers[Object.keys(this.performers.performers)[0]]; //get first peformer
             // var secondPerformer = this.performers.performers[Object.keys(this.performers.performers)[1]]; //get second performer
             var dist = firstPerformer.distanceBetween("leftfoot", "rightfoot"); //ask performer for the distance between two parts

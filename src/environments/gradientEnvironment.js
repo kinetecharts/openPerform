@@ -141,6 +141,12 @@ class GradientEnvironment {
 		this.dirLight.position.copy( this.sunSphere.position );
 	}
 
+    toggle(variableName) {
+        if (this.toggles[variableName]) {
+            this.toggles[variableName] = !this.toggles[variableName];
+        }
+    }
+
 	update(timeDelta) {
 		//put frame updates here.
 	}

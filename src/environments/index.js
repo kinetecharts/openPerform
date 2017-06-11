@@ -62,6 +62,12 @@ class Environments {
 		return _.has(this.environments, inputId);
 	}
 
+	toggle(variableName) {
+		_.each(this.environments, function(environment) {
+			environment.toggle(variableName);
+		});
+	}
+
 	update(data) {
 		_.each(this.environments, function(environment) {
 			environment.update(data);

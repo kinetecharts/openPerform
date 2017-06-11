@@ -224,6 +224,10 @@ class InputManager {
 				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips']
 			);
 		}.bind(this));
+
+		this.registerCallback('keyboard', 'z', function() { //first person view
+			this.scene.environments.toggle("usePerformerInput");
+		}.bind(this));
 	}
 }
 
