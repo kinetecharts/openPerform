@@ -28,12 +28,13 @@ class ParticleSystem {
 			turbulence: 0,
 			lifetime: 1,
 			size: 15,
-			sizeRandomness: 15
+			sizeRandomness: 15,
+			position: new THREE.Vector3()
 		};
 		this.spawnerOptions = {
 			spawnRate: 400,
-			horizontalSpeed: 0,
-			verticalSpeed: 0,
+			horizontalSpeed: 1.5,
+			verticalSpeed: 1.33,
 			timeScale: 1
 		};
 
@@ -73,6 +74,11 @@ class ParticleSystem {
 				}
 
 				this.systems[idx].options.position = new THREE.Vector3().setFromMatrixPosition( d.matrixWorld );
+
+				// this.systems[idx].options.position.x = Math.sin( tick * this.spawnerOptions.horizontalSpeed ) * 20;
+				// this.systems[idx].options.position.y = Math.sin( tick * this.spawnerOptions.verticalSpeed ) * 10;
+				// this.systems[idx].options.position.z = Math.sin( tick * this.spawnerOptions.horizontalSpeed + this.spawnerOptions.verticalSpeed ) * 5;
+
 				
 				var delta = this.systems[idx].clock.getDelta() * this.systems[idx].spawnerOptions.timeScale;
 				this.systems[idx].tick += delta;

@@ -5,7 +5,7 @@ var THREE = require('three');
 import config from './../config'
 
 class GridEnvironment {
-	constructor(renderer, parent, guiFolder, type) {
+	constructor(renderer, parent, performers, guiFolder, type) {
 		this.renderer = renderer;
 		this.parent = parent;
 		this.guiFolder = guiFolder;

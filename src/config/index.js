@@ -7,21 +7,21 @@ var defaults = {
 	camera: {
 		closeShot: {
 			position: new THREE.Vector3(0,1.5,5),
-			look: new THREE.Vector3(0,1,0)
+			look: new THREE.Vector3(0,1.5,0)
 		},
 		mediumShot: {
 			position: new THREE.Vector3(0,1.5,10),
-			look: new THREE.Vector3(0,1,0)
+			look: new THREE.Vector3(0,1.5,0)
 		},
 		wideShot: {
-			position: new THREE.Vector3(0,1.5,15),
+			position: new THREE.Vector3(0,1.5,20),
 			look: new THREE.Vector3(0,1.5,0)
 		}
 	},
 	stats: true,
 	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads
 	performers:[],
-	performerColors: ['FFFFFF', 'A735D0', 'F0F7FA', '5992AE', 'FF009B'],
+	performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
 	// performerColors: ['FF0000', '00FF00', '0000FF'],
 	myo:null,
 	kinectTransport:{

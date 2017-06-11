@@ -52,7 +52,7 @@ class Scene {
 
 		this.environments = null;
 	}
-	initScene(startPos, radius, inputs, statsEnabled) {
+	initScene(startPos, inputs, statsEnabled, performers) {
 		this.container = $('#scenes');
 
 		this.w = this.container.width();
@@ -86,7 +86,7 @@ class Scene {
 		this.scene.add( this.camera );
 
 
-		this.environments = new Environments(this.renderer, this.scene);
+		this.environments = new Environments(this.renderer, this.scene, performers);
 		window.environments = this.environments;
 
 		//orbit control

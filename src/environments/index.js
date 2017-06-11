@@ -8,9 +8,11 @@ import GradientEnvironment from './gradientEnvironment'
 import config from './../config'
 
 class Environments {
-	constructor(renderer, parent) {
+	constructor(renderer, parent, performers) {
 		this.renderer = renderer;
 		this.parent = parent;
+		this.performers = performers;
+
 		this.environments = [];
 		
 		this.gui = new dat.GUI();
@@ -25,16 +27,16 @@ class Environments {
 		this.removeAll();
 		switch(type) {
 			case 'island':
-				this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.guiFolder));
+				this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
 			break;
 			case 'grid-dark':
-				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.guiFolder, "dark"));
+				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, "dark"));
 			break;
 			case 'grid-light':
-				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.guiFolder, "light"));
+				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, "light"));
 			break;
 			case 'gradient':
-				this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.guiFolder));
+				this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
 			break;
 		}
 		console.log(this.environments);

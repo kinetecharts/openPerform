@@ -2,12 +2,19 @@ import _ from 'lodash'
 
 var THREE = require('three');
 
+import Common from './../util/Common'
+
 import config from './../config'
 
 class IslandEnvironment {
-	constructor(renderer, parent, guiFolder) {
-		this.parent = parent;
+	constructor(renderer, parent, performers, guiFolder) {
+		this.renderer = renderer;
+        this.parent = parent;
+        this.performers = performers;
 		this.guiFolder = guiFolder;
+
+        this.usePerformerInput = true;
+        this.distanceRange = [0,0];
 
 		this.floorSize = 50;
 		this.numLines = 50;
@@ -231,7 +238,7 @@ class IslandEnvironment {
 
         this.boxMesh = new THREE.Mesh(boxGeom, this.greyMat);
         var box = new THREE.Box3().setFromObject(this.boxMesh);
-        console.log(box);
+        
         this.boxMesh.position.y = Math.random() * 15 + 10;
         this.boxMesh.rotation.x = -Math.PI / 2;
         this.threegroup.add(this.boxMesh);
@@ -256,15 +263,28 @@ class IslandEnvironment {
 	}
 
 	update() {
+        var userZ = null;
+        if (this.usePerformerInput && _.size(this.performers.performers) > 0) {//don't use if there are no performers or if disabled
+            var firstPerformer = this.performers.performers[Object.keys(this.performers.performers)[0]]; //get first peformer
+            // var secondPerformer = this.performers.performers[Object.keys(this.performers.performers)[1]]; //get second performer
+            var dist = firstPerformer.distanceBetween("leftfoot", "rightfoot"); //ask performer for the distance between two parts
+            
+            //adjust input range as more data comes in
+            this.distanceRange[0] = (dist<this.distanceRange[0])?this.distanceRange[0]=dist:this.distanceRange[0];
+            this.distanceRange[1] = (dist>this.distanceRange[1])?this.distanceRange[1]=dist:this.distanceRange[1];
+            
+            //map the input range to the ouput range and adjust current distance value
+            userZ = Common.mapRange(dist, this.distanceRange[0], this.distanceRange[1], 40, 70);
+        }
+
         if (this.env && this.env.floor) {
             for (var i = 0; i < this.env.floor.geometry.vertices.length; i++) {
                 var vertex = this.env.floor.geometry.vertices[i];
-                if (vertex.z > 0)
+                if (userZ !== null) { //if user input is enabled
+                    vertex.z = userZ;
+                } else if (vertex.z > 0) {
                     vertex.z += Math.sin(this.tick * .015 + vertex.wave) * 0.04;
-
-                //   vertex.x += Math.cos(tick*.01) * vertex.wave;
-                //vertex.y += Math.sin(tick*.01) * vertex.wave;
-
+                }
             }
             this.env.floor.geometry.verticesNeedUpdate = true;
         }

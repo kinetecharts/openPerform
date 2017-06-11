@@ -34,10 +34,12 @@ var Main = React.createClass({
 			inputManger: new InputManager(this.state.inputs, this.state.scene, this)
 		});
 
+		this.performers = new Performers();
+
 		//once the dom has mounted, initialize threejs
-		this.state.scene.initScene(this.state.home.target, this.state.home.zoom, this.state.inputs, this.state.stats);
+		this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers);
 		
-		this.performers = new Performers(this.state.scene.scene);
+		this.performers.init(this.state.scene.scene);
 
 		//fade out loading overlay
 		setTimeout(function(){

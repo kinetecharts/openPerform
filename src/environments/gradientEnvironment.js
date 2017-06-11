@@ -7,9 +7,10 @@ require("./../libs/three/SkyShader.js");
 import config from './../config'
 
 class GradientEnvironment {
-	constructor(renderer, parent, guiFolder) {
+	constructor(renderer, parent, performers, guiFolder) {
 		this.renderer = renderer;
 		this.parent = parent;
+		this.performers = performers;
 		this.guiFolder = guiFolder;
 
 		this.hemiLight;
@@ -74,7 +75,7 @@ class GradientEnvironment {
 	}
 
 	initFloor() {
-		this.floorMat  = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+		this.floorMat  = new THREE.MeshPhongMaterial( { color: 0xDDCFA1 } );
 		
 		this.floor = new THREE.Mesh( new THREE.PlaneGeometry( 9000, 9000, 6, 6 ), this.floorMat );
 		this.floor.receiveShadow = true;

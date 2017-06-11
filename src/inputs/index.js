@@ -178,7 +178,7 @@ class InputManager {
 		this.registerCallback('keyboard', 'g', function() { //look at face
 			if (this.scene.camera.parent.type == "Scene") {
 				this.scene.cameraControl.changeParent(
-					this.parent.performers.list[Object.keys(this.parent.performers.list)[0]].performer['robot_head']
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
 				);
 
 				this.scene.cameraControl.jump(
@@ -200,7 +200,7 @@ class InputManager {
 		this.registerCallback('keyboard', 'f', function() { //first person view
 			if (this.scene.camera.parent.type == "Scene") {
 				this.scene.cameraControl.changeParent(
-					this.parent.performers.list[Object.keys(this.parent.performers.list)[0]].performer['robot_head']
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
 				);
 
 				this.scene.cameraControl.jump(
@@ -221,7 +221,7 @@ class InputManager {
 
 		this.registerCallback('keyboard', 't', function() { //first person view
 			this.scene.cameraControl.track(
-				this.parent.performers.list[Object.keys(this.parent.performers.list)[0]].performer['robot_hips']
+				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips']
 			);
 		}.bind(this));
 	}

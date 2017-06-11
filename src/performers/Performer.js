@@ -32,7 +32,7 @@ class Performer {
 		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
-		this.addEffects(['particleSystem', 'cloner']);
+		this.addEffects(['particleSystem']);
 	}
 
 	loadSceneBody(filename) {
@@ -117,6 +117,17 @@ class Performer {
 
 	getScene() {
 		return this.scene;
+	}
+
+	distanceBetween(part1, part2) {
+		var part1 = this.performer["robot_" + part1]; //find first body part by name
+		var part2 = this.performer["robot_" + part2]; //find second body part by name
+		if (part1 && part2) { //do they both exist?
+			var joint1Global = new THREE.Vector3().setFromMatrixPosition( part1.matrixWorld );//we need the global position
+			var joint2Global = new THREE.Vector3().setFromMatrixPosition( part2.matrixWorld );//we need the global position
+			return joint1Global.distanceTo(joint2Global);//how far apart are they?
+		}
+		return 0;
 	}
 }
 
