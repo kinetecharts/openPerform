@@ -19,6 +19,7 @@ var defaults = {
 		}
 	},
 	stats: true,
+	keyboardHelp: false,
 	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads
 	performers:[],
 	performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],

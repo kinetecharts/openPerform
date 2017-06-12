@@ -1,7 +1,11 @@
 import React from 'react'
 import _ from 'lodash'
 
-var PerformerList = React.createClass({
+class PerformerList extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {};
+	}
 	render() {
 		return (
 			<div className="performerList">
@@ -14,6 +18,6 @@ var PerformerList = React.createClass({
 			</div>
 		);
 	}
-});
+};
 
 module.exports = PerformerList;

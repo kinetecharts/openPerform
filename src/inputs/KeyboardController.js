@@ -6,10 +6,14 @@ import Mousetrap from 'mousetrap'
 class KeyboardController {
 	constructor() {
 		this.callbacks = {};
+		this.events = [];
+		this.labels = [];
 	}
 
-	on(name, cb) {
+	on(name, cb, event, label) {
 		this.callbacks[name] = cb;
+		this.events.push(event);
+		this.labels.push(label);
 		this.initCallbacks();
 	}
 

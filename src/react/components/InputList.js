@@ -1,7 +1,11 @@
 import React from 'react'
 import _ from 'lodash'
 
-var InputList = React.createClass({
+class InputList extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {};
+	}
 	render() {
 		return (
 			<div className="inputList">
@@ -14,6 +18,6 @@ var InputList = React.createClass({
 			</div>
 		);
 	}
-});
+};
 
 module.exports = InputList;

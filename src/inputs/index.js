@@ -54,44 +54,44 @@ class InputManager {
 		};
 	}
 
-	registerCallback(input, event, callback) {
+	registerCallback(input, event, label, callback) {
 		if (this.inputs[input]) {
-			this.inputs[input].on(event, callback);
+			this.inputs[input].on(event, callback, event, label);
 		}
 	}
 
 	initPerceptionNeuronCallbacks() {
-		this.registerCallback('perceptionNeuron', 'message', this.parent.updatePerformers);
+		this.registerCallback('perceptionNeuron', 'message', 'Perception Neuron', this.parent.updatePerformers.bind(this.parent));
 	}
 
 	initNeuroSkyCallbacks() { //https://github.com/elsehow/mindwave
-		this.registerCallback('mindwave', 'data', function(data) { console.log(data); });
+		this.registerCallback('mindwave', 'data', 'Mindwave', function(data) { console.log(data); });
 	}
 
 	initMyoCallbacks() { //https://github.com/thalmiclabs/myo.js/blob/master/docs.md
-		this.registerCallback('myo', 'imu', function(data) { console.log(data); });
+		this.registerCallback('myo', 'imu', 'Myo', function(data) { console.log(data); });
 	}
 
 	initKinectTransportCallbacks() { //Reuires Kinect Transport app.
 		/*https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
 		Returns either depth or bodies object.*/
-		this.registerCallback('kinecttransport', 'depth', this.scene.viewKinectTransportDepth.bind(this.scene));
-		this.registerCallback('kinecttransport', 'bodies', this.scene.viewKinectTransportBodies.bind(this.scene));
+		this.registerCallback('kinecttransport', 'depth', 'Kinect Depth', this.scene.viewKinectTransportDepth.bind(this.scene));
+		this.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.scene));
 	}
 
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-		this.registerCallback('keyboard', 'space', this.parent.toggleOverlay);
-		this.registerCallback('keyboard', 'f', this.parent.toggleFullscreen);
+		this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleOverlay);
+		this.registerCallback('keyboard', 'f', 'Fullscreen', this.parent.toggleFullscreen);
 		
-		this.registerCallback('keyboard', '1', function() { this.switchEnvironment("island"); }.bind(this.scene));
-		this.registerCallback('keyboard', '2', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
-		this.registerCallback('keyboard', '3', function() { this.switchEnvironment("grid-light"); }.bind(this.scene));
-		this.registerCallback('keyboard', '4', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
+		this.registerCallback('keyboard', '1', 'Island Theme', function() { this.switchEnvironment("island"); }.bind(this.scene));
+		this.registerCallback('keyboard', '2', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
+		this.registerCallback('keyboard', '3', 'Light Grid Theme', function() { this.switchEnvironment("grid-light"); }.bind(this.scene));
+		this.registerCallback('keyboard', '4', 'Gradient Theme', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
 
 		//Camera positions
-		this.registerCallback('keyboard', 'r', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
+		this.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
 
-		this.registerCallback('keyboard', 'q', function() { //fly to close up shot
+		this.registerCallback('keyboard', 'q', 'Fly Close', function() { //fly to close up shot
 			if (this.camera.parent.type == "Scene") {
 				this.cameraControl.fly_to(
 					config.camera.closeShot.position,
@@ -108,7 +108,7 @@ class InputManager {
 			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'w', function() { //fly to medium shot
+		this.registerCallback('keyboard', 'w', 'Fly Medium', function() { //fly to medium shot
 			if (this.camera.parent.type == "Scene") {
 				this.cameraControl.fly_to(
 					config.camera.mediumShot.position,
@@ -125,7 +125,7 @@ class InputManager {
 			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'e', function() { //fly to wide shot
+		this.registerCallback('keyboard', 'e', 'Fly Wide', function() { //fly to wide shot
 			if (this.camera.parent.type == "Scene") {
 				this.cameraControl.fly_to(
 					config.camera.wideShot.position,
@@ -142,7 +142,7 @@ class InputManager {
 			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'a', function() { //cut to close up shot
+		this.registerCallback('keyboard', 'a', 'Cut Close', function() { //cut to close up shot
 			if (this.camera.parent.type == "Scene") {
 				this.cameraControl.jump(
 					config.camera.closeShot.position,
@@ -153,7 +153,7 @@ class InputManager {
 			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 's', function() { //cut to medium shot
+		this.registerCallback('keyboard', 's', 'Cut Medium', function() { //cut to medium shot
 			if (this.camera.parent.type == "Scene") {
 				this.cameraControl.jump(
 					config.camera.mediumShot.position,
@@ -164,7 +164,7 @@ class InputManager {
 			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'd', function() { //cut to wide shot
+		this.registerCallback('keyboard', 'd', 'Cut Wide', function() { //cut to wide shot
 			if (this.camera.parent.type == "Scene") {
 				this.cameraControl.jump(
 					config.camera.wideShot.position,
@@ -175,7 +175,7 @@ class InputManager {
 			}
 		}.bind(this.scene));
 
-		this.registerCallback('keyboard', 'g', function() { //look at face
+		this.registerCallback('keyboard', 'g', 'Snorry Cam', function() { //look at face
 			if (this.scene.camera.parent.type == "Scene") {
 				this.scene.cameraControl.changeParent(
 					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
@@ -197,7 +197,7 @@ class InputManager {
 			}
 		}.bind(this));
 
-		this.registerCallback('keyboard', 'f', function() { //first person view
+		this.registerCallback('keyboard', 'f', 'First Person', function() { //first person view
 			if (this.scene.camera.parent.type == "Scene") {
 				this.scene.cameraControl.changeParent(
 					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
@@ -219,15 +219,18 @@ class InputManager {
 			}
 		}.bind(this));
 
-		this.registerCallback('keyboard', 't', function() { //first person view
+		this.registerCallback('keyboard', 't', 'Track Performer', function() { //follow x position of performer
 			this.scene.cameraControl.track(
 				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips']
 			);
 		}.bind(this));
 
-		this.registerCallback('keyboard', 'z', function() { //first person view
+		this.registerCallback('keyboard', 'z', 'Env Input', function() { //toggle environment input
 			this.scene.environments.toggle("usePerformerInput");
 		}.bind(this));
+
+		this.registerCallback('keyboard', 'esc', 'Show Keys', this.parent.openKeyboardHelp.bind(this.parent));
+
 	}
 }
 

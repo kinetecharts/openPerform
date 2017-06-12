@@ -1,7 +1,6 @@
 //Common utility functions
 
 var THREE = require('three');
-var CoordinateTZ = require('coordinate-tz');
 import dat from 'dat-gui'
 
 function Common() {
