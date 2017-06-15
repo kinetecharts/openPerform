@@ -4,6 +4,7 @@ import dat from 'dat-gui'
 import IslandEnvironment from './islandEnvironment'
 import GridEnvironment from './gridEnvironment'
 import GradientEnvironment from './gradientEnvironment'
+import WaterEnvironment from './waterEnvironment'
 
 import config from './../config'
 
@@ -18,7 +19,7 @@ class Environments {
 		this.guiFolder = this.gui.addFolder('Environments');
 		this.guiFolder.open()
 
-		this.add("island"); //default
+		this.add("water"); //default
 	}
 
 	add(type) {
@@ -26,6 +27,9 @@ class Environments {
 		switch(type) {
 			case 'island':
 				this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.guiFolder));
+			break;
+			case 'water':
+				this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.guiFolder));
 			break;
 			case 'grid-dark':
 				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.guiFolder, "dark"));
@@ -37,7 +41,6 @@ class Environments {
 				this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.guiFolder));
 			break;
 		}
-		console.log(this.environments);
 	}
 
 	removeAll () {
