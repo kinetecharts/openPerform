@@ -8,9 +8,11 @@ import GroupEffects from './../effects/group'
 import config from './../config'
 
 class Performers {
-	constructor(parent) {
+	constructor() {
+		this.performers = {};
+	}
+	init(parent) {
 		this.parent = parent;
-		this.list = {};
 		this.colors = config.performerColors;
 
 		this.gui = new dat.GUI();
@@ -22,26 +24,26 @@ class Performers {
 	}
 
 	exists(inputId) {
-		return _.has(this.list, inputId);
+		return _.has(this.performers, inputId);
 	}
 
 	add(inputId, type) {
-		if (!this.list[inputId]) {
-			this.list[inputId] = new Performer(this.parent, inputId, _.size(this.list)+1, type, this.colors[_.size(this.list)%this.colors.length]);
-			if (_.size(this.list)>1) {
-				this.addEffects(["line"]);
-			}
+		if (this.performers && !this.performers[inputId]) {
+			this.performers[inputId] = new Performer(this.parent, inputId, _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length]);
+			// if (_.size(this.performers)>1) {
+			// 	this.addEffects(["line"]);
+			// }
 		}
 	}
 
 	remove (inputId) {
-		if (this.list[inputId]) {
-			delete this.list[inputId];
+		if (this.performers[inputId]) {
+			delete this.performers[inputId];
 		}
 	}
 
 	getPerformers() {
-		return _.map(this.list, function(p) {
+		return _.map(this.performers, function(p) {
 			return {
 				name: p.name + ' (' + p.type + ')',
 				color: '#' + p.color,
@@ -65,11 +67,11 @@ class Performers {
 	}
 
 	update(inputId, data) {
-		if (this.list[inputId]) {
-			this.list[inputId].update(data);
+		if (this.performers[inputId]) {
+			this.performers[inputId].update(data);
 		}
 
-		this.groupEffects.update(this.list);
+		this.groupEffects.update(this.performers);
 	}
 }
 

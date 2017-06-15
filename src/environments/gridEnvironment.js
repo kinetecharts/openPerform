@@ -5,7 +5,7 @@ var THREE = require('three');
 import config from './../config'
 
 class GridEnvironment {
-	constructor(renderer, parent, guiFolder, type) {
+	constructor(renderer, parent, performers, guiFolder, type) {
 		this.renderer = renderer;
 		this.parent = parent;
 		this.guiFolder = guiFolder;
@@ -90,6 +90,12 @@ class GridEnvironment {
 		this.parent.remove( this.gridFloor );
 		this.initFloor(this.floorSize, this.numLines);
 	}
+
+    toggle(variableName) {
+        if (this.toggles[variableName]) {
+            this.toggles[variableName] = !this.toggles[variableName];
+        }
+    }
 
 	update(timeDelta) {
 		//put frame updates here.

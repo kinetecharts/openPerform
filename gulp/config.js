@@ -98,11 +98,6 @@ module.exports = {
 			entries: src + '/react/Index.jsx',
 			dest: dest + '/js/',
 			outputName: 'Index.js'
-		},
-		{
-			entries: src + '/react/Login.jsx',
-			dest: dest + '/js/',
-			outputName: 'Login.js'
 		}]
 	},
 	copy: {

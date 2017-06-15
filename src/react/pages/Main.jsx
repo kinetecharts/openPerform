@@ -4,6 +4,7 @@ var _ = require('lodash').mixin(require('lodash-keyarrange'));
 
 import InputList from './../components/InputList'
 import PerformerList from './../components/PerformerList'
+import KeyboardHelpModal from './../components/KeyboardHelpModal'
 
 import Common from './../../util/Common'
 
@@ -14,19 +15,18 @@ import Performers from './../../performers/Performers'
 
 import config from '../../config'
 
-
-var Main = React.createClass({
-	getInitialState() {
-		//load initial state from config file
-		return (config);
-	},
+class Main extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = config;
+	}
 
 	componentWillMount() {
 		//initialize the threejs scene class
 		this.setState({
 			scene: new Scene(),
 		});
-	},
+	}
 
 	componentDidMount() {
 		//coordinate input data and callbacks. Add / remove inputs in src/config/index.js (Includes keyboard and mouse control)
@@ -34,16 +34,18 @@ var Main = React.createClass({
 			inputManger: new InputManager(this.state.inputs, this.state.scene, this)
 		});
 
+		this.performers = new Performers();
+
 		//once the dom has mounted, initialize threejs
-		this.state.scene.initScene(this.state.home.target, this.state.home.zoom, this.state.inputs, this.state.stats);
+		this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers);
 		
-		this.performers = new Performers(this.state.scene.scene);
+		this.performers.init(this.state.scene.scene);
 
 		//fade out loading overlay
 		setTimeout(function(){
 			this.toggleOverlay();
 		}.bind(this), 3000);
-	},
+	}
 
 	toggleOverlay() { //toggle loading overlay visablity
 		if ($('#loadingOverlay').css('display') == 'none') {
@@ -51,7 +53,7 @@ var Main = React.createClass({
 		} else {
 			$('#loadingOverlay').fadeOut(1000);
 		}
-	},
+	}
 
 	toggleFullscreen() { //toggle fullscreen window
 		if (document.fullScreenEnabled) {
@@ -59,7 +61,7 @@ var Main = React.createClass({
 		} else {
 			this.enterFullscreen();
 		}
-	},
+	}
 
 	enterFullscreen() {
 		var element = document.documentElement;
@@ -72,7 +74,7 @@ var Main = React.createClass({
 		} else if(element.msRequestFullscreen) {
 			element.msRequestFullscreen();
 		}
-	},
+	}
 
 	exitFullscreen() {
 		if(document.exitFullscreen) {
@@ -82,7 +84,7 @@ var Main = React.createClass({
 		} else if(document.webkitExitFullscreen) {
 			document.webkitExitFullscreen();
 		}
-	},
+	}
 
 	updatePerformers(id, data, type) {
 		if (this.performers) {
@@ -97,7 +99,23 @@ var Main = React.createClass({
 				performers: this.performers.getPerformers()
 			});
 		}
-	},
+	}
+
+	openKeyboardHelp() {
+		if (this.state.keyboardHelp == false) {
+			this.setState({
+				keyboardHelp: true
+			});
+		}
+	}
+
+	closeKeyboardHelp() {
+		if (this.state.keyboardHelp == true) {
+			this.setState({
+				keyboardHelp: false
+			});
+		}
+	}
 
 	render() {
 		return (
@@ -107,16 +125,17 @@ var Main = React.createClass({
 					<InputList inputs={this.state.inputs}></InputList>
 					<PerformerList performers={this.state.performers}></PerformerList>
 					<div id="statsBox"><h5>Stats</h5></div>
-					{/*<div id="vrButton"></div>*/}
+					<div id="vrButton"></div>
 				</div>
 				<div id="loadingOverlay">
 					<div id="loadingIcon">
 						<div id="worldDiv"><img src="./images/world.gif" width="100%" height="auto"/></div>
 					</div>
 				</div>
+				<KeyboardHelpModal show={this.state.keyboardHelp} closeKeyboardHelp={this.closeKeyboardHelp.bind(this)} keyboardList={(this.state.inputManger)?this.state.inputManger.inputs['keyboard']:{}}></KeyboardHelpModal>
 			</div>
 		);
 	}
-});
+}
 
 module.exports = Main;

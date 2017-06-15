@@ -51,9 +51,14 @@ class Cloner {
 			this.clickCount++;
 		}.bind(this) };
 		f.add(tapButton,'add').name("Tap to set");
-		f.add(options, "cloneRate", 0.25, 2).step(0.25).listen().onChange(this.updateCloneRate.bind(this));
-		f.add(options, "cloneLife", 0.25, 5).step(0.25);
+		f.add(options, "cloneRate", 0.25, 10).step(0.25).listen().onChange(this.updateCloneRate.bind(this));
+		f.add(options, "cloneLife", 0.25, 10).step(0.25);
 		f.add(options, "cloneSize", 0.25, 10).step(0.25).listen();
+
+		var cloneButton = { add:function(){
+			this.clonePerformer.bind(this);
+		}.bind(this) };
+		f.add(cloneButton,'add').name("Create clone");
 	}
 
 	clonePerformer() {
