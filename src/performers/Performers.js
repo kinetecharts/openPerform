@@ -28,7 +28,7 @@ class Performers {
 	}
 
 	add(inputId, type) {
-		if (this.performers && !this.performers[inputId]) {
+		if (this.performers && !this.performers[inputId] && this.colors) {
 			this.performers[inputId] = new Performer(this.parent, inputId, _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length]);
 			// if (_.size(this.performers)>1) {
 			// 	this.addEffects(["line"]);
