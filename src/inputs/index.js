@@ -80,8 +80,10 @@ class InputManager {
 	}
 
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-		this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleOverlay);
-		this.registerCallback('keyboard', 'f', 'Fullscreen', this.parent.toggleFullscreen);
+		this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleOverlay.bind(this.parent));
+		this.registerCallback('keyboard', '-', 'Hide GUI', this.parent.toggleGUI.bind(this.parent));
+		this.registerCallback('keyboard', '=', 'Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
+		
 		
 		this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
 		this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));
