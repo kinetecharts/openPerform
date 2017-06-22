@@ -32,7 +32,7 @@ class Performer {
 		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
-		this.addEffects(['particleSystem']);
+		this.addEffects(['cloner']);
 	}
 
 	loadSceneBody(filename) {
@@ -117,6 +117,17 @@ class Performer {
 
 	getScene() {
 		return this.scene;
+	}
+
+	toggleWireframe() {
+		this.showWireframe = !this.showWireframe;
+		_.each(this.performer, (parent) => {
+			parent.traverse( ( object ) => {
+				if(object.hasOwnProperty("material")){ 
+					object.material.wireframe = this.showWireframe;
+				}
+			});
+		});
 	}
 
 	distanceBetween(part1, part2) {

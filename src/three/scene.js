@@ -12,7 +12,7 @@ import DepthDisplay from './displayComponents/DepthDisplay'
 import CameraControl from './../camera/cameraControl'
 import Environments from './../environments'
 
-import VR from './vr/vr.js'
+// import VR from './vr/vr.js'
 
 class Scene {
 	constructor() {
@@ -95,7 +95,7 @@ class Scene {
 		
 		this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 
-		this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
+		// this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
 		//initiating renderer
 		this.render();

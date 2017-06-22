@@ -80,13 +80,16 @@ class InputManager {
 	}
 
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-		this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleOverlay);
-		this.registerCallback('keyboard', 'f', 'Fullscreen', this.parent.toggleFullscreen);
+		this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleOverlay.bind(this.parent));
+		this.registerCallback('keyboard', '-', 'Hide GUI', this.parent.toggleGUI.bind(this.parent));
+		this.registerCallback('keyboard', '=', 'Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
 		
-		this.registerCallback('keyboard', '1', 'Island Theme', function() { this.switchEnvironment("island"); }.bind(this.scene));
-		this.registerCallback('keyboard', '2', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
+		
+		this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
+		this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));
 		this.registerCallback('keyboard', '3', 'Light Grid Theme', function() { this.switchEnvironment("grid-light"); }.bind(this.scene));
 		this.registerCallback('keyboard', '4', 'Gradient Theme', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
+		this.registerCallback('keyboard', '5', 'Island Theme', function() { this.switchEnvironment("island"); }.bind(this.scene));
 
 		//Camera positions
 		this.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
@@ -178,12 +181,12 @@ class InputManager {
 		this.registerCallback('keyboard', 'g', 'Snorry Cam', function() { //look at face
 			if (this.scene.camera.parent.type == "Scene") {
 				this.scene.cameraControl.changeParent(
-					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_spine3']
 				);
 
 				this.scene.cameraControl.jump(
-					new THREE.Vector3(0, 5, 150),
-					new THREE.Vector3(0, 5, 0),
+					new THREE.Vector3(0, 15, 150),
+					new THREE.Vector3(0, 15, 0),
 				);
 			} else {
 				this.scene.cameraControl.changeParent(
@@ -227,6 +230,10 @@ class InputManager {
 
 		this.registerCallback('keyboard', 'z', 'Env Input', function() { //toggle environment input
 			this.scene.environments.toggle("usePerformerInput");
+		}.bind(this));
+
+		this.registerCallback('keyboard', 'x', 'Toggle Wireframe', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].toggleWireframe();
 		}.bind(this));
 
 		this.registerCallback('keyboard', 'esc', 'Show Keys', this.parent.openKeyboardHelp.bind(this.parent));

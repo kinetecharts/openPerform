@@ -47,6 +47,16 @@ class Main extends React.Component {
 		}.bind(this), 3000);
 	}
 
+	toggleGUI() { //toggle loading overlay visablity
+		if ($('#lowerDisplay').css('display') == 'none') {
+			$('#lowerDisplay').fadeIn(1000);
+			$('.dg.ac').fadeIn(1000);
+		} else {
+			$('#lowerDisplay').fadeOut(1000);
+			$('.dg.ac').fadeOut(1000);
+		}
+	}
+
 	toggleOverlay() { //toggle loading overlay visablity
 		if ($('#loadingOverlay').css('display') == 'none') {
 			$('#loadingOverlay').fadeIn(1000);
@@ -56,10 +66,11 @@ class Main extends React.Component {
 	}
 
 	toggleFullscreen() { //toggle fullscreen window
-		if (document.fullScreenEnabled) {
-			this.exitFullscreen();
+		if (!document.fullscreenElement &&    // alternative standard method
+			!document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+				this.enterFullscreen();
 		} else {
-			this.enterFullscreen();
+			this.exitFullscreen();
 		}
 	}
 
