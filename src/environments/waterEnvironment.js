@@ -3,6 +3,8 @@ import _ from 'lodash'
 var THREE = require('three');
 
 import WaterShader from '../shaders/WaterShader'
+import OceanShader from '../shaders/OceanShader'
+import Ocean from '../libs/ocean'
 import config from './../config'
 
 class WaterEnvironment {
@@ -13,6 +15,9 @@ class WaterEnvironment {
 
 		this.floorSize = 50;
 		this.numLines = 50;
+		this.distortionScale = 10.0;
+		this.waves = 1.0;
+		this.lastTime = 0;
 
 		this.gridFloor;
 		this.hemiLight;
@@ -21,6 +26,9 @@ class WaterEnvironment {
 		var f = this.guiFolder.addFolder("Grid");
 		f.add(this, "floorSize", 1, 100).step(1).name("Size").onChange(this.redrawGrid.bind(this));
 		f.add(this, "numLines", 1, 100).step(1).name("# Lines").onChange(this.redrawGrid.bind(this));
+		//f.add(this, "distortionScale", 1, 100).step(1).name("# Waves").onChange(this.redrawGrid.bind(this));
+		f.add(this, "waves", 0.1, 10).step(.1).name("# Waves");
+
 
 		this.colors = {
 			light: {
@@ -33,9 +41,14 @@ class WaterEnvironment {
 			}
 		};
 
+		//this.parent.fog = new THREE.FogExp2( 0xaabbbb, 0.0001 );
+
 		this.renderer.setClearColor( this.colors['light'].background );
         this.initLights();
 		this.initFloor(this.floorSize, this.numLines, this.colors['light'].floor);
+
+        //f.add(this.ms_Ocean, "choppiness", 0, 10).step(1).name("# chopiness");
+        f.add(this.parent.fog, "density", 0, 0.1).step(0.0001).name("# fog");
 
 	}
 
@@ -85,13 +98,14 @@ class WaterEnvironment {
             sunDirection: this.light.position.clone().normalize(),
             sunColor: 0xffffff,
             waterColor: 0x001e0f,
-            distortionScale: 50.0,
             fog: this.parent.fog != undefined
         } );
 
+        this.water.scale.y = 1;
+        this.water.scale.z = 1;
 
         var mirrorMesh = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry( parameters.width * 50, parameters.height * 50 ),
+            new THREE.PlaneBufferGeometry( parameters.width * 10, parameters.height * 10 ),
             this.water.material
         );
 
@@ -99,6 +113,33 @@ class WaterEnvironment {
         mirrorMesh.rotation.x = - Math.PI * 0.5;
         mirrorMesh.position.setY(0.5);
         this.parent.add( mirrorMesh );
+
+
+        var gsize = 1024;
+        var res = 1024;
+        var gres = res / 2;
+        var origx = -gsize / 2;
+        var origz = -gsize / 2;
+        // this.ms_Ocean = new THREE.Ocean(this.renderer, window.camera, this.parent,
+        //     {
+        //         USE_HALF_FLOAT : true,
+        //         INITIAL_SIZE : 256.0,
+        //         INITIAL_WIND : [2.0, 2.0],
+        //         INITIAL_CHOPPINESS : 1,
+        //         CLEAR_COLOR : [1.0, 1.0, 1.0, 0.0],
+        //         GEOMETRY_ORIGIN : [origx, origz],
+        //         SUN_DIRECTION : [-1.0, 1.0, 1.0],
+        //         OCEAN_COLOR: new THREE.Vector3(0.004, 0.016, 0.047),
+        //         SKY_COLOR: new THREE.Vector3(3.2, 9.6, 12.8),
+        //         EXPOSURE : 0.35,
+        //         GEOMETRY_RESOLUTION: gres,
+        //         GEOMETRY_SIZE : gsize,
+        //         RESOLUTION : res
+        //     });
+        // this.ms_Ocean.materialOcean.uniforms.u_projectionMatrix = { value: window.camera.projectionMatrix };
+        // this.ms_Ocean.materialOcean.uniforms.u_viewMatrix = { value: window.camera.matrixWorldInverse };
+        // this.ms_Ocean.materialOcean.uniforms.u_cameraPosition = { value: window.camera.position };
+        // this.parent.add(this.ms_Ocean.oceanMesh);
 
 
         // skybox
@@ -146,7 +187,7 @@ class WaterEnvironment {
         } );
 
         this.skyBox = new THREE.Mesh(
-            new THREE.BoxGeometry( 5000, 5000, 5000 ),
+            new THREE.BoxGeometry( 1000, 1000, 1000 ),
             skyBoxMaterial
         );
 
@@ -204,14 +245,32 @@ class WaterEnvironment {
 	redrawGrid() {
 		this.parent.remove( this.gridFloor );
 		this.initFloor(this.floorSize, this.numLines);
+		this.water.distortionScale = this.distortionScale;
 	}
 
 	update(timeDelta) {
 		//put frame updates here.
 
-        this.water.material.uniforms.time.value += 1.0 / 60.0;
-
+        this.water.material.uniforms.time.value += this.waves / 60.0;
         this.water.render();
+
+        // var currentTime = new Date().getTime();
+        // this.ms_Ocean.deltaTime = (currentTime - this.lastTime) / 1000 || 0.0;
+        // this.lastTime = currentTime;
+        // this.ms_Ocean.render(this.ms_Ocean.deltaTime);
+        // this.ms_Ocean.overrideMaterial = this.ms_Ocean.materialOcean;
+        // if (this.ms_Ocean.changed) {
+        //     this.ms_Ocean.materialOcean.uniforms.u_size.value = this.ms_Ocean.size;
+        //     this.ms_Ocean.materialOcean.uniforms.u_sunDirection.value.set( this.ms_Ocean.sunDirectionX, this.ms_Ocean.sunDirectionY, this.ms_Ocean.sunDirectionZ );
+        //     this.ms_Ocean.materialOcean.uniforms.u_exposure.value = this.ms_Ocean.exposure;
+        //     this.ms_Ocean.changed = false;
+        // }
+        // this.ms_Ocean.materialOcean.uniforms.u_normalMap.value = this.ms_Ocean.normalMapFramebuffer.texture;
+        // this.ms_Ocean.materialOcean.uniforms.u_displacementMap.value = this.ms_Ocean.displacementMapFramebuffer.texture;
+        // this.ms_Ocean.materialOcean.uniforms.u_projectionMatrix.value = window.camera.projectionMatrix;
+        // this.ms_Ocean.materialOcean.uniforms.u_viewMatrix.value = window.camera.matrixWorldInverse;
+        // this.ms_Ocean.materialOcean.uniforms.u_cameraPosition.value = window.camera.position;
+        // this.ms_Ocean.materialOcean.depthTest = true;
 	}
 }
 

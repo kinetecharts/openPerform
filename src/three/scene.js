@@ -51,6 +51,8 @@ class Scene {
 		this.scene = new THREE.Scene();
 		window.scene = this.scene;
 
+        this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0015 , 100);
+
 		/// Global : this.camera
 		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.1, 200000 );
 
