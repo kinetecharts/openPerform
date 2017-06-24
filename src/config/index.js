@@ -20,7 +20,7 @@ var defaults = {
 	},
 	stats: true,
 	keyboardHelp: false,
-	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads
+	inputs:['keyboard', 'mouse', 'perceptionNeuron'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
 	performers:[],
 	performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
 	// performerColors: ['FF0000', '00FF00', '0000FF'],
@@ -35,6 +35,12 @@ var defaults = {
 		ports: {
 			incoming: config.gamepads.ports.incoming,
 			outgoing: config.gamepads.ports.outgoing
+		}
+	},
+	midiController:{
+		ports: {
+			incoming: config.midiController.ports.incoming,
+			outgoing: config.midiController.ports.outgoing
 		}
 	},
 	data: [],

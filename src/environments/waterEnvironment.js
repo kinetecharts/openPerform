@@ -111,7 +111,7 @@ class WaterEnvironment {
 
         mirrorMesh.add( this.water );
         mirrorMesh.rotation.x = - Math.PI * 0.5;
-        mirrorMesh.position.setY(0.5);
+        mirrorMesh.position.setY(0.05);
         this.parent.add( mirrorMesh );
 
 

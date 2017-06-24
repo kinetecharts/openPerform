@@ -96,3 +96,11 @@ if (config.gamepads.enabled) {
     var gpServer = new GPServer();
 }
 /* eslint-enable */
+
+//init midi controller server
+/* eslint-disable */
+if (config.midiController.enabled) {
+    var MidiController = require('./sockets/MidiController');
+    var midiController = new MidiController();
+}
+/* eslint-enable */

@@ -10,6 +10,7 @@ import TWEEN from 'tween'
 import config from './../config'
 
 import Myo from './Myo'
+import MidiController from './MidiController'
 import KinectTransport from './KinectTransport'
 import KeyboardController from './KeyboardController'
 import NeuroSky from './NeuroSky'
@@ -51,6 +52,10 @@ class InputManager {
 		case 'gamepads':
 			this.inputs[type] = new Gamepads('ws://'+window.location.hostname+':' + config.gamepads.ports.outgoing);
 			break;
+		case 'midiController':
+			this.inputs[type] = new MidiController('ws://'+window.location.hostname+':' + config.midiController.ports.outgoing);
+			this.initMidiControllerCallbacks();
+			break;
 		};
 	}
 
@@ -58,6 +63,35 @@ class InputManager {
 		if (this.inputs[input]) {
 			this.inputs[input].on(event, callback, event, label);
 		}
+	}
+
+	initMidiControllerCallbacks() {
+		this.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
+			//Korg nanoKONTROL 2
+			// 58: track left
+			// 59: track right
+			// 46: cycle
+			// 60: marker set
+			// 61: marker left
+			// 62: marker right
+			// 43: rewind
+			// 44: fast forward
+			// 42: stop
+			// 41: play
+			// 45: record
+
+			// 32-39: solo 1-8
+			// 48-55: mute 1-8
+			// 64-71: record / arm 1-8
+			// 16-23: knob 1-8
+			// 0-7: slider 1-8
+
+			switch (data.note) {
+				case 0:
+					console.log("slider 1:", data.value);
+					break;
+			}
+		});
 	}
 
 	initPerceptionNeuronCallbacks() {
@@ -95,87 +129,93 @@ class InputManager {
 		this.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
 
 		this.registerCallback('keyboard', 'q', 'Fly Close', function() { //fly to close up shot
-			if (this.camera.parent.type == "Scene") {
-				this.cameraControl.fly_to(
-					config.camera.closeShot.position,
-					new THREE.Vector3(0,0,0),
-					config.camera.closeShot.look,
-					TWEEN.Easing.Quadratic.InOut,
-					'path',
-					3000,
-					10,
-					function(){ console.log("Camera moved!"); }
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
 				);
-			} else {
-				console.log("Camera position not available in this mode.");
 			}
+			this.cameraControl.fly_to(
+				config.camera.closeShot.position,
+				new THREE.Vector3(0,0,0),
+				config.camera.closeShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
+				1,
+				function(){ console.log("Camera moved!"); }
+			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'w', 'Fly Medium', function() { //fly to medium shot
-			if (this.camera.parent.type == "Scene") {
-				this.cameraControl.fly_to(
-					config.camera.mediumShot.position,
-					new THREE.Vector3(0,0,0),
-					config.camera.mediumShot.look,
-					TWEEN.Easing.Quadratic.InOut,
-					'path',
-					3000,
-					10,
-					function(){ console.log("Camera moved!");}
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
 				);
-			} else {
-				console.log("Camera position not available in this mode.");
 			}
+			this.cameraControl.fly_to(
+				config.camera.mediumShot.position,
+				new THREE.Vector3(0,0,0),
+				config.camera.mediumShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
+				1,
+				function(){ console.log("Camera moved!");}
+			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'e', 'Fly Wide', function() { //fly to wide shot
-			if (this.camera.parent.type == "Scene") {
-				this.cameraControl.fly_to(
-					config.camera.wideShot.position,
-					new THREE.Vector3(0,0,0),
-					config.camera.wideShot.look,
-					TWEEN.Easing.Quadratic.InOut,
-					'path',
-					3000,
-					10,
-					function(){ console.log("Camera moved!"); }
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
 				);
-			} else {
-				console.log("Camera position not available in this mode.");
 			}
+			this.cameraControl.fly_to(
+				config.camera.wideShot.position,
+				new THREE.Vector3(0,0,0),
+				config.camera.wideShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
+				1,
+				function(){ console.log("Camera moved!"); }
+			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'a', 'Cut Close', function() { //cut to close up shot
-			if (this.camera.parent.type == "Scene") {
-				this.cameraControl.jump(
-					config.camera.closeShot.position,
-					config.camera.closeShot.look
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
 				);
-			} else {
-				console.log("Camera position not available in this mode.");
 			}
+			this.cameraControl.jump(
+				config.camera.closeShot.position,
+				config.camera.closeShot.look
+			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 's', 'Cut Medium', function() { //cut to medium shot
-			if (this.camera.parent.type == "Scene") {
-				this.cameraControl.jump(
-					config.camera.mediumShot.position,
-					config.camera.mediumShot.look
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
 				);
-			} else {
-				console.log("Camera position not available in this mode.");
 			}
+			this.cameraControl.jump(
+				config.camera.mediumShot.position,
+				config.camera.mediumShot.look
+			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'd', 'Cut Wide', function() { //cut to wide shot
-			if (this.camera.parent.type == "Scene") {
-				this.cameraControl.jump(
-					config.camera.wideShot.position,
-					config.camera.wideShot.look
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
 				);
-			} else {
-				console.log("Camera position not available in this mode.");
 			}
+			this.cameraControl.jump(
+				config.camera.wideShot.position,
+				config.camera.wideShot.look
+			);
 		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'g', 'Snorry Cam', function() { //look at face

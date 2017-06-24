@@ -269,7 +269,9 @@ class CameraControl{
 
 	changeParent(parent) {
 		// this.controls.object.parent.remove(this.controls.object);
+		var camGlobal = new THREE.Vector3().setFromMatrixPosition( this.controls.object.matrixWorld );//we need the global position
 		this.controls.object.parent = parent;
+		this.controls.object.position.copy(camGlobal);
 	}
 
 	lookAt(look) {
