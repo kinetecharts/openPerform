@@ -9,6 +9,8 @@ import TWEEN from 'tween'
 
 import config from './../config'
 
+import Common from './../util/Common'
+
 import Myo from './Myo'
 import MidiController from './MidiController'
 import KinectTransport from './KinectTransport'
@@ -67,31 +69,19 @@ class InputManager {
 
 	initMidiControllerCallbacks() {
 		this.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
-			//Korg nanoKONTROL 2
-			// 58: track left
-			// 59: track right
-			// 46: cycle
-			// 60: marker set
-			// 61: marker left
-			// 62: marker right
-			// 43: rewind
-			// 44: fast forward
-			// 42: stop
-			// 41: play
-			// 45: record
-
-			// 32-39: solo 1-8
-			// 48-55: mute 1-8
-			// 64-71: record / arm 1-8
-			// 16-23: knob 1-8
-			// 0-7: slider 1-8
-
-			switch (data.note) {
-				case 0:
-					console.log("slider 1:", data.value);
+			switch (data.name) {
+				case 'slider 1':
+					data.parameter = "lines"
+					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+					this.scene.environments.updateParameters(data);
+					break;
+				case 'knob 1':
+					data.parameter = "size"
+					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+					this.scene.environments.updateParameters(data);
 					break;
 			}
-		});
+		}.bind(this));
 	}
 
 	initPerceptionNeuronCallbacks() {

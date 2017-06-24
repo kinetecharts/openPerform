@@ -71,6 +71,12 @@ class Environments {
 		});
 	}
 
+	updateParameters(data) {
+		_.each(this.environments, function(environment) {
+			environment.updateParameters(data);
+		});
+	}
+
 	update(data) {
 		_.each(this.environments, function(environment) {
 			environment.update(data);

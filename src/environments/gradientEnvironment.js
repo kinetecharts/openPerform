@@ -75,7 +75,7 @@ class GradientEnvironment {
 	}
 
 	initFloor() {
-		this.floorMat  = new THREE.MeshPhongMaterial( { color: 0xDDCFA1 } );
+		this.floorMat  = new THREE.MeshPhongMaterial( { color: 0xf26d54 } );
 		
 		this.floor = new THREE.Mesh( new THREE.PlaneGeometry( 9000, 9000, 6, 6 ), this.floorMat );
 		this.floor.receiveShadow = true;
@@ -145,6 +145,10 @@ class GradientEnvironment {
         if (this.toggles[variableName]) {
             this.toggles[variableName] = !this.toggles[variableName];
         }
+    }
+
+    updateParameters(data) {
+    	console.log("Updating environment parameter: ", data);
     }
 
 	update(timeDelta) {

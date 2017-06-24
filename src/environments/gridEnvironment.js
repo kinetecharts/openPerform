@@ -97,6 +97,19 @@ class GridEnvironment {
         }
     }
 
+    updateParameters(data) {
+    	switch(data.parameter) {
+    		case 'size':
+    			this.floorSize = data.value*100;
+    			this.redrawGrid();
+    			break;
+    		case 'lines':
+				this.numLines = data.value*100;
+				this.redrawGrid();
+    			break;
+    	}
+    }
+
 	update(timeDelta) {
 		//put frame updates here.
 	}

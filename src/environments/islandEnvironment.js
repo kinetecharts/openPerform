@@ -271,6 +271,10 @@ class IslandEnvironment {
         }
     }
 
+    updateParameters(data) {
+        console.log("Updating environment parameter: ", data);
+    }
+
 	update() {
         var userZ = null;
         if (this.toggles["usePerformerInput"] && _.size(this.performers.performers) > 0) {//don't use if there are no performers or if disabled

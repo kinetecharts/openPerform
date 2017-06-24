@@ -248,6 +248,10 @@ class WaterEnvironment {
 		this.water.distortionScale = this.distortionScale;
 	}
 
+    updateParameters(data) {
+        console.log("Updating environment parameter: ", data);
+    }
+
 	update(timeDelta) {
 		//put frame updates here.
 
