@@ -80,6 +80,16 @@ class InputManager {
 					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
 					this.scene.environments.updateParameters(data);
 					break;
+				case 'slider 2':
+					data.parameter = "life"
+					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+					this.parent.performers.updateParameters(data);
+					break;
+				case 'knob 2':
+					data.parameter = "rate"
+					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+					this.parent.performers.updateParameters(data);
+					break;
 			}
 		}.bind(this));
 	}

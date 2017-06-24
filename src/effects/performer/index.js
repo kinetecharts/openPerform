@@ -25,6 +25,12 @@ class PerformerEffects {
 		console.log(this.effects);
 	}
 
+	updateParameters(data) {
+		_.each(this.effects, function(effects) {
+			effects.updateParameters(data);
+		});
+	}
+
 	update(data) {
 		_.each(this.effects, function(effect) {
 			effect.update(data);

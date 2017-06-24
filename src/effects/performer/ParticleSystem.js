@@ -53,6 +53,11 @@ class ParticleSystem {
 		f.add(spawnerOptions, "spawnRate", 10, 3000);
 		f.add(spawnerOptions, "timeScale", -2, 2);
 	}
+
+	updateParameters(data) {
+
+	}
+	
 	update(data) {
 		var idx = 0;
 		data.traverse( function ( d ) {

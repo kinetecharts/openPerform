@@ -66,6 +66,12 @@ class Performers {
 		}
 	}
 
+	updateParameters(data) {
+		_.each(this.performers, function(performer) {
+			performer.updateParameters(data);
+		});
+	}
+
 	update(inputId, data) {
 		if (this.performers[inputId]) {
 			this.performers[inputId].update(data);

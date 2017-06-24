@@ -18,8 +18,8 @@ class GridEnvironment {
 		this.dirLight;
 
 		var f = this.guiFolder.addFolder("Grid");
-		f.add(this, "floorSize", 1, 100).step(1).name("Size").onChange(this.redrawGrid.bind(this));
-		f.add(this, "numLines", 1, 100).step(1).name("# Lines").onChange(this.redrawGrid.bind(this));
+		f.add(this, "floorSize", 1, 100).step(1).name("Size").listen().onChange(this.redrawGrid.bind(this));
+		f.add(this, "numLines", 1, 100).step(1).name("# Lines").listen().onChange(this.redrawGrid.bind(this));
 
 		this.colors = {
 			light: {

@@ -73,6 +73,17 @@ class Performer {
 		}.bind(this) );
 	}
 
+	updateParameters(data) {
+		switch(data.parameter) {
+    		case 'rate':
+    			this.performerEffects.updateParameters(data);
+    			break;
+    		case 'life':
+				this.performerEffects.updateParameters(data);
+    			break;
+    	}
+	}
+
 	update(data) {
 		switch(this.type) {
 			case 'perceptionNeuron':

@@ -15,26 +15,23 @@ class Cloner {
 		this.lastClick = 0;
 		this.clickCount = 0;
 
-		this.options = {
-			cloneRate:0.25,
-			cloneLife:1.25,
-			cloneSize:1
-		};
+		this.cloneRate = 0.25;
+		this.cloneLife = 1.25;
+		this.cloneSize = 1;
+		
+		this.addToDatGui(this.guiFolder);
 
-		this.addToDatGui(this.options, this.guiFolder);
-
-		this.updateCloneRate(this.options.cloneRate);
+		this.updateCloneRate(this.cloneRate);
 	}
 
 	updateCloneRate(val) {
-		console.log("Setting clone rate: ", val);
 		if (this.cloneInterval) {
 			clearInterval(this.cloneInterval);
 		}
 		this.cloneInterval = setInterval(this.clonePerformer.bind(this), 1000*val);
 	}
 
-	addToDatGui(options, guiFolder) {
+	addToDatGui(guiFolder) {
 		var f = guiFolder.addFolder("Cloner");
 		var tapButton = { add:function(){
 			var d = new Date();
@@ -43,7 +40,7 @@ class Cloner {
 			
 			if (this.clickCount==3) {
 				console.log(clickDiff/1000);
-				this.options.cloneRate = clickDiff/1000;
+				this.cloneRate = clickDiff/1000;
 				this.clickCount = 0;
 			}
 
@@ -51,9 +48,9 @@ class Cloner {
 			this.clickCount++;
 		}.bind(this) };
 		f.add(tapButton,'add').name("Tap to set");
-		f.add(options, "cloneRate", 0.25, 10).step(0.25).listen().onChange(this.updateCloneRate.bind(this));
-		f.add(options, "cloneLife", 0.25, 10).step(0.25);
-		f.add(options, "cloneSize", 0.25, 10).step(0.25).listen();
+		f.add(this, "cloneRate", 0.25, 10).step(0.25).listen().onChange(this.updateCloneRate.bind(this));
+		f.add(this, "cloneLife", 0.25, 10).step(0.25).listen();
+		f.add(this, "cloneSize", 0.25, 10).step(0.25).listen();
 
 		var cloneButton = { add:function(){
 			this.clonePerformer.bind(this);
@@ -64,7 +61,7 @@ class Cloner {
 	clonePerformer() {
 		if (this.performer) {
 			var clone = this.performer.clone();
-			clone.scale.set(clone.scale.x*this.options.cloneSize,clone.scale.y*this.options.cloneSize,clone.scale.z*this.options.cloneSize);
+			clone.scale.set(clone.scale.x*this.cloneSize,clone.scale.y*this.cloneSize,clone.scale.z*this.cloneSize);
 			clone.traverse( function ( part ) {
 				if ( part instanceof THREE.Mesh ) {
 					part.material = part.material.clone();
@@ -81,23 +78,38 @@ class Cloner {
 
 		// setTimeout(function(){
 			var clone = this.clones.shift();
-			clone.traverse( ( part ) => {
-				if ( part instanceof THREE.Mesh ) {
-					new TWEEN.Tween({opacity:part.material.opacity})
-					.to({opacity:0}, this.options.cloneLife*1000)
-					.onUpdate(function() {
-						part.material.opacity = this.opacity;
-					})
-					.onComplete(() => {
-						if(clone) {
-							this.parent.remove(clone);
-							clone=null;
-						}
-					})
-					.start();
-				}
-			});
-		// }.bind(this), this.options.cloneLife*1000);
+			if (clone) {
+				clone.traverse( ( part ) => {
+					if ( part instanceof THREE.Mesh ) {
+						new TWEEN.Tween({opacity:part.material.opacity})
+						.to({opacity:0}, this.cloneLife*1000)
+						.onUpdate(function() {
+							part.material.opacity = this.opacity;
+						})
+						.onComplete(() => {
+							if(clone) {
+								this.parent.remove(clone);
+								clone=null;
+							}
+						})
+						.start();
+					}
+				});
+			}
+		// }.bind(this), this.cloneLife*1000);
+	}
+
+	updateParameters(data) {
+		switch(data.parameter) {
+    		case 'rate':
+    			this.cloneRate = (data.value*10)+0.25;
+    			this.updateCloneRate(this.cloneRate);
+    			break;
+    		case 'life':
+				this.cloneLife = (data.value*10)+0.25;
+				this.updateCloneRate(this.cloneRate);
+    			break;
+    	}
 	}
 
 	update(data) {
