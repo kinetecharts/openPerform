@@ -6,6 +6,7 @@ var sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
 import Common from './../util/Common'
 
 import PerformerEffects from './../effects/performer'
+import Trail from './../libs/trail'
 
 import _ from 'lodash'
 import dat from 'dat-gui'
@@ -32,7 +33,60 @@ class Performer {
 		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
-		this.addEffects(['cloner']);
+		//this.addEffects(['cloner']);
+
+        this.lastTrailUpdateTime = performance.now();
+		this.addTrail();
+	}
+
+	addTrail(){
+        // specify points to create planar trail-head geometry
+
+        var circlePoints = [];
+        var twoPI = Math.PI * 2;
+        var index = 10;
+        var scale = 5;
+        var inc = twoPI / 32.0;
+
+        for ( var i = 0; i <= twoPI + inc; i+= inc )  {
+
+            var vector = new THREE.Vector3();
+            vector.set( Math.cos( i ) * scale, Math.sin( i ) * scale, 0 );
+            circlePoints[ index ] = vector;
+            index ++;
+
+        }
+        var trailHeadGeometry = circlePoints;
+
+// create the trail renderer object
+        var trail = new THREE.TrailRenderer( this.parent, false );
+
+// create material for the trail renderer
+        var trailMaterial = THREE.TrailRenderer.createBaseMaterial();
+
+// specify length of trail
+        var trailLength = 20;
+
+// initialize the trail
+        var options = {
+            headRed : 1.0,
+            headGreen : 0.0,
+            headBlue : 0.0,
+            headAlpha : 0.75,
+
+            tailRed : 0.0,
+            tailGreen : 1.0,
+            tailBlue : 1.0,
+            tailAlpha : 0.35,
+		};
+
+        trailMaterial.uniforms.headColor.value.set( options.headRed, options.headGreen, options.headBlue, options.headAlpha );
+        trailMaterial.uniforms.tailColor.value.set( options.tailRed, options.tailGreen, options.tailBlue, options.tailAlpha );
+
+
+        trail.initialize( trailMaterial, trailLength, false, 0, trailHeadGeometry, this.performer['robot_lefthand'] );
+		this.trail = trail;
+        this.trail.activate();
 	}
 
 	loadSceneBody(filename) {
@@ -70,6 +124,7 @@ class Performer {
 			this.performerKeys= Common.getKeys(this.performerKeys, "");
 			
 			this.parent.add(this.scene);
+
 		}.bind(this) );
 	}
 
@@ -89,6 +144,23 @@ class Performer {
 			case 'perceptionNeuron':
 				this.updateFromPN(data);
 			break;
+		}
+
+
+		if (this.trail) {
+			//console.log(this.trail);
+			var time = performance.now();
+
+            if ( time - this.lastTrailUpdateTime > 50 ) {
+
+                this.trail.advance();
+                this.lastTrailUpdateTime = time;
+
+            } else {
+
+                this.trail.updateHead();
+
+            }
 		}
 
 		this.performerEffects.update(this.scene);

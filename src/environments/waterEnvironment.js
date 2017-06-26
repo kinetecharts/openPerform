@@ -50,8 +50,8 @@ class WaterEnvironment {
         //f.add(this.ms_Ocean, "choppiness", 0, 10).step(1).name("# chopiness");
         f.add(this.parent.fog, "density", 0, 0.1).step(0.0001).name("# fog");
 
-	}
 
+	}
 
 	initFloor(floorSize, numLines, color) {
 
@@ -104,15 +104,15 @@ class WaterEnvironment {
         this.water.scale.y = 1;
         this.water.scale.z = 1;
 
-        var mirrorMesh = new THREE.Mesh(
+        this.mirrorMesh = new THREE.Mesh(
             new THREE.PlaneBufferGeometry( parameters.width * 10, parameters.height * 10 ),
             this.water.material
         );
 
-        mirrorMesh.add( this.water );
-        mirrorMesh.rotation.x = - Math.PI * 0.5;
-        mirrorMesh.position.setY(0.05);
-        this.parent.add( mirrorMesh );
+        this.mirrorMesh.add( this.water );
+        this.mirrorMesh.rotation.x = - Math.PI * 0.5;
+        this.mirrorMesh.position.setY(0.05);
+        this.parent.add( this.mirrorMesh );
 
 
         var gsize = 1024;
@@ -235,9 +235,9 @@ class WaterEnvironment {
 	}
 
 	remove() {
-		this.parent.remove( this.gridFloor );
-		this.parent.remove( this.hemiLight );
-		this.parent.remove( this.dirLight );
+		this.parent.remove( this.light );
+		this.parent.remove(this.mirrorMesh);
+		this.parent.remove(this.skyBox);
 
 		this.guiFolder.removeFolder("Grid");
 	}
