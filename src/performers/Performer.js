@@ -33,7 +33,7 @@ class Performer {
 		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
-		//this.addEffects(['cloner']);
+		//this.addEffects(['particleSystem']);
 
         this.lastTrailUpdateTime = performance.now();
 		this.addTrail();
@@ -164,6 +164,8 @@ class Performer {
 		}
 
 		this.performerEffects.update(this.scene);
+
+
 	}
 
 	updateFromPN(data) {

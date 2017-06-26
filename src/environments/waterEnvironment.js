@@ -96,8 +96,8 @@ class WaterEnvironment {
             waterNormals: waterNormals,
             alpha: 	1.0,
             sunDirection: this.light.position.clone().normalize(),
-            sunColor: 0xffffff,
-            waterColor: 0x001e0f,
+            sunColor: 0x5177ff,
+            waterColor: 0x002d3a,
             fog: this.parent.fog != undefined
         } );
 
@@ -105,7 +105,7 @@ class WaterEnvironment {
         this.water.scale.z = 1;
 
         this.mirrorMesh = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry( parameters.width * 10, parameters.height * 10 ),
+            new THREE.PlaneBufferGeometry( parameters.width * 10, parameters.height * 10, 10, 10 ),
             this.water.material
         );
 
@@ -120,60 +120,50 @@ class WaterEnvironment {
         var gres = res / 2;
         var origx = -gsize / 2;
         var origz = -gsize / 2;
-        // this.ms_Ocean = new THREE.Ocean(this.renderer, window.camera, this.parent,
-        //     {
-        //         USE_HALF_FLOAT : true,
-        //         INITIAL_SIZE : 256.0,
-        //         INITIAL_WIND : [2.0, 2.0],
-        //         INITIAL_CHOPPINESS : 1,
-        //         CLEAR_COLOR : [1.0, 1.0, 1.0, 0.0],
-        //         GEOMETRY_ORIGIN : [origx, origz],
-        //         SUN_DIRECTION : [-1.0, 1.0, 1.0],
-        //         OCEAN_COLOR: new THREE.Vector3(0.004, 0.016, 0.047),
-        //         SKY_COLOR: new THREE.Vector3(3.2, 9.6, 12.8),
-        //         EXPOSURE : 0.35,
-        //         GEOMETRY_RESOLUTION: gres,
-        //         GEOMETRY_SIZE : gsize,
-        //         RESOLUTION : res
-        //     });
-        // this.ms_Ocean.materialOcean.uniforms.u_projectionMatrix = { value: window.camera.projectionMatrix };
-        // this.ms_Ocean.materialOcean.uniforms.u_viewMatrix = { value: window.camera.matrixWorldInverse };
-        // this.ms_Ocean.materialOcean.uniforms.u_cameraPosition = { value: window.camera.position };
-        // this.parent.add(this.ms_Ocean.oceanMesh);
 
 
         // skybox
 
-        var cubeMap = new THREE.CubeTexture( [] );
+        var cubeMap = THREE.ImageUtils.loadTextureCube([
+            'textures/sleepyhollow/sleepyhollow_rt.jpg',
+            'textures/sleepyhollow/sleepyhollow_lf.jpg',
+            'textures/sleepyhollow/sleepyhollow_up.jpg',
+            'textures/sleepyhollow/sleepyhollow_dn.jpg',
+            'textures/sleepyhollow/sleepyhollow_bk.jpg',
+            'textures/sleepyhollow/sleepyhollow_ft.jpg'
+        ]);
         cubeMap.format = THREE.RGBFormat;
 
-        var loader = new THREE.ImageLoader();
-        loader.load( 'textures/skyboxsun25degtest.png', function ( image ) {
-
-            var getSide = function ( x, y ) {
-
-                var size = 1024;
-
-                var canvas = document.createElement( 'canvas' );
-                canvas.width = size;
-                canvas.height = size;
-
-                var context = canvas.getContext( '2d' );
-                context.drawImage( image, - x * size, - y * size );
-
-                return canvas;
-
-            };
-
-            cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
-            cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
-            cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
-            cubeMap.images[ 3 ] = getSide( 1, 2 ); // ny
-            cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
-            cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
-            cubeMap.needsUpdate = true;
-
-        } );
+        // var cubeMap = new THREE.CubeTexture( [] );
+        // cubeMap.format = THREE.RGBFormat;
+        //
+        // var loader = new THREE.ImageLoader();
+        // loader.load( 'textures/skyb.png', function ( image ) {
+        //
+        //     var getSide = function ( x, y ) {
+        //
+        //         var size = 400;
+        //
+        //         var canvas = document.createElement( 'canvas' );
+        //         canvas.width = size;
+        //         canvas.height = size;
+        //
+        //         var context = canvas.getContext( '2d' );
+        //         context.drawImage( image, - x * size, - y * size );
+        //
+        //         return canvas;
+        //
+        //     };
+        //
+        //     cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
+        //     cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
+        //     cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
+        //     cubeMap.images[ 3 ] = getSide( 1, 2 ); // ny
+        //     cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
+        //     cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
+        //     cubeMap.needsUpdate = true;
+        //
+        // } );
 
         var cubeShader = THREE.ShaderLib[ 'cube' ];
         cubeShader.uniforms[ 'tCube' ].value = cubeMap;
@@ -187,9 +177,12 @@ class WaterEnvironment {
         } );
 
         this.skyBox = new THREE.Mesh(
-            new THREE.BoxGeometry( 1000, 1000, 1000 ),
+            new THREE.BoxGeometry( 10000, 10000, 10000 ),
             skyBoxMaterial
         );
+
+        this.skyBox.position.setY(0.5);
+        //this.parent.fog.color = 0x171717;
 
         this.parent.add( this.skyBox );
 	}
@@ -225,12 +218,18 @@ class WaterEnvironment {
 
 		this.dirLight.shadow.camera.visible = true;
 
-        this.parent.add( new THREE.AmbientLight( 0x444444 ) );
+        //this.parent.add( new THREE.AmbientLight( 0x444444 ) );
 
         //
 
-        this.light = new THREE.DirectionalLight( 0xffffbb, 1 );
-        this.light.position.set( - 1, 1, - 1 );
+        this.light = new THREE.DirectionalLight( 0xffffff, 1 );
+        this.light.position.set( -1, 0.75, 1 );
+        this.light.position.multiplyScalar( 50);
+        this.light.name = 'dirlight';
+
+        //this.parent.add( this.dirLight );
+
+        this.light.castShadow = true;
         this.parent.add( this.light );
 	}
 
