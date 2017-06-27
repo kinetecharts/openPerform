@@ -1,5 +1,6 @@
 import _ from 'lodash'
 
+import Trails from './Trails'
 import ParticleSystem from './ParticleSystem'
 import Cloner from './Cloner'
 
@@ -20,6 +21,9 @@ class PerformerEffects {
 			break;
 			case 'particleSystem':
 				this.effects.push(new ParticleSystem(this.parent, this.color, this.guiFolder));
+			break;
+			case 'trails':
+				this.effects.push(new Trails(this.parent, this.color, this.guiFolder));
 			break;
 		}
 		console.log(this.effects);

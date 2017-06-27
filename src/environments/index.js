@@ -21,7 +21,7 @@ class Environments {
 		this.guiFolder = this.gui.addFolder('Environments');
 		this.guiFolder.open()
 
-		this.add("water"); //default
+		this.add("grid-dark"); //default
 	}
 
 	add(type) {
