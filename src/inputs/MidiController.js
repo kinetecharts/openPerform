@@ -108,7 +108,7 @@ class MidiController {
 	}
 
 	initializeWebSocket(url) {
-		console.log("Gamepad Server connecting to: ", url);
+		console.log("Midi Controller connecting to: ", url);
 
 		this.websocket = new WebSocket(url);
 		this.websocket.onopen = this.onOpen.bind(this);
@@ -119,12 +119,12 @@ class MidiController {
 
 
 	onOpen(evt) {
-		console.log('Gamepad Server connected:', evt);
+		console.log('Midi Controller connected:', evt);
 		this.connected = true;
 	}
 
 	onClose(evt) {
-		console.log('Gamepad Server disconnected:', evt);
+		console.log('Midi Controller disconnected:', evt);
 		this.connected = false;
 	}
 	
@@ -133,7 +133,7 @@ class MidiController {
 	}
 
 	onError(evt) {
-		console.log('Gamepad Server error:', evt);
+		console.log('Midi Controller error:', evt);
 	}
 
 	on(name, cb) {

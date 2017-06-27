@@ -140,7 +140,8 @@ class PerceptionNeuron {
 		};
 
 		this.boneNames = Common.getKeys(bvhStructure, "");
-
+		// this.boneNames = _.shuffle(this.boneNames);
+		
 		var datas = JSON.parse(msg.data);
 		_.each(datas,function(data, key) {
 			var data = data.split( ' ' );

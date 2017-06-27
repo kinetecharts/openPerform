@@ -107,7 +107,6 @@ class Cloner {
     			break;
     		case 'life':
 				this.cloneLife = (data.value*10)+0.25;
-				this.updateCloneRate(this.cloneRate);
     			break;
     	}
 	}

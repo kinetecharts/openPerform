@@ -90,6 +90,17 @@ class InputManager {
 					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
 					this.parent.performers.updateParameters(data);
 					break;
+
+				case 'knob 3':
+					data.parameter = "size"
+					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+					this.parent.performers.updateParameters(data);
+					break;
+				case 'slider 3':
+					data.parameter = "color"
+					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+					this.parent.performers.updateParameters(data);
+					break;
 			}
 		}.bind(this));
 	}

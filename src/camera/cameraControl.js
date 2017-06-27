@@ -237,6 +237,7 @@ class CameraControl{
 			this.controls,
 			this.controls.object,
 			this.controls.object.position.clone(),
+			// new THREE.Vector3().setFromMatrixPosition( this.controls.object.matrixWorld ),
 			targetPos.clone().add(offset),
 			lookAt,
 			params

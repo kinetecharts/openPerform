@@ -79,7 +79,7 @@ class Scene {
 		this.controls.enablePan = (inputs.indexOf("mouse")>=0);
 		
 		this.controls.autoRotate = false;
-		this.controls.autoRotateSpeed = 1.5;
+		this.controls.autoRotateSpeed = 3;
 		
 		this.controls.enableKeys = false;
 		

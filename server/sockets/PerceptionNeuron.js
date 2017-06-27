@@ -7,17 +7,24 @@ class PerceptionNeuron {
 	constructor() {
 		this.url = 'ws://'+config.ip+':' + config.ports.incoming + "/service";
 
-		console.log('Connecting to the Perception Neuron at ' + this.url);
-		this.ws = new WebSocket(this.url);
-		this.ws.on('open', this.onListenOpen.bind(this));
-		this.ws.on('message', this.onListenMessage.bind(this));
-		this.ws.on('error', this.onListenError.bind(this));
+		this.createListenServer();
+		this.createBroadcastServer();
+	}
 
+	createBroadcastServer() {
 		console.log('Perception Neuron Server broadasting on ' + config.ports.outgoing);
 		this.wss = new WebSocket.Server({ port: config.ports.outgoing });
 		this.wss.on('connection', this.onBroadcastConnection.bind(this));
 		this.wss.on('error', this.onBroadcastError.bind(this));
 		this.wss.on('listening', this.onBroadcastListening.bind(this));
+	}
+
+	createListenServer() {
+		console.log('Connecting to the Perception Neuron at ' + this.url);
+		this.ws = new WebSocket(this.url);
+		this.ws.on('open', this.onListenOpen.bind(this));
+		this.ws.on('message', this.onListenMessage.bind(this));
+		this.ws.on('error', this.onListenError.bind(this));
 	}
 
 	onBroadcastConnection() {
@@ -42,6 +49,8 @@ class PerceptionNeuron {
 	
 	onListenError(err) {
 		console.log('Perception Neuron Error ', err);
+		console.log('Trying again in 3000ms');
+		setTimeout(this.createListenServer.bind(this), 3000);
 	}
 	
 	onListenMessage(msg) {
