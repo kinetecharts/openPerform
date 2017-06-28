@@ -8,6 +8,8 @@ class MidiController {
 		this.connected = false;
 		this.websocket = null;
 
+		this.previous = 0;
+
 		this.initializeWebSocket(url);
 		this.initializeMidi();
 
@@ -99,8 +101,11 @@ class MidiController {
 			device: msg.data[0],
 			note: msg.data[1],
 			value: msg.data[2],
-			name: this.profile[msg.data[1]]
+			name: this.profile[msg.data[1]],
+			previous: this.previous
 		}), this.onError);
+		
+		this.previous = msg.data[2];
 	}
 
 	onStateChange(msg) {

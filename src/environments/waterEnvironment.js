@@ -23,13 +23,6 @@ class WaterEnvironment {
 		this.hemiLight;
 		this.dirLight;
 
-		var f = this.guiFolder.addFolder("Grid");
-		f.add(this, "floorSize", 1, 100).step(1).name("Size").onChange(this.redrawGrid.bind(this));
-		f.add(this, "numLines", 1, 100).step(1).name("# Lines").onChange(this.redrawGrid.bind(this));
-		//f.add(this, "distortionScale", 1, 100).step(1).name("# Waves").onChange(this.redrawGrid.bind(this));
-		f.add(this, "waves", 0.1, 10).step(.1).name("# Waves");
-
-
 		this.colors = {
 			light: {
 				floor: 0x000000,
@@ -41,12 +34,12 @@ class WaterEnvironment {
 			}
 		};
 
-		//this.parent.fog = new THREE.FogExp2( 0xaabbbb, 0.0001 );
-
 		this.renderer.setClearColor( this.colors['light'].background );
         this.initLights();
 		this.initFloor(this.floorSize, this.numLines, this.colors['light'].floor);
 
+        var f = this.guiFolder.addFolder("Water");
+        f.add(this, "waves", 0.1, 10).step(.1).name("# Waves");
         //f.add(this.ms_Ocean, "choppiness", 0, 10).step(1).name("# chopiness");
         f.add(this.parent.fog, "density", 0, 0.1).step(0.0001).name("# fog");
 

@@ -42,9 +42,9 @@ class Main extends React.Component {
 		this.performers.init(this.state.scene.scene);
 
 		//fade out loading overlay
-		setTimeout(function(){
-			this.toggleOverlay();
-		}.bind(this), 3000);
+		// setTimeout(function(){
+		// 	this.toggleOverlay();
+		// }.bind(this), 3000);
 	}
 
 	toggleGUI() { //toggle loading overlay visablity
@@ -57,11 +57,39 @@ class Main extends React.Component {
 		}
 	}
 
-	toggleOverlay() { //toggle loading overlay visablity
-		if ($('#loadingOverlay').css('display') == 'none') {
-			$('#loadingOverlay').fadeIn(1000);
+	toggleStartOverlay() { //toggle start overlay visablity
+		if ($('#startOverlay').css('display') == 'none' ) {
+			if (!$("#startOverlay:animated").length) {
+				$('#startOverlay').fadeIn(1000);
+			}
 		} else {
-			$('#loadingOverlay').fadeOut(1000);
+			if (!$("#startOverlay:animated").length) {
+				$('#startOverlay').fadeOut(1000);
+			}
+		}
+	}
+
+	toggleBlackOverlay() { //toggle black overlay visablity
+		if ($('#blackOverlay').css('display') == 'none' ) {
+			if (!$("#blackOverlay:animated").length) {
+				$('#blackOverlay').fadeIn(1000);
+			}
+		} else {
+			if (!$("#blackOverlay:animated").length) {
+				$('#blackOverlay').fadeOut(1000);
+			}
+		}
+	}
+
+	toggleEndOverlay() { //toggle end overlay visablity
+		if ($('#endOverlay').css('display') == 'none' ) {
+			if (!$("#endOverlay:animated").length) {
+				$('#endOverlay').fadeIn(1000);
+			}
+		} else {
+			if (!$("#endOverlay:animated").length) {
+				$('#endOverlay').fadeOut(1000);
+			}
 		}
 	}
 
@@ -138,10 +166,13 @@ class Main extends React.Component {
 					<div id="statsBox"><h5>Stats</h5></div>
 					<div id="vrButton"></div>
 				</div>
-				<div id="loadingOverlay">
-					<div id="loadingIcon">
-						<div id="worldDiv"><img src="./images/world.gif" width="100%" height="auto"/></div>
-					</div>
+				<div id="startOverlay">
+					<h1>Duality by Kinetech Arts</h1>
+				</div>
+				<div id="blackOverlay">
+				</div>
+				<div id="endOverlay">
+					<h1>Built with OpenPerform</h1>
 				</div>
 				<KeyboardHelpModal show={this.state.keyboardHelp} closeKeyboardHelp={this.closeKeyboardHelp.bind(this)} keyboardList={(this.state.inputManger)?this.state.inputManger.inputs['keyboard']:{}}></KeyboardHelpModal>
 			</div>

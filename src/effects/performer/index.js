@@ -15,6 +15,10 @@ class PerformerEffects {
 	}
 
 	add(effect) {
+		if (_.filter(this.effects, (eff) => { return eff.name == effect; }).length > 0) {
+			console.log("Effect is already loaded...");
+			return false;
+		}
 		switch(effect) {
 			case 'cloner':
 				this.effects.push(new Cloner(this.parent, this.color, this.guiFolder));
@@ -27,6 +31,14 @@ class PerformerEffects {
 			break;
 		}
 		console.log(this.effects);
+	}
+
+	remove(effect) {
+		var matches = _.filter(this.effects, (eff) => { return eff.name == effect; });
+		if (matches.length > 0) {
+			this.effects[0].remove();
+			_.remove(this.effects, (eff) => { return eff.name == effect; });
+		}
 	}
 
 	updateParameters(data) {

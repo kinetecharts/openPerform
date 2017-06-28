@@ -70,37 +70,86 @@ class InputManager {
 	initMidiControllerCallbacks() {
 		this.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
 			switch (data.name) {
-				case 'slider 1':
-					data.parameter = "lines"
-					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
-					this.scene.environments.updateParameters(data);
+
+				case 'track left': // scene 1
 					break;
+				case 'track right': // scene 2
+					break;
+				case 'marker set': // start overlay
+					this.parent.toggleStartOverlay();
+					break;
+				case 'marker left': // black overlay
+					this.parent.toggleBlackOverlay();
+					break;
+				case 'marker right': // end overlay
+					this.parent.toggleEndOverlay();
+					break;
+
+
+
 				case 'knob 1':
-					data.parameter = "size"
-					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
-					this.scene.environments.updateParameters(data);
+					// this.scene.controls.rotateLeft();
+					// this.scene.controls.sphericalDelta.theta = Common.mapRange(data.value, 0, 127, 0, Math.PI);
 					break;
-				case 'slider 2':
+
+				case 'slider 1':
+					// this.scene.controls.sphericalDelta.phi = Common.mapRange(data.value, 0, 127, 0, -Math.PI);
+					break;
+
+				case 'solo 6':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["trails"])
+					break;
+
+				case 'record 6':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["trails"])
+					break;
+
+				case 'solo 7':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["cloner"])
+					break;
+
+				case 'record 7':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["cloner"])
+					break;
+
+				case 'solo 8':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["particleSystem"])
+					break;
+
+				case 'record 8':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["particleSystem"])
+					break;
+				// case 'slider 1':
+				// 	data.parameter = "lines"
+				// 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// 	this.scene.environments.updateParameters(data);
+				// 	break;
+				// case 'knob 1':
+				// 	data.parameter = "size"
+				// 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// 	this.scene.environments.updateParameters(data);
+				// 	break;
+				case 'slider 1':
 					data.parameter = "life"
 					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
 					this.parent.performers.updateParameters(data);
 					break;
-				case 'knob 2':
+				case 'knob 1':
 					data.parameter = "rate"
 					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
 					this.parent.performers.updateParameters(data);
 					break;
 
-				case 'knob 3':
-					data.parameter = "size"
-					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
-					this.parent.performers.updateParameters(data);
-					break;
-				case 'slider 3':
-					data.parameter = "color"
-					data.value = Common.mapRange(data.value, 0, 127, 0, 1);
-					this.parent.performers.updateParameters(data);
-					break;
+				// case 'knob 3':
+				// 	data.parameter = "size"
+				// 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// 	this.parent.performers.updateParameters(data);
+				// 	break;
+				// case 'slider 3':
+				// 	data.parameter = "color"
+				// 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// 	this.parent.performers.updateParameters(data);
+				// 	break;
 			}
 		}.bind(this));
 	}
@@ -125,7 +174,8 @@ class InputManager {
 	}
 
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-		this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleOverlay.bind(this.parent));
+		this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
+
 		this.registerCallback('keyboard', '-', 'Hide GUI', this.parent.toggleGUI.bind(this.parent));
 		this.registerCallback('keyboard', '=', 'Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
 		
@@ -278,6 +328,24 @@ class InputManager {
 				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips']
 			);
 		}.bind(this));
+
+		this.registerCallback('keyboard', 'y', 'Track Performer', function() { //follow x position of performer
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
+				);
+			}
+			this.cameraControl.fly_to(
+				new THREE.Vector3(0,10,0),
+				new THREE.Vector3(0,0,0),
+				new THREE.Vector3(0,0,0),
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
+				1,
+				function(){ console.log("Camera moved!");}
+			);
+		}.bind(this.scene));
 
 		this.registerCallback('keyboard', 'z', 'Env Input', function() { //toggle environment input
 			this.scene.environments.toggle("usePerformerInput");
