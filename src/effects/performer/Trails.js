@@ -2,6 +2,7 @@ import _ from 'lodash'
 var THREE = require('three');
 
 import Trail from './../../libs/trail'
+import Common from './../../util/Common'
 
 import config from './../../config'
 
@@ -16,7 +17,7 @@ class Trails {
 		this.targets = [/*"hips",
 			"rightupleg", "rightleg",*/ "rightfoot",
 			/*"leftupleg", "leftleg",*/ "leftfoot",
-			/*"spine", "spine3",*/ "head",
+			/*"spine", "spine3", "head",*/
 			/*"rightarm", "rightforearm",*/ "righthand",
 			/*"leftarm", "leftforearm", */"lefthand"
 		];
@@ -38,17 +39,20 @@ class Trails {
 		}
 		this.trailHeadGeometry = this.circlePoints;
 
+		var head = Common.hexToRgb("#352f9d");
+		var tail = Common.hexToRgb("#432066");
+
 		// initialize the trail
 		this.options = {
-			trailLength : 200,
-			headRed : 1.0,
-			headGreen : 0.0,
-			headBlue : 0.0,
+			trailLength : 20,
+			headRed : Common.mapRange(head[0],0,255,0,1),
+			headGreen : Common.mapRange(head[1],0,255,0,1),
+			headBlue : Common.mapRange(head[2],0,255,0,1),
 			headAlpha : 0.75,
 
-			tailRed : 0.0,
-			tailGreen : 1.0,
-			tailBlue : 1.0,
+			tailRed : Common.mapRange(tail[0],0,255,0,1),
+			tailGreen : Common.mapRange(tail[1],0,255,0,1),
+			tailBlue : Common.mapRange(tail[2],0,255,0,1),
 			tailAlpha : 0.35,
 		};
 		

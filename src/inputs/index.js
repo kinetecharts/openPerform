@@ -72,8 +72,34 @@ class InputManager {
 			switch (data.name) {
 
 				case 'track left': // scene 1
+					this.scene.switchEnvironment("grid-dark");
+					this.parent.performers.showWireframe();
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["trails"]);
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["cloner"]);
+
+					// this.scene.cameraControl.changeParent(
+					// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_spine3']
+					// );
+
+					// this.scene.cameraControl.jump(
+					// 	new THREE.Vector3(0, 15, 150),
+					// 	new THREE.Vector3(0, 15, 0),
+					// );
 					break;
 				case 'track right': // scene 2
+					this.scene.switchEnvironment("water");
+					this.parent.performers.hideWireframe();
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["cloner"]);
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["trails"]);
+
+					// this.scene.cameraControl.changeParent(
+					// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
+					// );
+
+					// this.scene.cameraControl.jump(
+					// 	new THREE.Vector3(0, 0, 1),
+					// 	new THREE.Vector3(0, 0, 2),
+					// );
 					break;
 				case 'marker set': // start overlay
 					this.parent.toggleStartOverlay();
@@ -329,19 +355,49 @@ class InputManager {
 			);
 		}.bind(this));
 
-		this.registerCallback('keyboard', 'y', 'Track Performer', function() { //follow x position of performer
+		this.registerCallback('keyboard', 'y', 'Top View', function() { //follow x position of performer
 			if (this.camera.parent.type !== "Scene") {
 				this.cameraControl.changeParent(
 					this.scene
 				);
 			}
 			this.cameraControl.fly_to(
-				new THREE.Vector3(0,10,0),
+				new THREE.Vector3(0,20,0),
 				new THREE.Vector3(0,0,0),
 				new THREE.Vector3(0,0,0),
 				TWEEN.Easing.Quadratic.InOut,
 				'path',
 				3000,
+				1,
+				function(){ console.log("Camera moved!");}
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'u', '3/4 View', function() { //follow x position of performer
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
+				);
+			}
+			this.cameraControl.jump(
+				new THREE.Vector3(0,20,20),
+				new THREE.Vector3(0,0,0),
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'i', 'Fly Out', function() { //follow x position of performer
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
+				);
+			}
+			this.cameraControl.fly_to(
+				new THREE.Vector3(0,195,195),
+				new THREE.Vector3(0,0,0),
+				new THREE.Vector3(0,0,0),
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				7000,
 				1,
 				function(){ console.log("Camera moved!");}
 			);

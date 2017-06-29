@@ -231,7 +231,7 @@ class WaterEnvironment {
 		this.parent.remove(this.mirrorMesh);
 		this.parent.remove(this.skyBox);
 
-		this.guiFolder.removeFolder("Grid");
+		this.guiFolder.removeFolder("Water");
 	}
 
 	redrawGrid() {

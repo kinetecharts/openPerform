@@ -66,6 +66,18 @@ class Performers {
 		}
 	}
 
+	showWireframe() {
+		_.each(this.performers, function(performer) {
+			performer.showWireframe();
+		});
+	}
+
+	hideWireframe() {
+		_.each(this.performers, function(performer) {
+			performer.hideWireframe();
+		});
+	}
+
 	updateParameters(data) {
 		_.each(this.performers, function(performer) {
 			performer.updateParameters(data);

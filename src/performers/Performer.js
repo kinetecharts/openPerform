@@ -17,7 +17,7 @@ class Performer {
 		this.type = type;
 		this.name = "Performer " + performerId;
 		this.color = color;
-		this.showWireframe = true;
+		this.wireframe = true;
 		this.visible = true;
 
 		console.log("New Performer: ", this.inputId);
@@ -62,7 +62,7 @@ class Performer {
 				} else {
 					if(object.hasOwnProperty("material")){ 
 						object.material = new THREE.MeshPhongMaterial();
-						object.material.wireframe = this.showWireframe;
+						object.material.wireframe = this.wireframe;
 						object.material.color.set(parseInt(this.color,16));
 						object.material.needsUpdate = true;
 					}
@@ -136,12 +136,34 @@ class Performer {
 		return this.scene;
 	}
 
-	toggleWireframe() {
-		this.showWireframe = !this.showWireframe;
+	showWireframe() {
+		this.wireframe = true;
 		_.each(this.performer, (parent) => {
 			parent.traverse( ( object ) => {
 				if(object.hasOwnProperty("material")){ 
-					object.material.wireframe = this.showWireframe;
+					object.material.wireframe = this.wireframe;
+				}
+			});
+		});
+	}
+
+	hideWireframe() {
+		this.wireframe = false;
+		_.each(this.performer, (parent) => {
+			parent.traverse( ( object ) => {
+				if(object.hasOwnProperty("material")){ 
+					object.material.wireframe = this.wireframe;
+				}
+			});
+		});
+	}
+
+	toggleWireframe() {
+		this.wireframe = !this.wireframe;
+		_.each(this.performer, (parent) => {
+			parent.traverse( ( object ) => {
+				if(object.hasOwnProperty("material")){ 
+					object.material.wireframe = this.wireframe;
 				}
 			});
 		});
