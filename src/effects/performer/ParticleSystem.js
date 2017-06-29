@@ -6,6 +6,7 @@ import config from './../../config'
 
 class ParticleSystem {
 	constructor(parent, color, guiFolder) {
+		this.name = 'particleSystem';
 		this.parent = parent;
 		this.systems = [];
 		this.color = color;
@@ -52,6 +53,15 @@ class ParticleSystem {
 		f.add(options, "turbulence", 0, 10).listen();
 		f.add(spawnerOptions, "spawnRate", 10, 3000).listen();
 		f.add(spawnerOptions, "timeScale", -2, 2).listen();
+	}
+
+	remove() {
+		console.log("Deleting particleSystems...");
+		_.each(this.systems, (system) => {
+			this.parent.remove(system);
+			system = null;
+		});
+		this.guiFolder.removeFolder("ParticleSystem");
 	}
 
 	updateParameters(data) {

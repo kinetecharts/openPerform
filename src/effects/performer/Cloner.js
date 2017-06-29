@@ -6,6 +6,7 @@ import config from './../../config'
 
 class Cloner {
 	constructor(parent, color, guiFolder) {
+		this.name = 'cloner';
 		this.parent = parent;
 		this.color = color;
 		this.guiFolder = guiFolder;
@@ -97,6 +98,16 @@ class Cloner {
 				});
 			}
 		// }.bind(this), this.cloneLife*1000);
+	}
+
+	remove() {
+		console.log("Deleting cloner...");
+		clearInterval(this.cloneInterval);
+		_.each(this.clones, (clone) => {
+			this.parent.remove(clone);
+			clone = null;
+		});
+		this.guiFolder.removeFolder("Cloner");
 	}
 
 	updateParameters(data) {

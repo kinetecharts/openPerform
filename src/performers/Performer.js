@@ -118,18 +118,18 @@ class Performer {
 		});
 	}
 
+	removeEffects(effects) {
+		_.each(effects, (effect) => {
+			this.removeEffect(effect);
+		});
+	}
+
 	addEffect(effect) {
-		switch(effect) {
-			case 'cloner':
-				this.performerEffects.add("cloner");
-			break;
-			case 'particleSystem':
-				this.performerEffects.add("particleSystem");
-			break;
-			case 'trails':
-				this.performerEffects.add("trails");
-			break;
-		}
+		this.performerEffects.add(effect);
+	}
+
+	removeEffect(effect) {
+		this.performerEffects.remove(effect);
 	}
 
 	getScene() {

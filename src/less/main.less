@@ -66,7 +66,7 @@ h5 {
 	display: inline-block;
 }
 
-#loadingOverlay {
+#startOverlay {
 	display: block;
 	justify-content:center;
 	align-items:center;
@@ -78,6 +78,11 @@ h5 {
 	z-index: 1000000;
 }
 
+#startOverlay h1 {
+	text-align: center;
+	margin-top: 20%;
+}
+
 #loadingIcon {
 	width:400px;
 	height:400px;
@@ -87,6 +92,36 @@ h5 {
     left: 0;
     right: 0;
     margin: auto;
+}
+
+#blackOverlay {
+	display: none;
+	justify-content:center;
+	align-items:center;
+	width:100%;
+	height:100%;
+	top:0;
+	background-color: black;
+	position: absolute;
+	z-index: 1000000;
+}
+
+
+#endOverlay {
+	display: none;
+	justify-content:center;
+	align-items:center;
+	width:100%;
+	height:100%;
+	top:0;
+	background-color: white;
+	position: absolute;
+	z-index: 1000000;
+}
+
+#endOverlay h1 {
+	text-align: center;
+	margin-top: 20%;
 }
 
 @import './lowerDisplay.less';
