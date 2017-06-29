@@ -94,10 +94,11 @@ class WaterEnvironment {
             textureWidth: 512,
             textureHeight: 512,
             waterNormals: waterNormals,
-            alpha: 	1.0,
+            alpha: 	1,
             sunDirection: this.light.position.clone().normalize(),
             sunColor: 0x5177ff,
             waterColor: 0x002d3a,
+            distortionScale: 50.0,
             fog: this.parent.fog != undefined
         } );
 
@@ -105,7 +106,7 @@ class WaterEnvironment {
         this.water.scale.z = 1;
 
         this.mirrorMesh = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry( parameters.width * 10, parameters.height * 10, 10, 10 ),
+            new THREE.PlaneBufferGeometry( parameters.width * 100, parameters.height * 100 ),
             this.water.material
         );
 
@@ -124,46 +125,47 @@ class WaterEnvironment {
 
         // skybox
 
-        var cubeMap = THREE.ImageUtils.loadTextureCube([
-            'textures/sleepyhollow/sleepyhollow_rt.jpg',
-            'textures/sleepyhollow/sleepyhollow_lf.jpg',
-            'textures/sleepyhollow/sleepyhollow_up.jpg',
-            'textures/sleepyhollow/sleepyhollow_dn.jpg',
-            'textures/sleepyhollow/sleepyhollow_bk.jpg',
-            'textures/sleepyhollow/sleepyhollow_ft.jpg'
-        ]);
+        // var cubeMap = THREE.ImageUtils.loadTextureCube([
+        //     'textures/sleepyhollow/sleepyhollow_rt.jpg',
+        //     'textures/sleepyhollow/sleepyhollow_lf.jpg',
+        //     'textures/sleepyhollow/sleepyhollow_up.jpg',
+        //     'textures/sleepyhollow/sleepyhollow_dn.jpg',
+        //     'textures/sleepyhollow/sleepyhollow_bk.jpg',
+        //     'textures/sleepyhollow/sleepyhollow_ft.jpg'
+        // ]);
+        // cubeMap.format = THREE.RGBFormat;
+        // cubeMap.anisotropy = 0.1;
+
+        var cubeMap = new THREE.CubeTexture( [] );
         cubeMap.format = THREE.RGBFormat;
 
-        // var cubeMap = new THREE.CubeTexture( [] );
-        // cubeMap.format = THREE.RGBFormat;
-        //
-        // var loader = new THREE.ImageLoader();
-        // loader.load( 'textures/skyb.png', function ( image ) {
-        //
-        //     var getSide = function ( x, y ) {
-        //
-        //         var size = 400;
-        //
-        //         var canvas = document.createElement( 'canvas' );
-        //         canvas.width = size;
-        //         canvas.height = size;
-        //
-        //         var context = canvas.getContext( '2d' );
-        //         context.drawImage( image, - x * size, - y * size );
-        //
-        //         return canvas;
-        //
-        //     };
-        //
-        //     cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
-        //     cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
-        //     cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
-        //     cubeMap.images[ 3 ] = getSide( 1, 2 ); // ny
-        //     cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
-        //     cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
-        //     cubeMap.needsUpdate = true;
-        //
-        // } );
+        var loader = new THREE.ImageLoader();
+        loader.load( 'textures/newmoon.png', function ( image ) {
+
+            var getSide = function ( x, y ) {
+
+                var size = 1024;
+
+                var canvas = document.createElement( 'canvas' );
+                canvas.width = size;
+                canvas.height = size;
+
+                var context = canvas.getContext( '2d' );
+                context.drawImage( image, - x * size, - y * size );
+
+                return canvas;
+
+            };
+
+            cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
+            cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
+            cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
+            cubeMap.images[ 3 ] = getSide( 1, 2 ); // ny
+            cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
+            cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
+            cubeMap.needsUpdate = true;
+
+        } );
 
         var cubeShader = THREE.ShaderLib[ 'cube' ];
         cubeShader.uniforms[ 'tCube' ].value = cubeMap;
@@ -176,12 +178,9 @@ class WaterEnvironment {
             side: THREE.BackSide
         } );
 
-        this.skyBox = new THREE.Mesh(
-            new THREE.BoxGeometry( 10000, 10000, 10000 ),
-            skyBoxMaterial
-        );
-
-        this.skyBox.position.setY(0.5);
+        this.skyBox = new THREE.Mesh( new THREE.CubeGeometry( 100000, 100000, 100000, 1, 1, 1, null, true ), skyBoxMaterial );
+        //this.skyBox.rotation.y = - Math.PI * 0.5;
+        //this.skyBox.position.setY(-10);
         //this.parent.fog.color = 0x171717;
 
         this.parent.add( this.skyBox );
@@ -218,7 +217,7 @@ class WaterEnvironment {
 
 		this.dirLight.shadow.camera.visible = true;
 
-        //this.parent.add( new THREE.AmbientLight( 0x444444 ) );
+        this.parent.add( new THREE.AmbientLight( 0x444444 ) );
 
         //
 
