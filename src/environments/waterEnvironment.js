@@ -172,8 +172,9 @@ class WaterEnvironment {
         } );
 
         this.skyBox = new THREE.Mesh( new THREE.CubeGeometry( 10000, 10000, 10000, 1, 1, 1, null, true ), skyBoxMaterial );
-        //this.skyBox.rotation.y = - Math.PI * 0.5;
-        //this.skyBox.position.setY(-10);
+        //this.skyBox.rotation.y = Math.PI ;
+        //this.skyBox.position.setY(100);
+        //this.skyBox.updateMatrix();
         //this.parent.fog.color = 0x171717;
 
         this.parent.add( this.skyBox );
