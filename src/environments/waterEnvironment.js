@@ -99,7 +99,7 @@ class WaterEnvironment {
         this.water.scale.z = 1;
 
         this.mirrorMesh = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry( parameters.width * 100, parameters.height * 100 ),
+            new THREE.PlaneBufferGeometry( parameters.width * 10, parameters.height * 10 ),
             this.water.material
         );
 
@@ -171,7 +171,7 @@ class WaterEnvironment {
             side: THREE.BackSide
         } );
 
-        this.skyBox = new THREE.Mesh( new THREE.CubeGeometry( 100000, 100000, 100000, 1, 1, 1, null, true ), skyBoxMaterial );
+        this.skyBox = new THREE.Mesh( new THREE.CubeGeometry( 10000, 10000, 10000, 1, 1, 1, null, true ), skyBoxMaterial );
         //this.skyBox.rotation.y = - Math.PI * 0.5;
         //this.skyBox.position.setY(-10);
         //this.parent.fog.color = 0x171717;
