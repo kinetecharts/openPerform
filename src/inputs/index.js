@@ -362,7 +362,7 @@ class InputManager {
 				);
 			}
 			this.cameraControl.fly_to(
-				new THREE.Vector3(0,20,0),
+				new THREE.Vector3(0,13,0),
 				new THREE.Vector3(0,0,0),
 				new THREE.Vector3(0,0,0),
 				TWEEN.Easing.Quadratic.InOut,
