@@ -137,6 +137,8 @@ class CameraControl{
 			return false;
 		}
 
+		this.trackingObj = null;
+
 		switch(type) {
 			case "direct":
 				this.fly_direct(targetPos, offset, lookAt, {
@@ -262,6 +264,8 @@ class CameraControl{
 
 		console.log("Switching camera position...");
 
+		this.trackingObj = null;
+
 		this.controls.object.position.copy(position);
 		this.controls.target = look;
 
@@ -279,11 +283,13 @@ class CameraControl{
 		this.controls.target = look;
 	}
 
-	track(target) {
+	track(target, look, offset) {
 		if (this.trackingObj) {
 			this.trackingObj = null;
 		} else {
 			this.trackingObj = target;
+			this.offsetObj = offset;
+			this.lookObj = look;
 		}
 	}
 
@@ -299,8 +305,10 @@ class CameraControl{
 
 				var vector = new THREE.Vector3();
 				vector.setFromMatrixPosition( this.trackingObj.matrixWorld );
-
+				vector.add(this.offsetObj);
 				this.controls.object.position.x = vector.x;
+				this.controls.object.position.y = vector.y;
+				vector.add(this.lookObj);
 				this.controls.target = vector;
 			}
 		}

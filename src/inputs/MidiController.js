@@ -8,7 +8,7 @@ class MidiController {
 		this.connected = false;
 		this.websocket = null;
 
-		this.previous = 0;
+		this.keydown = {};
 
 		this.initializeWebSocket(url);
 		this.initializeMidi();
@@ -97,6 +97,9 @@ class MidiController {
 	}
 
 	onMidiIn(msg) {
+		if (this.keydown[msg.data[1]] == true && msg.data[2] !== 127) { //prevent key repeat
+			return false;
+		}
 		this.websocket.send(JSON.stringify({
 			device: msg.data[0],
 			note: msg.data[1],
@@ -104,8 +107,7 @@ class MidiController {
 			name: this.profile[msg.data[1]],
 			previous: this.previous
 		}), this.onError);
-		
-		this.previous = msg.data[2];
+		this.keydown[msg.data[1]] = (msg.data[2]==127)?true:false; //check for keydown
 	}
 
 	onStateChange(msg) {

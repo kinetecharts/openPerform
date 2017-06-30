@@ -55,7 +55,7 @@ class Scene {
         //this.scene.fog = new THREE.FogExp2( 0x0C0F15, 0.0075 , 100);
 
 		/// Global : this.camera
-		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.1, 200000 );
+		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.1, 2000000 );
 
 		window.camera = this.camera;
 
@@ -106,6 +106,18 @@ class Scene {
 
 	toggleRotation() {
 		this.controls.autoRotate = !this.controls.autoRotate;
+	}
+
+	setRotation() {
+		this.controls.autoRotate = true;
+	}
+
+	unsetRotation() {
+		this.controls.autoRotate = false;
+	}
+
+	setRotationSpeed(val) {
+		this.controls.autoRotateSpeed = val;
 	}
 
 	switchEnvironment(env) {
