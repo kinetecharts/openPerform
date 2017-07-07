@@ -6,20 +6,22 @@ import Common from './../../util/Common'
 
 import config from './../../config'
 
-class Trails {
+class Drawing {
 	constructor(parent, color, guiFolder) {
 		this.name = 'trails';
 		this.parent = parent;
 		
+		this.active = false;
+
 		this.color = color;
 		this.guiFolder = guiFolder;
 		
 		this.targets = [/*"hips",
-			"rightupleg", "rightleg", "rightfoot",
-			/*"leftupleg", "leftleg", "leftfoot",*/
-			/*"spine", "spine3", */"head",
-			/*"rightarm", "rightforearm", "righthand",
-			/*"leftarm", "leftforearm", "lefthand"*/
+			"rightupleg", "rightleg",*/ "rightfoot",
+			/*"leftupleg", "leftleg",*/ "leftfoot",
+			/*"spine", "spine3", "head",*/
+			/*"rightarm", "rightforearm",*/ "righthand",
+			/*"leftarm", "leftforearm", */"lefthand"
 		];
 
 		this.trails = [];
@@ -39,12 +41,15 @@ class Trails {
 		}
 		this.trailHeadGeometry = this.circlePoints;
 
-		var head = Common.hexToRgb("#352f9d");
-		var tail = Common.hexToRgb("#432066");
+		this.headColor = "#352f9d";
+		this.tailColor = "#432066";
+
+		var head = Common.hexToRgb(this.headColor);
+		var tail = Common.hexToRgb(this.tailColor);
 
 		// initialize the trail
 		this.options = {
-			trailLength : 125,
+			trailLength : 20,
 			headRed : Common.mapRange(head[0],0,255,0,1),
 			headGreen : Common.mapRange(head[1],0,255,0,1),
 			headBlue : Common.mapRange(head[2],0,255,0,1),
@@ -60,12 +65,16 @@ class Trails {
 	}
 
 	addToDatGui(options, guiFolder) {
-		var f = guiFolder.addFolder("Trails");
-		f.add(options, "trailLength", 1, 300).listen().onChange(() => {
-			_.each(this.trails, (trail) => {
-				trail.refresh = true;
-			});
-		});
+		var f = guiFolder.addFolder("Drawing");
+		f.add(options, "trailLength", 1, 300).listen().onChange();
+		// f.addColor(this.headColor).name("Head Color");
+		// f.addColor(this.tailColor).name("Tail Color").listen();
+
+		// f.add(this, active).name(this.active).listen();
+	}
+
+	toggle(){
+		return this.active = !this.active;
 	}
 
 	addTrail(parent, part, options){
@@ -122,16 +131,11 @@ class Trails {
 					} else {
 						this.trails[idx].updateHead();
 					}
-
-					 if (this.trails[idx].refresh == true) {
-						this.trails[idx].deactivate();
-					 }
 				}
 
 				if (!this.trails[idx]) {
 					this.trails[idx] = this.addTrail(this.parent, d, this.options);
 					this.trails[idx].lastTrailUpdateTime = performance.now();
-					this.trails[idx].refresh = false;
 				}
 
 				
@@ -141,4 +145,4 @@ class Trails {
 	}
 }
 
-module.exports = Trails;
+module.exports = Drawing;

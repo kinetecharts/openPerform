@@ -88,6 +88,7 @@ class InputManager {
 
 					this.firstPerson();
 					break;
+
 				case 'marker set': // start overlay
 					this.parent.toggleStartOverlay();
 					break;
@@ -145,6 +146,12 @@ class InputManager {
 
 				case 'record 2':
 					this.flyOut();
+					break;
+
+				case 'slider 8':
+					data.parameter = "waves"
+					data.value = Common.mapRange(data.value, 0, 127, 0.25, 1);
+					this.scene.environments.updateParameters(data);
 					break;
 
 				// case 'knob 1':

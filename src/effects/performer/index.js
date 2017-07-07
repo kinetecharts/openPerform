@@ -3,6 +3,7 @@ import _ from 'lodash'
 import Trails from './Trails'
 import ParticleSystem from './ParticleSystem'
 import Cloner from './Cloner'
+import Drawing from './Drawing'
 
 import config from './../../config'
 
@@ -28,6 +29,9 @@ class PerformerEffects {
 			break;
 			case 'trails':
 				this.effects.push(new Trails(this.parent, this.color, this.guiFolder));
+			break;
+			case 'drawing':
+				this.effects.push(new Drawing(this.parent, this.color, this.guiFolder));
 			break;
 		}
 		console.log(this.effects);

@@ -47,6 +47,12 @@ var config = {
 			outgoing:9101 //port the browser connects on
 		}
 	},
+	midiController: {
+		enabled: true,
+		ports: {
+			outgoing:9201 //port the browser connects on
+		}
+	},
 	mapzen: {
 		enabled: false,
 		baseURL: 'https://tile.mapzen.com/mapzen/vector/v1',

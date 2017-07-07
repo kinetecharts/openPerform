@@ -167,12 +167,10 @@ class Main extends React.Component {
 					<div id="vrButton"></div>
 				</div>
 				<div id="startOverlay">
-					<h1>Duality by Kinetech Arts</h1>
 				</div>
 				<div id="blackOverlay">
 				</div>
 				<div id="endOverlay">
-					<h1>Built with OpenPerform</h1>
 				</div>
 				<KeyboardHelpModal show={this.state.keyboardHelp} closeKeyboardHelp={this.closeKeyboardHelp.bind(this)} keyboardList={(this.state.inputManger)?this.state.inputManger.inputs['keyboard']:{}}></KeyboardHelpModal>
 			</div>

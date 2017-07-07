@@ -16,7 +16,7 @@ class WaterEnvironment {
 		this.floorSize = 50;
 		this.numLines = 50;
 		this.distortionScale = 10.0;
-		this.waves = 1.0;
+		this.waves = 0.25;
 		this.lastTime = 0;
 
 		this.gridFloor;
@@ -39,7 +39,7 @@ class WaterEnvironment {
 		this.initFloor(this.floorSize, this.numLines, this.colors['light'].floor);
 
         var f = this.guiFolder.addFolder("Water");
-        f.add(this, "waves", 0.1, 10).step(.1).name("# Waves");
+        f.add(this, "waves", 0.1, 10).step(.1).name("# Waves").listen();
         //f.add(this.ms_Ocean, "choppiness", 0, 10).step(1).name("# chopiness");
         f.add(this.parent.fog, "density", 0, 0.1).step(0.0001).name("# fog");
 
@@ -241,7 +241,11 @@ class WaterEnvironment {
 	}
 
     updateParameters(data) {
-        console.log("Updating environment parameter: ", data);
+        switch(data.parameter) {
+            case 'waves':
+                this.waves = data.value;
+                break;
+        }
     }
 
 	update(timeDelta) {
