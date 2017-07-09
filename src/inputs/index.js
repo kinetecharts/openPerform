@@ -243,16 +243,37 @@ class InputManager {
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
 		// this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
 		this.registerCallback('keyboard', 'space', 'Hide Floor', () => {this.scene.environments.environments[0].toggleGrid();});
+		
+		this.registerCallback('keyboard', 'n', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', true);
+		}.bind(this));
+
+		this.registerCallback('keyboard', 'm', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', true);
+		}.bind(this));
+
+		this.registerCallback('keyboard', ',', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', true);
+		}.bind(this));
+
+		this.registerCallback('keyboard', '.', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', true);
+		}.bind(this));
+
+		this.registerCallback('keyboard', '/', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', true);
+		}.bind(this));
+
 
 		this.registerCallback('keyboard', '-', 'Hide GUI', this.parent.toggleGUI.bind(this.parent));
 		this.registerCallback('keyboard', '=', 'Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
 		
 		
-		this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
-		this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));
-		this.registerCallback('keyboard', '3', 'Light Grid Theme', function() { this.switchEnvironment("grid-light"); }.bind(this.scene));
-		this.registerCallback('keyboard', '4', 'Gradient Theme', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
-		this.registerCallback('keyboard', '5', 'Island Theme', function() { this.switchEnvironment("island"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '3', 'Light Grid Theme', function() { this.switchEnvironment("grid-light"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '4', 'Gradient Theme', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '5', 'Island Theme', function() { this.switchEnvironment("island"); }.bind(this.scene));
 
 		//Camera positions
 		this.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
