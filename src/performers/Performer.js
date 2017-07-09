@@ -32,7 +32,7 @@ class Performer {
 		this.guiFolder.open()
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
-		this.addEffects(['trails']);
+		this.addEffects(['datatags']);//defaults
 	}
 
 	

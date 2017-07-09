@@ -42,7 +42,7 @@ class GridEnvironment {
 		this.gridFloor = new THREE.GridHelper( floorSize/2, numLines, color, color);
 		this.gridFloor.castShadow = true;
 		this.gridFloor.receiveShadow = true;
-
+		this.gridFloor.visible = false;
 		this.parent.add( this.gridFloor );
 	}
 
@@ -89,6 +89,18 @@ class GridEnvironment {
 	redrawGrid() {
 		this.parent.remove( this.gridFloor );
 		this.initFloor(this.floorSize, this.numLines);
+	}
+
+	toggleGrid() {
+		this.gridFloor.visible = !this.gridFloor.visible; 
+	}
+
+	hide() {
+		this.gridFloor.visible = true;
+	}
+
+	show() {
+		this.gridFloor.visible = false;
 	}
 
     toggle(variableName) {

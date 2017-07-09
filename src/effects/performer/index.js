@@ -4,6 +4,7 @@ import Trails from './Trails'
 import ParticleSystem from './ParticleSystem'
 import Cloner from './Cloner'
 import Drawing from './Drawing'
+import DataTags from './DataTags'
 
 import config from './../../config'
 
@@ -32,6 +33,9 @@ class PerformerEffects {
 			break;
 			case 'drawing':
 				this.effects.push(new Drawing(this.parent, this.color, this.guiFolder));
+			break;
+			case 'datatags':
+				this.effects.push(new DataTags(this.parent, this.color, this.guiFolder));
 			break;
 		}
 		console.log(this.effects);
