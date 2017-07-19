@@ -128,6 +128,10 @@ module.exports = {
 		textures: {
 			src: [src + '/textures/**'],
 			dest: dest + '/textures/'
+		},
+		models: {
+			src: [src + '/models/**'],
+			dest: dest + '/models/'
 		}
 	},
 	app: {

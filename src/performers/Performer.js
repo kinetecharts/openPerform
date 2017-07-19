@@ -139,49 +139,46 @@ class Performer {
 	unParentPart(partname, freeze) {
 		var part = this.performer["robot_" + partname];
 		
-		// this.scene.updateMatrixWorld();
-		// this.performer["robot_hips"].updateMatrixWorld();
-		
-		// console.log(part.position);
-		part.position.add(this.performer["robot_hips"].position);
-		// console.log(part.position);
-		part.parent = this.getScene();
+		if (part) {
+			part.position.add(this.performer["robot_hips"].position);
+			part.parent = this.getScene();
 
-		if (freeze) {
-			switch(partname) {
-				case 'leftshoulder':
-					var parts = ['robot_leftshoulder',
-					'robot_leftarm', 'robot_leftforearm', 'robot_lefthand',
-					'robot_lefthandthumb1', 'robot_lefthandthumb2', 'robot_lefthandthumb3',
-					'robot_leftinhandindex', 'robot_lefthandindex1', 'robot_lefthandindex2', 'robot_lefthandindex3',
-					'robot_leftinhandmiddle', 'robot_lefthandmiddle1', 'robot_lefthandmiddle2', 'robot_lefthandmiddle3',
-					'robot_leftinhandring', 'robot_lefthandring1', 'robot_lefthandring2', 'robot_lefthandring3',
-					'robot_leftinhandpinky', 'robot_lefthandpinky1', 'robot_lefthandpinky2', 'robot_lefthandpinky3'];
-					this.performer = _.omit(this.performer, parts);
-				break;
-				case 'rightshoulder':
-					var parts = ['robot_rightshoulder',
-					'robot_rightarm', 'robot_rightforearm', 'robot_righthand',
-					'robot_righthandthumb1', 'robot_righthandthumb2', 'robot_righthandthumb3',
-					'robot_rightinhandindex', 'robot_righthandindex1', 'robot_righthandindex2', 'robot_righthandindex3',
-					'robot_rightinhandmiddle', 'robot_righthandmiddle1', 'robot_righthandmiddle2', 'robot_righthandmiddle3',
-					'robot_rightinhandring', 'robot_righthandring1', 'robot_righthandring2', 'robot_righthandring3',
-					'robot_rightinhandpinky', 'robot_righthandpinky1', 'robot_righthandpinky2', 'robot_righthandpinky3'];
-					this.performer = _.omit(this.performer, parts);
-				break;
-				case 'leftupleg':
-					var parts = ['robot_leftupleg', 'robot_leftleg', 'robot_leftfoot'];
-					this.performer = _.omit(this.performer, parts);
-				break;
-				case 'rightupleg':
-					var parts = ['robot_rightupleg', 'robot_rightleg', 'robot_rightfoot'];
-					this.performer = _.omit(this.performer, parts);
-				break;
-				case 'head':
-					var parts = ['robot_head'];
-					this.performer = _.omit(this.performer, parts);
-				break;
+			if (freeze) {
+				switch(partname) {
+					case 'leftshoulder':
+						var parts = ['robot_leftshoulder',
+						'robot_leftarm', 'robot_leftforearm', 'robot_lefthand',
+						'robot_lefthandthumb1', 'robot_lefthandthumb2', 'robot_lefthandthumb3',
+						'robot_leftinhandindex', 'robot_lefthandindex1', 'robot_lefthandindex2', 'robot_lefthandindex3',
+						'robot_leftinhandmiddle', 'robot_lefthandmiddle1', 'robot_lefthandmiddle2', 'robot_lefthandmiddle3',
+						'robot_leftinhandring', 'robot_lefthandring1', 'robot_lefthandring2', 'robot_lefthandring3',
+						'robot_leftinhandpinky', 'robot_lefthandpinky1', 'robot_lefthandpinky2', 'robot_lefthandpinky3'];
+						this.performer = _.omit(this.performer, parts);
+					break;
+					case 'rightshoulder':
+						var parts = ['robot_rightshoulder',
+						'robot_rightarm', 'robot_rightforearm', 'robot_righthand',
+						'robot_righthandthumb1', 'robot_righthandthumb2', 'robot_righthandthumb3',
+						'robot_rightinhandindex', 'robot_righthandindex1', 'robot_righthandindex2', 'robot_righthandindex3',
+						'robot_rightinhandmiddle', 'robot_righthandmiddle1', 'robot_righthandmiddle2', 'robot_righthandmiddle3',
+						'robot_rightinhandring', 'robot_righthandring1', 'robot_righthandring2', 'robot_righthandring3',
+						'robot_rightinhandpinky', 'robot_righthandpinky1', 'robot_righthandpinky2', 'robot_righthandpinky3'];
+						this.performer = _.omit(this.performer, parts);
+					break;
+					case 'leftupleg':
+						var parts = ['robot_leftupleg', 'robot_leftleg', 'robot_leftfoot'];
+						this.performer = _.omit(this.performer, parts);
+					break;
+					case 'rightupleg':
+						var parts = ['robot_rightupleg', 'robot_rightleg', 'robot_rightfoot'];
+						this.performer = _.omit(this.performer, parts);
+					break;
+					case 'head':
+						var parts = ['robot_head'];
+						this.performer = _.omit(this.performer, parts);
+					break;
 
+				}
 			}
 		}
 	}

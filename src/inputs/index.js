@@ -154,6 +154,27 @@ class InputManager {
 					this.scene.environments.updateParameters(data);
 					break;
 
+
+				case 'record 4':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
+				break;
+
+				case 'record 5':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', false);
+				break;
+
+				case 'record 6':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', false);
+				break;
+
+				case 'record 7':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', false);
+				break;
+
+				case 'record 8':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
+				break;
+
 				// case 'knob 1':
 				// 	// this.scene.controls.rotateLeft();
 				// 	// this.scene.controls.sphericalDelta.theta = Common.mapRange(data.value, 0, 127, 0, Math.PI);
@@ -245,23 +266,23 @@ class InputManager {
 		this.registerCallback('keyboard', 'space', 'Hide Floor', () => {this.scene.environments.environments[0].toggleGrid();});
 		
 		this.registerCallback('keyboard', 'n', 'Unparent', function() { //toggle environment input
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', true);
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
 		}.bind(this));
 
 		this.registerCallback('keyboard', 'm', 'Unparent', function() { //toggle environment input
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', true);
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', false);
 		}.bind(this));
 
 		this.registerCallback('keyboard', ',', 'Unparent', function() { //toggle environment input
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', true);
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', false);
 		}.bind(this));
 
 		this.registerCallback('keyboard', '.', 'Unparent', function() { //toggle environment input
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', true);
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', false);
 		}.bind(this));
 
 		this.registerCallback('keyboard', '/', 'Unparent', function() { //toggle environment input
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', true);
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
 		}.bind(this));
 
 

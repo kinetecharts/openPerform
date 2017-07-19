@@ -13,6 +13,8 @@ import InputManager from './../../inputs'
 
 import Performers from './../../performers/Performers'
 
+import BVHPlayer from './../../performers/BVHPlayer'
+
 import config from '../../config'
 
 class Main extends React.Component {
@@ -41,10 +43,9 @@ class Main extends React.Component {
 		
 		this.performers.init(this.state.scene.scene);
 
-		//fade out loading overlay
-		// setTimeout(function(){
-		// 	this.toggleOverlay();
-		// }.bind(this), 3000);
+		if (this.state.debug) {
+			this.BVHPlayer = new BVHPlayer(this.state.scene.scene, this.updatePerformers.bind(this));
+		}
 	}
 
 	toggleGUI() { //toggle loading overlay visablity

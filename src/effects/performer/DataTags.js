@@ -1,6 +1,8 @@
 import _ from 'lodash'
 var THREE = require('three');
 
+var TextSprite = require('./../../libs/THREE.TextSprite.js');
+
 import Trail from './../../libs/trail'
 import Common from './../../util/Common'
 
@@ -27,7 +29,6 @@ class DataTags {
 		this.options = {};
 
 		
-		this.addFont();
 		// this.addToDatGui(this.options, this.guiFolder);
 	}
 
@@ -40,112 +41,32 @@ class DataTags {
 	// 	});
 	// }
 
-	addFont() {
-		var loader = new THREE.FontLoader();
-		loader.load( '../../fonts/helvetiker_regular.typeface.json', ( font ) => {
-			this.font = font;
-		});
-	}
-
-	createFill(message, size, color) {
-		var xMid, text;
-		var textShape = new THREE.BufferGeometry();
-		var matLite = new THREE.MeshBasicMaterial( {
-			color: color,
-			transparent: true,
-			opacity: 0.4,
-			side: THREE.DoubleSide
-		} );
+	addTag(parent, part, options) {
 		
-		// var message = "   Three.js\nSimple text.";
-		
-		var shapes = this.font.generateShapes( message, size, 2 );
-		var geometry = new THREE.ShapeGeometry( shapes );
-		geometry.computeBoundingBox();
-		xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
-		geometry.translate( xMid, 0, 0 );
-		
-		// make shape ( N.B. edge view not visible )
-		textShape.fromGeometry( geometry );
-		text = new THREE.Mesh( textShape, matLite );
-
-		return text;
-	}
-
-	createStroke(message, size, color) {
-			var matDark = new THREE.LineBasicMaterial( {
-				color: color,
-				side: THREE.DoubleSide
-			} );
-			var shapes = font.generateShapes( message, size, 2 );
-			// make line shape ( N.B. edge view remains visible )
-			var holeShapes = [];
-			for ( var i = 0; i < shapes.length; i ++ ) {
-				var shape = shapes[ i ];
-				if ( shape.holes && shape.holes.length > 0 ) {
-					for ( var j = 0; j < shape.holes.length; j ++ ) {
-						var hole = shape.holes[ j ];
-						holeShapes.push( hole );
-					}
-				}
+		var options = {
+			textSize: 10,
+			redrawInterval:1,
+			material: {
+				color: 0xFFFFFF,
+			},
+			texture: {
+				text: part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 '),
+				fontFamily: 'Arial, Helvetica, sans-serif',
 			}
-			shapes.push.apply( shapes, holeShapes );
-			var lineText = new THREE.Object3D();
-			for ( var i = 0; i < shapes.length; i ++ ) {
-				var shape = shapes[ i ];
-				var lineGeometry = shape.createPointsGeometry();
-				lineGeometry.translate( xMid, 0, 0 );
-				var lineMesh = new THREE.Line( lineGeometry, matDark );
-				lineText.add( lineMesh );
-			}
+		};
 
-			return lineText;
-	}
+		var tag = new THREE.TextSprite(options);
+		tag.name = part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 ');
 
-	addTag(parent, part, options){
-		var tag = new THREE.Object3D();
-		var name = this.createFill(
-			part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 '),
-			5,
-			0xFFFFFF
-		);
-
+		tag.position.set(25,0,0);
 		
-		name.position.add(new THREE.Vector3(0,27,0));
-
-		tag.add(name);
-
-		// var gPos = new THREE.Vector3().setFromMatrixPosition( part.matrixWorld );
-		// var pos = this.createFill(
-		// 	'(' + gPos.x + ',' + gPos.y + ',' + gPos.z + ')',
-		// 	5,
-		// 	0xFFFFFF
-		// );
-
-		// pos.position.add(new THREE.Vector3(0,20,0));
-
-		// tag.add(pos);
-
-		var price = this.createFill(
-			'$10,000',
-			5,
-			0xFFFFFF
-		);
-
-		price.position.add(new THREE.Vector3(0,20,0));
-
-		tag.add(price);
+		// tag.children[0].scale.set(0.01,0.01,0.01);
 
 		part.add(tag);
-		return tag;
-	}
 
-	remove() {
-		console.log("Deleting trails...");
-		_.each(this.trails, (trail) => {
-			trail.deactivate();
-		});
-		this.guiFolder.removeFolder("Trails");
+		console.log(tag);
+
+		return tag;
 	}
 
 	updateParameters(data) {
@@ -170,26 +91,16 @@ class DataTags {
 		data.traverse( function ( d ) {
 			if (_.filter(this.targets,function(t){return "robot_"+t == d.name.toLowerCase();}).length>0) {
 				if (this.tags[idx]) {
-					if (this.tags[idx].children.length>1) {
-						// this.tags[idx].remove(this.tags[idx].children[1]);
-						
-						// var gPos = new THREE.Vector3().setFromMatrixPosition( part.matrixWorld );
-						// var pos = this.createFill(
-						// 	'(' + gPos.x + ',' + gPos.y + ',' + gPos.z + ')',
-						// 	5,
-						// 	0xFFFFFF
-						// );
-
-						// pos.position.add(new THREE.Vector3(0,20,0));
-
-						// this.tags[idx].add(pos);
+					if (this.tags[idx]) {
+						var gPos = new THREE.Vector3().setFromMatrixPosition( d.matrixWorld );
+						this.tags[idx].material.map.text = 
+						this.tags[idx].name + '\n'
+						+ '(' + gPos.x.toFixed(2) + ',' + gPos.y.toFixed(2) + ',' + gPos.z.toFixed(2) + ')';
 					}
 				}
 
-				if (!this.tags[idx] && this.font) {
+				if (!this.tags[idx]) {
 					this.tags[idx] = this.addTag(this.parent, d, this.options);
-					// this.trails[idx].lastTrailUpdateTime = performance.now();
-					// this.trails[idx].refresh = false;
 				}
 
 				
