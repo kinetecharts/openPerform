@@ -1,8 +1,7 @@
 //Common utility functions
 
 var THREE = require('three');
-var CoordinateTZ = require('coordinate-tz');
-
+import dat from 'dat-gui'
 
 function Common() {
 	var self = this;
@@ -60,6 +59,30 @@ function Common() {
 
 	this.getTZ = function(lat, lon) {
 		return CoordinateTZ.calculate(lat, lon).timezone;
+	}
+
+	dat.GUI.prototype.removeFolder = function(name) {
+	  var folder = this.__folders[name];
+	  if (!folder) {
+	    return;
+	  }
+	  folder.close();
+	  this.__ul.removeChild(folder.domElement.parentNode);
+	  delete this.__folders[name];
+	  this.onResize();
+	}
+
+	this.hexToRgb = function(hex) {
+	    var c;
+	    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+	        c= hex.substring(1).split('');
+	        if(c.length== 3){
+	            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+	        }
+	        c= '0x'+c.join('');
+	        return [(c>>16)&255, (c>>8)&255, c&255];
+	    }
+	    throw new Error('Bad Hex');
 	}
 }
 

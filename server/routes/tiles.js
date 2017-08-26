@@ -1,7 +1,7 @@
 var request = require('request');
 // var _ = require('lodash');
 
-var config = require('./../config.js').mapzen;
+var config = require('./../config.js').apis.mapzen;
 
 //import data models
 var Tile = require('./../models/tile');

@@ -1,7 +1,7 @@
 var WebSocket = require('ws');
 var _ = require('lodash');
 
-var config = require('./../config.js').gamepads;
+var config = require('./../config.js').inputs.gamepads;
 
 class Gamepads {
 	constructor() {

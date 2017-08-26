@@ -38,7 +38,7 @@ app.get("/", function (req, res) {
 
 app.use(cookieParser());
 app.use(function (req, res, next) {
-	if (config.login.enabled && (/\.html/ig).test(req.url)) {
+	if (config.pages.login.enabled && (/\.html/ig).test(req.url)) {
 		if (req.cookies.siteUser != null || (/login\.html/ig).test(req.url)) {
 			return next();
 		} else {
@@ -52,7 +52,7 @@ app.use(function (req, res, next) {
 
 //init mongoose
 /* eslint-disable */
-if (config.verticadb.enabled) {
+if (config.databases.verticadb.enabled) {
 	var verticadb = require('./database/VerticaDB');
 	app.locals.verticadb = verticadb;
 }
@@ -60,12 +60,12 @@ if (config.verticadb.enabled) {
 
 //init vertica
 /* eslint-disable */
-if (config.mongodb.enabled) {
+if (config.databases.mongodb.enabled) {
 	var mongodb = require('./database/MongoDB');
 }
 /* eslint-enable */
 
-app.use(express.static('./build'));
+app.use(express.static('./dist'));
 
 app.use('/', routes);
 
@@ -76,14 +76,14 @@ var server = app.listen(config.app.port, function() {
 
 //init kinect server
 /* eslint-disable */
-if (config.kinectTransport.enabled) {
+if (config.inputs.kinectTransport.enabled) {
     var KTServer = require('./sockets/KinectTransport');
 }
 /* eslint-enable */
 
 //init perception neuron server
 /* eslint-disable */
-if (config.perceptionNeuron.enabled) {
+if (config.inputs.perceptionNeuron.enabled) {
     var PNServer = require('./sockets/PerceptionNeuron');
     var pnServer = new PNServer();
 }
@@ -91,7 +91,7 @@ if (config.perceptionNeuron.enabled) {
 
 //init gamepad server
 /* eslint-disable */
-if (config.gamepads.enabled) {
+if (config.inputs.gamepads.enabled) {
     var GPServer = require('./sockets/Gamepads');
     var gpServer = new GPServer();
 }

@@ -1,7 +1,7 @@
 var WebSocket = require('ws');
 var _ = require('lodash');
 
-var config = require('./../config.js').perceptionNeuron;
+var config = require('./../config.js').inputs.perceptionNeuron;
 
 class PerceptionNeuron {
 	constructor() {

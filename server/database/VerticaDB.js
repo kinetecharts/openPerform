@@ -1,6 +1,6 @@
 var vertica = require('vertica');
 
-var config = require('./../config.js').verticadb;
+var config = require('./../config.js').databases.verticadb;
 
 var verticaConnection = vertica.connect(config, function (err) {
 	if (err) {

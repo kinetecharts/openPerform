@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var config = require('./../config.js').mongodb;
+var config = require('./../config.js').databases.mongodb;
 
 //connect mongoose
 mongoose.connect('mongodb://localhost/' + config.dbName);

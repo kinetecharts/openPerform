@@ -3,11 +3,16 @@ methods and handles response data and
 callbacks to the threejs environment.
 The input list is defined in config/index.js*/
 
+var THREE = require('three');
 import _ from 'lodash'
+import TWEEN from 'tween'
 
 import config from './../config'
 
+import Common from './../util/Common'
+
 import Myo from './Myo'
+import MidiController from './MidiController'
 import KinectTransport from './KinectTransport'
 import KeyboardController from './KeyboardController'
 import NeuroSky from './NeuroSky'
@@ -49,37 +54,488 @@ class InputManager {
 		case 'gamepads':
 			this.inputs[type] = new Gamepads('ws://'+window.location.hostname+':' + config.gamepads.ports.outgoing);
 			break;
+		case 'midiController':
+			this.inputs[type] = new MidiController('ws://'+window.location.hostname+':' + config.midiController.ports.outgoing);
+			this.initMidiControllerCallbacks();
+			break;
 		};
 	}
 
-	registerCallback(input, event, callback) {
+	registerCallback(input, event, label, callback) {
 		if (this.inputs[input]) {
-			this.inputs[input].on(event, callback);
+			this.inputs[input].on(event, callback, event, label);
 		}
 	}
 
+	initMidiControllerCallbacks() {
+		this.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
+			switch (data.name) {
+
+				case 'track left': // scene 1
+					this.scene.switchEnvironment("grid-dark");
+					this.parent.performers.showWireframe();
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["trails"]);
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["cloner"]);
+
+					this.snorryCam();
+
+					break;
+				case 'track right': // scene 2
+					this.scene.switchEnvironment("water");
+					this.parent.performers.hideWireframe();
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["cloner"]);
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["trails"]);
+
+					this.firstPerson();
+					break;
+
+				case 'marker set': // start overlay
+					this.parent.toggleStartOverlay();
+					break;
+				case 'marker left': // black overlay
+					this.parent.toggleBlackOverlay();
+					break;
+				case 'marker right': // end overlay
+					this.parent.toggleEndOverlay();
+					break;
+
+				case 'stop':
+					this.scene.unsetRotation();
+					break;
+				case 'play':
+					this.scene.setRotation();
+					break;
+
+				case 'solo 1':
+					this.snorryCam();
+					break;
+
+				case 'solo 2':
+					this.cutMedium();
+					break;
+
+				case 'solo 3':
+					this.cutMedium();
+					this.trackPerformer();
+					break;
+
+				case 'solo 4':
+					this.flyTop();
+					break;
+
+				case 'solo 5':
+					this.cutThreeQ();
+					break;
+
+				case 'solo 6':
+					this.firstPerson();
+					break;
+
+				case 'solo 7':
+					this.cutMedium();
+					this.lowTrack();
+					break;
+
+				case 'solo 8':
+					this.rotate();
+					break;
+
+				case 'record 1':
+					this.trackClose();
+					break;
+
+				case 'record 2':
+					this.flyOut();
+					break;
+
+				case 'slider 8':
+					data.parameter = "waves"
+					data.value = Common.mapRange(data.value, 0, 127, 0.25, 1);
+					this.scene.environments.updateParameters(data);
+					break;
+
+
+				case 'record 4':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
+				break;
+
+				case 'record 5':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', false);
+				break;
+
+				case 'record 6':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', false);
+				break;
+
+				case 'record 7':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', false);
+				break;
+
+				case 'record 8':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
+				break;
+
+				// case 'knob 1':
+				// 	// this.scene.controls.rotateLeft();
+				// 	// this.scene.controls.sphericalDelta.theta = Common.mapRange(data.value, 0, 127, 0, Math.PI);
+				// 	break;
+
+				// case 'slider 1':
+				// 	// this.scene.controls.sphericalDelta.phi = Common.mapRange(data.value, 0, 127, 0, -Math.PI);
+				// 	break;
+
+				// case 'solo 6':
+				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["trails"])
+				// 	break;
+
+				// case 'record 6':
+				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["trails"])
+				// 	break;
+
+				// case 'solo 7':
+				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["cloner"])
+				// 	break;
+
+				// case 'record 7':
+				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["cloner"])
+				// 	break;
+
+				// case 'solo 8':
+				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["particleSystem"])
+				// 	break;
+
+				// case 'record 8':
+				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["particleSystem"])
+				// 	break;
+				// // case 'slider 1':
+				// // 	data.parameter = "lines"
+				// // 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// // 	this.scene.environments.updateParameters(data);
+				// // 	break;
+				// // case 'knob 1':
+				// // 	data.parameter = "size"
+				// // 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// // 	this.scene.environments.updateParameters(data);
+				// // 	break;
+				// case 'slider 1':
+				// 	data.parameter = "life"
+				// 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// 	this.parent.performers.updateParameters(data);
+				// 	break;
+				// case 'knob 1':
+				// 	data.parameter = "rate"
+				// 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// 	this.parent.performers.updateParameters(data);
+				// 	break;
+
+				// // case 'knob 3':
+				// // 	data.parameter = "size"
+				// // 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// // 	this.parent.performers.updateParameters(data);
+				// // 	break;
+				// // case 'slider 3':
+				// // 	data.parameter = "color"
+				// // 	data.value = Common.mapRange(data.value, 0, 127, 0, 1);
+				// // 	this.parent.performers.updateParameters(data);
+				// // 	break;
+			}
+		}.bind(this));
+	}
+
 	initPerceptionNeuronCallbacks() {
-		this.registerCallback('perceptionNeuron', 'message', this.parent.updatePerformers);
+		this.registerCallback('perceptionNeuron', 'message', 'Perception Neuron', this.parent.updatePerformers.bind(this.parent));
 	}
 
 	initNeuroSkyCallbacks() { //https://github.com/elsehow/mindwave
-		this.registerCallback('mindwave', 'data', function(data) { console.log(data); });
+		this.registerCallback('mindwave', 'data', 'Mindwave', function(data) { console.log(data); });
 	}
 
 	initMyoCallbacks() { //https://github.com/thalmiclabs/myo.js/blob/master/docs.md
-		this.registerCallback('myo', 'imu', function(data) { console.log(data); });
+		this.registerCallback('myo', 'imu', 'Myo', function(data) { console.log(data); });
 	}
 
 	initKinectTransportCallbacks() { //Reuires Kinect Transport app.
 		/*https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
 		Returns either depth or bodies object.*/
-		this.registerCallback('kinecttransport', 'depth', this.scene.viewKinectTransportDepth.bind(this.scene));
-		this.registerCallback('kinecttransport', 'bodies', this.scene.viewKinectTransportBodies.bind(this.scene));
+		this.registerCallback('kinecttransport', 'depth', 'Kinect Depth', this.scene.viewKinectTransportDepth.bind(this.scene));
+		this.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.scene));
 	}
 
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-		this.registerCallback('keyboard', 'h', this.parent.toggleOverlay);
-		this.registerCallback('keyboard', 'f', this.parent.toggleFullscreen);
+
+		// this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
+		this.registerCallback('keyboard', 'space', 'Hide Floor', () => {this.scene.environments.environments[0].toggleGrid();});
+		
+		this.registerCallback('keyboard', 'n', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
+		}.bind(this));
+
+		this.registerCallback('keyboard', 'm', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', false);
+		}.bind(this));
+
+		this.registerCallback('keyboard', ',', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', false);
+		}.bind(this));
+
+		this.registerCallback('keyboard', '.', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', false);
+		}.bind(this));
+
+		this.registerCallback('keyboard', '/', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
+		}.bind(this));
+
+
+		this.registerCallback('keyboard', '-', 'Hide GUI', this.parent.toggleGUI.bind(this.parent));
+		this.registerCallback('keyboard', '=', 'Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
+		
+		
+		// this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '3', 'Light Grid Theme', function() { this.switchEnvironment("grid-light"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '4', 'Gradient Theme', function() { this.switchEnvironment("gradient"); }.bind(this.scene));
+		// this.registerCallback('keyboard', '5', 'Island Theme', function() { this.switchEnvironment("island"); }.bind(this.scene));
+
+		//Camera positions
+		this.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); //enable / disable camera rotation
+
+		this.registerCallback('keyboard', 'q', 'Fly Close', function() { //fly to close up shot
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
+				);
+			}
+			this.cameraControl.fly_to(
+				config.camera.closeShot.position,
+				new THREE.Vector3(0,0,0),
+				config.camera.closeShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
+				1,
+				function(){ console.log("Camera moved!"); }
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'w', 'Fly Medium', function() { //fly to medium shot
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
+				);
+			}
+			this.cameraControl.fly_to(
+				config.camera.mediumShot.position,
+				new THREE.Vector3(0,0,0),
+				config.camera.mediumShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
+				1,
+				function(){ console.log("Camera moved!");}
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'e', 'Fly Wide', function() { //fly to wide shot
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
+				);
+			}
+			this.cameraControl.fly_to(
+				config.camera.wideShot.position,
+				new THREE.Vector3(0,0,0),
+				config.camera.wideShot.look,
+				TWEEN.Easing.Quadratic.InOut,
+				'path',
+				3000,
+				1,
+				function(){ console.log("Camera moved!"); }
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'a', 'Cut Close', this.cutClose.bind(this)); //cut to close up shot
+
+		this.registerCallback('keyboard', 's', 'Cut Medium', this.cutMedium.bind(this)); //cut to medium shot
+
+		this.registerCallback('keyboard', 'd', 'Cut Wide', function() { //cut to wide shot
+			if (this.camera.parent.type !== "Scene") {
+				this.cameraControl.changeParent(
+					this.scene
+				);
+			}
+			this.cameraControl.jump(
+				config.camera.wideShot.position,
+				config.camera.wideShot.look
+			);
+		}.bind(this.scene));
+
+		this.registerCallback('keyboard', 'g', 'Snorry Cam', this.snorryCam.bind(this)); //look at face
+
+		this.registerCallback('keyboard', 'f', 'First Person', this.firstPerson.bind(this)); //first person view
+
+		this.registerCallback('keyboard', 't', 'Track Performer', this.trackPerformer.bind(this)); //follow x position of performer
+
+		this.registerCallback('keyboard', 'y', 'Top View', this.flyTop.bind(this)); //follow x position of performer
+
+		this.registerCallback('keyboard', 'u', '3/4 View', this.cutThreeQ.bind(this)); //follow x position of performer
+
+		this.registerCallback('keyboard', 'i', 'Fly Out', this.flyOut.bind(this)); //follow x position of performer
+
+		this.registerCallback('keyboard', 'z', 'Env Input', function() { //toggle environment input
+			this.scene.environments.toggle("usePerformerInput");
+		}.bind(this));
+
+		this.registerCallback('keyboard', 'x', 'Toggle Wireframe', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].toggleWireframe();
+		}.bind(this));
+
+		this.registerCallback('keyboard', 'esc', 'Show Keys', this.parent.openKeyboardHelp.bind(this.parent));
+
+		this.registerCallback('keyboard', 'l', 'low track', this.lowTrack.bind(this));
+
+	}
+
+	flyOut() {
+		if (this.scene.camera.parent.type !== "Scene") {
+			this.scene.cameraControl.changeParent(
+				this.scene.scene
+			);
+		}
+		this.scene.cameraControl.fly_to(
+			new THREE.Vector3(0,195,195),
+			new THREE.Vector3(0,0,0),
+			new THREE.Vector3(0,0,0),
+			TWEEN.Easing.Quadratic.InOut,
+			'path',
+			7000,
+			1,
+			function(){ console.log("Camera moved!");}
+		);
+	}
+
+	trackClose() {
+		this.scene.unsetRotation();
+		if (this.scene.camera.parent.type !== "Scene") {
+			this.scene.cameraControl.changeParent(
+				this.scene
+			);
+		}
+		this.cutClose();
+		this.scene.cameraControl.track(
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
+			new THREE.Vector3(0, 0, 0),
+			new THREE.Vector3(0, 0, 0)
+		);
+	}
+
+	cutClose() {
+		this.scene.unsetRotation();
+		if (this.scene.camera.parent.type !== "Scene") {
+			this.scene.cameraControl.changeParent(
+				this.scene
+			);
+		}
+		this.scene.cameraControl.jump(
+			config.camera.closeShot.position,
+			config.camera.closeShot.look
+		);
+	}
+
+	rotate() {
+		if (this.scene.camera.parent.type !== "Scene") {
+			this.scene.cameraControl.changeParent(
+				this.scene
+			);
+		}
+		this.scene.cameraControl.trackingObj = null;
+		this.scene.setRotationSpeed(4.5);
+		this.scene.setRotation();
+	}
+
+	lowTrack() {
+		this.scene.cameraControl.track(
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
+			new THREE.Vector3(0, 0.5, 0),
+			new THREE.Vector3(0, -0.25, 0)
+		);
+	}
+
+	cutThreeQ() {
+		if (this.scene.camera.parent.type !== "Scene") {
+			this.scene.cameraControl.changeParent(
+				this.scene.scene
+			);
+		}
+		this.scene.cameraControl.jump(
+			new THREE.Vector3(0,15,15),
+			new THREE.Vector3(0,0,0),
+		);
+		this.scene.setRotationSpeed(4.5);
+		this.scene.setRotation();
+	}
+
+	flyTop() {
+		if (this.scene.camera.parent.type !== "Scene") {
+			this.scene.cameraControl.changeParent(
+				this.scene.scene
+			);
+		}
+		this.scene.cameraControl.fly_to(
+			new THREE.Vector3(0,13,0),
+			new THREE.Vector3(0,0,0),
+			new THREE.Vector3(0,0,0),
+			TWEEN.Easing.Quadratic.InOut,
+			'path',
+			3000,
+			1,
+			function(){ console.log("Camera moved!");}
+		);
+	}
+
+	trackPerformer() {
+		this.scene.cameraControl.track(
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
+			new THREE.Vector3(0, 0, 0),
+			new THREE.Vector3(0, 0.65, 0)
+		);
+	}
+
+	cutMedium() {
+		if (this.scene.camera.parent.type !== "Scene") {
+			this.scene.cameraControl.changeParent(
+				this.scene.scene
+			);
+		}
+
+		this.scene.cameraControl.jump(
+			config.camera.mediumShot.position,
+			config.camera.mediumShot.look
+		);
+	}
+
+	firstPerson() {
+		this.scene.unsetRotation();
+		this.scene.cameraControl.changeParent(
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
+		);
+
+		this.scene.cameraControl.jump(
+			new THREE.Vector3(0, 0, 1),
+			new THREE.Vector3(0, 0, 2),
+		);
+	}
+
+	snorryCam() {
+		this.scene.unsetRotation();
+		this.scene.cameraControl.changeParent(
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_spine3']
+		);
+
+		this.scene.cameraControl.jump(
+			new THREE.Vector3(0, 15, 150),
+			new THREE.Vector3(0, 15, 0),
+		);
 	}
 }
 
