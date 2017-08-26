@@ -33,7 +33,7 @@ class Scene {
 
 		this.environments = null;
 	}
-	initScene(startPos, inputs, statsEnabled, performers) {
+	initScene(inputs, statsEnabled, performers) {
 		this.container = $('#scenes');
 
 		this.w = this.container.width();
@@ -61,11 +61,7 @@ class Scene {
 
 		window.camera = this.camera;
 
-		// var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
-		
-		// this.camera.position.copy(src);
 		this.camera.position.set( 0, 0.5, 16 );
-		// this.camera.lookAt(new THREE.Vector3(0,1000,0));
 
 		this.scene.add( this.camera );
 

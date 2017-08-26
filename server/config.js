@@ -1,13 +1,6 @@
 module.exports = config;
 
 var config = {
-	app: {
-		port: 8080
-	},
-	favicon: __dirname + './../src/images/favicon.ico',
-	browserSync:{
-		port: 9000
-	},
 	databases: {
 		verticadb: {
 			enabled: false,
@@ -22,12 +15,19 @@ var config = {
 			dbName:'databasName',
 			port: 27017,
 			files:'./data/db/'
-		}
+		},
 	},
+	app: {
+		port: 8000
+	},
+	browserSync:{
+		port: 8080
+	},
+	favicon: __dirname + './../build/images/favicon.ico',
 	pages: {
 		login: { //turn on to force user to login with shared password
 			enabled: false,
-			password: 'ringCentral2017'
+			password: 'password'
 		}
 	},
 	inputs: {
@@ -57,7 +57,7 @@ var config = {
 			ports: {
 				outgoing:9201 //port the browser connects on
 			}
-		},
+		}
 	},
 	apis: {
 		mapzen: {

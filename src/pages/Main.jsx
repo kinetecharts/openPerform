@@ -43,7 +43,7 @@ class Main extends React.Component {
 		this.performers = new Performers();
 
 		//once the dom has mounted, initialize threejs
-		this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers);
+		this.state.scene.initScene(this.state.inputs, this.state.stats, this.performers);
 		
 		this.performers.init(this.state.scene.scene);
 
@@ -139,9 +139,11 @@ class Main extends React.Component {
 				this.performers.update(id, data);
 			}
 
-			this.setState({
-				performers: this.performers.getPerformers()
-			});
+			if (!_.isEqual(this.state.performers, this.performers.getPerformers())) {
+				this.setState({
+					performers: this.performers.getPerformers()
+				});
+			}
 		}
 	}
 

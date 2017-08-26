@@ -18,7 +18,7 @@ router.get('/', function(request, response) {
 });
 
 //route for mapzen tile api / cache (requires mongodb)
-if (config.apis.mapzen.enabled && config.mongodb.enabled) {
+if (config.apis.mapzen.enabled && config.databases.mongodb.enabled) {
 	var tiles = require('./tiles');
 	router.get('/tiles/:lat/:lon/:area', tiles.getTiles);
 }

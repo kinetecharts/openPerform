@@ -10,7 +10,7 @@ router.all('/login', (req, res) => {
             status: 1,
             message: 'password is empty'
         });
-    } else if (req.body.password == config.pages.login.password) {
+    } else if (req.body.password == config.login.password) {
         //1 day
         res.cookie('siteUser', 'siteUser', {
             maxAge: 86400000,

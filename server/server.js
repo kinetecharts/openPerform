@@ -20,7 +20,7 @@ var config = require('./config.js');
 //enable gzip
 app.use(compression());
 
-app.use(favicon(config.favicon));
+// app.use(favicon(config.favicon));
 app.use(morgan('dev'));
 app.use(methodOverride());
 
@@ -65,7 +65,7 @@ if (config.databases.mongodb.enabled) {
 }
 /* eslint-enable */
 
-app.use(express.static('./dist'));
+app.use(express.static('./build'));
 
 app.use('/', routes);
 
@@ -94,5 +94,13 @@ if (config.inputs.perceptionNeuron.enabled) {
 if (config.inputs.gamepads.enabled) {
     var GPServer = require('./sockets/Gamepads');
     var gpServer = new GPServer();
+}
+/* eslint-enable */
+
+//init midi controller server
+/* eslint-disable */
+if (config.inputs.midiController.enabled) {
+    var MidiController = require('./sockets/MidiController');
+    var midiController = new MidiController();
 }
 /* eslint-enable */
