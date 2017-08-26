@@ -51,6 +51,9 @@ class Scene {
 		this.scene = new THREE.Scene();
 		window.scene = this.scene;
 
+		// var axisHelper = new THREE.AxisHelper( 5 );
+		// this.scene.add( axisHelper );
+
         this.scene.fog = new THREE.FogExp2( 0x171223, 0.00075 , 10000);
         //this.scene.fog = new THREE.FogExp2( 0x0C0F15, 0.0075 , 100);
 

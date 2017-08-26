@@ -283,34 +283,50 @@ class CameraControl{
 		this.controls.target = look;
 	}
 
-	track(target, look, offset) {
+	trackZ(target, look, offset) {
+		this.zTrack = true;
 		if (this.trackingObj) {
 			this.trackingObj = null;
-		} else {
-			this.trackingObj = target;
-			this.offsetObj = offset;
-			this.lookObj = look;
 		}
+		this.trackingObj = target;
+		this.offsetObj = offset;
+		this.lookObj = look;
+	}
+
+	track(target, look, offset) {
+		var vector = new THREE.Vector3();
+		vector.setFromMatrixPosition( target.matrixWorld );
+		vector.add(offset);
+		this.controls.object.position.z = vector.z;
+
+		this.zTrack = false;
+		if (this.trackingObj) {
+			this.trackingObj = null;
+		}
+		this.trackingObj = target;
+		this.offsetObj = offset;
+		this.lookObj = look;
+	}
+
+	trackZoom(newOffset, easing, duration) {
+		var objTween = new TWEEN.Tween(this.offsetObj)
+        .to(newOffset, duration)
+        .easing(easing)
+        .start()
 	}
 
 	update(timeDelta) {
 		if (this.trackingObj) {
-			var cam = this.camera.position.clone();
-			cam.z = 0;
-			var track = this.trackingObj.position.clone();
-			track.z = 0;
-			var dTo = cam.distanceTo(track);
-			if (dTo > 1.5) {
-
-
-				var vector = new THREE.Vector3();
-				vector.setFromMatrixPosition( this.trackingObj.matrixWorld );
-				vector.add(this.offsetObj);
-				this.controls.object.position.x = vector.x;
-				this.controls.object.position.y = vector.y;
-				vector.add(this.lookObj);
-				this.controls.target = vector;
+			var vector = new THREE.Vector3();
+			vector.setFromMatrixPosition( this.trackingObj.matrixWorld );
+			vector.add(this.offsetObj);
+			this.controls.object.position.x = vector.x;
+			this.controls.object.position.y = vector.y;
+			if (this.zTrack) {
+				this.controls.object.position.z = vector.z;
 			}
+			vector.z = 0;
+			this.controls.target = vector;
 		}
 	}
 }
