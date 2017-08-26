@@ -96,7 +96,8 @@ module.exports = {
 		  comments: false
 		}),
 		new HtmlWebpackPlugin({
-			template: 'www/index.html'
+			template: 'www/index.html',
+			inject: false
 		})
 	]
 }
