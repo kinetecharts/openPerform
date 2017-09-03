@@ -12,7 +12,7 @@ import DepthDisplay from './displayComponents/DepthDisplay'
 import CameraControl from './../camera/cameraControl'
 import Environments from './../environments'
 
-// import VR from './vr/vr.js'
+import VR from './vr/vr.js'
 
 class Scene {
 	constructor() {
@@ -58,7 +58,7 @@ class Scene {
         //this.scene.fog = new THREE.FogExp2( 0x0C0F15, 0.0075 , 100);
 
 		/// Global : this.camera
-		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.1, 1000000 );
+		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.001, 1000000 );
 
 		window.camera = this.camera;
 
@@ -99,7 +99,7 @@ class Scene {
 		
 		this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 
-		// this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
+		this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
 		//initiating renderer
 		this.render();
@@ -174,9 +174,9 @@ class Scene {
 
 		this.cameraControl.update();
 
-		// if (this.vr) {
-		// 	this.vr.update();
-		// }
+		if (this.vr) {
+			this.vr.update();
+		}
 
 		this.renderer.render( this.scene, this.camera );
 

@@ -3,6 +3,8 @@
 var THREE = require('three');
 import _ from 'lodash'
 
+import $ from 'jquery'
+
 import WEBVR from './WebVR'
 import VREffect from './VREffect'
 import VRControls from './VRControls'

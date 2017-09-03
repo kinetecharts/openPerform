@@ -71,6 +71,10 @@ class InputManager {
 		this.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
 			switch (data.name) {
 
+				case 'cycle':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].resetScale();
+				break;
+
 				case 'track left': // scene 1
 					this.scene.switchEnvironment("grid-dark");
 					this.parent.performers.showWireframe();
@@ -94,13 +98,13 @@ class InputManager {
 					this.scene.cameraControl.trackZ(
 						this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
 						new THREE.Vector3(0, 0.5, 0),
-						new THREE.Vector3(0,0,7)
+						new THREE.Vector3(0,0,8)
 					);
 					break;
 				case 'marker left': // black overlay
 					// this.parent.toggleBlackOverlay();
 					this.scene.cameraControl.trackZoom(
-						new THREE.Vector3(0,0,100),
+						new THREE.Vector3(0,0,105),
 						TWEEN.Easing.Quadratic.InOut,
 						6400
 					);
@@ -108,7 +112,7 @@ class InputManager {
 				case 'marker right': // end overlay
 					// this.parent.toggleEndOverlay();
 					this.scene.cameraControl.trackZoom(
-						new THREE.Vector3(0,0,3),
+						new THREE.Vector3(0,0,5),
 						TWEEN.Easing.Quadratic.InOut,
 						5700
 					);
@@ -199,9 +203,70 @@ class InputManager {
 				// 	// this.scene.controls.sphericalDelta.theta = Common.mapRange(data.value, 0, 127, 0, Math.PI);
 				// 	break;
 
-				// case 'slider 1':
-				// 	// this.scene.controls.sphericalDelta.phi = Common.mapRange(data.value, 0, 127, 0, -Math.PI);
-				// 	break;
+				case 'slider 1':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart('head', Common.mapRange(data.value, 0, 127, 0.01, 5));
+				break;
+
+				case 'slider 2':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart('leftshoulder', Common.mapRange(data.value, 0, 127, 0.01, 5));
+				break;
+
+				case 'slider 3':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart('rightshoulder', Common.mapRange(data.value, 0, 127, 0.01, 5));
+				break;
+
+				case 'slider 4':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart('leftupleg', Common.mapRange(data.value, 0, 127, 0.01, 5));
+				break;
+
+				case 'slider 5':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart('rightupleg', Common.mapRange(data.value, 0, 127, 0.01, 5));
+				break;
+
+				case 'slider 6':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(Common.mapRange(data.value, 0, 127, 1, 5000));
+				break;
+
+				case 'slider 7':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(Common.mapRange(data.value, 0, 127, 1, 5000));
+				break;
+
+				case 'mute 1':
+					this.scene.cameraControl.trackZoom(
+						new THREE.Vector3(0,0,24),
+						TWEEN.Easing.Quadratic.InOut,
+						1000
+					);
+				break;
+
+				case 'mute 2':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(5000);
+				break;
+
+				case 'mute 3':
+					this.scene.cameraControl.trackZoom(
+						new THREE.Vector3(0,0,7),
+						TWEEN.Easing.Quadratic.InOut,
+						20000
+					);
+				break;
+
+				case 'mute 4':
+					this.scene.cameraControl.trackZoom(
+						new THREE.Vector3(0,0,3),
+						TWEEN.Easing.Quadratic.InOut,
+						20000
+					);
+				break;
+
+				case 'mute 5':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(5000);
+				break;
+
+				case 'mute 6':
+					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart("hips", 500, 1000);
+				break;
+
 
 				// case 'solo 6':
 				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["trails"])
@@ -306,28 +371,37 @@ class InputManager {
 			);
 		}.bind(this));
 
+		this.registerCallback('keyboard', "q", 'randomize limb scale', function() {
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(5000);
+			// this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeColors(5000);
+		}.bind(this));
+
+		this.registerCallback('keyboard', "w", 'randomize limb scale', function() {
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(5000);
+		}.bind(this));
+
 		// this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
-		// this.registerCallback('keyboard', 'space', 'Hide Floor', () => {this.scene.environments.environments[0].toggleGrid();});
+		this.registerCallback('keyboard', 'space', 'Hide Floor', () => {this.scene.environments.environments[0].toggleGrid();});
 		
-		// this.registerCallback('keyboard', 'n', 'Unparent', function() { //toggle environment input
-		// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
-		// }.bind(this));
+		this.registerCallback('keyboard', 'n', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
+		}.bind(this));
 
-		// this.registerCallback('keyboard', 'm', 'Unparent', function() { //toggle environment input
-		// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', false);
-		// }.bind(this));
+		this.registerCallback('keyboard', 'm', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightshoulder', false);
+		}.bind(this));
 
-		// this.registerCallback('keyboard', ',', 'Unparent', function() { //toggle environment input
-		// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', false);
-		// }.bind(this));
+		this.registerCallback('keyboard', ',', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftupleg', false);
+		}.bind(this));
 
-		// this.registerCallback('keyboard', '.', 'Unparent', function() { //toggle environment input
-		// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', false);
-		// }.bind(this));
+		this.registerCallback('keyboard', '.', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('rightupleg', false);
+		}.bind(this));
 
-		// this.registerCallback('keyboard', '/', 'Unparent', function() { //toggle environment input
-		// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
-		// }.bind(this));
+		this.registerCallback('keyboard', '/', 'Unparent', function() { //toggle environment input
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
+		}.bind(this));
 
 
 		this.registerCallback('keyboard', '-', 'Hide GUI', this.parent.toggleGUI.bind(this.parent));

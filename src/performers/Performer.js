@@ -3,6 +3,9 @@
 var THREE = require('three');
 var bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
 var sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
+
+import TWEEN from 'tween'
+
 import Common from './../util/Common'
 
 import PerformerEffects from './../effects/performer'
@@ -12,6 +15,9 @@ import dat from 'dat-gui'
 
 class Performer {
 	constructor(parent, inputId, performerId, type, color) {
+		this.colors = [ "#036B75", "#0x0AFCE8", "#0xFCE508", "#0xFA0AE3", "#0x260C58" ];
+
+
 		this.parent = parent;
 		this.inputId = inputId;
 		this.type = type;
@@ -33,6 +39,9 @@ class Performer {
 
 		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
 		// this.addEffects(['datatags']);//defaults
+
+		this.scaleInterval = null;
+		this.colorInterval = null;
 	}
 
 	
@@ -64,6 +73,7 @@ class Performer {
 						object.material = new THREE.MeshPhongMaterial();
 						object.material.wireframe = this.wireframe;
 						object.material.color.set(parseInt(this.color,16));
+						
 						object.material.needsUpdate = true;
 					}
 				}
@@ -134,6 +144,314 @@ class Performer {
 
 	getScene() {
 		return this.scene;
+	}
+
+	randomizeAll(switchTime) {
+		// var parts = ['head', 'leftshoulder', 'rightshoulder', 'leftupleg',  'rightupleg'];
+		var bvhStructure = {
+			hips: {
+				rightupleg: {
+					rightleg: {
+						rightfoot: {}
+					}
+				},
+				leftupleg: {
+					leftleg: {
+						leftfoot: {}
+					}
+				},
+				spine: {
+					spine1: {
+						spine2: {
+							spine3: {
+								neck: {
+									head: {}
+								},
+								rightshoulder: {
+									rightarm: {
+										rightforearm: {
+											righthand: {
+												righthandthumb1: {
+													righthandthumb2: {
+														righthandthumb3: {}
+													}
+												},
+												rightinhandindex: {
+													righthandindex1: {
+														righthandindex2: {
+															righthandindex3: {}
+														}
+													}
+												},
+												rightinhandmiddle: {
+													righthandmiddle1: {
+														righthandmiddle2: {
+															righthandmiddle3: {}
+														}
+													}
+												},
+												rightinhandring: {
+													righthandring1: {
+														righthandring2: {
+															righthandring3: {}
+														}
+													}
+												},
+												rightinhandpinky: {
+													righthandpinky1: {
+														righthandpinky2: {
+															righthandpinky3: {}
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								leftshoulder: {
+									leftarm: {
+										leftforearm: {
+											lefthand: {
+												lefthandthumb1: {
+													lefthandthumb2: {
+														lefthandthumb3: {}
+													}
+												},
+												leftinhandindex: {
+													lefthandindex1: {
+														lefthandindex2: {
+															lefthandindex3: {}
+														}
+													}
+												},
+												leftinhandmiddle: {
+													lefthandmiddle1: {
+														lefthandmiddle2: {
+															lefthandmiddle3: {}
+														}
+													}
+												},
+												leftinhandring: {
+													lefthandring1: {
+														lefthandring2: {
+															lefthandring3: {}
+														}
+													}
+												},
+												leftinhandpinky: {
+													lefthandpinky1: {
+														lefthandpinky2: {
+															lefthandpinky3: {}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		};
+
+		var parts = Common.getKeys(bvhStructure, "");
+		_.each(parts, (part) => {
+			this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3),switchTime);	
+		});
+		if (this.scaleInterval) {
+			clearInterval(this.scaleInterval);
+		}
+		this.scaleInterval  = setInterval(() => {
+			_.each(parts, (part) => {
+				this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3),switchTime);	
+			});
+		}, switchTime)
+	}
+
+	randomizeColors(switchTime) {
+		this.scene.traverse( function ( part ) {
+			if(part.hasOwnProperty("material")){ 
+				// part.material = new THREE.MeshPhongMaterial();
+				part.material.wireframe = this.wireframe;
+				part.material.color.set(this.colors[Common.mapRange(Math.random(), 0, 1, 0, this.colors.length-1)]);
+				
+				part.material.needsUpdate = true;
+			}
+		}.bind(this));
+		if (this.colorInterval) {
+			clearInterval(this.colorInterval);
+		}
+		this.colorInterval  = setInterval(() => {
+			this.scene.traverse( function ( part ) {
+				if(part.hasOwnProperty("material")){ 
+					// part.material = new THREE.MeshPhongMaterial();
+					part.material.wireframe = this.wireframe;
+					part.material.color.set(this.colors[Common.mapRange(Math.random(), 0, 1, 0, this.colors.length-1)]);
+					
+					part.material.needsUpdate = true;
+				}
+			}.bind(this));
+		}, switchTime)
+	}
+
+	randomizeLimbs(switchTime) {
+		var parts = ['head', 'leftshoulder', 'rightshoulder', 'leftupleg',  'rightupleg'];
+		_.each(parts, (part) => {
+			this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.75, 1.5),switchTime);	
+		});
+		if (this.scaleInterval) {
+			clearInterval(this.scaleInterval);
+		}
+		this.scaleInterval  = setInterval(() => {
+			_.each(parts, (part) => {
+				this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.75, 1.5), switchTime);	
+			});
+		}, switchTime)
+	}
+
+	resetScale() {
+		if (this.scaleInterval) {
+			clearInterval(this.scaleInterval);
+		}
+		var bvhStructure = {
+			hips: {
+				rightupleg: {
+					rightleg: {
+						rightfoot: {}
+					}
+				},
+				leftupleg: {
+					leftleg: {
+						leftfoot: {}
+					}
+				},
+				spine: {
+					spine1: {
+						spine2: {
+							spine3: {
+								neck: {
+									head: {}
+								},
+								rightshoulder: {
+									rightarm: {
+										rightforearm: {
+											righthand: {
+												righthandthumb1: {
+													righthandthumb2: {
+														righthandthumb3: {}
+													}
+												},
+												rightinhandindex: {
+													righthandindex1: {
+														righthandindex2: {
+															righthandindex3: {}
+														}
+													}
+												},
+												rightinhandmiddle: {
+													righthandmiddle1: {
+														righthandmiddle2: {
+															righthandmiddle3: {}
+														}
+													}
+												},
+												rightinhandring: {
+													righthandring1: {
+														righthandring2: {
+															righthandring3: {}
+														}
+													}
+												},
+												rightinhandpinky: {
+													righthandpinky1: {
+														righthandpinky2: {
+															righthandpinky3: {}
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								leftshoulder: {
+									leftarm: {
+										leftforearm: {
+											lefthand: {
+												lefthandthumb1: {
+													lefthandthumb2: {
+														lefthandthumb3: {}
+													}
+												},
+												leftinhandindex: {
+													lefthandindex1: {
+														lefthandindex2: {
+															lefthandindex3: {}
+														}
+													}
+												},
+												leftinhandmiddle: {
+													lefthandmiddle1: {
+														lefthandmiddle2: {
+															lefthandmiddle3: {}
+														}
+													}
+												},
+												leftinhandring: {
+													lefthandring1: {
+														lefthandring2: {
+															lefthandring3: {}
+														}
+													}
+												},
+												leftinhandpinky: {
+													lefthandpinky1: {
+														lefthandpinky2: {
+															lefthandpinky3: {}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		};
+
+		var parts = Common.getKeys(bvhStructure, "");
+		_.each(parts, (partname) => {
+			var part = this.performer["robot_" + partname];
+			part.scale.set(1,1,1);
+		});
+	}
+
+	scalePart(partname, scale, animTime) {
+		var part = this.performer["robot_" + partname];
+		var s = {x: part.scale.x};
+		if (part) {
+			var tween  = new TWEEN.Tween(s)
+			.to({x:scale}, animTime)
+			.onUpdate(()=>{
+				part.scale.set(s.x,s.x,s.x);
+			})
+			.easing(TWEEN.Easing.Quadratic.InOut)
+			.start();
+
+			
+		}
+	}
+
+	rotatePart(partname, rotation) {
+		var part = this.performer["robot_" + partname];
+		
+		if (part) {
+			part.rotation.set(rotation.x,rotation.y,rotation.z);
+		}
 	}
 
 	unParentPart(partname, freeze) {
