@@ -1,10 +1,11 @@
 //Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 
 var THREE = require('three');
+var fbxLoader = require('./../libs/three/loaders/FBXLoader.js');
 var objLoader = require('./../libs/three/loaders/OBJLoader.js');
 var bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
 var sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
-var colladaLoader = require('./../libs/three/loaders/ColladaLoader2.js');
+var colladaLoader = require('./../libs/three/loaders/ColladaLoader.js');
 
 require('./../libs/BufferGeometryMerge.js');
 
@@ -23,7 +24,9 @@ class Performer {
 
 		this.styleInt = null;
 		this.modelGeos = {};
-		
+		this.colladaScenes = {};
+		this.animationMixers = [];
+
 		this.parent = parent;
 		this.inputId = inputId;
 		this.type = type;
@@ -38,6 +41,35 @@ class Performer {
 		this.styleId = 0;
 		this.style = this.styles[this.styleId];
 		this.intensity = 1;
+
+		// this.loadColladaModels([
+		// 	{
+		// 		id:'oxygen',
+		// 		url: '/models/dae/oxygen_atom.dae'
+		// 	}
+		// ]);
+
+		// this.loadFBXModels([
+		// 	{
+		// 		id:'oxygen',
+		// 		url: '/models/fbx/oxygen_atom.fbx'
+		// 	}
+		// ]);
+
+		this.loadObjModels([
+			{
+				id:'hand',
+				url: '/models/obj/hand.obj'
+			},
+			{
+				id:'head',
+				url: '/models/obj/head.obj'
+			},
+			{
+				id:'chair',
+				url: '/models/obj/chair.obj'
+			}
+		]);
 
 		this.scene = null;
 		this.modelShrink = 100;
@@ -187,18 +219,114 @@ class Performer {
 
 		this.scaleInterval = null;
 		this.colorInterval = null;
+	}
 
-		this.loadObjModel('hand', '/models/obj/hand.obj', (model) => {
-			// object.geometry = model.geometry;
+	loadColladaModels(models) {
+		_.each(models, (m) => {
+			this.loadColladaModel(m.id, m.url, (model) => {
+				// object.geometry = model.geometry;
+			});
 		});
+	}
 
-		this.loadObjModel('head', '/models/obj/head.obj', (model) => {
-			// object.geometry = model.geometry;
-		});
+	loadColladaModel(id, url, callback) {
+		var loader = new THREE.ColladaLoader();
+		console.log(loader);
+		loader.callbackProgress = function( progress, result ) {
+			console.log(progress);
+		};
+		loader.load( url, function ( result ) {
+			var colladaScene = result.scene;
+			// colladaScene.traverse( function ( object ) {
+				this.setColladaScenes(id, colladaScene);
+				callback( this.getColladaScenes(id) );
+			// }.bind(this) );
+		}.bind(this) );
+	}
 
-		this.loadObjModel('chair', '/models/obj/chair.obj', (model) => {
-			// object.geometry = model.geometry;
+	loadFBXModels(models) {
+		_.each(models, (m) => {
+			this.loadFBXModel(m.id, m.url, (model) => {
+				// object.geometry = model.geometry;
+			});
 		});
+	}
+
+	loadFBXModel(id, url, callback) {
+		if (this.getModelGeo(id) !== undefined) { console.log("Geometry already exists."); return this.getModelGeo(id); }
+
+		var manager = new THREE.LoadingManager();
+		manager.onProgress = ( item, loaded, total ) => {
+			console.log( item, loaded, total );
+		};
+		var onProgress = ( xhr ) => {
+			if ( xhr.lengthComputable ) {
+				var percentComplete = xhr.loaded / xhr.total * 100;
+				console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+			}
+		};
+		var onError = ( xhr ) => {
+			console.error( xhr );
+		};
+		var loader = new THREE.FBXLoader( manager );
+		console.log(loader);
+		loader.load( url, ( object ) => {
+			object.mixer = new THREE.AnimationMixer( object );
+			
+			this.animationMixers.push( object.mixer );
+			var action = object.mixer.clipAction( object.animations[ 0 ] );
+			action.play();
+
+			this.setColladaScenes(id, object);
+			callback( this.getColladaScenes(id) );
+		}, onProgress, onError );
+	}
+
+	loadObjModels(models) {
+		_.each(models, (m) => {
+			this.loadObjModel(m.id, m.url, (model) => {
+				// object.geometry = model.geometry;
+			});
+		});
+	}
+
+	loadObjModel(id, url, callback) {
+		if (this.getModelGeo(id) !== undefined) { console.log("Geometry already exists."); return this.getModelGeo(id); }
+
+		// console.log("Loading...", typeof this.getModelGeo(id));
+
+		var manager = new THREE.LoadingManager();
+		manager.onProgress = function ( item, loaded, total ) {
+			console.log( item, loaded, total );
+		};
+
+		var onProgress = function ( xhr ) {
+			if ( xhr.lengthComputable ) {
+				var percentComplete = xhr.loaded / xhr.total * 100;
+				console.log( Math.round(percentComplete, 2) + '% downloaded' );
+			}
+		};
+
+		var onError = function ( xhr ) {};
+
+		var loader = new THREE.OBJLoader( manager );
+		console.log(loader);
+		loader.load( url, ( object ) => {
+			let singleGeo = null
+			object.traverse(( child ) => {
+				console.log(child.name, child.type);
+				if ( child instanceof THREE.Mesh ) {
+					if (!singleGeo) {
+						singleGeo = child.geometry;
+					} else {
+						child.updateMatrix();
+						singleGeo.merge(child.geometry, child.matrix);
+					}
+				}
+			} );
+			this.setModelGeo(id, singleGeo);
+			callback( this.getModelGeo(id) );
+		}, onProgress, onError );
 	}
 
 	loadPerformer(source, type, hide, size, style, intensity) {
@@ -427,80 +555,71 @@ class Performer {
 					switch (style) {
 						case "spheres":
 							var scale = 0.01;//Common.mapRange(intensity, 1, 10, 0.01, 3)
-							var geo = new THREE.SphereGeometry( 
+							object.geometry = new THREE.SphereGeometry( 
 								object.srcSphere.radius*scale,
 							10, 10 );
-							object.geometry = geo;
 							break;
 
 						case "planes":
 							var scale = 0.01;//Common.mapRange(intensity, 1, 10, 0.01, 1)
-							var geo = new THREE.BoxGeometry( 
+							object.geometry = new THREE.BoxGeometry( 
 								object.srcSphere.radius*scale,
 							10, 10 );
-							object.geometry = geo;
 							break;
 
 						case "boxes":
 						var scale = 0.25;//Common.mapRange(intensity, 1, 10, 0.01, 5)
-							var geo = new THREE.BoxGeometry( 
+							object.geometry = new THREE.BoxGeometry( 
 								object.srcSphere.radius*scale,
 								object.srcSphere.radius*scale,
 								object.srcSphere.radius*scale
 							);
-							object.geometry = geo;
 							break;
 
 						case "robot":
 							var scale = 1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
-							var geo = new THREE.BoxGeometry( 
+							object.geometry = new THREE.BoxGeometry( 
 								object.srcBox.max.x*scale,
 								object.srcBox.max.z*scale,
 								object.srcBox.max.y*scale,
 							);
-							object.geometry = geo;
 							break;
 
 						case "discs":
 							var scale = 1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
-							var geo = new THREE.CylinderGeometry(
+							object.geometry = new THREE.CylinderGeometry(
 								object.srcBox.max.x*scale,
 								object.srcBox.max.x*scale,
 								object.srcBox.max.y*scale,
 								10
 							);
-							object.geometry = geo;
 							break;
 
 						case "oct":
 							var scale = 0.1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
-							var geo = new THREE.TetrahedronGeometry(object.srcSphere.radius*scale, 1);
-							object.geometry = geo;
+							object.geometry = new THREE.TetrahedronGeometry(object.srcSphere.radius*scale, 1);
+							object.geometry.needsUpdate = true;
 							break;
 
 						case "hands":
 							object.geometry = this.getModelGeo("hand");
-							// var scale = 0.1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
-							// var geo = new THREE.TetrahedronGeometry(object.srcSphere.radius*scale, 1);
-							// object.geometry = geo;
+							object.geometry.needsUpdate = true;
 							break;
 
 						case "heads":
 							object.geometry = this.getModelGeo("head");
-							// var scale = 0.1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
-							// var geo = new THREE.TetrahedronGeometry(object.srcSphere.radius*scale, 1);
-							// object.geometry = geo;
+							object.geometry.needsUpdate = true;
 							break;
 
 						case "chairs":
 							object.geometry = this.getModelGeo("chair");
-							// var scale = 0.1;//Common.mapRange(intensity, 1, 10, 0.01, 2)
-							// var geo = new THREE.TetrahedronGeometry(object.srcSphere.radius*scale, 1);
-							// object.geometry = geo;
+							object.geometry.needsUpdate = true;
+							break;
+
+						case "oxygen":
+							object = this.getColladaScenes("oxygen");
 							break;
 					}
-
-					object.geometry.needsUpdate = true;
 					newMeshes.push(object);
 				}
 			});
@@ -525,52 +644,14 @@ class Performer {
 		// console.log("Adding geometry: " + id, this.modelGeos);
 	}
 
-	loadObjModel(id, url, callback) {
-		if (this.getModelGeo(id) !== undefined) { console.log("Geometry already exists."); return this.getModelGeo(id); }
+	getColladaScenes(id) {
+		// console.log("Fetching Animated Mesh: ", id, this.colladaScenes[id]);
+		return this.colladaScenes[id];
+	}
 
-		// console.log("Loading...", typeof this.getModelGeo(id));
-
-		var manager = new THREE.LoadingManager();
-		manager.onProgress = function ( item, loaded, total ) {
-			console.log( item, loaded, total );
-		};
-
-		var onProgress = function ( xhr ) {
-			if ( xhr.lengthComputable ) {
-				var percentComplete = xhr.loaded / xhr.total * 100;
-				console.log( Math.round(percentComplete, 2) + '% downloaded' );
-			}
-		};
-
-		var onError = function ( xhr ) {};
-
-		var loader = new THREE.OBJLoader( manager );
-		console.log(loader);
-		loader.load( url, ( object ) => {
-			let singleGeo = null
-			object.traverse(( child ) => {
-				console.log(child.name, child.type);
-				if ( child instanceof THREE.Mesh ) {
-					if (!singleGeo) {
-						console.log("Before: ", child.geometry);
-						// if (child.geometry.type.toLowerCase() == "buffergeometry") {
-						// 	singleGeo = new THREE.BufferGeometry(child.geometry);
-						// } else {
-							// singleGeo = new THREE.Geometry(child.geometry);
-						// }
-						singleGeo = child.geometry;
-					} else {
-						console.log("Merging...");
-						child.updateMatrix();
-						singleGeo.merge(child.geometry, child.matrix);
-					}
-				}
-			} );
-
-			console.log("Final geo: ", singleGeo);
-			this.setModelGeo(id, singleGeo);
-			callback( this.getModelGeo(id) );
-		}, onProgress, onError );
+	setColladaScenes(id, mesh) {
+		this.colladaScenes[id] = mesh;
+		// console.log("Adding Animated Mesh: " + id, this.colladaScenes);
 	}
 
 	updateParameters(data) {

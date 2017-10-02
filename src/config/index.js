@@ -3,7 +3,7 @@ var THREE = require('three');
 import config from './../../server/config.js'
 
 var defaults = {
-	debug: false,
+	debug: true,
 	scene:null,
 	camera: {
 		closeShot: {
