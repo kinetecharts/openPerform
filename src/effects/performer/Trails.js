@@ -18,8 +18,8 @@ class Trails {
 			"rightupleg", "rightleg", "rightfoot",
 			/*"leftupleg", "leftleg", "leftfoot",*/
 			/*"spine", "spine3", */"head",
-			/*"rightarm", "rightforearm", "righthand",
-			/*"leftarm", "leftforearm", "lefthand"*/
+			/*"rightarm", "rightforearm", */"righthand",
+			/*"leftarm", "leftforearm", */"lefthand"
 		];
 
 		this.trails = [];

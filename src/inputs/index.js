@@ -67,15 +67,79 @@ class InputManager {
 		}
 	}
 
+	resetScale() {
+		this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].resetScale();
+	}
+
+	fixedTracking() {
+		// this.parent.toggleStartOverlay();
+		this.scene.cameraControl.trackZ(
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_hips'],
+			new THREE.Vector3(0, 0.5, 0),
+			new THREE.Vector3(0,0,8)
+		);
+	}
+
+	shrink() {
+		// this.parent.toggleBlackOverlay();
+		this.scene.cameraControl.trackZoom(
+			new THREE.Vector3(0,0,105),
+			TWEEN.Easing.Quadratic.InOut,
+			6400
+		);
+	}
+
+	grow() {
+		// this.parent.toggleEndOverlay();
+		this.scene.cameraControl.trackZoom(
+			new THREE.Vector3(0,0,5),
+			TWEEN.Easing.Quadratic.InOut,
+			5700
+		);
+	}
+
+	farTracking() {
+		this.scene.cameraControl.trackZoom(
+			new THREE.Vector3(0,0,24),
+			TWEEN.Easing.Quadratic.InOut,
+			1000
+		);
+	}
+
+	slowZoom1() {
+		this.scene.cameraControl.trackZoom(
+			new THREE.Vector3(0,0,12),
+			TWEEN.Easing.Quadratic.InOut,
+			20000
+		);
+	}
+
+	scaleLimbs() {
+		this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(5000);
+	}
+
+	slowZoom2() {
+		this.scene.cameraControl.trackZoom(
+			new THREE.Vector3(0,0,7),
+			TWEEN.Easing.Quadratic.InOut,
+			20000
+		);
+	}
+
+	abominationMode() {
+		this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(5000);
+	}
+
 	initMidiControllerCallbacks() {
+		this.performerIdx = 0;
 		this.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
 			switch (data.name) {
 
 				case 'cycle':
-					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].resetScale();
+					this.resetScale();
 				break;
 
-				case 'track left': // scene 1
+				/*case 'track left': // scene 1
 					this.scene.switchEnvironment("grid-dark");
 					this.parent.performers.showWireframe();
 					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffects(["trails"]);
@@ -91,34 +155,194 @@ class InputManager {
 					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffects(["trails"]);
 
 					this.firstPerson();
-					break;
+					break;*/
 
 				case 'marker set': // start overlay
-					// this.parent.toggleStartOverlay();
-					this.scene.cameraControl.trackZ(
-						this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
-						new THREE.Vector3(0, 0.5, 0),
-						new THREE.Vector3(0,0,8)
-					);
+					this.fixedTracking();
 					break;
 				case 'marker left': // black overlay
-					// this.parent.toggleBlackOverlay();
-					this.scene.cameraControl.trackZoom(
-						new THREE.Vector3(0,0,105),
-						TWEEN.Easing.Quadratic.InOut,
-						6400
-					);
+					this.shrink();
 					break;
 				case 'marker right': // end overlay
-					// this.parent.toggleEndOverlay();
-					this.scene.cameraControl.trackZoom(
-						new THREE.Vector3(0,0,5),
-						TWEEN.Easing.Quadratic.InOut,
-						5700
-					);
+					this.grow();
+					break;
+
+				case 'rewind':
+					this.performerIdx--;
+					if (this.performerIdx<0) {
+						this.performerIdx=this.parent.BVHPlayers.length-1;
+					}
+					break;
+
+				case 'fast forward':
+					this.performerIdx++;
+					if (this.performerIdx>this.parent.BVHPlayers.length-1) {
+						this.performerIdx=0;
+					}
 					break;
 
 				case 'stop':
+					this.parent.BVHPlayers[this.performerIdx].stop();
+					break;
+
+				case 'play':
+					this.parent.BVHPlayers[this.performerIdx].play();
+					break;
+
+				case 'record':
+					if (this.parent.BVHPlayers.length<=8) {
+						this.parent.addBVHPerformer("models/bvh/cloverChar00.bvh")
+					} else {
+						console.log("BVH Limit Reached!");
+					}
+					break;
+
+
+				case 'solo 1':
+					this.trackPerformer(0, 14);
+					break;
+				case 'mute 1':
+					this.prevStyle(0);
+					break;
+				case 'record 1':
+					this.nextStyle(0);
+					break;
+				case 'slider 1':
+					this.scalePerformer(0, data.value);
+					break;
+				case 'knob 1':
+					this.updateIntensity(0, data.value);
+					break;
+
+				/*****************************************/
+
+				case 'solo 2':
+					this.trackPerformer(1, 14);
+					break;
+				case 'mute 2':
+					this.prevStyle(1);
+					break;
+				case 'record 2':
+					this.nextStyle(1);
+					break;
+				case 'slider 2':
+					this.scalePerformer(1, data.value);
+					break;
+				case 'knob 2':
+					this.updateIntensity(1, data.value);
+					break;
+
+				/*****************************************/
+
+				case 'solo 3':
+					this.trackPerformer(2, 14);
+					break;
+				case 'mute 3':
+					this.prevStyle(2);
+					break;
+				case 'record 3':
+					this.nextStyle(2);
+					break;
+				case 'slider 3':
+					this.scalePerformer(2, data.value);
+					break;
+				case 'knob 3':
+					this.updateIntensity(2, data.value);
+					break;
+
+				/*****************************************/
+
+				case 'solo 4':
+					this.trackPerformer(3, 14);
+					break;
+				case 'mute 4':
+					this.prevStyle(3);
+					break;
+				case 'record 4':
+					this.nextStyle(3);
+					break;
+				case 'slider 4':
+					this.scalePerformer(3, data.value);
+					break;
+				case 'knob 4':
+					this.updateIntensity(3, data.value);
+					break;
+
+				/*****************************************/
+
+				case 'solo 5':
+					this.trackPerformer(4, 14);
+					break;
+				case 'mute 5':
+					this.prevStyle(4);
+					break;
+				case 'record 5':
+					this.nextStyle(4);
+					break;
+				case 'slider 5':
+					this.scalePerformer(4, data.value);
+					break;
+				case 'knob 5':
+					this.updateIntensity(4, data.value);
+					break;
+
+				/*****************************************/
+
+				case 'solo 6':
+					this.trackPerformer(5, 14);
+					break;
+				case 'mute 6':
+					this.prevStyle(5);
+					break;
+				case 'record 6':
+					this.nextStyle(5);
+					break;
+				case 'slider 6':
+					this.scalePerformer(5, data.value);
+					break;
+				case 'knob 6':
+					this.updateIntensity(5, data.value);
+					break;
+
+				/*****************************************/
+
+				case 'solo 7':
+					this.trackPerformer(6, 14);
+					break;
+				case 'mute 7':
+					this.prevStyle(6);
+					break;
+				case 'record 7':
+					this.nextStyle(6);
+					break;
+				case 'slider 7':
+					this.scalePerformer(6, data.value);
+					break;
+				case 'knob 7':
+					this.updateIntensity(6, data.value);
+					break;
+
+				/*****************************************/
+
+				case 'solo 8':
+					this.trackPerformer(7, 14);
+					break;
+				case 'mute 8':
+					this.prevStyle(7);
+					break;
+				case 'record 8':
+					this.nextStyle(7);
+					break;
+				case 'slider 8':
+					this.scalePerformer(7, data.value);
+					break;
+				case 'knob 8':
+					this.updateIntensity(7, data.value);
+					break;
+
+				/*****************************************/
+
+				/*case 'stop':
 					this.scene.unsetRotation();
 					break;
 				case 'play':
@@ -153,7 +377,7 @@ class InputManager {
 				case 'solo 7':
 					this.cutMedium();
 					this.scene.cameraControl.track(
-						this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
+						this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_hips'],
 						new THREE.Vector3(0, 0.5, 0),
 						new THREE.Vector3(0,0,7)
 					);
@@ -229,43 +453,31 @@ class InputManager {
 
 				case 'slider 7':
 					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(Common.mapRange(data.value, 0, 127, 1, 5000));
-				break;
+				break;*/
 
-				case 'mute 1':
-					this.scene.cameraControl.trackZoom(
-						new THREE.Vector3(0,0,24),
-						TWEEN.Easing.Quadratic.InOut,
-						1000
-					);
+				/*case 'mute 1':
+					this.farTracking();
 				break;
 
 				case 'mute 2':
-					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(5000);
+					this.slowZoom1();
 				break;
 
 				case 'mute 3':
-					this.scene.cameraControl.trackZoom(
-						new THREE.Vector3(0,0,7),
-						TWEEN.Easing.Quadratic.InOut,
-						20000
-					);
+					this.scaleLimbs();
 				break;
 
 				case 'mute 4':
-					this.scene.cameraControl.trackZoom(
-						new THREE.Vector3(0,0,3),
-						TWEEN.Easing.Quadratic.InOut,
-						20000
-					);
+					this.slowZoom2();
 				break;
 
 				case 'mute 5':
-					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(5000);
-				break;
+					this.abominationMode();
+				break;*/
 
-				case 'mute 6':
-					this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart("hips", 500, 1000);
-				break;
+				// case 'mute 6':
+				// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].scalePart("hips", 500, 1000);
+				// break;
 
 
 				// case 'solo 6':
@@ -326,6 +538,28 @@ class InputManager {
 		}.bind(this));
 	}
 
+	updateIntensity(id, value) {
+		var val = Common.mapRange(value, 0, 127, 1, 200);
+		var p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+		p.updateIntensity(val);
+	}
+
+	scalePerformer(id, value) {
+		var p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+		var val = Common.mapRange(value, 0, 127, 1/p.modelShrink/2, 1/p.modelShrink*2);
+		p.getScene().scale.set(val, val, val);
+	}
+
+	prevStyle(id) {
+		var p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+		p.updateStyle(p.getPrevStyle());
+	}
+
+	nextStyle(id) {
+		var p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+		p.updateStyle(p.getNextStyle());
+	}
+
 	initPerceptionNeuronCallbacks() {
 		this.registerCallback('perceptionNeuron', 'message', 'Perception Neuron', this.parent.updatePerformers.bind(this.parent));
 	}
@@ -349,7 +583,7 @@ class InputManager {
 
 		this.registerCallback('keyboard', 'l', 'low track', function() {
 			this.scene.cameraControl.track(
-				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
+				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_hips'],
 				new THREE.Vector3(0, 0.5, 0),
 				new THREE.Vector3(0,0,7)
 			);
@@ -369,6 +603,12 @@ class InputManager {
 				TWEEN.Easing.Quadratic.InOut,
 				5000
 			);
+		}.bind(this));
+
+		this.registerCallback('keyboard', "a", 'randomize limb scale', function() {
+			_.each(this.parent.performers.performers, (performer) => {
+				performer.randomizeAll(5000);
+			});
 		}.bind(this));
 
 		this.registerCallback('keyboard', "q", 'randomize limb scale', function() {
@@ -538,7 +778,7 @@ class InputManager {
 		}
 		this.cutClose();
 		this.scene.cameraControl.track(
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_hips'],
 			new THREE.Vector3(0, 0, 0),
 			new THREE.Vector3(0, 0, 0)
 		);
@@ -570,7 +810,7 @@ class InputManager {
 
 	lowTrack() {
 		this.scene.cameraControl.track(
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_hips'],
 			new THREE.Vector3(0, 0.5, 0),
 			new THREE.Vector3(0, -0.25, 0)
 		);
@@ -608,11 +848,11 @@ class InputManager {
 		);
 	}
 
-	trackPerformer() {
+	trackPerformer(id, distance) {
 		this.scene.cameraControl.track(
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_hips'],
-			new THREE.Vector3(0, 0, 0),
-			new THREE.Vector3(0, 0.65, 0)
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]].performer.meshes['robot_hips'],
+			new THREE.Vector3(0, 0.5, 0),
+			new THREE.Vector3(0, -0.25, distance)
 		);
 	}
 
@@ -632,7 +872,7 @@ class InputManager {
 	firstPerson() {
 		this.scene.unsetRotation();
 		this.scene.cameraControl.changeParent(
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_head']
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_head']
 		);
 
 		this.scene.cameraControl.jump(
@@ -644,7 +884,7 @@ class InputManager {
 	snorryCam() {
 		this.scene.unsetRotation();
 		this.scene.cameraControl.changeParent(
-			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer['robot_spine3']
+			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_spine3']
 		);
 
 		this.scene.cameraControl.jump(

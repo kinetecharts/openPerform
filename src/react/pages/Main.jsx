@@ -21,6 +21,7 @@ class Main extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = config;
+		this.BVHPlayers = [];
 	}
 
 	componentWillMount() {
@@ -44,8 +45,14 @@ class Main extends React.Component {
 		this.performers.init(this.state.scene.scene);
 
 		if (this.state.debug) {
-			this.BVHPlayer = new BVHPlayer(this.state.scene.scene, this.updatePerformers.bind(this));
+			this.BVHPlayer = this.addBVHPerformer("models/bvh/cloverChar00.bvh");
 		}
+	}
+
+	addBVHPerformer(modelPath) {
+		var bvhPlayer = new BVHPlayer(modelPath, this.state.scene.scene, this.updatePerformers.bind(this));
+		this.BVHPlayers.push(bvhPlayer);
+		return bvhPlayer;
 	}
 
 	toggleGUI() { //toggle loading overlay visablity
