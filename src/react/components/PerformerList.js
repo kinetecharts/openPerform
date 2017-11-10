@@ -14,7 +14,7 @@ class PerformerList extends React.Component {
 			type:"bvhMeshGroup",
 			types: [
 				{ value: 'bvhMeshGroup', label: 'Mesh Group' },
-				{ value: 'riggedMesh', label: 'Rigged Model' }
+				// { value: 'riggedMesh', label: 'Rigged Model' }
 			],
 			style:"default"
 		}
