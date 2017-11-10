@@ -30,7 +30,7 @@ class Main extends React.Component {
 		super(props);
 		this.state = config;
 		this.BVHFiles = [
-			"models/bvh/duality_edit.bvh",
+			config.debugBVH
 		];
 		this.BVHPlayers = [];
 	}
