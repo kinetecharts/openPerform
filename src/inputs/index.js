@@ -632,7 +632,12 @@ class InputManager {
 
 	initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
 
-		this.registerCallback('keyboard', 'l', 'Tracking - Low Angle', function() {
+		this.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.parent.openKeyboardHelp.bind(this.parent));
+
+		this.registerCallback('keyboard', '-', 'Toggle GUI', this.parent.toggleGUI.bind(this.parent));
+		this.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
+
+		this.registerCallback('keyboard', 'l', 'Tracking Camera - Low Angle', function() {
 			this.scene.cameraControl.track(
 				this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes['robot_hips'],
 				new THREE.Vector3(0, 0.5, 0),
@@ -640,21 +645,21 @@ class InputManager {
 			);
 		}.bind(this));
 
-		this.registerCallback('keyboard', ';', 'Tracking - Zoom Out', function() {
-			this.scene.cameraControl.trackZoom(
-				new THREE.Vector3(0,0,100),
-				TWEEN.Easing.Quadratic.InOut,
-				5000
-			);
-		}.bind(this));
+		// this.registerCallback('keyboard', ';', 'Tracking Camera - Zoom Out', function() {
+		// 	this.scene.cameraControl.trackZoom(
+		// 		new THREE.Vector3(0,0,100),
+		// 		TWEEN.Easing.Quadratic.InOut,
+		// 		5000
+		// 	);
+		// }.bind(this));
 
-		this.registerCallback('keyboard', "'", 'Tracking - Zoom In', function() {
-			this.scene.cameraControl.trackZoom(
-				new THREE.Vector3(0,0,3),
-				TWEEN.Easing.Quadratic.InOut,
-				5000
-			);
-		}.bind(this));
+		// this.registerCallback('keyboard', "'", 'Tracking Camera - Zoom In', function() {
+		// 	this.scene.cameraControl.trackZoom(
+		// 		new THREE.Vector3(0,0,3),
+		// 		TWEEN.Easing.Quadratic.InOut,
+		// 		5000
+		// 	);
+		// }.bind(this));
 
 		// this.registerCallback('keyboard', "a", 'randomize limb scale', function() {
 		// 	_.each(this.parent.performers.performers, (performer) => {
@@ -670,9 +675,6 @@ class InputManager {
 		this.registerCallback('keyboard', "w", 'Random Limb Scale', function() {
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(5000);
 		}.bind(this));
-
-		// this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
-		this.registerCallback('keyboard', 'space', 'Toggle Floor', () => {this.scene.environments.environments[0].toggleGrid();});
 		
 		this.registerCallback('keyboard', 'n', 'Detach Left Arm', function() { //toggle environment input
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('leftshoulder', false);
@@ -693,11 +695,9 @@ class InputManager {
 		this.registerCallback('keyboard', '/', 'Detach Head', function() { //toggle environment input
 			this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
 		}.bind(this));
-
-
-		this.registerCallback('keyboard', '-', 'Toggle GUI', this.parent.toggleGUI.bind(this.parent));
-		this.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
 		
+		// this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
+		this.registerCallback('keyboard', 'space', 'Toggle Floor', () => {this.scene.environments.environments[0].toggleGrid();});
 		
 		// this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
 		// this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));
@@ -797,9 +797,6 @@ class InputManager {
 		// this.registerCallback('keyboard', 'x', 'Toggle Wireframe', function() { //toggle environment input
 		// 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].toggleWireframe();
 		// }.bind(this));
-
-		this.registerCallback('keyboard', 'esc', 'Show Keyboard Shortcuts', this.parent.openKeyboardHelp.bind(this.parent));
-
 	}
 
 	flyOut() {
