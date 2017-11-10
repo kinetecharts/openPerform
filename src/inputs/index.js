@@ -21,8 +21,8 @@ import Gamepads from './Gamepads'
 class InputManager {
 	constructor(inputList, threeScene, parent) {
 		this.inputs = {};
-		this.scene = threeScene; //bridge to threejs environment 
-		this.parent = parent; //bridge to react environment
+		this.scene = threeScene; //bridge to threejs environment (/src/three/scene.js)
+		this.parent = parent; //bridge to react environment (/src/react/pages/Main.jsx)
 
 		//connect all inputs in the input list
 		_.forEach(inputList, this.connectInputs.bind(this)); //input list defined in config/index.js

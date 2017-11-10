@@ -4,35 +4,24 @@ import config from './../config'
 
 class MuseEnvironment {
 	constructor(renderer, parent, performers, guiFolder, type) {
-		this.renderer = renderer;
-		this.parent = parent;
-		this.guiFolder = guiFolder;
+		this.renderer = renderer;//threejs renderer
+		this.parent = parent; //threejs scene
+		this.guiFolder = guiFolder; //dat.gui folder
 
 		this.floorSize = 50;
 		this.numLines = 50;
-
-		this.gridFloor;
-		this.hemiLight;
-		this.dirLight;
 
 		var f = this.guiFolder.addFolder("Muse");
 		f.add(this, "floorSize", 1, 100).step(1).name("Size").listen().onChange(this.redrawGrid.bind(this));
 		f.add(this, "numLines", 1, 100).step(1).name("# Lines").listen().onChange(this.redrawGrid.bind(this));
 
-		this.colors = {
-			light: {
-				floor: 0x000000,
-				background: 0xFFFFFF
-			},
-			dark: {
-				floor: 0xFFFFFF,
-				background: 0x000000,
-			}
-		}
+		this.gridFloor;
+		this.hemiLight;
+		this.dirLight;
 
-		// this.renderer.setClearColor( this.colors[type].background );
+		// this.renderer.setClearColor( 0x000000 );
 
-		this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
+		this.initFloor(this.floorSize, this.numLines, 0xFFFFFF);
 		this.initLights();
 	}
 
