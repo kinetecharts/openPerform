@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import dat from 'dat-gui'
 
+import MuseEnvironment from './museEnvironment'
 import IslandEnvironment from './islandEnvironment'
 import GridEnvironment from './gridEnvironment'
 import GradientEnvironment from './gradientEnvironment'
@@ -21,12 +22,15 @@ class Environments {
 		this.guiFolder = this.gui.addFolder('Environments');
 		this.guiFolder.open()
 
-		this.add("grid-dark"); //default
+		this.add("muse"); //default
 	}
 
 	add(type) {
 		this.removeAll();
 		switch(type) {
+			case 'muse':
+				this.environments.push(new MuseEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, "dark"));
+			break;
 			case 'island':
 				this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
 			break;
