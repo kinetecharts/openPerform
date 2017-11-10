@@ -1,6 +1,5 @@
 import _ from 'lodash'
-var THREE = require('three');
-import GPUParticleSystem from 'three/examples/js/GPUParticleSystem.js'
+var GPUParticleSystem = require('./../../libs/three/GPUParticleSystem');
 
 import config from './../../config'
 

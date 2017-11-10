@@ -1,4 +1,3 @@
-var THREE = require('three');
 import TWEEN from 'tween'
 
 var AnimateAlongSpline = function(scene, controls, object, sPos, tPos, lookAt, params) {

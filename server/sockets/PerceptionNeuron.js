@@ -1,7 +1,7 @@
 var WebSocket = require('ws');
 var _ = require('lodash');
 
-var config = require('./../config.js').inputs.perceptionNeuron;
+var config = require('./../config.js').perceptionNeuron;
 
 class PerceptionNeuron {
 	constructor() {
@@ -49,8 +49,8 @@ class PerceptionNeuron {
 	
 	onListenError(err) {
 		console.log('Perception Neuron Error ', err);
-		console.log('Trying again in 3000ms');
-		setTimeout(this.createListenServer.bind(this), 3000);
+		// console.log('Trying again in 3000ms');
+		// setTimeout(this.createListenServer.bind(this), 3000);
 	}
 	
 	onListenMessage(msg) {

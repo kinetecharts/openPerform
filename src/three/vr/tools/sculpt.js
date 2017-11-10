@@ -1,4 +1,4 @@
-var THREE = require('three');
+
 
 class Sculpt {
 	constructor(parent) {

@@ -8,7 +8,7 @@
  * Chromium: https://webvr.info/get-chrome
  *
  */
-var THREE = require('three');
+
 
 THREE.VREffect = function( renderer, onError ) {
 

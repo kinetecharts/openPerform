@@ -4,7 +4,7 @@ var net = require('net');
 
 var WebSocketServer = require('ws').Server
 
-var config = require('./../config.js').inputs.kinectTransport;
+var config = require('./../config.js').kinectTransport;
 
 var outgoingSocket = null;
 var outgoingServer = new WebSocketServer({ port: config.ports.outgoing });

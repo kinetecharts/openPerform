@@ -1,5 +1,4 @@
 //Creates websocket, this.callbacks["message"](bones); should call the updateFromPN in Performer.js
-var THREE = require('three');
 var _ = require('lodash').mixin(require('lodash-keyarrange'));
 
 import Common from './../util/Common'

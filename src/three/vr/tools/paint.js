@@ -1,4 +1,4 @@
-var THREE = require('three');
+
 
 class Paint {
 	constructor(parent) {

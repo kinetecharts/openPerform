@@ -1,7 +1,9 @@
 'use strict'
 
-var THREE = require('three');
+
 import _ from 'lodash'
+
+import $ from 'jquery'
 
 import WEBVR from './WebVR'
 import VREffect from './VREffect'
@@ -140,7 +142,10 @@ class VR {
 				this.vrEffect.isPresenting ? $(vrButton).addClass('active') : $(vrButton).removeClass('active');
 			}.bind(this));
 
-			$('#vrButton').append( vrButton );
+			var vrDiv = document.createElement('div');
+			$(vrDiv).attr('id', 'vrButton');
+			vrDiv.append( vrButton );
+			$('#lowerDisplay').append( vrDiv );
 			$(vrButton).click(function() {
 				// RootObj.vrOffset = new THREE.Vector3();
 				

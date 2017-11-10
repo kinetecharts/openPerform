@@ -1,7 +1,5 @@
 import _ from 'lodash'
 
-var THREE = require('three');
-
 import config from './../config'
 
 class GridEnvironment {
@@ -32,7 +30,7 @@ class GridEnvironment {
 			}
 		}
 
-		this.renderer.setClearColor( this.colors[type].background );
+		// this.renderer.setClearColor( this.colors[type].background );
 
 		this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
 		this.initLights();
@@ -42,7 +40,7 @@ class GridEnvironment {
 		this.gridFloor = new THREE.GridHelper( floorSize/2, numLines, color, color);
 		this.gridFloor.castShadow = true;
 		this.gridFloor.receiveShadow = true;
-		this.gridFloor.visible = false;
+		this.gridFloor.visible = true;
 		this.parent.add( this.gridFloor );
 	}
 

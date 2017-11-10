@@ -2,7 +2,7 @@
 Builds pointcloud depth object to view Kinect Depth data.
 */
 
-var THREE = require('three');
+
 
 import _ from 'lodash'
 

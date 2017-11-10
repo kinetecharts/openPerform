@@ -1,5 +1,4 @@
 import _ from 'lodash'
-var THREE = require('three');
 import TWEEN from 'tween'
 
 import config from './../../config'

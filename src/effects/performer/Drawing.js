@@ -1,5 +1,4 @@
 import _ from 'lodash'
-var THREE = require('three');
 
 import Trail from './../../libs/trail'
 import Common from './../../util/Common'

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-var THREE = require('three');
 
 var TextSprite = require('./../../libs/THREE.TextSprite.js');
 
@@ -64,7 +63,7 @@ class DataTags {
 
 		part.add(tag);
 
-		// console.log(tag);
+		console.log(tag);
 
 		return tag;
 	}

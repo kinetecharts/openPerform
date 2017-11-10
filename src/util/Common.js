@@ -1,6 +1,6 @@
 //Common utility functions
 
-var THREE = require('three');
+
 import dat from 'dat-gui'
 
 function Common() {

@@ -1,12 +1,12 @@
-var THREE = require('three');
 
-import $ from 'jquery'
+
+// import $ from 'jquery'
 import TWEEN from 'tween'
 import _ from 'lodash'
 
 var OrbitControls = require('three-orbit-controls')(THREE);
 
-import Stats from 'three/examples/js/libs/stats.min.js'
+var Stats = require("imports-loader?THREE=three!three/examples/js/libs/stats.min.js");
 
 import Common from './../util/Common'
 
@@ -14,7 +14,7 @@ import DepthDisplay from './displayComponents/DepthDisplay'
 import CameraControl from './../camera/cameraControl'
 import Environments from './../environments'
 
-// import VR from './vr/vr.js'
+import VR from './vr/vr.js'
 
 class Scene {
 	constructor() {
@@ -33,7 +33,7 @@ class Scene {
 
 		this.environments = null;
 	}
-	initScene(inputs, statsEnabled, performers) {
+	initScene(startPos, inputs, statsEnabled, performers, backgroundColor) {
 		this.container = $('#scenes');
 
 		this.w = this.container.width();
@@ -42,26 +42,33 @@ class Scene {
 		/// Global : this.renderer
 		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
 		
-		this.renderer.setClearColor( 0x000000 );
+		this.renderer.setClearColor( backgroundColor );
 		this.renderer.setSize( this.w, this.h );
 
-		this.renderer.shadowMap.enabled = true;
-		// to antialias the shadow
-		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+		// this.renderer.shadowMap.enabled = true;
+		// // to antialias the shadow
+		// this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 		/// Global : this.scene
 		this.scene = new THREE.Scene();
 		window.scene = this.scene;
 
-        this.scene.fog = new THREE.FogExp2( 0x171223, 0.00075 , 10000);
+		// var axisHelper = new THREE.AxisHelper( 5 );
+		// this.scene.add( axisHelper );
+
+        // this.scene.fog = new THREE.FogExp2( 0x171223, 0.00075 , 10000);
         //this.scene.fog = new THREE.FogExp2( 0x0C0F15, 0.0075 , 100);
 
 		/// Global : this.camera
-		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.1, 1000000 );
+		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.001, 1000000 );
 
 		window.camera = this.camera;
 
+		// var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
+		
+		// this.camera.position.copy(src);
 		this.camera.position.set( 0, 0.5, 16 );
+		// this.camera.lookAt(new THREE.Vector3(0,1000,0));
 
 		this.scene.add( this.camera );
 
@@ -69,7 +76,7 @@ class Scene {
 		window.environments = this.environments;
 
 		//orbit control
-		this.controls = new OrbitControls(this.camera)
+		this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
 		this.controls.enableDamping = false;
 		this.controls.enableZoom = (inputs.indexOf("mouse")>=0);
@@ -94,7 +101,7 @@ class Scene {
 		
 		this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 
-		// this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
+		this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
 		//initiating renderer
 		this.render();
@@ -169,9 +176,9 @@ class Scene {
 
 		this.cameraControl.update();
 
-		// if (this.vr) {
-		// 	this.vr.update();
-		// }
+		if (this.vr) {
+			this.vr.update();
+		}
 
 		this.renderer.render( this.scene, this.camera );
 

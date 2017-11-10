@@ -1,18 +1,16 @@
-const p = require('./package.json');
-
 const { resolve } = require('path');
 const webpack = require('webpack');
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
 	context: resolve(__dirname, 'src'),
+
 	entry: [
 		'react-hot-loader/patch',
 		// activate HMR for React
 
-		'webpack-dev-server/client?http://localhost:8080',
+		'webpack-dev-server/client?http://0.0.0.0:8080',
 		// bundle the client for webpack-dev-server
 		// and connect to the provided endpoint
 
@@ -24,7 +22,7 @@ module.exports = {
 		// the entry point of our app
 	],
 	output: {
-		filename: 'op_bundle.js',
+		filename: 'bundle.js',
 		// the output bundle
 
 		path: resolve(__dirname, 'dist'),
@@ -33,7 +31,7 @@ module.exports = {
 		// necessary for HMR to know where to load the hot update chunks
 	},
 
-	devtool: '#inline-source-map',
+	devtool: 'cheap-source-map',//'inline-source-map',
 
 	devServer: {
 		hot: true,
@@ -45,18 +43,8 @@ module.exports = {
 		publicPath: '/',
 		// match the output `publicPath`
 
-		overlay: { 
-			warnings: true,
-			errors: true
-		},
-
-		historyApiFallback: true,
-
-		watchContentBase: true,
-
-		watchOptions: {
-			poll: true
-		}
+		host: '0.0.0.0',
+		port: 8080
 	},
 	module: {
 		rules: [
@@ -72,43 +60,28 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.css$/,
-				options: { sourceMap: true },
-				loader: 'style-loader'
+			  test: /\.css$/,
+			  loader: 'style-loader'
 			}, {
-				test: /\.css$/,
-				options: { sourceMap: true },
-				loader: 'css-loader'
+			  test: /\.css$/,
+			  loader: 'css-loader'
 			},
 			{
-				test: /\.(bvh|eot|svg|ttf|woff|woff2)$/,
-				loader: 'file-loader?name=images/[name].[ext]'
+				test: /\.(eot|ttf|woff|woff2)$/,
+				loader: 'file-loader?name=fonts/[name].[ext]'
 			},
 			{
-				test: /\.html$/,
-				loader: 'html-loader'
-			},
-			{
-				test: /\.(jpe?g|png|gif|svg)$/i,
+				test: /\.(jpe?g|gif|svg)$/i,
 				use: [
-					'url-loader?limit=10000',
-					'img-loader'
+					'url-loader?name=images/[name].[ext]&limit=10000',
+					'img-loader?name=images/[name].[ext]'
 				]
 			},
 			{
-				test: /\.less$/,
-				use: [{
-					loader: "style-loader", // creates style nodes from JS strings
-					options: { sourceMap: true }
-				},
-				{
-					loader: "css-loader", // translates CSS into CommonJS
-					options: { sourceMap: true }
-				},
-				{
-					loader: "less-loader", // compiles Less to CSS
-					options: { sourceMap: true }
-				}]
+				test: /\.(png)$/i,
+				use: [
+					'base64-image-loader'
+				]
 			}
 		],
 	},
@@ -125,17 +98,21 @@ module.exports = {
 		// new ExtractTextPlugin('styles.css')
 		// export css to separate file
 
-		new webpack.ProvidePlugin({
+        new webpack.ProvidePlugin({
 			$: "jquery",
 			jQuery: "jquery",
 			"window.jQuery": "jquery",
-			THREE: "three",
-			"global.THREE": "three"
+			"THREE": 'three',
+			"window.THREE": 'three'
 		}),
 
-        new HtmlWebpackPlugin({
-			template: 'www/index.html',
-			inject: false
+		new webpack.optimize.CommonsChunkPlugin({
+		  name: "vendor",
+		  filename: "vendor.js",
+		  minChunks: function (module) {
+		    // this assumes your vendor imports exist in the node_modules directory
+		    return module.context && module.context.indexOf("node_modules") !== -1;
+		  }
 		})
     ]
 };

@@ -1,18 +1,20 @@
-const p = require('./package.json');
-
 const webpack = require('webpack');
 const { resolve } = require('path');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 module.exports = {
+	/*watch: true,
+	watchOptions: {
+		aggregateTimeout: 300,
+		poll: 1000,
+		ignored: '/node_modules/'
+	},*/
 	context: resolve(__dirname, 'src'),
 	entry: [
 		'./index.jsx',
 		// the entry point of our app
 	],
 	output: {
-		filename: 'op_bundle.js',
+		filename: 'bundle.js',
 		// the output bundle
 
 		path: resolve(__dirname, 'dist'),
@@ -41,31 +43,21 @@ module.exports = {
 			  loader: 'css-loader'
 			},
 			{
-				test: /\.(bvh|eot|svg|ttf|woff|woff2)$/,
-				loader: 'file-loader?name=images/[name].[ext]'
+				test: /\.(eot|ttf|woff|woff2)$/,
+				loader: 'file-loader?name=fonts/[name].[ext]'
 			},
 			{
-				test: /\.html$/,
-				loader: 'html-loader'
-			},
-			{
-				test: /\.(jpe?g|png|gif|svg)$/i,
+				test: /\.(jpe?g|gif|svg)$/i,
 				use: [
-					'url-loader?limit=10000',
-					'img-loader'
+					'url-loader?name=images/[name].[ext]&limit=10000',
+					'img-loader?name=images/[name].[ext]'
 				]
 			},
 			{
-				test: /\.less$/,
-				use: [{
-					loader: "style-loader" // creates style nodes from JS strings
-				},
-				{
-					loader: "css-loader" // translates CSS into CommonJS
-				},
-				{
-					loader: "less-loader" // compiles Less to CSS
-				}]
+				test: /\.(png)$/i,
+				use: [
+					'base64-image-loader',
+				]
 			}
 		],
 	},
@@ -73,13 +65,6 @@ module.exports = {
 		extensions: ['.js', '.jsx', '.css']
 	},
 	plugins: [
-		new webpack.ProvidePlugin({
-			$: "jquery",
-			jQuery: "jquery",
-			"window.jQuery": "jquery",
-			THREE: "three",
-			"global.THREE": "three"
-		}),
 		new webpack.LoaderOptionsPlugin({
 		  minimize: true,
 		  debug: false
@@ -87,17 +72,29 @@ module.exports = {
 		new webpack.optimize.UglifyJsPlugin({
 		  beautify: false,
 		  mangle: {
-		    screw_ie8: true,
+		    screw_ie8: false,
 		    keep_fnames: true
 		  },
 		  compress: {
-		    screw_ie8: true
+		    screw_ie8: false
 		  },
 		  comments: false
 		}),
-		new HtmlWebpackPlugin({
-			template: 'www/index.html',
-			inject: false
+		new webpack.ProvidePlugin({
+			$: "jquery",
+			jQuery: "jquery",
+			"window.jQuery": "jquery",
+			"THREE": 'three',
+			"window.THREE": 'three'
+		}),
+
+		new webpack.optimize.CommonsChunkPlugin({
+		  name: "vendor",
+		  filename: "vendor.js",
+		  minChunks: function (module) {
+		    // this assumes your vendor imports exist in the node_modules directory
+		    return module.context && module.context.indexOf("node_modules") !== -1;
+		  }
 		})
 	]
 }

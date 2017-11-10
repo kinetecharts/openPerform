@@ -1,5 +1,4 @@
 import AppendScripts from '../util/AppendScripts'
-import THREE from 'three';
 
 class ModelLoader {
 	constructor() {

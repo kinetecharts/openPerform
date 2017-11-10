@@ -1,11 +1,8 @@
 import _ from 'lodash'
 
-var THREE = require('three');
-
-import WaterShader from 'three/examples/js/WaterShader.js'
-import OceanShader from 'three/examples/js/shaders/OceanShaders.js'
-import Ocean from 'three/examples/js/Ocean.js'
-
+import WaterShader from '../shaders/WaterShader'
+import OceanShader from '../shaders/OceanShader'
+import Ocean from '../libs/ocean'
 import config from './../config'
 
 class WaterEnvironment {

@@ -1,4 +1,4 @@
-var THREE = require('three');
+
 
 import Draw from './../util/draw'
 

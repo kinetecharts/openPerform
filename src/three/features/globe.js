@@ -1,4 +1,4 @@
-var THREE = require('three');
+
 
 const MaxImpacts = 100
 

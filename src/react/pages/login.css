@@ -1,0 +1,34 @@
+#login {
+	font-family: 'lato-regular-webfont' !important;
+	width: 400px;
+	overflow: hidden;
+	margin-right: auto;
+	margin-left: auto;
+	background: white;
+	border-radius: 25px;
+	padding:15px;
+	border: 1px solid black;
+}
+
+#login > #logo {
+	width: 70%;
+	margin-right: auto;
+	margin-left: auto;
+	display: block;
+}
+
+#login > div > .form-group > input , #login > div > .form-group > button {
+	margin: 0 auto 10px auto;
+	display: block;
+}
+
+#login > div > .form-group > input {
+	padding: 10px 15px;
+}
+
+#login > div > .form-group > button {
+	background: #fff;
+	padding: 10px 15px;
+	border-radius: 10px;
+	font-weight: bold;
+}

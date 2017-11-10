@@ -18,18 +18,18 @@ router.get('/', function(request, response) {
 });
 
 //route for mapzen tile api / cache (requires mongodb)
-if (config.apis.mapzen.enabled && config.databases.mongodb.enabled) {
+if (config.mapzen.enabled && config.mongodb.enabled) {
 	var tiles = require('./tiles');
 	router.get('/tiles/:lat/:lon/:area', tiles.getTiles);
 }
 
 //route for login page
-if (config.pages.login.enabled) {
+if (config.login.enabled) {
 	router.use("/user", formDataParse, util.mergeReqParams, util.mergeJSONKeyValue, userRouter);
 }
 
 //route for vertica call logs
-if (config.databases.verticadb.enabled) {
+if (config.verticadb.enabled) {
 	var calls = require('./calls');
 	router.get('/calls/:type/', calls.getCalls);
 }

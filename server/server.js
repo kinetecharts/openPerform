@@ -20,7 +20,7 @@ var config = require('./config.js');
 //enable gzip
 app.use(compression());
 
-// app.use(favicon(config.favicon));
+app.use(favicon(config.favicon));
 app.use(morgan('dev'));
 app.use(methodOverride());
 
@@ -38,7 +38,7 @@ app.get("/", function (req, res) {
 
 app.use(cookieParser());
 app.use(function (req, res, next) {
-	if (config.pages.login.enabled && (/\.html/ig).test(req.url)) {
+	if (config.login.enabled && (/\.html/ig).test(req.url)) {
 		if (req.cookies.siteUser != null || (/login\.html/ig).test(req.url)) {
 			return next();
 		} else {
@@ -52,7 +52,7 @@ app.use(function (req, res, next) {
 
 //init mongoose
 /* eslint-disable */
-if (config.databases.verticadb.enabled) {
+if (config.verticadb.enabled) {
 	var verticadb = require('./database/VerticaDB');
 	app.locals.verticadb = verticadb;
 }
@@ -60,12 +60,12 @@ if (config.databases.verticadb.enabled) {
 
 //init vertica
 /* eslint-disable */
-if (config.databases.mongodb.enabled) {
+if (config.mongodb.enabled) {
 	var mongodb = require('./database/MongoDB');
 }
 /* eslint-enable */
 
-app.use(express.static('./build'));
+app.use(express.static('./dist'));
 
 app.use('/', routes);
 
@@ -76,14 +76,14 @@ var server = app.listen(config.app.port, function() {
 
 //init kinect server
 /* eslint-disable */
-if (config.inputs.kinectTransport.enabled) {
+if (config.kinectTransport.enabled) {
     var KTServer = require('./sockets/KinectTransport');
 }
 /* eslint-enable */
 
 //init perception neuron server
 /* eslint-disable */
-if (config.inputs.perceptionNeuron.enabled) {
+if (config.perceptionNeuron.enabled) {
     var PNServer = require('./sockets/PerceptionNeuron');
     var pnServer = new PNServer();
 }
@@ -91,7 +91,7 @@ if (config.inputs.perceptionNeuron.enabled) {
 
 //init gamepad server
 /* eslint-disable */
-if (config.inputs.gamepads.enabled) {
+if (config.gamepads.enabled) {
     var GPServer = require('./sockets/Gamepads');
     var gpServer = new GPServer();
 }
@@ -99,7 +99,7 @@ if (config.inputs.gamepads.enabled) {
 
 //init midi controller server
 /* eslint-disable */
-if (config.inputs.midiController.enabled) {
+if (config.midiController.enabled) {
     var MidiController = require('./sockets/MidiController');
     var midiController = new MidiController();
 }
