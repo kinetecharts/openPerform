@@ -30,7 +30,14 @@ class Performers {
 
 	add(inputId, type, actions) {
 		if (this.performers && !this.performers[inputId] && this.colors) {
-			this.performers[inputId] = new Performer(this.parent, inputId, _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], 0, true, actions);
+			this.performers[inputId] = new Performer(
+				this.parent,
+				inputId,
+				_.size(this.performers)+1,
+				type,
+				this.colors[_.size(this.performers)%this.colors.length],
+				true,
+				actions);
 			// this.performers[inputId+"_-1"] = new Performer(this.parent, inputId+"_-1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], -1, true);
 			// this.performers[inputId+"_1"] = new Performer(this.parent, inputId+"_1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], 1, true);
 			// this.performers[inputId+"_-2"] = new Performer(this.parent, inputId+"_-2", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], -2, true);
@@ -42,7 +49,8 @@ class Performers {
 	}
 
 	remove (inputId) {
-		if (this.performers[inputId]) {
+		if (this.exists(inputId)) {
+			this.performers[inputId].clearScene();
 			delete this.performers[inputId];
 		}
 	}
@@ -88,15 +96,8 @@ class Performers {
 		// 	this.performers[inputId].update(data);
 		// }
 
-		var idx = 0;
 		_.each(this.performers, (p) => {
-			// p.updateOffsetScale(Math.sin());
-			p.dataBuffer.push(data);
-			// console.log(p.dataBuffer.length);
-			if (p.dataBuffer.length > (500*idx)+1) {
-				p.update(p.dataBuffer.shift());
-			}
-			idx++;
+			p.update(data);
 		});
 
 		this.groupEffects.update(this.performers);

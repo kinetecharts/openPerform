@@ -24,8 +24,8 @@ var defaults = {
 	keyboardHelp: false,
 	inputs:['keyboard', 'mouse', 'perceptionNeuron', 'midiController', 'gamepads'], //keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
 	performers:[],
-	// performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
-	performerColors: ['FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF'],
+	performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
+	// performerColors: ['FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF'],
 	// performerColors: ['FF0000', '00FF00', '0000FF'],
 	myo:null,
 	kinectTransport:{

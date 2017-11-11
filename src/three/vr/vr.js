@@ -144,6 +144,9 @@ class VR {
 
 			var vrDiv = document.createElement('div');
 			$(vrDiv).attr('id', 'vrButton');
+			var h5 = document.createElement('h5');
+			h5.innerHTML = "Enter VR";
+			vrDiv.append( h5 );
 			vrDiv.append( vrButton );
 			$('#lowerDisplay').append( vrDiv );
 			$(vrButton).click(function() {

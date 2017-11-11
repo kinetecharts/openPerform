@@ -178,7 +178,7 @@ class Main extends React.Component {
 			}
 
 			this.setState({
-				performers: this.performers.getPerformers()
+				performers: this.performers
 			});
 		}
 	}
@@ -206,7 +206,7 @@ class Main extends React.Component {
 				<div id="scenes"></div>
 				<div id="upperDisplay"></div>
 				<div id="lowerDisplay">
-					<InputList inputs={this.state.inputs}></InputList>
+					{/*<InputList inputs={this.state.inputs}></InputList>*/}
 					<PerformerList performers={this.state.performers}></PerformerList>
 					<div id="statsBox"><h5>Stats</h5></div>
 				</div>

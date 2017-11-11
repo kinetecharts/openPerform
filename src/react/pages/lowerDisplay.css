@@ -99,12 +99,35 @@
 	padding: 5px 5px;
 }
 
-.performerList #controlsTable td div {
+.performerList .glyphicon {
 	cursor: pointer; cursor: hand;
+}
+
+.performerList input {
+	background: none;
+	border:none;
+	border-bottom: 1px solid #ffffff;
+	width: 50px;
 }
 
 .performerList .Select {
 	width: 130px;
+}
+
+.performerList .Select .Select-control {
+	background:none !important;
+	border:none !important;
+	box-shadow:none !important;
+	border-bottom:1px solid #ffffff !important;
+	border-radius: 0;
+}
+
+#performerTable .Select-value-label {
+	color: #ffffff !important;
+}
+
+#performerTable .Select-arrow {
+	border-color: #ffffff transparent transparent !important;
 }
 
 .performerList h5 {
@@ -173,6 +196,13 @@
 	float: right;
 	box-shadow: 1px 1px 1px #000000;
 	background: rgba(0, 0, 0, 0.25);
+}
+
+#vrButton h5 {
+	margin-top: 0;
+	padding-bottom: 5px;
+	border-bottom: 1px solid white;
+	text-shadow: 1px 1px 2px #000000;
 }
 
 #vrButton button {

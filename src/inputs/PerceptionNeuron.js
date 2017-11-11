@@ -176,7 +176,7 @@ class PerceptionNeuron {
 			name: name,
 			position: { x:0, y:1, z:2 },
 			quaternion: new THREE.Quaternion(),
-			rotation: new THREE.Vector3(data[4],data[5],data[6])
+			rotation: new THREE.Euler( data[3],data[4],data[5], 'XYZ' )
 		};
 
 		var quat = new THREE.Quaternion();

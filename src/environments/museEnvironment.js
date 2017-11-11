@@ -105,7 +105,7 @@ class MuseEnvironment {
     }
 
 	update(timeDelta) {
-		//put frame updates here.
+		//hooked to main threejs render loop
 	}
 }
 
