@@ -1,6 +1,6 @@
 #lowerDisplay {
 	position: absolute;
-	bottom: 0;
+	bottom: 25px;
 	width: 100%;
 	/*display: none;*/
 }

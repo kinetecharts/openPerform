@@ -38,7 +38,7 @@ class Performer {
 		this.performer = null;
 		this.name = "Performer " + performerId;
 		this.color = color;
-		this.wireframe = true;
+		this.wireframe = false;
 		this.visible = true;
 		this.prefix = "robot_";
 
@@ -49,8 +49,8 @@ class Performer {
 
 		this.displayType = "bvhMeshGroup";
 		this.displayTypes = [
-			{ value: 'bvhMeshGroup', label: 'Mesh Group' }
-			// { value: 'riggedMesh', label: 'Rigged Model' }
+			{ value: 'bvhMeshGroup', label: 'Mesh Group' },
+			{ value: 'riggedMesh', label: 'Rigged Model' }
 		];
 
 		// this.loadColladaModels([
@@ -209,11 +209,11 @@ class Performer {
 		this.effects = ['cloner', 'datatags', 'trails', 'particleSystem'];
 
 		this.gui = new dat.GUI();
-		this.guiDOM = this.gui.domElement;
-		this.guiFolder = this.gui.addFolder(this.name + ' Effects');
-		this.guiFolder.open()
+		// this.guiDOM = this.gui.domElement;
+		// this.guiFolder = this.gui.addFolder(this.name + ' Effects');
+		// this.guiFolder.open()
 
-		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.guiFolder);
+		this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.gui);
 		
 		// this.addEffects(this.effects[0]);//defaults
 
@@ -365,36 +365,43 @@ class Performer {
 
 		loader.load( filename, function ( result ) {
 			var meshes = {};
+			var newMeshes = {};
 			var keys = {};
 			var s = result.scene;
-			s.scale.set(size, size, size);
+			
 			// console.log(result.scene);
 			s.traverse( ( object ) => {
-				// console.log(object.name + ": " + object.type);
+			// 	// console.log(object.name + ": " + object.type);
 				switch(object.type) {
-					case "Bone":
-						meshes[this.prefix+object.name.toLowerCase()] = object;
-						keys[this.prefix+object.name.toLowerCase()] = this.prefix+object.name.toLowerCase();
-						break;
+					case "SkinnedMesh":
+					s = object;
+			// 			meshes[this.prefix+object.name.toLowerCase()] = object;
+			// 			keys[this.prefix+object.name.toLowerCase()] = this.prefix+object.name.toLowerCase();
+			// 			break;
 				}
 			});
 
+			s.scale.set(size, size, size);
 			// console.log(s.skeleton);
 
-			// _.each(s.skeleton.bones, (b) => {
-			// 	meshes[this.prefix+b.name.toLowerCase()] = b;
-			// 	keys[this.prefix+b.name.toLowerCase()] = this.prefix+b.name.toLowerCase();
-			// });
+			_.each(s.skeleton.bones, (b) => {
+				meshes[this.prefix+b.name.toLowerCase()] = b;
+				b.srcScale = 0.1;
+				newMeshes[this.prefix+b.name.toLowerCase()] = b;
+				keys[this.prefix+b.name.toLowerCase()] = this.prefix+b.name.toLowerCase();
+			});
 
 			// console.log(meshes);
 			// console.log(keys);
 
 			this.setScene(s);
+			window.s = s;
+			this.parent.add(s);
 
 			this.setPerformer(
 				{
 					meshes: meshes,
-					newMeshes: [],
+					newMeshes: newMeshes,
 					keys: keys,
 					scene: this.getScene()
 				}
@@ -1238,7 +1245,9 @@ class Performer {
 
 	update(data) {
 		this.dataBuffer.push(data);
-		if (this.dataBuffer.length >= this.delay) {
+		// console.log(this.dataBuffer.length + " > " + this.delay);
+		if (this.dataBuffer.length > this.delay) {
+			// console.log(this.delay, this.type, this.dataBuffer.length)
 			switch(this.type) {
 				case 'perceptionNeuron':
 					this.updateFromPN(this.dataBuffer.shift());
@@ -1273,6 +1282,7 @@ class Performer {
 					this.intensity);
 			} else {
 				if (this.getPerformer().meshes[jointName]) {
+					// console.log(this.getPerformer().meshes[jointName]);
 					this.getPerformer().meshes[jointName].position.set(
 						data[i].position.x,
 						data[i].position.y,
