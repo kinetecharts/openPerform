@@ -1,99 +1,99 @@
 
-var bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
-import Common from './../util/Common'
+const bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
 
-var _ = require('lodash').mixin(require('lodash-keyarrange'));
-import dat from 'dat-gui'
+import Common from './../util/Common';
+
+const _ = require('lodash').mixin(require('lodash-keyarrange'));
+
+import dat from 'dat-gui';
 
 class BVHPlayer {
-	constructor(file, parent, callback) {
-		this.parent = parent;
-		this.callback = callback;
+  constructor(file, parent, callback) {
+    this.parent = parent;
+    this.callback = callback;
 
-		this.clock = new THREE.Clock();
-		
-		this.mixer;
-		this.clip;
-		this.skeletonHelper;
-		this.boneContainer = new THREE.Group();
+    this.clock = new THREE.Clock();
 
-		this.loader = new THREE.BVHLoader();
+    this.mixer;
+    this.clip;
+    this.skeletonHelper;
+    this.boneContainer = new THREE.Group();
 
-		this.loadBVH(file);
+    this.loader = new THREE.BVHLoader();
 
-		this.update();
-	}
+    this.loadBVH(file);
 
-	play() {
-		if (this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).paused == false) {
-			this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).play();
-		} else {
-			this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).paused = false;
-		}
-	}
+    this.update();
+  }
 
-	pause() {
-		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).paused = true;
-	}
+  play() {
+    if (this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).paused == false) {
+      this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).play();
+    } else {
+      this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).paused = false;
+    }
+  }
 
-	stop() {
-		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).stop();
-	}
+  pause() {
+    this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).paused = true;
+  }
 
-	loop() {
-		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).setLoop (THREE.LoopRepeat);
-	}
+  stop() {
+    this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).stop();
+  }
 
-	noLoop() {
-		this.mixer.clipAction( this.clip ).setEffectiveWeight( 1.0 ).setLoop (THREE.LoopOnce, 0);
-	}
+  loop() {
+    this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).setLoop(THREE.LoopRepeat);
+  }
 
-	loadBVH(bvhFile) {
-		this.loader.load(bvhFile, ( result ) => {
-			console.log("BVH File Loaded...");
+  noLoop() {
+    this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).setLoop(THREE.LoopOnce, 0);
+  }
 
-			this.skeletonHelper = new THREE.SkeletonHelper( result.skeleton.bones[ 0 ] );
-			this.skeletonHelper.skeleton = result.skeleton; // allow animation mixer to bind to SkeletonHelper directly
-			
-			this.boneContainer.add( result.skeleton.bones[ 0 ] );
+  loadBVH(bvhFile) {
+    this.loader.load(bvhFile, (result) => {
+      console.log('BVH File Loaded...');
 
-			// play animation
-			this.mixer = new THREE.AnimationMixer( this.skeletonHelper );
-			this.clip = result.clip;
+      this.skeletonHelper = new THREE.SkeletonHelper(result.skeleton.bones[0]);
+      this.skeletonHelper.skeleton = result.skeleton; // allow animation mixer to bind to SkeletonHelper directly
 
-			this.play();
-			this.stop();
-		});
-	}
+      this.boneContainer.add(result.skeleton.bones[0]);
 
-	parseFrameData( data, name ) {
-		return {
-			name: name.toLowerCase(),
-			position: data.position,
-			quaternion: data.quaternion,
-		};
-	}
+      // play animation
+      this.mixer = new THREE.AnimationMixer(this.skeletonHelper);
+      this.clip = result.clip;
 
-	update() {
-		requestAnimationFrame( this.update.bind(this) );
-		if ( this.mixer ) {
-			this.mixer.update( this.clock.getDelta() );
+      this.play();
+      this.stop();
+    });
+  }
 
-			var bones = _.map(_.uniqBy(_.map(this.mixer._bindingsByRootAndName[Object.keys(this.mixer._bindingsByRootAndName)[0]], (part, key) => {
-				return part.binding.targetObject;
-			}), "name"), (part) => { return this.parseFrameData(part, part.name); });
+  parseFrameData(data, name) {
+    return {
+      name: name.toLowerCase(),
+      position: data.position,
+      quaternion: data.quaternion,
+    };
+  }
 
-			if (bones.length > 0) {
-				this.callback('BVH_User_' + Object.keys(this.mixer._bindingsByRootAndName)[0], bones, 'bvh', {
-					play:this.play.bind(this),
-					pause:this.pause.bind(this),
-					stop:this.stop.bind(this),
-					loop:this.loop.bind(this),
-					noLoop:this.noLoop.bind(this)
-				})
-			}
-		}
-	}
+  update() {
+    requestAnimationFrame(this.update.bind(this));
+    if (this.mixer) {
+      this.mixer.update(this.clock.getDelta());
+
+      const bones = _.map(_.uniqBy(_.map(this.mixer._bindingsByRootAndName[Object.keys(this.mixer._bindingsByRootAndName)[0]], (part, key) => part.binding.targetObject), 'name'), part => this.parseFrameData(part, part.name));
+
+      if (bones.length > 0) {
+        this.callback(`BVH_User_${Object.keys(this.mixer._bindingsByRootAndName)[0]}`, bones, 'bvh', {
+          play: this.play.bind(this),
+          pause: this.pause.bind(this),
+          stop: this.stop.bind(this),
+          loop: this.loop.bind(this),
+          noLoop: this.noLoop.bind(this),
+        });
+      }
+    }
+  }
 }
 
 module.exports = BVHPlayer;

@@ -1,91 +1,91 @@
-import _ from 'lodash'
-import dat from 'dat-gui'
+import _ from 'lodash';
+import dat from 'dat-gui';
 
-import MuseEnvironment from './museEnvironment'
-import IslandEnvironment from './islandEnvironment'
-import GridEnvironment from './gridEnvironment'
-import GradientEnvironment from './gradientEnvironment'
-import WaterEnvironment from './waterEnvironment'
+import MuseEnvironment from './museEnvironment';
+import IslandEnvironment from './islandEnvironment';
+import GridEnvironment from './gridEnvironment';
+import GradientEnvironment from './gradientEnvironment';
+import WaterEnvironment from './waterEnvironment';
 
-import config from './../config'
+import config from './../config';
 
 class Environments {
-	constructor(renderer, parent, performers) {
-		this.renderer = renderer;
-		this.parent = parent;
-		this.performers = performers;
+  constructor(renderer, parent, performers) {
+    this.renderer = renderer;
+    this.parent = parent;
+    this.performers = performers;
 
-		this.environments = [];
-		
-		this.gui = new dat.GUI();
-		this.guiDOM = this.gui.domElement;
-		this.guiFolder = this.gui.addFolder('Environments');
-		this.guiFolder.open()
+    this.environments = [];
 
-		this.add("muse"); //default
-	}
+    this.gui = new dat.GUI();
+    this.guiDOM = this.gui.domElement;
+    this.guiFolder = this.gui.addFolder('Environments');
+    this.guiFolder.open();
 
-	add(type) {
-		this.removeAll();
-		switch(type) {
-			case 'muse':
-				this.environments.push(new MuseEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, "dark"));
-			break;
-			case 'island':
-				this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
-			break;
-			case 'water':
-				this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.guiFolder));
-			break;
-			case 'grid-dark':
-				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, "dark"));
-			break;
-			case 'grid-light':
-				this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, "light"));
-			break;
-			case 'gradient':
-				this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
-			break;
-		}
-	}
+    this.add('muse'); // default
+  }
 
-	removeAll () {
-		_.each(this.environments, function(environment) {
-			if (environment) {
-				environment.remove();
-			}
-		}.bind(this));
-		this.environments = [];
-	}
+  add(type) {
+    this.removeAll();
+    switch (type) {
+      case 'muse':
+        this.environments.push(new MuseEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'dark'));
+        break;
+      case 'island':
+        this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
+        break;
+      case 'water':
+        this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.guiFolder));
+        break;
+      case 'grid-dark':
+        this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'dark'));
+        break;
+      case 'grid-light':
+        this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'light'));
+        break;
+      case 'gradient':
+        this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
+        break;
+    }
+  }
 
-	remove (inputId) {
-		if (this.environments[inputId]) {
-			this.environments[inputId].remove();
-			delete this.environments[inputId];
-		}
-	}
+  removeAll() {
+    _.each(this.environments, (environment) => {
+      if (environment) {
+        environment.remove();
+      }
+    });
+    this.environments = [];
+  }
 
-	exists(inputId) {
-		return _.has(this.environments, inputId);
-	}
+  remove(inputId) {
+    if (this.environments[inputId]) {
+      this.environments[inputId].remove();
+      delete this.environments[inputId];
+    }
+  }
 
-	toggle(variableName) {
-		_.each(this.environments, function(environment) {
-			environment.toggle(variableName);
-		});
-	}
+  exists(inputId) {
+    return _.has(this.environments, inputId);
+  }
 
-	updateParameters(data) {
-		_.each(this.environments, function(environment) {
-			environment.updateParameters(data);
-		});
-	}
+  toggle(variableName) {
+    _.each(this.environments, (environment) => {
+      environment.toggle(variableName);
+    });
+  }
 
-	update(data) {
-		_.each(this.environments, function(environment) {
-			environment.update(data);
-		});
-	}
+  updateParameters(data) {
+    _.each(this.environments, (environment) => {
+      environment.updateParameters(data);
+    });
+  }
+
+  update(data) {
+    _.each(this.environments, (environment) => {
+      environment.update(data);
+    });
+  }
 }
 
 module.exports = Environments;

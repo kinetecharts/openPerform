@@ -82,7 +82,21 @@ module.exports = {
 				use: [
 					'base64-image-loader'
 				]
-			}
+			},
+			/*{
+				test: /\.jsx?$/, // both .js and .jsx
+				loader: 'eslint-loader',
+				exclude: /node_modules/,
+				include: resolve(__dirname, 'src'),
+				enforce: 'pre',
+				options: {
+					fix: true,
+					// default value 
+					formatter: require("eslint/lib/formatters/stylish"),
+					// community formatter 
+					formatter: require("eslint-friendly-formatter"),
+				}
+			}*/
 		],
 	},
 	resolve: {

@@ -1,112 +1,111 @@
-import _ from 'lodash'
+import _ from 'lodash';
 
-var TextSprite = require('./../../libs/THREE.TextSprite.js');
+const TextSprite = require('./../../libs/THREE.TextSprite.js');
 
-import Trail from './../../libs/trail'
-import Common from './../../util/Common'
+import Trail from './../../libs/trail';
+import Common from './../../util/Common';
 
-import config from './../../config'
+import config from './../../config';
 
 class DataTags {
-	constructor(parent, color, guiFolder) {
-		this.name = 'datatags';
-		this.parent = parent;
-		
-		this.color = color;
-		this.guiFolder = guiFolder;
-		
-		this.targets = ["hips",
-			"rightupleg", "rightleg", "rightfoot",
-			"leftupleg", "leftleg", "leftfoot",
-			"spine", "spine3", "head",
-			"rightarm", "rightforearm", "righthand",
-			"leftarm", "leftforearm", "lefthand"
-		];
+  constructor(parent, color, guiFolder) {
+    this.name = 'datatags';
+    this.parent = parent;
 
-		this.tags = [];
+    this.color = color;
+    this.guiFolder = guiFolder;
 
-		this.options = {};
+    this.targets = ['hips',
+      'rightupleg', 'rightleg', 'rightfoot',
+      'leftupleg', 'leftleg', 'leftfoot',
+      'spine', 'spine3', 'head',
+      'rightarm', 'rightforearm', 'righthand',
+      'leftarm', 'leftforearm', 'lefthand',
+    ];
 
-		
-		// this.addToDatGui(this.options, this.guiFolder);
-	}
+    this.tags = [];
 
-	// addToDatGui(options, guiFolder) {
-	// 	var f = guiFolder.addFolder("Trails");
-	// 	f.add(options, "trailLength", 1, 300).listen().onChange(() => {
-	// 		_.each(this.trails, (trail) => {
-	// 			trail.refresh = true;
-	// 		});
-	// 	});
-	// }
+    this.options = {};
 
-	addTag(parent, part, options) {
-		
-		var options = {
-			textSize: 10,
-			redrawInterval:1,
-			material: {
-				color: 0xFFFFFF,
-			},
-			texture: {
-				text: part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 '),
-				fontFamily: 'Arial, Helvetica, sans-serif',
-			}
-		};
 
-		var tag = new THREE.TextSprite(options);
-		tag.name = part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 ');
+    // this.addToDatGui(this.options, this.guiFolder);
+  }
 
-		tag.position.set(25,0,0);
-		
-		// tag.children[0].scale.set(0.01,0.01,0.01);
+  // addToDatGui(options, guiFolder) {
+  // 	var f = guiFolder.addFolder("Trails");
+  // 	f.add(options, "trailLength", 1, 300).listen().onChange(() => {
+  // 		_.each(this.trails, (trail) => {
+  // 			trail.refresh = true;
+  // 		});
+  // 	});
+  // }
 
-		part.add(tag);
+  addTag(parent, part, options) {
+    var options = {
+      textSize: 10,
+      redrawInterval: 1,
+      material: {
+        color: 0xFFFFFF,
+      },
+      texture: {
+        text: part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 '),
+        fontFamily: 'Arial, Helvetica, sans-serif',
+      },
+    };
 
-		console.log(tag);
+    const tag = new THREE.TextSprite(options);
+    tag.name = part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 ');
 
-		return tag;
-	}
+    tag.position.set(25, 0, 0);
 
-	updateParameters(data) {
-		// switch(data.parameter) {
-		// 	case 'life':
-		// 		this.options.lifetime = data.value*100;
-		// 		break;
-		// 	case 'rate':
-		// 		this.spawnerOptions.spawnRate = data.value*3000;
-		// 		break;
-		// 	case 'size':
-		// 		this.options.size = data.value*200;
-		// 		break;
-		// 	case 'color':
-		// 		this.options.colorRandomness = data.value*10;
-		// 		break;
-		// }
-	}
+    // tag.children[0].scale.set(0.01,0.01,0.01);
 
-	update(data) {
-		var idx = 0;
-		data.traverse( function ( d ) {
-			if (_.filter(this.targets,function(t){return "robot_"+t == d.name.toLowerCase();}).length>0) {
-				if (this.tags[idx]) {
-					if (this.tags[idx]) {
-						var gPos = new THREE.Vector3().setFromMatrixPosition( d.matrixWorld );
-						this.tags[idx].material.map.text = 
-						this.tags[idx].name + '\n'
-						+ '(' + gPos.x.toFixed(2) + ',' + gPos.y.toFixed(2) + ',' + gPos.z.toFixed(2) + ')';
-					}
-				}
+    part.add(tag);
 
-				if (!this.tags[idx]) {
-					this.tags[idx] = this.addTag(this.parent, d, this.options);
-				}
+    console.log(tag);
 
-				
-				idx++;
-			}
-		}.bind(this));
-	}
+    return tag;
+  }
+
+  updateParameters(data) {
+    // switch(data.parameter) {
+    // 	case 'life':
+    // 		this.options.lifetime = data.value*100;
+    // 		break;
+    // 	case 'rate':
+    // 		this.spawnerOptions.spawnRate = data.value*3000;
+    // 		break;
+    // 	case 'size':
+    // 		this.options.size = data.value*200;
+    // 		break;
+    // 	case 'color':
+    // 		this.options.colorRandomness = data.value*10;
+    // 		break;
+    // }
+  }
+
+  update(data) {
+    let idx = 0;
+    data.traverse((d) => {
+      if (_.filter(this.targets, t => `robot_${t}` == d.name.toLowerCase()).length > 0) {
+        if (this.tags[idx]) {
+          if (this.tags[idx]) {
+            const gPos = new THREE.Vector3().setFromMatrixPosition(d.matrixWorld);
+            this.tags[idx].material.map.text =
+						`${this.tags[idx].name}\n`
+						+ `(${gPos.x.toFixed(2)},${gPos.y.toFixed(2)},${gPos.z.toFixed(2)})`;
+          }
+        }
+
+        if (!this.tags[idx]) {
+          this.tags[idx] = this.addTag(this.parent, d, this.options);
+        }
+
+
+        idx++;
+      }
+    });
+  }
 }
 
 module.exports = DataTags;

@@ -1,112 +1,107 @@
 
 
 class Sculpt {
-	constructor(parent) {
-		this.parent = parent;
-		
-		this.blob = null;
-		this.vector = null;
+  constructor(parent) {
+    this.parent = parent;
 
-		this.points = [];
+    this.blob = null;
+    this.vector = null;
 
-		this.color = new THREE.Color( 0xFFFFFF );
+    this.points = [];
 
-		this.up = new THREE.Vector3( 0, 1, 0 );
-		this.vector = new THREE.Vector3();
+    this.color = new THREE.Color(0xFFFFFF);
 
-		this.matrix = null;
+    this.up = new THREE.Vector3(0, 1, 0);
+    this.vector = new THREE.Vector3();
 
-		this.initBlob();
-	}
+    this.matrix = null;
 
-	updateStrength(id) {
-		this.points[id].strength = ( Math.sin( performance.now() / 1000 ) + 1.5 ) / 20.0;
-	}
+    this.initBlob();
+  }
 
-	erase() {
-		if ( this.points.length > 2 ) {
+  updateStrength(id) {
+    this.points[id].strength = (Math.sin(performance.now() / 1000) + 1.5) / 20.0;
+  }
 
-			this.points.shift();
-			this.points.shift();
+  erase() {
+    if (this.points.length > 2) {
+      this.points.shift();
+      this.points.shift();
 
-			this.update();
+      this.update();
 
-			var geometry = this.blob.generateGeometry();
-			var mesh = new THREE.Mesh( geometry, this.blob.material.clone() );
-			mesh.position.y = 1;
-			mesh.castShadow = true;
-			mesh.receiveShadow = true;
-			this.parent.add( mesh );
+      const geometry = this.blob.generateGeometry();
+      const mesh = new THREE.Mesh(geometry, this.blob.material.clone());
+      mesh.position.y = 1;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      this.parent.add(mesh);
 
-			this.initPoints();
-		}
-	}
+      this.initPoints();
+    }
+  }
 
-	draw(id) {
-		var strength = this.points[id].strength / 2;
+  draw(id) {
+    const strength = this.points[id].strength / 2;
 
-		this.vector = new THREE.Vector3().setFromMatrixPosition( this.matrix );
+    this.vector = new THREE.Vector3().setFromMatrixPosition(this.matrix);
 
-		this.transformPoint( this.vector );
+    this.transformPoint(this.vector);
 
-		this.points.push( { position: this.vector, strength: strength, subtract: 10 } );
-	}
+    this.points.push({ position: this.vector, strength, subtract: 10 });
+  }
 
-	transformPoint( vector ) {
-		this.vector.x = ( vector.x + 1.0 ) / 2.0;
-		this.vector.y = ( vector.y / 2.0 );
-		this.vector.z = ( vector.z + 1.0 ) / 2.0;
-	}
+  transformPoint(vector) {
+    this.vector.x = (vector.x + 1.0) / 2.0;
+    this.vector.y = (vector.y / 2.0);
+    this.vector.z = (vector.z + 1.0) / 2.0;
+  }
 
-	updatePoints(pivot, controller, id) {
-		this.matrix = pivot.matrixWorld;
+  updatePoints(pivot, controller, id) {
+    this.matrix = pivot.matrixWorld;
 
-		this.points[id].position.setFromMatrixPosition( this.matrix );
-		this.transformPoint( this.points[id].position );
-	}
+    this.points[id].position.setFromMatrixPosition(this.matrix);
+    this.transformPoint(this.points[id].position);
+  }
 
-	clonePoints() {}
+  clonePoints() {}
 
-	updateColor(color) {
-		this.color = color;
-		this.blob.material.color = this.color;
-	}
+  updateColor(color) {
+    this.color = color;
+    this.blob.material.color = this.color;
+  }
 
-	initBlob() {
+  initBlob() {
+    const material = new THREE.MeshStandardMaterial({
+      color: this.color,
+      roughness: 0.9,
+      metalness: 0.0,
+    });
 
-		var material = new THREE.MeshStandardMaterial( {
-			color: this.color,
-			roughness: 0.9,
-			metalness: 0.0
-		} );
+    this.blob = new THREE.MarchingCubes(64, material, true);
+    this.blob.position.y = 1;
+    this.parent.add(this.blob);
 
-		this.blob = new THREE.MarchingCubes( 64, material, true );
-		this.blob.position.y = 1;
-		this.parent.add( this.blob );
+    this.initPoints();
+  }
 
-		this.initPoints();
+  initPoints() {
+    this.points = [
+      { position: new THREE.Vector3(), strength: -0.08, subtract: 10 },
+      { position: new THREE.Vector3(), strength: 0.04, subtract: 10 },
+    ];
+  }
 
-	}
+  update() {
+    this.blob.reset();
 
-	initPoints() {
+    for (let i = 0; i < this.points.length; i++) {
+      const point = this.points[i];
+      const position = point.position;
 
-		this.points = [
-			{ position: new THREE.Vector3(), strength: -0.08, subtract: 10 },
-			{ position: new THREE.Vector3(), strength:   0.04, subtract: 10 }
-		];
-
-	}
-
-	update() {
-		this.blob.reset();
-
-		for ( var i = 0; i < this.points.length; i++ ) {
-			var point = this.points[i];
-			var position = point.position;
-
-			this.blob.addBall( position.x, position.y, position.z, point.strength, point.subtract );
-		}
-	}
+      this.blob.addBall(position.x, position.y, position.z, point.strength, point.subtract);
+    }
+  }
 }
 
-export default Sculpt
+export default Sculpt;

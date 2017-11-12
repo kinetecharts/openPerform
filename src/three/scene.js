@@ -1,203 +1,205 @@
 
 
 // import $ from 'jquery'
-import TWEEN from 'tween'
-import _ from 'lodash'
+import TWEEN from 'tween';
+import _ from 'lodash';
 
-var OrbitControls = require('three-orbit-controls')(THREE);
+const OrbitControls = require('three-orbit-controls')(THREE);
 
-var Stats = require("imports-loader?THREE=three!three/examples/js/libs/stats.min.js");
+const Stats = require('imports-loader?THREE=three!three/examples/js/libs/stats.min.js');
 
-import Common from './../util/Common'
+import Common from './../util/Common';
 
-import DepthDisplay from './displayComponents/DepthDisplay'
-import CameraControl from './../camera/cameraControl'
-import Environments from './../environments'
+import DepthDisplay from './displayComponents/DepthDisplay';
+import CameraControl from './../camera/cameraControl';
+import Environments from './../environments';
 
-import VR from './vr/vr.js'
+import VR from './vr/vr.js';
 
 class Scene {
-	constructor() {
-		this.renderer = null;
-		this.scene = null;
-		this.camera = null;
-		this.controls = null;
+  constructor() {
+    this.renderer = null;
+    this.scene = null;
+    this.camera = null;
+    this.controls = null;
 
-		this.container;
-		this.w;
-		this.h;
+    this.container;
+    this.w;
+    this.h;
 
-		this.stats = null;
+    this.stats = null;
 
-		this.vr = null;
+    this.vr = null;
 
-		this.environments = null;
-	}
-	initScene(startPos, inputs, statsEnabled, performers, backgroundColor) {
-		this.container = $('#scenes');
+    this.environments = null;
+  }
+  initScene(startPos, inputs, statsEnabled, performers, backgroundColor) {
+    this.container = $('#scenes');
 
-		this.w = this.container.width();
-		this.h = this.container.height();
+    this.w = this.container.width();
+    this.h = this.container.height();
 
-		/// Global : this.renderer
-		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-		
-		this.renderer.setClearColor( backgroundColor );
-		this.renderer.setSize( this.w, this.h );
+    // / Global : this.renderer
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
-		// this.renderer.shadowMap.enabled = true;
-		// // to antialias the shadow
-		// this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    this.renderer.setClearColor(backgroundColor);
+    this.renderer.setSize(this.w, this.h);
 
-		/// Global : this.scene
-		this.scene = new THREE.Scene();
-		window.scene = this.scene;
+    // this.renderer.shadowMap.enabled = true;
+    // // to antialias the shadow
+    // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
-		// var axisHelper = new THREE.AxisHelper( 5 );
-		// this.scene.add( axisHelper );
+    // / Global : this.scene
+    this.scene = new THREE.Scene();
+    window.scene = this.scene;
 
-        // this.scene.fog = new THREE.FogExp2( 0x171223, 0.00075 , 10000);
-        //this.scene.fog = new THREE.FogExp2( 0x0C0F15, 0.0075 , 100);
+    // var axisHelper = new THREE.AxisHelper( 5 );
+    // this.scene.add( axisHelper );
 
-		/// Global : this.camera
-		this.camera = new THREE.PerspectiveCamera( 20, this.w / this.h, 0.001, 1000000 );
+    // this.scene.fog = new THREE.FogExp2( 0x171223, 0.00075 , 10000);
+    // this.scene.fog = new THREE.FogExp2( 0x0C0F15, 0.0075 , 100);
 
-		window.camera = this.camera;
+    // / Global : this.camera
+    this.camera = new THREE.PerspectiveCamera(20, this.w / this.h, 0.001, 1000000);
 
-		// var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
-		
-		// this.camera.position.copy(src);
-		this.camera.position.set( 0, 0.5, 16 );
-		// this.camera.lookAt(new THREE.Vector3(0,1000,0));
+    window.camera = this.camera;
 
-		this.scene.add( this.camera );
+    // var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
 
-		this.environments = new Environments(this.renderer, this.scene, performers);
-		window.environments = this.environments;
+    // this.camera.position.copy(src);
+    this.camera.position.set(0, 0.5, 16);
+    // this.camera.lookAt(new THREE.Vector3(0,1000,0));
 
-		//orbit control
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.scene.add(this.camera);
 
-		this.controls.enableDamping = false;
-		this.controls.enableZoom = (inputs.indexOf("mouse")>=0);
-		this.controls.enableRotate = (inputs.indexOf("mouse")>=0);
-		this.controls.enablePan = (inputs.indexOf("mouse")>=0);
-		
-		this.controls.autoRotate = false;
-		this.controls.autoRotateSpeed = 3;
-		
-		this.controls.enableKeys = false;
-		
-		this.stats = new Stats();
-		if (statsEnabled) {
-			this.stats.dom.id = "stats";
-			$('#statsBox').append( this.stats.dom );
-		}
+    this.environments = new Environments(this.renderer, this.scene, performers);
+    window.environments = this.environments;
 
-		//attach this.renderer to DOM
-		this.container.append( this.renderer.domElement );
+    // orbit control
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-		this.clock = new THREE.Clock();
-		
-		this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
+    this.controls.enableDamping = false;
+    this.controls.enableZoom = (inputs.indexOf('mouse') >= 0);
+    this.controls.enableRotate = (inputs.indexOf('mouse') >= 0);
+    this.controls.enablePan = (inputs.indexOf('mouse') >= 0);
 
-		this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
+    this.controls.autoRotate = false;
+    this.controls.autoRotateSpeed = 3;
 
-		//initiating renderer
-		this.render();
+    this.controls.enableKeys = false;
 
-		window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
-	}
+    this.stats = new Stats();
+    if (statsEnabled) {
+      this.stats.dom.id = 'stats';
+      $('#statsBox').append(this.stats.dom);
+    }
 
-	toggleRotation() {
-		this.controls.autoRotate = !this.controls.autoRotate;
-	}
+    // attach this.renderer to DOM
+    this.container.append(this.renderer.domElement);
 
-	setRotation() {
-		this.controls.autoRotate = true;
-	}
+    this.clock = new THREE.Clock();
 
-	unsetRotation() {
-		this.controls.autoRotate = false;
-	}
+    this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 
-	setRotationSpeed(val) {
-		this.controls.autoRotateSpeed = val;
-	}
+    this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
-	switchEnvironment(env) {
-		if (this.environments) {
-			console.log("Switching Environment to: " + env);
-			this.environments.add(env);
-		}
-	}
+    // initiating renderer
+    this.render();
 
-	viewKinectTransportDepth(depthObj) {
-		var imgWidth = 512; var imgHeight = 424; //width and hight of kinect depth camera
+    window.addEventListener('resize', this.onWindowResize.bind(this), false);
+  }
 
-		if (!this.kinectPC) { //create point cloud depth display if one doesn't exist
-			var dimensions = {width: imgWidth, height: imgHeight, near: 58, far: 120}
-			this.kinectPC = new DepthDisplay(this.scene, dimensions, 30, false);
-		}
+  toggleRotation() {
+    this.controls.autoRotate = !this.controls.autoRotate;
+  }
 
-		// this.kinectPC.moveSlice();
-		this.kinectPC.updateDepth('kinecttransport', depthObj.depth.buffer.data);
-		this.kinectPC.updateColor('kinecttransport', depthObj.depth.buffer.data);
-	}
+  setRotation() {
+    this.controls.autoRotate = true;
+  }
 
-	viewKinectTransportBodies(bodiesObj) {
-		// console.log(bodiesObj.bodies.trackingIds.length);
-		var bodies = bodiesObj.bodies.bodies;
-		if (!this.bodies) {
-			this.bodies = {};
-		}
+  unsetRotation() {
+    this.controls.autoRotate = false;
+  }
 
-		_.each(bodies, function(body, idx){
-			// body.id;
-			if(!this.bodies[idx]) {
-				this.bodies[idx] = new Performer(this.scene, idx);
-			}
+  setRotationSpeed(val) {
+    this.controls.autoRotateSpeed = val;
+  }
 
-			this.bodies[idx].updateJoints(body.joints);
-		}.bind(this));
-	}
+  switchEnvironment(env) {
+    if (this.environments) {
+      console.log(`Switching Environment to: ${env}`);
+      this.environments.add(env);
+    }
+  }
 
-	render() {
-		this.controls.update();
-		TWEEN.update();
+  viewKinectTransportDepth(depthObj) {
+    const imgWidth = 512; const imgHeight = 424; // width and hight of kinect depth camera
 
-		if (this.performer) {
-			this.performer.update(this.clock.getDelta());
-		}
+    if (!this.kinectPC) { // create point cloud depth display if one doesn't exist
+      const dimensions = {
+        width: imgWidth, height: imgHeight, near: 58, far: 120,
+      };
+      this.kinectPC = new DepthDisplay(this.scene, dimensions, 30, false);
+    }
 
-		if (this.environments) {
-			this.environments.update(this.clock.getDelta());
-		}
+    // this.kinectPC.moveSlice();
+    this.kinectPC.updateDepth('kinecttransport', depthObj.depth.buffer.data);
+    this.kinectPC.updateColor('kinecttransport', depthObj.depth.buffer.data);
+  }
 
-		this.cameraControl.update();
+  viewKinectTransportBodies(bodiesObj) {
+    // console.log(bodiesObj.bodies.trackingIds.length);
+    const bodies = bodiesObj.bodies.bodies;
+    if (!this.bodies) {
+      this.bodies = {};
+    }
 
-		if (this.vr) {
-			this.vr.update();
-		}
+    _.each(bodies, (body, idx) => {
+      // body.id;
+      if (!this.bodies[idx]) {
+        this.bodies[idx] = new Performer(this.scene, idx);
+      }
 
-		this.renderer.render( this.scene, this.camera );
+      this.bodies[idx].updateJoints(body.joints);
+    });
+  }
 
-		this.stats.update();
+  render() {
+    this.controls.update();
+    TWEEN.update();
 
-		requestAnimationFrame(this.render.bind(this));
-	}
+    if (this.performer) {
+      this.performer.update(this.clock.getDelta());
+    }
 
-	onWindowResize() {
-		this.controls.update();
+    if (this.environments) {
+      this.environments.update(this.clock.getDelta());
+    }
 
-		this.w = this.container.width();
-		this.h = this.container.height();
-		
-		this.camera.aspect = this.w / this.h;
-		this.camera.updateProjectionMatrix();
-		
-		this.renderer.setSize( this.w, this.h );
-	}
+    this.cameraControl.update();
+
+    if (this.vr) {
+      this.vr.update();
+    }
+
+    this.renderer.render(this.scene, this.camera);
+
+    this.stats.update();
+
+    requestAnimationFrame(this.render.bind(this));
+  }
+
+  onWindowResize() {
+    this.controls.update();
+
+    this.w = this.container.width();
+    this.h = this.container.height();
+
+    this.camera.aspect = this.w / this.h;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(this.w, this.h);
+  }
 }
 
 export default Scene;

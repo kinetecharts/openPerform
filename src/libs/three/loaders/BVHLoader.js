@@ -6,93 +6,74 @@
 * Currently only supports bvh files containing a single root.
 *
 */
-THREE.BVHLoader = function( manager ) {
+THREE.BVHLoader = function (manager) {
+  this.animateBonePositions = true;
+  this.animateBoneRotations = true;
 
-	this.animateBonePositions = true;
-	this.animateBoneRotations = true;
-
-	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
-
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 };
 
 THREE.BVHLoader.prototype = {
 
-	constructor: THREE.BVHLoader,
+  constructor: THREE.BVHLoader,
 
-	load: function ( url, onLoad, onProgress, onError ) {
+  load(url, onLoad, onProgress, onError) {
+    const scope = this;
 
-		var scope = this;
+    const loader = new THREE.XHRLoader(scope.manager);
+    loader.setResponseType('arraybuffer');
+    loader.load(url, (buffer) => {
+      onLoad(scope.parse(buffer));
+    }, onProgress, onError);
+  },
 
-		var loader = new THREE.XHRLoader( scope.manager );
-		loader.setResponseType( 'arraybuffer' );
-		loader.load( url, function( buffer ) {
-
-			onLoad( scope.parse( buffer ) );
-
-		}, onProgress, onError );
-
-	},
-
-	parse: function ( buffer ) {
-
-		/*
+  parse(buffer) {
+    /*
 			reads a string array (lines) from a BVH file
 			and outputs a skeleton structure including motion data
 
 			returns thee root node:
 			{ name: "", channels: [], children: [] }
 		*/
-		function readBvh( lines ) {
+    function readBvh(lines) {
+      // read model structure
+      if (nextLine(lines) !== 'HIERARCHY') {
+        throw 'HIERARCHY expected';
+      }
 
-			// read model structure
-			if ( nextLine( lines ) !== "HIERARCHY" ) {
+      const list = []; // collects flat array of all bones
+      const root = readNode(lines, nextLine(lines), list);
 
-				throw "HIERARCHY expected";
+      // read motion data
+      if (nextLine(lines) != 'MOTION') {
+        throw 'MOTION  expected';
+      }
 
-			}
+      // number of frames
+      let tokens = nextLine(lines).split(/[\s]+/);
+      const numFrames = parseInt(tokens[1]);
+      if (isNaN(numFrames)) {
+        throw 'Failed to read number of frames.';
+      }
 
-			var list = []; // collects flat array of all bones
-			var root = readNode( lines, nextLine( lines ), list );
+      // frame time
+      tokens = nextLine(lines).split(/[\s]+/);
+      const frameTime = parseFloat(tokens[2]);
+      if (isNaN(frameTime)) {
+        throw 'Failed to read frame time.';
+      }
 
-			// read motion data
-			if ( nextLine( lines ) != "MOTION" ) {
+      // read frame data line by line
+      for (let i = 0; i < numFrames; ++i) {
+        tokens = nextLine(lines).split(/[\s]+/);
 
-				throw "MOTION  expected";
+        readFrameData(tokens, i * frameTime, root, list);
+      }
 
-			}
+      return list;
+    }
 
-			// number of frames
-			var tokens = nextLine( lines ).split( /[\s]+/ );
-			var numFrames = parseInt( tokens[ 1 ] );
-			if ( isNaN( numFrames ) ) {
-
-				throw "Failed to read number of frames.";
-
-			}
-
-			// frame time
-			tokens = nextLine( lines ).split( /[\s]+/ );
-			var frameTime = parseFloat( tokens[ 2 ] );
-			if ( isNaN( frameTime ) ) {
-
-				throw "Failed to read frame time.";
-
-			}
-
-			// read frame data line by line
-			for ( var i = 0; i < numFrames; ++ i ) {
-
-				tokens = nextLine( lines ).split( /[\s]+/ );
-
-				readFrameData( tokens, i * frameTime, root, list );
-
-			}
-
-			return list;
-
-		}
-
-		/*
+    /*
 			Recursively reads data from a single frame into the bone hierarchy.
 			The passed bone hierarchy has to be structured in the same order as the BVH file.
 			keyframe data is stored in bone.frames.
@@ -102,73 +83,63 @@ THREE.BVHLoader.prototype = {
 			- frameTime: playback time for this keyframe.
 			- bone: the bone to read frame data from.
 		*/
-		function readFrameData( data, frameTime, bone ) {
+    function readFrameData(data, frameTime, bone) {
+      // end sites have no motion data
+      if (bone.type === 'ENDSITE') {
+        return;
+      }
 
-			// end sites have no motion data
-			if ( bone.type === "ENDSITE" ) {
+      // add keyframe
+      const keyframe = {
+        time: frameTime,
+        position: { x: 0, y: 0, z: 0 },
+        rotation: new THREE.Quaternion(),
+      };
 
-				return;
+      bone.frames.push(keyframe);
 
-			}
+      const quat = new THREE.Quaternion();
 
-			// add keyframe
-			var keyframe = {
-				time: frameTime,
-				position: { x: 0, y: 0, z: 0 },
-				rotation: new THREE.Quaternion(),
-			};
+      const vx = new THREE.Vector3(1, 0, 0);
+      const vy = new THREE.Vector3(0, 1, 0);
+      const vz = new THREE.Vector3(0, 0, 1);
 
-			bone.frames.push( keyframe );
+      // parse values for each channel in node
+      for (var i = 0; i < bone.channels.length; ++i) {
+        switch (bone.channels[i]) {
+          case 'Xposition':
+            keyframe.position.x = parseFloat(data.shift().trim());
+            break;
+          case 'Yposition':
+            keyframe.position.y = parseFloat(data.shift().trim());
+            break;
+          case 'Zposition':
+            keyframe.position.z = parseFloat(data.shift().trim());
+            break;
+          case 'Xrotation':
+            quat.setFromAxisAngle(vx, parseFloat(data.shift().trim()) * Math.PI / 180);
+            keyframe.rotation.multiply(quat);
+            break;
+          case 'Yrotation':
+            quat.setFromAxisAngle(vy, parseFloat(data.shift().trim()) * Math.PI / 180);
+            keyframe.rotation.multiply(quat);
+            break;
+          case 'Zrotation':
+            quat.setFromAxisAngle(vz, parseFloat(data.shift().trim()) * Math.PI / 180);
+            keyframe.rotation.multiply(quat);
+            break;
+          default:
+            throw 'invalid channel type';
+        }
+      }
 
-			var quat = new THREE.Quaternion();
+      // parse child nodes
+      for (var i = 0; i < bone.children.length; ++i) {
+        readFrameData(data, frameTime, bone.children[i]);
+      }
+    }
 
-			var vx = new THREE.Vector3( 1, 0, 0 );
-			var vy = new THREE.Vector3( 0, 1, 0 );
-			var vz = new THREE.Vector3( 0, 0, 1 );
-
-			// parse values for each channel in node
-			for ( var i = 0; i < bone.channels.length; ++ i ) {
-
-				switch ( bone.channels[ i ] ) {
-
-				case "Xposition":
-					keyframe.position.x = parseFloat( data.shift().trim() );
-					break;
-				case "Yposition":
-					keyframe.position.y = parseFloat( data.shift().trim() );
-					break;
-				case "Zposition":
-					keyframe.position.z = parseFloat( data.shift().trim() );
-					break;
-				case "Xrotation":
-					quat.setFromAxisAngle( vx, parseFloat( data.shift().trim() ) * Math.PI / 180 );
-					keyframe.rotation.multiply( quat );
-					break;
-				case "Yrotation":
-					quat.setFromAxisAngle( vy, parseFloat( data.shift().trim() ) * Math.PI / 180 );
-					keyframe.rotation.multiply( quat );
-					break;
-				case "Zrotation":
-					quat.setFromAxisAngle( vz, parseFloat( data.shift().trim() ) * Math.PI / 180 );
-					keyframe.rotation.multiply( quat );
-					break;
-				default:
-					throw "invalid channel type";
-
-				}
-
-			}
-
-			// parse child nodes
-			for ( var i = 0; i < bone.children.length; ++ i ) {
-
-				readFrameData( data, frameTime, bone.children[ i ] );
-
-			}
-
-		}
-
-		/*
+    /*
 		 Recursively parses the HIERACHY section of the BVH file
 
 		 - lines: all lines of the file. lines are consumed as we go along.
@@ -177,98 +148,73 @@ THREE.BVHLoader.prototype = {
 
 		 returns: a BVH node including children
 		*/
-		function readNode( lines, firstline, list ) {
+    function readNode(lines, firstline, list) {
+      const node = { name: '', type: '', frames: [] };
+      list.push(node);
 
-			var node = { name: "", type: "", frames: [] };
-			list.push( node );
+      // parse node type and name.
+      let tokens = firstline.split(/[\s]+/);
 
-			// parse node type and name.
-			var tokens = firstline.split( /[\s]+/ );
+      if (tokens[0].toUpperCase() === 'END' && tokens[1].toUpperCase() === 'SITE') {
+        node.type = 'ENDSITE';
+        node.name = 'ENDSITE'; // bvh end sites have no name
+      } else {
+        node.name = tokens[1];
+        node.type = tokens[0].toUpperCase();
+      }
 
-			if ( tokens[ 0 ].toUpperCase() === "END" && tokens[ 1 ].toUpperCase() === "SITE" ) {
+      if (nextLine(lines) != '{') {
+        throw 'Expected opening { after type & name';
+      }
 
-				node.type = "ENDSITE";
-				node.name = "ENDSITE"; // bvh end sites have no name
+      // parse OFFSET
+      tokens = nextLine(lines).split(/[\s]+/);
 
-			} else {
+      if (tokens[0] !== 'OFFSET') {
+        throw `Expected OFFSET, but got: ${tokens[0]}`;
+      }
 
-				node.name = tokens[ 1 ];
-				node.type = tokens[ 0 ].toUpperCase();
+      if (tokens.length != 4) {
+        throw 'OFFSET: Invalid number of values';
+      }
 
-			}
+      const offset = {
+        x: parseFloat(tokens[1]),
+        y: parseFloat(tokens[2]),
+        z: parseFloat(tokens[3]),
+      };
 
-			if ( nextLine( lines ) != "{" ) {
+      if (isNaN(offset.x) || isNaN(offset.y) || isNaN(offset.z)) {
+        throw 'OFFSET: Invalid values';
+      }
 
-				throw "Expected opening { after type & name";
+      node.offset = offset;
 
-			}
+      // parse CHANNELS definitions
+      if (node.type != 'ENDSITE') {
+        tokens = nextLine(lines).split(/[\s]+/);
 
-			// parse OFFSET
-			tokens = nextLine( lines ).split( /[\s]+/ );
+        if (tokens[0] != 'CHANNELS') {
+          throw 'Expected CHANNELS definition';
+        }
 
-			if ( tokens[ 0 ] !== "OFFSET" ) {
+        const numChannels = parseInt(tokens[1]);
+        node.channels = tokens.splice(2, numChannels);
+        node.children = [];
+      }
 
-				throw "Expected OFFSET, but got: " + tokens[ 0 ];
+      // read children
+      while (true) {
+        const line = nextLine(lines);
 
-			}
+        if (line === '}') {
+          return node;
+        }
+        node.children.push(readNode(lines, line, list));
+      }
+    }
 
-			if ( tokens.length != 4 ) {
-
-				throw "OFFSET: Invalid number of values";
-
-			}
-
-			var offset = {
-				x: parseFloat( tokens[ 1 ] ),
-				y: parseFloat( tokens[ 2 ] ),
-				z: parseFloat( tokens[ 3 ] )
-			};
-
-			if ( isNaN( offset.x ) || isNaN( offset.y ) || isNaN( offset.z ) ) {
-
-				throw "OFFSET: Invalid values";
-
-			}
-
-			node.offset = offset;
-
-			// parse CHANNELS definitions
-			if ( node.type != "ENDSITE" ) {
-
-				tokens = nextLine( lines ).split( /[\s]+/ );
-
-				if ( tokens[ 0 ] != "CHANNELS" ) {
-
-					throw "Expected CHANNELS definition";
-
-				}
-
-				var numChannels = parseInt( tokens[ 1 ] );
-				node.channels = tokens.splice( 2, numChannels );
-				node.children = [];
-
-			}
-
-			// read children
-			while ( true ) {
-
-				var line = nextLine( lines );
-
-				if ( line === "}" ) {
-
-					return node;
-
-				} else {
-
-					node.children.push( readNode( lines, line, list ) );
-
-				}
-
-			}
-
-		}
-
-		/*
+    /*
 			recursively converts the internal bvh node structure to a THREE.Bone hierarchy
 
 			source: the bvh root node
@@ -276,128 +222,104 @@ THREE.BVHLoader.prototype = {
 
 			returns the root THREE.Bone
 		*/
-		function toTHREEBone( source, list ) {
+    function toTHREEBone(source, list) {
+      const bone = new THREE.Bone();
+      list.push(bone);
 
-			var bone = new THREE.Bone();
-			list.push( bone );
+      bone.position.add(source.offset);
+      bone.name = source.name;
 
-			bone.position.add( source.offset );
-			bone.name = source.name;
+      if (source.type != 'ENDSITE') {
+        for (let i = 0; i < source.children.length; ++i) {
+          bone.add(toTHREEBone(source.children[i], list));
+        }
+      }
 
-			if ( source.type != "ENDSITE" ) {
+      return bone;
+    }
 
-				for ( var i = 0; i < source.children.length; ++ i ) {
-
-					bone.add( toTHREEBone( source.children[ i ], list ) );
-
-				}
-
-			}
-
-			return bone;
-
-		}
-
-		/*
+    /*
 			builds a THREE.AnimationClip from the keyframe data saved in each bone.
 
 			bone: bvh root node
 
 			returns: a THREE.AnimationClip containing position and quaternion tracks
 		*/
-		function toTHREEAnimation( bones ) {
+    function toTHREEAnimation(bones) {
+      const tracks = [];
 
-			var tracks = [];
+      // create a position and quaternion animation track for each node
+      for (let i = 0; i < bones.length; ++i) {
+        const bone = bones[i];
 
-			// create a position and quaternion animation track for each node
-			for ( var i = 0; i < bones.length; ++ i ) {
+        if (bone.type == 'ENDSITE') { continue; }
 
-				var bone = bones[ i ];
+        // track data
+        const times = [];
+        const positions = [];
+        const rotations = [];
 
-				if ( bone.type == "ENDSITE" )
-					continue;
+        for (let j = 0; j < bone.frames.length; ++j) {
+          const frame = bone.frames[j];
 
-				// track data
-				var times = [];
-				var positions = [];
-				var rotations = [];
+          times.push(frame.time);
 
-				for ( var j = 0; j < bone.frames.length; ++ j ) {
+          // the animation system animates the position property,
+          // so we have to add the joint offset to all values
+          positions.push(frame.position.x + bone.offset.x);
+          positions.push(frame.position.y + bone.offset.y);
+          positions.push(frame.position.z + bone.offset.z);
 
-					var frame = bone.frames[ j ];
+          rotations.push(frame.rotation.x);
+          rotations.push(frame.rotation.y);
+          rotations.push(frame.rotation.z);
+          rotations.push(frame.rotation.w);
+        }
 
-					times.push( frame.time );
+        if (scope.animateBonePositions) {
+          tracks.push(new THREE.VectorKeyframeTrack(`.bones[${bone.name}].position`, times, positions));
+        }
 
-					// the animation system animates the position property,
-					// so we have to add the joint offset to all values
-					positions.push( frame.position.x + bone.offset.x );
-					positions.push( frame.position.y + bone.offset.y );
-					positions.push( frame.position.z + bone.offset.z );
+        if (scope.animateBoneRotations) {
+          tracks.push(new THREE.QuaternionKeyframeTrack(`.bones[${bone.name}].quaternion`, times, rotations));
+        }
+      }
 
-					rotations.push( frame.rotation.x );
-					rotations.push( frame.rotation.y );
-					rotations.push( frame.rotation.z );
-					rotations.push( frame.rotation.w );
+      return new THREE.AnimationClip('animation', -1, tracks);
+    }
 
-				}
-
-				if ( scope.animateBonePositions ) {
-
-					tracks.push( new THREE.VectorKeyframeTrack(
-						".bones[" + bone.name + "].position", times, positions ) );
-
-				}
-
-				if ( scope.animateBoneRotations ) {
-
-					tracks.push( new THREE.QuaternionKeyframeTrack(
-						".bones[" + bone.name + "].quaternion", times, rotations ) );
-
-				}
-
-			}
-
-			return new THREE.AnimationClip( "animation", - 1, tracks );
-
-		}
-
-		/*
+    /*
 			returns the next non-empty line in lines
 		*/
-		function nextLine( lines ) {
+    function nextLine(lines) {
+      let line;
+      // skip empty lines
+      while ((line = lines.shift().trim()).length === 0) { }
+      return line;
+    }
 
-			var line;
-			// skip empty lines
-			while ( ( line = lines.shift().trim() ).length === 0 ) { }
-			return line;
+    var scope = this;
 
-		}
+    // convert buffer to ASCII string
+    let text = '';
+    const raw = new Uint8Array(buffer);
+    for (let i = 0; i < raw.length; ++i) {
+      text += String.fromCharCode(raw[i]);
+    }
 
-		var scope = this;
+    const lines = text.split(/[\r\n]+/g);
 
-		// convert buffer to ASCII string
-		var text = "";
-		var raw = new Uint8Array( buffer );
-		for ( var i = 0; i < raw.length; ++ i ) {
+    const bones = readBvh(lines);
 
-			text += String.fromCharCode( raw[ i ] );
+    const threeBones = [];
+    toTHREEBone(bones[0], threeBones);
 
-		}
+    const threeClip = toTHREEAnimation(bones);
 
-		var lines = text.split( /[\r\n]+/g );
-
-		var bones = readBvh( lines );
-
-		var threeBones = [];
-		toTHREEBone( bones[ 0 ], threeBones );
-
-		var threeClip = toTHREEAnimation( bones );
-
-		return {
-			skeleton: new THREE.Skeleton( threeBones ),
-			clip: threeClip
-		};
-
-	}
+    return {
+      skeleton: new THREE.Skeleton(threeBones),
+      clip: threeClip,
+    };
+  },
 
 };
