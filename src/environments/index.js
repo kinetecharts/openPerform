@@ -17,12 +17,16 @@ class Environments {
 
     this.environments = [];
 
-    this.gui = new dat.GUI();
+    this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
     this.guiDOM = this.gui.domElement;
-    this.guiFolder = this.gui.addFolder('Environments');
-    this.guiFolder.open();
+    // this.guiFolder = this.gui.addFolder('Environments');
+    // this.guiFolder.open();
 
-    this.add('muse'); // default
+    this.add('grid-dark'); // default
+  }
+
+  getEnvironments() {
+    return this.environments;
   }
 
   add(type) {
@@ -38,7 +42,7 @@ class Environments {
         this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.guiFolder));
         break;
       case 'grid-dark':
-        this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'dark'));
+        this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, 'dark'));
         break;
       case 'grid-light':
         this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'light'));

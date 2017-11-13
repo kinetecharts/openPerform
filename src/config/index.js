@@ -21,12 +21,25 @@ const defaults = {
     },
   },
   stats: true,
-  keyboardHelp: false,
+  
+  keyboardModal: false,
+  keyboardContent: document.createElement("div"),
+
+  performerModal: false,
+  performerContent: document.createElement("div"),
+
+  groupModal: false,
+  groupContent: document.createElement("div"),
+
+  environmentModal: false,
+  environmentContent: document.createElement("div"),
+
   inputs: ['keyboard', 'mouse', 'perceptionNeuron', 'midiController', 'gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   performers: [],
   performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
   // performerColors: ['FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF'],
   // performerColors: ['FF0000', '00FF00', '0000FF'],
+  environments: [],
   myo: null,
   kinectTransport: {
     port: config.kinectTransport.ports.outgoing,

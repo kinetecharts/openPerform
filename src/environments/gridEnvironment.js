@@ -1,12 +1,18 @@
 import _ from 'lodash';
+import dat from 'dat-gui';
 
 import config from './../config';
 
 class GridEnvironment {
-  constructor(renderer, parent, performers, guiFolder, type) {
+  constructor(renderer, parent, performers, type) {
     this.renderer = renderer;
     this.parent = parent;
-    this.guiFolder = guiFolder;
+
+    this.elements = [];
+
+    this.name = "Grid";
+    this.modalID = this.name+"_Settings";
+    this.visible = true;
 
     this.floorSize = 50;
     this.numLines = 50;
@@ -14,12 +20,6 @@ class GridEnvironment {
     this.gridFloor;
     this.hemiLight;
     this.dirLight;
-
-    const f = this.guiFolder.addFolder('Grid');
-    f.add(this, 'floorSize', 1, 100).step(1).name('Size').listen()
-      .onChange(this.redrawGrid.bind(this));
-    f.add(this, 'numLines', 1, 100).step(1).name('# Lines').listen()
-      .onChange(this.redrawGrid.bind(this));
 
     this.colors = {
       light: {
@@ -33,9 +33,36 @@ class GridEnvironment {
     };
 
     // this.renderer.setClearColor( this.colors[type].background );
-
+    this.initGUI();
     this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
     this.initLights();
+  }
+
+  initGUI() {
+    this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
+    this.guiDOM = this.gui.domElement;
+    this.guiFolder = this.gui.addFolder("Grid Environment");
+    this.guiFolder.open();
+    this.guiFolder.add(this, 'floorSize', 1, 100).step(1).name('Size').listen()
+      .onChange(this.redrawGrid.bind(this));
+    this.guiFolder.add(this, 'numLines', 1, 100).step(1).name('# Lines').listen()
+      .onChange(this.redrawGrid.bind(this));
+  }
+
+  toggleVisible(val) {
+    this.setVisible(!this.getVisible());
+  }
+
+  getVisible() {
+    return this.visible;
+  }
+
+  setVisible(val) {
+    console.log(val);
+    this.visible = val;
+    this.elements.forEach((element) => {
+      element.visible = val;
+    });
   }
 
   initFloor(floorSize, numLines, color) {
@@ -43,6 +70,7 @@ class GridEnvironment {
     this.gridFloor.castShadow = true;
     this.gridFloor.receiveShadow = true;
     this.gridFloor.visible = true;
+    this.elements.push(this.gridFloor);
     this.parent.add(this.gridFloor);
   }
 
@@ -51,6 +79,7 @@ class GridEnvironment {
     this.hemiLight.color.setHSL(0.6250011825856442, 60.75949367088608, 30.980392156862745);
     this.hemiLight.groundColor.setHSL(4.190951334017909e-8, 33.68421052631579, 37.254901960784316);
     this.hemiLight.position.set(0, 500, 0);
+    this.elements.push(this.hemiLight);
     this.parent.add(this.hemiLight);
 
     this.dirLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -58,6 +87,7 @@ class GridEnvironment {
     this.dirLight.position.multiplyScalar(50);
     this.dirLight.name = 'dirlight';
 
+    this.elements.push(this.dirLight);
     this.parent.add(this.dirLight);
 
     this.dirLight.castShadow = true;

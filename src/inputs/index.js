@@ -630,7 +630,7 @@ class InputManager {
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-    this.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.parent.openKeyboardHelp.bind(this.parent));
+    this.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.parent.openKeyboardModal.bind(this.parent));
 
     this.registerCallback('keyboard', '-', 'Toggle GUI', this.parent.toggleGUI.bind(this.parent));
     this.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.parent.toggleFullscreen.bind(this.parent));

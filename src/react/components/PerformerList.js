@@ -59,9 +59,6 @@ class PerformerList extends React.Component {
     performer.updateStyle(val.value);
     this.setState({ forceUpdate: true });
   }
-  editEffects(performer) {
-
-  }
   addClone(performer) {
     this.props.performers.add(`Clone_${_.size(this.props.performers.getPerformers()) + 1}`, 'clone', null);
     this.setState({ forceUpdate: true });
@@ -86,65 +83,58 @@ class PerformerList extends React.Component {
     if (this.props.performers.length == 0) {
       return false;
     }
-    // glyphicon glyphicon-play
-    // glyphicon glyphicon-stop
+    
     return (
       <div className="performerList">
         <h5>Active Performers</h5>
         <table id="performerTable"><tbody>{
-					_.map(this.props.performers.getPerformers(), (performer, idx) => (<tr key={idx}>
-  <td><div className={`glyphicon ${(performer.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, performer)} /></td>
-  <td><span style={{ color: performer.color }}>{performer.name}</span></td>
-  <td><span>{performer.type}</span></td>
-  <td>{ performer.type == 'bvh' ? <table id="controlsTable"><tbody><tr><td><div className={`glyphicon ${(this.state.playing) ? ' glyphicon-pause' : ' glyphicon-play'}`} onClick={this.playPause.bind(this, performer.actions)} /></td>
-    <td><div className="glyphicon glyphicon-stop" onClick={this.stop.bind(this, performer.actions)} /></td>
-    {/* <td><div className={"glyphicon " + ((this.state.looping)?" glyphicon-repeat":" glyphicon-ban-circle")} onClick={this.loopNoLoop.bind(this, performer.actions)}></div></td> */}
-  </tr>
-                                                            </tbody>
-                                  </table>
-							: <table id="inputsTable"><tbody><tr>
-  <td><input onChange={this.updateDelay.bind(this, performer)} type="text" id="delayInput" value={performer.getDelay()} /></td>
-  <td><input onChange={this.updateOffset.bind(this, performer)} type="text" id="offsetInput" value={performer.getOffset()} /></td>
-</tr>
-</tbody>
-</table>}
-  </td>
-  <td><Select
-    clearable={false}
-    autoBlur
-    autofocus={false}
-    searchable={false}
-    backspaceRemoves={false}
-    deleteRemoves={false}
-    name="displayType"
-    value={performer.getType()}
-    options={performer.getTypes()}
-    onChange={this.changeType.bind(this, performer)}
-  />
-  </td>
-  <td><Select
-    clearable={false}
-    autoBlur
-    autofocus={false}
-    searchable={false}
-    backspaceRemoves={false}
-    deleteRemoves={false}
-    name="displayStyle"
-    value={performer.getStyle()}
-    options={_.map(performer.styles, s => ({ value: s, label: s }))}
-    onChange={this.changeStyle.bind(this, performer)}
-  />
-  </td>
-  <td><div className="glyphicon glyphicon-fire" onClick={this.editEffects.bind(this, performer)} /></td>
-  <td>{ (performer.type == 'clone') ?
-    <div className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
-								: <div className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />
-							}
-  </td>
-</tr>))
-				}
-                                   </tbody>
-        </table>
+          _.map(this.props.performers.getPerformers(), (performer, idx) => (<tr key={idx}>
+            <td><div className={`glyphicon ${(performer.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, performer)} /></td>
+            <td><span style={{ color: performer.color }}>{performer.name}</span></td>
+            <td><span>{performer.type}</span></td>
+            <td>{ performer.type == 'bvh' ? <table id="controlsTable"><tbody><tr>
+              <td><div className={`glyphicon ${(this.state.playing) ? ' glyphicon-pause' : ' glyphicon-play'}`} onClick={this.playPause.bind(this, performer.actions)} /></td>
+              <td><div className="glyphicon glyphicon-stop" onClick={this.stop.bind(this, performer.actions)} /></td>
+              {/* <td><div className={"glyphicon " + ((this.state.looping)?" glyphicon-repeat":" glyphicon-ban-circle")} onClick={this.loopNoLoop.bind(this, performer.actions)}></div></td> */}
+              </tr></tbody></table>
+              : <table id="inputsTable"><tbody><tr>
+                <td><input onChange={this.updateDelay.bind(this, performer)} type="text" id="delayInput" value={performer.getDelay()} /></td>
+                <td><input onChange={this.updateOffset.bind(this, performer)} type="text" id="offsetInput" value={performer.getOffset()} /></td>
+              </tr></tbody></table>
+            }</td>
+            <td><Select
+              clearable={false}
+              autoBlur
+              autofocus={false}
+              searchable={false}
+              backspaceRemoves={false}
+              deleteRemoves={false}
+              name="displayType"
+              value={performer.getType()}
+              options={performer.getTypes()}
+              onChange={this.changeType.bind(this, performer)}
+            />
+            </td>
+            <td><Select
+              clearable={false}
+              autoBlur
+              autofocus={false}
+              searchable={false}
+              backspaceRemoves={false}
+              deleteRemoves={false}
+              name="displayStyle"
+              value={performer.getStyle()}
+              options={_.map(performer.styles, s => ({ value: s, label: s }))}
+              onChange={this.changeStyle.bind(this, performer)}
+            />
+            </td>
+            <td><div className="glyphicon glyphicon-fire" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)} /></td>
+            <td>{ (performer.type == 'clone') ?
+              <div className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
+            : <div className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />
+            }</td>
+          </tr>))
+        }</tbody></table>
       </div>
     );
   }

@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { Modal, OverlayTrigger, Button, Row, Col } from 'react-bootstrap';
 
-class KeyboardHelpModal extends React.Component {
+class GroupEffectsModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -12,7 +12,7 @@ class KeyboardHelpModal extends React.Component {
   }
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.closeKeyboardModal}>
+      <Modal show={this.props.show} onHide={this.props.closeGroupModal}>
         <Modal.Header closeButton>
           <Modal.Title>Keyboard Shortcuts</Modal.Title>
         </Modal.Header>
@@ -20,11 +20,11 @@ class KeyboardHelpModal extends React.Component {
           {_.map(this.props.keyboardList.labels, (key, idx) => (<Row key={idx}><Col sm={6} style={{ textAlign: 'right' }}>{this.props.keyboardList.events[idx]}</Col><Col sm={6}>{key}</Col></Row>))}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.props.closeKeyboardModal}>Close</Button>
+          <Button onClick={this.props.closeGroupModal}>Close</Button>
         </Modal.Footer>
       </Modal>
     );
   }
 }
 
-module.exports = KeyboardHelpModal;
+module.exports = GroupEffectsModal;

@@ -5,7 +5,11 @@ const _ = require('lodash').mixin(require('lodash-keyarrange'));
 
 import InputList from './../components/InputList';
 import PerformerList from './../components/PerformerList';
+import EnvironmentList from './../components/EnvironmentList';
 import KeyboardHelpModal from './../components/KeyboardHelpModal';
+import PerformerEffectsModal from './../components/PerformerEffectsModal';
+import GroupEffectsModal from './../components/GroupEffectsModal';
+import EnvironmentSettingsModal from './../components/EnvironmentSettingsModal';
 
 import Common from './../../util/Common';
 
@@ -55,6 +59,9 @@ class Main extends React.Component {
     this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers, this.state.backgroundColor);
 
     this.performers.init(this.state.scene.scene);
+    this.setState({
+      environments: this.state.scene.environments,
+    });
 
     if (this.state.debug) {
       this.BVHPlayer = this.addBVHPerformer(this.BVHFiles[0]);
@@ -177,18 +184,70 @@ class Main extends React.Component {
     }
   }
 
-  openKeyboardHelp() {
-    if (this.state.keyboardHelp == false) {
+  openKeyboardModal() {
+    if (this.state.keyboardModal == false) {
       this.setState({
-        keyboardHelp: true,
+        keyboardModal: true,
       });
     }
   }
 
-  closeKeyboardHelp() {
-    if (this.state.keyboardHelp == true) {
+  closeKeyboardModal() {
+    if (this.state.keyboardModal == true) {
       this.setState({
-        keyboardHelp: false,
+        keyboardModal: false,
+      });
+    }
+  }
+
+  openPerformerModal(content) {
+    if (this.state.performerModal == false) {
+      this.setState({
+        performerModal: true,
+        performerContent : content
+      });
+    }
+  }
+
+  closePerformerModal() {
+    if (this.state.performerModal == true) {
+      this.setState({
+        performerModal: false,
+        performerContent : document.createElement("div")
+      });
+    }
+  }
+
+  openGroupModal() {
+    if (this.state.groupModal == false) {
+      this.setState({
+        groupModal: true,
+      });
+    }
+  }
+
+  closeGroupModal() {
+    if (this.state.groupModal == true) {
+      this.setState({
+        groupModal: false,
+      });
+    }
+  }
+
+  openEnvironmentModal(content) {
+    if (this.state.environmentModal == false) {
+      this.setState({
+        environmentModal: true,
+        environmentContent : content
+      });
+    }
+  }
+
+  closeEnvironmentModal() {
+    if (this.state.environmentModal == true) {
+      this.setState({
+        environmentModal: false,
+        environmentContent : document.createElement("div")
       });
     }
   }
@@ -201,13 +260,17 @@ class Main extends React.Component {
         <div id="upperDisplay" />
         <div id="lowerDisplay">
           {/* <InputList inputs={this.state.inputs}></InputList> */}
-          <PerformerList performers={this.state.performers} />
+          <PerformerList performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} />
+          <EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} />
           <div id="statsBox"><h5>Stats</h5></div>
         </div>
         <div id="startOverlay" />
         <div id="blackOverlay" />
         <div id="endOverlay" />
-        <KeyboardHelpModal show={this.state.keyboardHelp} closeKeyboardHelp={this.closeKeyboardHelp.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
+        <KeyboardHelpModal show={this.state.keyboardModal} closeKeyboardModal={this.closeKeyboardModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
+        <PerformerEffectsModal content={this.state.performerContent} show={this.state.performerModal} closePerformerModal={this.closePerformerModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
+        <GroupEffectsModal show={this.state.groupModal} closeGroupModal={this.closeGroupModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
+        <EnvironmentSettingsModal content={this.state.environmentContent} show={this.state.environmentModal} closeEnvironmentModal={this.closeEnvironmentModal.bind(this)}/>
       </div>
     );
   }

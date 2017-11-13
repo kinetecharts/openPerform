@@ -157,6 +157,94 @@
 	margin-left: 10px;
 }
 
+.environmentList {
+	position: relative;
+	color: #fff;
+	bottom: 0;
+	padding: 10px;
+	border: 1px solid white;
+	border-radius: 10px;
+	margin: 10px;
+	display: inline-block;
+	float: left;
+	box-shadow: 1px 1px 1px #000000;
+	background: rgba(0, 0, 0, 0.25);
+}
+
+.environmentList #environmentTable td {
+	padding: 5px 10px;
+}
+
+.environmentList #controlsTable td {
+	padding: 5px 5px;
+}
+
+.environmentList .glyphicon {
+	cursor: pointer; cursor: hand;
+}
+
+.environmentList input {
+	background: none;
+	border:none;
+	border-bottom: 1px solid #ffffff;
+	width: 50px;
+}
+
+.environmentList .Select {
+	width: 130px;
+}
+
+.environmentList .Select .Select-control {
+	background:none !important;
+	border:none !important;
+	box-shadow:none !important;
+	border-bottom:1px solid #ffffff !important;
+	border-radius: 0;
+}
+
+#environmentTable .Select-value-label {
+	color: #ffffff !important;
+}
+
+#environmentTable .Select-arrow {
+	border-color: #ffffff transparent transparent !important;
+}
+
+.environmentList h5 {
+	margin-top: 0;
+	padding-bottom: 5px;
+	border-bottom: 1px solid white;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.environmentList ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.environmentList li {
+	text-transform: capitalize;
+	padding: 0;
+	margin: 0;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.environmentColor {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	margin-left: 10px;
+}
+
+#environmentModalBody > div > div.close-button {
+	display: none;
+}
+
+#performerModalBody > div > div.close-button {
+	display: none;
+}
+
 #statsBox {
 	position: relative;
 	color: #fff;
