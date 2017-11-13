@@ -140,7 +140,7 @@ class Main extends React.Component {
 
   toggleFullscreen() { // toggle fullscreen window
     if (!document.fullscreenElement && // alternative standard method
-			!document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) { // current working methods
+      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) { // current working methods
       this.enterFullscreen();
     } else {
       this.exitFullscreen();
@@ -257,12 +257,16 @@ class Main extends React.Component {
       <div className="container-fluid" id="page">
         <div id="consoleOutput" />
         <div id="scenes" />
-        <div id="upperDisplay" />
-        <div id="lowerDisplay">
-          {/* <InputList inputs={this.state.inputs}></InputList> */}
-          <PerformerList performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} />
-          <EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} />
+        <div id="upperDisplay">
           <div id="statsBox"><h5>Stats</h5></div>
+        </div>
+        <div id="lowerDisplay">
+          <table><tbody><tr>
+            {/*<td><InputList inputs={this.state.inputs}></InputList></td>*/}
+            <td><PerformerList performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
+            <td id="vrTD"></td>
+            <td><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
+          </tr></tbody></table>
         </div>
         <div id="startOverlay" />
         <div id="blackOverlay" />

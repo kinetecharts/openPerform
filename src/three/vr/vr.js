@@ -147,7 +147,7 @@ class VR {
       h5.innerHTML = 'Enter VR';
       vrDiv.append(h5);
       vrDiv.append(vrButton);
-      $('#lowerDisplay').append(vrDiv);
+      $('#vrTD').append(vrDiv);
       $(vrButton).click(() => {
         // RootObj.vrOffset = new THREE.Vector3();
 

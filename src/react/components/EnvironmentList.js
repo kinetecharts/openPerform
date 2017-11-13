@@ -93,9 +93,9 @@ class EnvironmentList extends React.Component {
         <table id="environmentTable"><tbody>{
           _.map(this.props.environments.getEnvironments(), (environment, idx) => (
             <tr key={idx}>
-              <td><div className={`glyphicon ${(environment.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, environment)} /></td>
-              <td><span style={{ color: environment.color }}>{environment.name}</span></td>
-              <td><div className="glyphicon glyphicon-cog" onClick={this.props.openEnvironmentModal.bind(this, environment.guiDOM)} /></td>
+              <td title="Hide / Show"><div className={`glyphicon ${(environment.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, environment)} /></td>
+              <td title="Name"><span style={{ color: environment.color }}>{environment.name}</span></td>
+              <td title="Edit Settings"><div className="glyphicon glyphicon-cog" onClick={this.props.openEnvironmentModal.bind(this, environment.guiDOM)} /></td>
           </tr>))
         }</tbody></table>
       </div>

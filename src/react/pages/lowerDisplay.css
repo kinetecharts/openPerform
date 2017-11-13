@@ -5,6 +5,14 @@
 	/*display: none;*/
 }
 
+#lowerDisplay > table {
+	width: 100%;
+}
+
+/*#lowerDisplay > table td {
+	width: 33%;
+}*/
+
 .dg.ac {
 	/*display: none;*/
 }
