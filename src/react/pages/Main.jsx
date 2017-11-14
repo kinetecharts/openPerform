@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import TWEEN from 'tween';
 
 const _ = require('lodash').mixin(require('lodash-keyarrange'));
 
@@ -38,6 +39,7 @@ class Main extends React.Component {
       config.debugBVH,
     ];
     this.BVHPlayers = [];
+    this.lastTracked = null;
   }
 
   componentWillMount() {
@@ -101,10 +103,13 @@ class Main extends React.Component {
   toggleGUI() { // toggle loading overlay visablity
     if ($('#lowerDisplay').css('display') == 'none') {
       $('#lowerDisplay').fadeIn(1000);
-      $('.dg.ac').fadeIn(1000);
     } else {
       $('#lowerDisplay').fadeOut(1000);
-      $('.dg.ac').fadeOut(1000);
+    }
+    if ($('#upperDisplay').css('display') == 'none') {
+      $('#upperDisplay').fadeIn(1000);
+    } else {
+      $('#upperDisplay').fadeOut(1000);
     }
   }
 
@@ -252,20 +257,47 @@ class Main extends React.Component {
     }
   }
 
+  trackPerformer(performer) {
+    var distance = 19.999990045581438;
+    if (!this.state.scene.cameraControl.trackingObj || this.lastTracked.inputId !== performer.inputId) {
+      var target = performer.performer.meshes.robot_spine1;
+      
+      var pos = target.position;
+      pos.y = 1;
+
+      this.state.scene.cameraControl.track(//track(target, look, offset) {
+        target,
+        pos,
+        new THREE.Vector3(0, 0, distance),
+      );
+      this.state.performers.clearTracking();
+      performer.setTracking(true);
+      this.lastTracked = performer;
+    } else {
+      this.state.performers.clearTracking();
+      this.state.scene.cameraControl.clearTrack();
+    }
+  }
+
   render() {
     return (
       <div className="container-fluid" id="page">
         <div id="consoleOutput" />
         <div id="scenes" />
         <div id="upperDisplay">
-          <div id="statsBox"><h5>Stats</h5></div>
+          <table><tbody><tr>
+            <td valign="top"><div id="cameraBox"><h5>Camera Controls</h5>
+            <table><tbody><tr><td></td></tr></tbody></table>
+            </div></td>
+            <td valign="top"><div id="statsBox"><h5>Stats</h5></div></td>
+          </tr></tbody></table>
         </div>
         <div id="lowerDisplay">
           <table><tbody><tr>
             {/*<td><InputList inputs={this.state.inputs}></InputList></td>*/}
-            <td><PerformerList performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
-            <td id="vrTD"></td>
-            <td><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
+            <td valign="bottom" width="40%"><PerformerList trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
+            <td valign="bottom" width="20%" id="vrTD" align="center"></td>
+            <td valign="bottom" width="40%"><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
           </tr></tbody></table>
         </div>
         <div id="startOverlay" />

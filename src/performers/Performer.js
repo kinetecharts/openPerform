@@ -38,9 +38,13 @@ class Performer {
     this.performer = null;
     this.name = `Performer ${performerId}`;
     this.color = color;
+    
+    
+    this.prefix = 'robot_';
+
     this.wireframe = false;
     this.visible = true;
-    this.prefix = 'robot_';
+    this.tracking = false;
 
     this.styles = ['default', 'boxes', 'spheres', 'planes', 'robot', 'discs', 'hands', 'heads'];
     this.styleId = 0;
@@ -54,17 +58,17 @@ class Performer {
     ];
 
     // this.loadColladaModels([
-    // 	{
-    // 		id:'oxygen',
-    // 		url: '/models/dae/oxygen_atom.dae'
-    // 	}
+    //  {
+    //    id:'oxygen',
+    //    url: '/models/dae/oxygen_atom.dae'
+    //  }
     // ]);
 
     // this.loadFBXModels([
-    // 	{
-    // 		id:'oxygen',
-    // 		url: '/models/fbx/oxygen_atom.fbx'
-    // 	}
+    //  {
+    //    id:'oxygen',
+    //    url: '/models/fbx/oxygen_atom.fbx'
+    //  }
     // ]);
 
     this.loadObjModels([
@@ -77,13 +81,13 @@ class Performer {
         url: '/models/obj/head.obj',
       },
       /* {
-				id:'chair',
-				url: '/models/obj/chair.obj'
-			},
-			{
-				id:'heart',
-				url: '/models/obj/heart.obj'
-			} */
+        id:'chair',
+        url: '/models/obj/chair.obj'
+      },
+      {
+        id:'heart',
+        url: '/models/obj/heart.obj'
+      } */
     ]);
 
     this.scene = null;
@@ -204,7 +208,7 @@ class Performer {
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = ['vogue', 'cloner', 'datatags', 'trails', 'particleSystem'];
+    this.effects = ['constructor','vogue', 'cloner', 'datatags', 'trails', 'particleSystem'];
 
     this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
     this.guiDOM = this.gui.domElement;
@@ -367,13 +371,13 @@ class Performer {
 
       // console.log(result.scene);
       s.traverse((object) => {
-        // 	// console.log(object.name + ": " + object.type);
+        //  // console.log(object.name + ": " + object.type);
         switch (object.type) {
           case 'SkinnedMesh':
             s = object;
-			// 			meshes[this.prefix+object.name.toLowerCase()] = object;
-			// 			keys[this.prefix+object.name.toLowerCase()] = this.prefix+object.name.toLowerCase();
-			// 			break;
+      //      meshes[this.prefix+object.name.toLowerCase()] = object;
+      //      keys[this.prefix+object.name.toLowerCase()] = this.prefix+object.name.toLowerCase();
+      //      break;
         }
       });
 
@@ -411,6 +415,7 @@ class Performer {
       // console.log(progress);
     };
     loader.load(filename, (result) => {
+    result.scene.visible = false;
       this.setScene(result.scene);
       switch (source) {
         case 'bvh':
@@ -423,7 +428,7 @@ class Performer {
       const s = this.getScene();
       s.position.x = this.offset;
       this.parent.add(s);
-      this.addEffects([this.effects[0]]);// defaults
+      this.addEffects([this.effects[1]]);// defaults
     });
   }
 
@@ -552,6 +557,22 @@ class Performer {
     this.getScene().visible = val;
   }
 
+  toggleTracking(val) {
+    this.setTracking(!this.getTracking());
+  }
+
+  getTracking() {
+    return this.tracking;
+  }
+
+  setTracking(val) {
+    this.tracking = val;
+  }
+
+  clearTracking(val) {
+    this.tracking = false;
+  }
+
   updateIntensity(intensity) {
     this.setIntensity(intensity);
     // this.parseBVHGroup("bvh", this.getHiddenParts(), this.getStyle(), intensity);
@@ -562,6 +583,7 @@ class Performer {
 
   updateStyle(style) {
     this.setStyle(style);
+    this.getScene().visible=false;
     this.parseBVHGroup('bvh', this.getHiddenParts(), style, this.getIntensity());
   }
 
@@ -616,7 +638,7 @@ class Performer {
             object.rotation.x = 0;
             switch (style) {
               case 'spheres':
-                var scale = 0.075;// Common.mapRange(intensity, 1, 10, 0.01, 3)
+                var scale = 0.075*6;// Common.mapRange(intensity, 1, 10, 0.01, 3)
                 object.geometry = new THREE.SphereGeometry(
                   object.srcSphere.radius * scale,
                   10, 10,
@@ -625,16 +647,16 @@ class Performer {
                 break;
 
               case 'planes':
-                var scale = 0.0025;// Common.mapRange(intensity, 1, 10, 0.01, 1)
+                var scale = 2;// Common.mapRange(intensity, 1, 10, 0.01, 1)
                 object.geometry = new THREE.BoxGeometry(
-                  object.srcSphere.radius * scale,
-                  3, 3,
+                  1,
+                  object.srcSphere.radius * scale, object.srcSphere.radius * scale,
                 );
                 object.srcScale = 1;
                 break;
 
               case 'boxes':
-                var scale = 0.125;// Common.mapRange(intensity, 1, 10, 0.01, 5)
+                var scale = 0.125*6;// Common.mapRange(intensity, 1, 10, 0.01, 5)
                 object.geometry = new THREE.BoxGeometry(
                   object.srcSphere.radius * scale,
                   object.srcSphere.radius * scale,
@@ -644,7 +666,7 @@ class Performer {
                 break;
 
               case 'robot':
-                var scale = 0.5;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                var scale = 0.5*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.BoxGeometry(
                   object.srcBox.max.x * scale,
                   object.srcBox.max.z * scale,
@@ -654,7 +676,7 @@ class Performer {
                 break;
 
               case 'discs':
-                var scale = 0.5;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                var scale = 0.5*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.CylinderGeometry(
                   object.srcBox.max.x * scale,
                   object.srcBox.max.x * scale,
@@ -665,7 +687,7 @@ class Performer {
                 break;
 
               case 'oct':
-                var scale = 0.1;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                var scale = 0.1*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.TetrahedronGeometry(object.srcSphere.radius * scale, 1);
                 object.geometry.needsUpdate = true;
                 object.srcScale = 1;
@@ -675,7 +697,7 @@ class Performer {
                 object.geometry = this.getModelGeo('hand');
                 object.geometry.needsUpdate = true;
                 object.srcScale = object.srcSphere.radius * 0.01;
-                object.scale.set(object.srcScale, object.srcScale, object.srcScale);
+                object.scale.set(object.srcScale*7, object.srcScale*7, object.srcScale*7);
                 break;
 
               case 'heads':
@@ -683,7 +705,7 @@ class Performer {
                 object.geometry.needsUpdate = true;
                 object.rotation.x = Math.PI;
                 object.srcScale = object.srcSphere.radius * 0.1;
-                object.scale.set(object.srcScale, object.srcScale, object.srcScale);
+                object.scale.set(object.srcScale*10, object.srcScale*10, object.srcScale*10);
                 break;
 
               case 'hearts':
@@ -737,6 +759,7 @@ class Performer {
       },
       250,
     ));
+  this.getScene().visible=true;
     return {
       keys: Common.getKeys(keys, ''),
       meshes,
@@ -767,13 +790,13 @@ class Performer {
 
   updateParameters(data) {
     switch (data.parameter) {
-    		case 'rate':
-    			this.performerEffects.updateParameters(data);
-    			break;
-    		case 'life':
+        case 'rate':
+          this.performerEffects.updateParameters(data);
+          break;
+        case 'life':
         this.performerEffects.updateParameters(data);
-    			break;
-    	}
+          break;
+      }
   }
 
   addEffects(effects) {
@@ -953,6 +976,15 @@ class Performer {
         this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3), switchTime);
       });
     }, switchTime);
+  }
+
+  setColor(color) {
+    this.getScene().traverse((part) => {
+      if (part.hasOwnProperty('material')) {
+        part.material.color.set(color);
+        part.material.needsUpdate = true;
+      }
+    });
   }
 
   randomizeColors(switchTime) {
@@ -1255,7 +1287,7 @@ class Performer {
   // p.dataBuffer.push(data);
   // // console.log(p.dataBuffer.length);
   // if (p.dataBuffer.length > (500*idx)+1) {
-  // 	p.update(p.dataBuffer.shift());
+  //  p.update(p.dataBuffer.shift());
   // }
   // idx++;
 

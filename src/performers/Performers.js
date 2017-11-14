@@ -86,6 +86,12 @@ class Performers {
     });
   }
 
+  clearTracking() {
+  	_.each(this.performers, (performer) => {
+      performer.clearTracking();
+    });
+  }
+
   updateParameters(data) {
     _.each(this.performers, (performer) => {
       performer.updateParameters(data);

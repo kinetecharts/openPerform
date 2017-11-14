@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Trails from './Trails';
 import ParticleSystem from './ParticleSystem';
 import Vogue from './Vogue';
+import Constructor from './Constructor';
 import Cloner from './Cloner';
 import Drawing from './Drawing';
 import DataTags from './DataTags';
@@ -28,6 +29,9 @@ class PerformerEffects {
         break;
       case 'vogue':
         this.effects.push(new Vogue(this.parent, this.color, this.guiFolder));
+        break;
+       case 'constructor':
+        this.effects.push(new Constructor(this.parent, this.color, this.guiFolder));
         break;
       case 'particleSystem':
         this.effects.push(new ParticleSystem(this.parent, this.color, this.guiFolder));

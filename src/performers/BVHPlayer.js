@@ -64,7 +64,7 @@ class BVHPlayer {
       this.clip = result.clip;
 
       this.play();
-      this.stop();
+      // this.stop();
     });
   }
 

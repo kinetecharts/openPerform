@@ -636,11 +636,15 @@ class InputManager {
     this.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.parent.toggleFullscreen.bind(this.parent));
 
     this.registerCallback('keyboard', 'l', 'Tracking Camera - Low Angle', () => {
-      this.scene.cameraControl.track(
-        this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes.robot_hips,
-        new THREE.Vector3(0, 0.5, 0),
-        new THREE.Vector3(0, 0, 7),
-      );
+    	if (!this.scene.cameraControl.trackingObj) {
+	      this.scene.cameraControl.track(
+	        this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes.robot_hips,
+	        new THREE.Vector3(0, 0.5, 0),
+	        new THREE.Vector3(0, 0, 7),
+	      );
+	  	} else {
+	  		this.scene.cameraControl.clearTrack();
+	  	}
     });
 
     // this.registerCallback('keyboard', ';', 'Tracking Camera - Zoom Out', function() {
@@ -700,7 +704,7 @@ class InputManager {
     });
 
     // this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
-    this.registerCallback('keyboard', 'space', 'Toggle Floor', () => { this.scene.environments.environments[0].toggleGrid(); });
+    this.registerCallback('keyboard', 'space', 'Toggle Floor', () => { this.scene.environments.environments[0].toggleVisible(); });
 
     // this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
     // this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));

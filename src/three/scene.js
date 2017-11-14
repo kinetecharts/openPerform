@@ -4,8 +4,8 @@
 import TWEEN from 'tween';
 import _ from 'lodash';
 
-const OrbitControls = require('three-orbit-controls')(THREE);
-
+// const OrbitControls = require('three-orbit-controls')(THREE);
+require('imports-loader?THREE=three!three/examples/js/controls/TrackballControls.js');
 const Stats = require('imports-loader?THREE=three!three/examples/js/libs/stats.min.js');
 
 import Common from './../util/Common';
@@ -67,8 +67,7 @@ class Scene {
     // var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
 
     // this.camera.position.copy(src);
-    this.camera.position.set(0, 0.5, 16);
-    // this.camera.lookAt(new THREE.Vector3(0,1000,0));
+    this.camera.position.set(0, 1.5000000041026476, 19.999990045581438);
 
     this.scene.add(this.camera);
 
@@ -76,17 +75,31 @@ class Scene {
     window.environments = this.environments;
 
     // orbit control
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-    this.controls.enableDamping = false;
-    this.controls.enableZoom = (inputs.indexOf('mouse') >= 0);
-    this.controls.enableRotate = (inputs.indexOf('mouse') >= 0);
-    this.controls.enablePan = (inputs.indexOf('mouse') >= 0);
+    // this.controls.enableDamping = false;
+    // this.controls.enableZoom = (inputs.indexOf('mouse') >= 0);
+    // this.controls.enableRotate = (inputs.indexOf('mouse') >= 0);
+    // this.controls.enablePan = (inputs.indexOf('mouse') >= 0);
 
-    this.controls.autoRotate = false;
-    this.controls.autoRotateSpeed = 3;
+    // this.controls.autoRotate = false;
+    // this.controls.autoRotateSpeed = 3;
 
-    this.controls.enableKeys = false;
+    // this.controls.enableKeys = false;
+
+    this.controls = new THREE.TrackballControls( this.camera );
+    this.controls.target = new THREE.Vector3(0,1.5,0);
+    window.controls = this.controls;
+
+	this.controls.rotateSpeed = 1.0;
+	this.controls.zoomSpeed = 1.2;
+	this.controls.panSpeed = 0.8;
+	this.controls.noZoom = false;
+	this.controls.noPan = false;
+	this.controls.staticMoving = true;
+	this.controls.dynamicDampingFactor = 0.3;
+	this.controls.keys = [ 65, 83, 16 ];
+	// this.controls.addEventListener( 'change', t )
 
     this.stats = new Stats();
     if (statsEnabled) {

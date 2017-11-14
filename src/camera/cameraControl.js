@@ -138,43 +138,43 @@ class CameraControl {
       case 'direct':
         this.fly_direct(
           targetPos, offset, lookAt, {
-			      	focus: targetPos,
-			      	duration: transition_speed,
-			      	easing,
-			    },
-			    callback,
+              focus: targetPos,
+              duration: transition_speed,
+              easing,
+          },
+          callback,
         );
         break;
       case 'top':
         this.fly_direct(
           targetPos, offset, lookAt, {
-			      	focus: targetPos,
-			      	duration: transition_speed,
-			      	easing,
-			    },
-			    callback,
+              focus: targetPos,
+              duration: transition_speed,
+              easing,
+          },
+          callback,
         );
         break;
       case 'front':
         this.fly_direct(
           targetPos, offset, lookAt, {
-			      	focus: targetPos,
-			      	duration: transition_speed,
-			      	easing,
-			    },
-			    callback,
+              focus: targetPos,
+              duration: transition_speed,
+              easing,
+          },
+          callback,
         );
         break;
       case 'path':
         this.fly_arc(
           targetPos, offset, lookAt, {
-			      	arcHeight,
+              arcHeight,
             visible: false,
             focus: targetPos,
             duration: transition_speed,
             easing,
-			    },
-			    callback,
+          },
+          callback,
         );
         break;
     }
@@ -290,6 +290,10 @@ class CameraControl {
     this.trackingObj = target;
     this.offsetObj = offset;
     this.lookObj = look;
+  }
+
+  clearTrack() {
+    this.trackingObj = null;
   }
 
   track(target, look, offset) {

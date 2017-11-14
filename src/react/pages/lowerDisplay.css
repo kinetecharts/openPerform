@@ -1,6 +1,6 @@
 #lowerDisplay {
 	position: absolute;
-	bottom: 25px;
+	bottom: 0;
 	width: 100%;
 	/*display: none;*/
 }
@@ -22,13 +22,13 @@
 	color: #fff;
 	bottom: 0;
 	padding: 10px;
-	border: 1px solid white;
-	border-radius: 10px;
+	/*border: 1px solid white;
+	border-radius: 10px;*/
 	margin: 10px;
 	display: inline-block;
 	float: left;
-	box-shadow: 1px 1px 1px #000000;
-	background: rgba(0, 0, 0, 0.25);
+	/*box-shadow: 1px 1px 1px #000000;*/
+	background: rgba(0, 0, 0, 0.125);
 }
 
 .controllerDebug h5 {
@@ -54,15 +54,14 @@
 .inputList {
 	position: relative;
 	color: #fff;
-	bottom: 0;
 	padding: 10px;
-	border: 1px solid white;
+	/*border: 1px solid white;*/
 	border-radius: 10px;
 	margin: 10px;
 	display: inline-block;
 	float: left;
-	box-shadow: 1px 1px 1px #000000;
-	background: rgba(0, 0, 0, 0.25);
+	/*box-shadow: 1px 1px 1px #000000;*/
+	background: rgba(0, 0, 0, 0.125);
 }
 
 .inputList h5 {
@@ -88,15 +87,14 @@
 .performerList {
 	position: relative;
 	color: #fff;
-	bottom: 0;
 	padding: 10px;
-	border: 1px solid white;
+	/*border: 1px solid white;*/
 	border-radius: 10px;
 	margin: 10px;
 	display: inline-block;
 	float: left;
-	box-shadow: 1px 1px 1px #000000;
-	background: rgba(0, 0, 0, 0.25);
+	/*box-shadow: 1px 1px 1px #000000;*/
+	background: rgba(0, 0, 0, 0.125);
 }
 
 .performerList #performerTable td {
@@ -115,7 +113,7 @@
 	background: none;
 	border:none;
 	border-bottom: 1px solid #ffffff;
-	width: 50px;
+	width: 25px;
 }
 
 .performerList .Select {
@@ -136,6 +134,10 @@
 
 #performerTable .Select-arrow {
 	border-color: #ffffff transparent transparent !important;
+}
+
+#performerTable .Select-menu-outer {
+	margin-top:-200%;
 }
 
 .performerList h5 {
@@ -168,15 +170,14 @@
 .environmentList {
 	position: relative;
 	color: #fff;
-	bottom: 0;
 	padding: 10px;
-	border: 1px solid white;
+	/*border: 1px solid white;*/
 	border-radius: 10px;
 	margin: 10px;
 	display: inline-block;
-	float: left;
-	box-shadow: 1px 1px 1px #000000;
-	background: rgba(0, 0, 0, 0.25);
+	float: right;
+	/*box-shadow: 1px 1px 1px #000000;*/
+	background: rgba(0, 0, 0, 0.125);
 }
 
 .environmentList #environmentTable td {
@@ -253,45 +254,16 @@
 	display: none;
 }
 
-#statsBox {
-	position: relative;
-	color: #fff;
-	bottom: 0;
-	padding: 10px;
-	border: 1px solid white;
-	border-radius: 10px;
-	margin: 10px;
-	display: inline-block;
-	float: right;
-	box-shadow: 1px 1px 1px #000000;
-	background: rgba(0, 0, 0, 0.25);
-}
-
-#statsBox h5 {
-	margin-top: 0;
-	padding-bottom: 5px;
-	border-bottom: 1px solid white;
-	text-shadow: 1px 1px 2px #000000;
-}
-
-#stats {
-	position: relative !important;
-	z-index: 100000 !important;
-	box-shadow: 1px 1px 1px #000000;
-}
-
 #vrButton {
 	position: relative;
 	color: #fff;
-	bottom: 0;
 	padding: 10px;
-	border: 1px solid white;
+	/*border: 1px solid white;*/
 	border-radius: 10px;
 	margin: 10px;
 	display: inline-block;
-	float: right;
-	box-shadow: 1px 1px 1px #000000;
-	background: rgba(0, 0, 0, 0.25);
+	/*box-shadow: 1px 1px 1px #000000;*/
+	background: rgba(0, 0, 0, 0.125);
 }
 
 #vrButton h5 {
