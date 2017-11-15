@@ -10,12 +10,13 @@ import WaterEnvironment from './waterEnvironment';
 import config from './../config';
 
 class Environments {
-  constructor(renderer, parent, performers) {
+  constructor(renderer, parent, performers, color) {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
 
     this.environments = [];
+    this.color = color;
 
     this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
     this.guiDOM = this.gui.domElement;
@@ -42,7 +43,7 @@ class Environments {
         this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.guiFolder));
         break;
       case 'grid-dark':
-        this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, 'dark'));
+        this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, 'dark', this.color));
         break;
       case 'grid-light':
         this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'light'));
@@ -82,6 +83,16 @@ class Environments {
   updateParameters(data) {
     _.each(this.environments, (environment) => {
       environment.updateParameters(data);
+    });
+  }
+
+  setColor(color) {
+    this.color = color;
+  }
+
+  updateColors(color) {
+    _.each(this.environments, (environment) => {
+      environment.setColor(color);
     });
   }
 

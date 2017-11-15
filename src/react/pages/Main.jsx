@@ -40,6 +40,7 @@ class Main extends React.Component {
     ];
     this.BVHPlayers = [];
     this.lastTracked = null;
+    this.colorIdx = 0;
   }
 
   componentWillMount() {
@@ -56,11 +57,11 @@ class Main extends React.Component {
     });
 
     this.performers = new Performers();
-
+    
     // once the dom has mounted, initialize threejs
-    this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers, this.state.backgroundColor);
-
-    this.performers.init(this.state.scene.scene);
+    this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers, this.state.colorSets[this.colorIdx]);
+    
+    this.performers.init(this.state.scene.scene, this.state.colorSets[this.colorIdx].performers);
     this.setState({
       environments: this.state.scene.environments,
     });
@@ -279,6 +280,23 @@ class Main extends React.Component {
     }
   }
 
+  prevColors() {
+    this.colorIdx--;
+    if (this.colorIdx < 0) { this.colorIdx = this.state.colorSets.length-1 }
+    this.updateColors(this.state.colorSets[this.colorIdx]);
+  }
+
+  nextColors() {
+    this.colorIdx++;
+    if (this.colorIdx >= this.state.colorSets.length) { this.colorIdx = 0 }
+    this.updateColors(this.state.colorSets[this.colorIdx]);
+  }
+
+  updateColors(colors) {
+    this.state.scene.environments.updateColors(colors.background);
+    this.performers.updateColors(colors.performers);
+  }
+
   render() {
     return (
       <div className="container-fluid" id="page">
@@ -295,9 +313,9 @@ class Main extends React.Component {
         <div id="lowerDisplay">
           <table><tbody><tr>
             {/*<td><InputList inputs={this.state.inputs}></InputList></td>*/}
-            <td valign="bottom" width="40%"><PerformerList trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
-            <td valign="bottom" width="20%" id="vrTD" align="center"></td>
-            <td valign="bottom" width="40%"><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
+            <td valign="bottom" width="45%"><PerformerList trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
+            <td valign="bottom" width="10%" id="vrTD" align="center"></td>
+            <td valign="bottom" width="45%"><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
           </tr></tbody></table>
         </div>
         <div id="startOverlay" />

@@ -4,7 +4,7 @@ import dat from 'dat-gui';
 import config from './../config';
 
 class GridEnvironment {
-  constructor(renderer, parent, performers, type) {
+  constructor(renderer, parent, performers, type, color) {
     this.renderer = renderer;
     this.parent = parent;
 
@@ -14,7 +14,7 @@ class GridEnvironment {
     this.modalID = this.name+"_Settings";
     this.visible = true;
 
-    this.color = 0x333333;
+    this.color = color;
     this.floorSize = 50;
     this.numLines = 50;
 
@@ -63,7 +63,6 @@ class GridEnvironment {
   }
 
   setVisible(val) {
-    console.log(val);
     this.visible = val;
     this.elements.forEach((element) => {
       element.visible = val;

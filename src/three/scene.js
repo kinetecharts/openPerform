@@ -5,7 +5,7 @@ import TWEEN from 'tween';
 import _ from 'lodash';
 
 // const OrbitControls = require('three-orbit-controls')(THREE);
-require('imports-loader?THREE=three!three/examples/js/controls/TrackballControls.js');
+require('imports-loader?THREE=three!./../libs/three/controls/TrackballControls.js');
 const Stats = require('imports-loader?THREE=three!three/examples/js/libs/stats.min.js');
 
 import Common from './../util/Common';
@@ -33,7 +33,7 @@ class Scene {
 
     this.environments = null;
   }
-  initScene(startPos, inputs, statsEnabled, performers, backgroundColor) {
+  initScene(startPos, inputs, statsEnabled, performers, colors) {
     this.container = $('#scenes');
 
     this.w = this.container.width();
@@ -42,7 +42,7 @@ class Scene {
     // / Global : this.renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
-    this.renderer.setClearColor(backgroundColor);
+    this.renderer.setClearColor(colors.background);
     this.renderer.setSize(this.w, this.h);
 
     // this.renderer.shadowMap.enabled = true;
@@ -71,7 +71,7 @@ class Scene {
 
     this.scene.add(this.camera);
 
-    this.environments = new Environments(this.renderer, this.scene, performers);
+    this.environments = new Environments(this.renderer, this.scene, performers, colors.background);
     window.environments = this.environments;
 
     // orbit control

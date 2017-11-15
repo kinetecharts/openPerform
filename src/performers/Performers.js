@@ -12,9 +12,9 @@ class Performers {
     this.performers = {};
     this.dataBuffer = [];
   }
-  init(parent) {
+  init(parent, colors) {
     this.parent = parent;
-    this.colors = config.performerColors;
+    this.colors = colors;
 
     // this.gui = new dat.GUI();
     // this.guiDOM = this.gui.domElement;
@@ -28,6 +28,25 @@ class Performers {
     return _.has(this.performers, inputId);
   }
 
+  getPosition() {
+    var defaultDistance = 3;
+    if (_.size(this.performers)==0) {
+      return 0;
+    } else if (_.size(this.performers)==1) {
+      return -(_.size(this.performers)*defaultDistance);
+    } else {
+      switch(_.size(this.performers)%2) {
+        case 0:
+          return ((_.size(this.performers)/2)*defaultDistance);
+          break;
+        case 1:
+          // return -(_.size(this.performers)*2);
+          return -(_.size(this.performers)*2);
+          break;
+      }
+    }
+  }
+
   add(inputId, type, actions) {
     if (this.performers && !this.performers[inputId] && this.colors) {
       this.performers[inputId] = new Performer(
@@ -38,6 +57,7 @@ class Performers {
         this.colors[_.size(this.performers) % this.colors.length],
         true,
         actions,
+        this.getPosition()
       );
       // this.performers[inputId+"_-1"] = new Performer(this.parent, inputId+"_-1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], -1, true);
       // this.performers[inputId+"_1"] = new Performer(this.parent, inputId+"_1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], 1, true);
@@ -89,6 +109,17 @@ class Performers {
   clearTracking() {
   	_.each(this.performers, (performer) => {
       performer.clearTracking();
+    });
+  }
+
+  setColors(colors) {
+  	this.colors = colors;
+  }
+
+  updateColors(colors) {
+    var c = colors.slice();
+    _.each(this.performers, (performer) => {
+      performer.setColor(c.shift());
     });
   }
 

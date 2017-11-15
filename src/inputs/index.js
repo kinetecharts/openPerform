@@ -798,6 +798,9 @@ class InputManager {
     // this.registerCallback('keyboard', 'x', 'Toggle Wireframe', function() { //toggle environment input
     // 	this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].toggleWireframe();
     // }.bind(this));
+
+    this.registerCallback('keyboard', 'left', 'Previous Colors', this.parent.prevColors.bind(this.parent));
+    this.registerCallback('keyboard', 'right', 'Next Colors', this.parent.nextColors.bind(this.parent));
   }
 
   flyOut() {

@@ -19,13 +19,13 @@ import _ from 'lodash';
 import dat from 'dat-gui';
 
 class Performer {
-  constructor(parent, inputId, performerId, type, color, visible, actions) {
+  constructor(parent, inputId, performerId, type, color, visible, actions, offset) {
     this.actions = actions;
 
     this.dataBuffer = [];
-    this.offset = 0;
+    this.offset = offset;
     this.delay = 0;
-    this.colors = ['#036B75', '#0x0AFCE8', '#0xFCE508', '#0xFA0AE3', '#0x260C58'];
+    // this.colors = ['#036B75', '#0x0AFCE8', '#0xFCE508', '#0xFA0AE3', '#0x260C58'];
 
     this.styleInt = null;
     this.modelGeos = {};
@@ -215,12 +215,12 @@ class Performer {
     this.guiFolder = this.gui.addFolder(this.name + ' Effects');
     this.guiFolder.open()
 
-    this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.gui);
+    this.performerEffects = new PerformerEffects(this.parent, this.color, this.gui);
 
     // this.addEffects(this.effects[0]);//defaults
 
     this.scaleInterval = null;
-    this.colorInterval = null;
+    // this.colorInterval = null;
   }
 
   loadColladaModels(models) {
@@ -614,7 +614,7 @@ class Performer {
           } else if (object.hasOwnProperty('material')) {
             object.material = new THREE.MeshPhongMaterial();
             object.material.wireframe = this.getWireframe();
-            object.material.color.set(parseInt(this.getColor(), 16));
+            object.material.color.set(this.getColor());
 
             object.material.needsUpdate = true;
           }
@@ -979,15 +979,15 @@ class Performer {
   }
 
   setColor(color) {
-    this.getScene().traverse((part) => {
-      if (part.hasOwnProperty('material')) {
-        part.material.color.set(color);
-        part.material.needsUpdate = true;
+    this.getScene().traverse((object) => {
+      if (object.hasOwnProperty('material')) {
+        object.material.color.set(color);
+        object.material.needsUpdate = true;
       }
     });
   }
 
-  randomizeColors(switchTime) {
+  /*randomizeColors(switchTime) {
     this.getScene().traverse((part) => {
       if (part.hasOwnProperty('material')) {
         // part.material = new THREE.MeshPhongMaterial();
@@ -1011,7 +1011,7 @@ class Performer {
         }
       });
     }, switchTime);
-  }
+  }*/
 
   randomizeLimbs(switchTime) {
     const parts = ['head', 'leftshoulder', 'rightshoulder', 'leftupleg', 'rightupleg'];
