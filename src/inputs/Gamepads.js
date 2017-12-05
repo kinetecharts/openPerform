@@ -73,34 +73,52 @@ class Gamepads {
     }
   }
 
-  buttonPressed(b) {
-    if (typeof (b) === 'object') {
-      return b.pressed;
-    }
-    return b == 1.0;
+  checkAxis(a) {
+      var direction;
+      if(a < -0.000000001) {
+          direction = -1;
+      } else if(a > 0.000000001) {
+          direction = 1;
+      } else {
+          direction = 0;
+      }
+      return direction;
   }
 
   update() {
+    var prev;
     _.each(navigator.getGamepads(), (g) => {
       if (g !== null) {
         const inputs = _.concat(
           _.compact(_.map(g.buttons, (b, idx) => {
-            if (this.buttonPressed(b.pressed)) {
-              return {
-                id: this.buttonKeys[idx],
-                pressed: b.pressed,
-                value: b.value,
-              };
+            if (b.pressed == true) {
+              if (b.prev !== true) {
+                b.prev = b.pressed;
+                return {
+                  id: this.buttonKeys[idx],
+                  pressed: b.pressed,
+                  value: b.value,
+                };
+              }
+            } else {
+              if (b.prev == true) {
+                b.prev = b.pressed;
+                return {
+                  id: this.buttonKeys[idx],
+                  pressed: b.pressed,
+                  value: b.value,
+                };
+              }
             }
           })),
           _.compact(_.map(g.axes, (a, idx) => {
-            if (a !== 0) {
+            // if (a !== 0) {
               return {
                 id: this.axesKeys[idx],
-                pressed: (a > 0),
-                value: a,
+                direction: this.checkAxis(a),
+                value: a
               };
-            }
+            // }
           })),
         );
 

@@ -46,8 +46,8 @@ class Performer {
     this.visible = true;
     this.tracking = false;
 
-    this.styles = ['default', 'boxes', 'spheres', 'planes', 'robot', 'discs', 'hands', 'heads'];
-    this.styleId = 0;
+    this.styles = [/*'default', */'boxes', 'spheres', 'planes', 'robot', 'discs', 'hands', 'heads', 'chairs'];
+    this.styleId = 1;
     this.style = this.styles[this.styleId];
     this.intensity = 1;
 
@@ -417,12 +417,12 @@ class Performer {
     loader.load(filename, (result) => {
     result.scene.visible = false;
       this.setScene(result.scene);
-      switch (source) {
-        case 'bvh':
-        case 'clone':
+      // switch (source) {
+      //   case 'bvh':
+      //   case 'clone':
           this.getScene().scale.set(size, size, size);
-          break;
-      }
+      //     break;
+      // }
 
       this.setPerformer(this.parseBVHGroup(source, hide, style, intensity));
       const s = this.getScene();
@@ -622,7 +622,7 @@ class Performer {
             switch (source) {
               case 'bvh':
               case 'clone':
-                object.scale.set(2, 2, 2);
+                // object.scale.set(2, 2, 2);
                 break;
             }
 
@@ -676,7 +676,7 @@ class Performer {
                 break;
 
               case 'discs':
-                var scale = 0.5*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                var scale = 0.6*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.CylinderGeometry(
                   object.srcBox.max.x * scale,
                   object.srcBox.max.x * scale,
@@ -979,6 +979,7 @@ class Performer {
   }
 
   setColor(color) {
+    this.color = color;
     this.getScene().traverse((object) => {
       if (object.hasOwnProperty('material')) {
         object.material.color.set(color);

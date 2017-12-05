@@ -41,6 +41,7 @@ class Main extends React.Component {
     this.BVHPlayers = [];
     this.lastTracked = null;
     this.colorIdx = 0;
+    this.colorInterval = null
   }
 
   componentWillMount() {
@@ -57,11 +58,13 @@ class Main extends React.Component {
     });
 
     this.performers = new Performers();
-    
+
+    this.updateColors(this.switchColorSet("darkColors")[0]);
+
     // once the dom has mounted, initialize threejs
-    this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers, this.state.colorSets[this.colorIdx]);
+    this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers, this.state.darkColors[0]);
     
-    this.performers.init(this.state.scene.scene, this.state.colorSets[this.colorIdx].performers);
+    this.performers.init(this.state.scene.scene, this.state.darkColors[0].performers);
     this.setState({
       environments: this.state.scene.environments,
     });
@@ -180,6 +183,8 @@ class Main extends React.Component {
     if (this.performers) {
       if (!this.performers.exists(id)) {
         this.performers.add(id, type, actions);
+        // this.performers.add(id+1, "clone", []);
+        // this.performers.add(id+2, "clone", []);
       } else {
         this.performers.update(id, data);
       }
@@ -259,9 +264,9 @@ class Main extends React.Component {
   }
 
   trackPerformer(performer) {
-    var distance = 19.999990045581438;
+    var distance = 7.7;
     if (!this.state.scene.cameraControl.trackingObj || this.lastTracked.inputId !== performer.inputId) {
-      var target = performer.performer.meshes.robot_spine1;
+      var target = performer.performer.meshes.robot_hips;
       
       var pos = target.position;
       pos.y = 1;
@@ -280,21 +285,64 @@ class Main extends React.Component {
     }
   }
 
+  clearCycleColors() {
+    if (this.colorInterval !== null) {
+      clearInterval(this.colorInterval);
+    }
+  }
+
+  cycleColors(speed) {
+    if (this.colorInterval !== null) {
+      clearInterval(this.colorInterval);
+    }
+    this.colorInterval = setInterval(
+      this.nextColors.bind(this),
+      speed
+    );
+    this.nextColors();
+  }
+
   prevColors() {
     this.colorIdx--;
-    if (this.colorIdx < 0) { this.colorIdx = this.state.colorSets.length-1 }
-    this.updateColors(this.state.colorSets[this.colorIdx]);
+    if (this.colorIdx < 0) { this.colorIdx = this.state.colorSet.length-1 }
+    this.updateColors(this.state.colorSet[this.colorIdx]);
   }
 
   nextColors() {
     this.colorIdx++;
-    if (this.colorIdx >= this.state.colorSets.length) { this.colorIdx = 0 }
-    this.updateColors(this.state.colorSets[this.colorIdx]);
+    if (this.colorIdx >= this.state.colorSet.length) { this.colorIdx = 0 }
+    this.updateColors(this.state.colorSet[this.colorIdx]);
+  }
+
+  setColor(id) {
+    this.setState({
+      colorIdx:id
+    });
+    this.updateColors(this.state.colorSet[id]);
   }
 
   updateColors(colors) {
-    this.state.scene.environments.updateColors(colors.background);
-    this.performers.updateColors(colors.performers);
+    if (this.state.scene.environments && this.performers) {
+      this.state.scene.environments.updateColors(colors.background);
+      this.performers.updateColors(colors.performers);
+    }
+  }
+
+  switchColorSet(setName) {
+    switch(setName) {
+      case "darkColors":
+        return this.state.colorSet = this.state.darkColors
+        break;
+      case "colors1":
+        return this.state.colorSet = this.state.colors1
+        break;
+      case "colors2":
+        return this.state.colorSet = this.state.colors2
+        break;
+      default:
+        return this.state.colorSet = this.state.dark
+        break;
+    }
   }
 
   render() {
@@ -318,7 +366,14 @@ class Main extends React.Component {
             <td valign="bottom" width="45%"><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
           </tr></tbody></table>
         </div>
-        <div id="startOverlay" />
+        <div id="startOverlay">
+          <div className="container-fluid">
+            <div className="col-md-2"></div>
+            <div className="col-md-4"><div className="startOverlayContent"><h1>@KinetechArts</h1></div></div>
+            <div className="col-md-4"><div className="startOverlayContent"><h1>#OpenPerform</h1></div></div>
+            <div className="col-md-2"></div>
+          </div>
+        </div>
         <div id="blackOverlay" />
         <div id="endOverlay" />
         <KeyboardHelpModal show={this.state.keyboardModal} closeKeyboardModal={this.closeKeyboardModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />

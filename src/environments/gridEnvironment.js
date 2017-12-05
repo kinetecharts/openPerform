@@ -73,7 +73,7 @@ class GridEnvironment {
     this.gridFloor = new THREE.GridHelper(floorSize / 2, numLines, color, color);
     this.gridFloor.castShadow = true;
     this.gridFloor.receiveShadow = true;
-    this.gridFloor.visible = true;
+    this.gridFloor.visible = false;
     this.elements.push(this.gridFloor);
     this.parent.add(this.gridFloor);
   }

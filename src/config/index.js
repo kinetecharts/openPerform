@@ -1,7 +1,7 @@
 import config from './../../server/config.js';
 
 const defaults = {
-  debug: true, // load bvh file / create performer from playback
+  debug: false, // load bvh file / create performer from playback
   debugBVH: 'models/bvh/duality_edit.bvh',
   backgroundColor: 0x333333,
   console2html: false,
@@ -33,67 +33,96 @@ const defaults = {
 
   environmentModal: false,
   environmentContent: document.createElement("div"),
+  colorSet:[],
+  dark: [
+    {
+      background:'#000000',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
+    },
+    {
+      background:'#000000',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
+    },
+    {
+      background:'#000000',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
+    },
+    {
+      background:'#000000',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
+    },
+    {
+      background:'#000000',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
+    }
+  ],
 
-  colorSets: [
+  darkColors: [
     {
-      background:'#1B325F',
-      performers: ['#1B325F', '#9CC4E4', '#94BA65']
+      background:'#000000',
+      performers: ['#ffc005', '#ffc005', '#ffc005']
     },
     {
-      background:'#9CC4E4',
-      performers: ['#2790B0', '#2B4E72', '#C7BA99']
+      background:'#000000',
+      performers: ['#005791', '#005791', '#005791']
     },
     {
-      background:'#94BA65',
-      performers: ['#F58723', '#83A300', '#3A2D19']
+      background:'#000000',
+      performers: ['#18918b', '#18918b', '#18918b']
     },
     {
-      background:'#2790B0',
-      performers: ['#E8373E', '#E61E2C', '#327CCB']
+      background:'#000000',
+      performers: ['#4752b7', '#4752b7', '#4752b7']
     },
     {
-      background:'#2B4E72',
-      performers: ['#8B84B7', '#4A970A', '#75CFB6']
+      background:'#000000',
+      performers: ['#ad1403', '#ad1403', '#ad1403']
+    }
+  ],
+
+  colors1: [
+    {
+      background:'#ffc005',
+      performers: ['#000000', '#000000', '#000000']
     },
     {
-      background:'#C7BA99',
-      performers: ['#1B325F', '#9CC4E4', '#94BA65']
+      background:'#005791',
+      performers: ['#000000', '#000000', '#000000']
     },
     {
-      background:'#F58723',
-      performers: ['#2790B0', '#2B4E72', '#C7BA99']
+      background:'#18918b',
+      performers: ['#000000', '#000000', '#000000']
     },
     {
-      background:'#83A300',
-      performers: ['#F58723', '#83A300', '#3A2D19']
+      background:'#4752b7',
+      performers: ['#000000', '#000000', '#000000']
     },
     {
-      background:'#3A2D19',
-      performers: ['#E8373E', '#E61E2C', '#327CCB']
+      background:'#ad1403',
+      performers: ['#000000', '#000000', '#000000']
+    }
+  ],
+
+  colors2: [
+    {
+      background:'#ffc005',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
     },
     {
-      background:'#E8373E',
-      performers: ['#8B84B7', '#4A970A', '#75CFB6']
+      background:'#005791',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
     },
     {
-      background:'#E61E2C',
-      performers: ['#1B325F', '#9CC4E4', '#94BA65']
+      background:'#18918b',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
     },
     {
-      background:'#327CCB',
-      performers: ['#2790B0', '#2B4E72', '#C7BA99']
+      background:'#4752b7',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
     },
     {
-      background:'#8B84B7',
-      performers: ['#F58723', '#83A300', '#3A2D19']
-    },
-    {
-      background:'#4A970A',
-      performers: ['#E8373E', '#E61E2C', '#327CCB']
-    },
-    {
-      background:'#75CFB6',
-      performers: ['#8B84B7', '#4A970A', '#75CFB6']
+      background:'#ad1403',
+      performers: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
     }
   ],
 

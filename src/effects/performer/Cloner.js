@@ -15,7 +15,7 @@ class Cloner {
     this.lastClick = 0;
     this.clickCount = 0;
 
-    this.cloneRate = 0.25;
+    this.cloneRate = 0.5;
     this.cloneLife = 1.25;
     this.cloneSize = 1;
 
@@ -65,6 +65,7 @@ class Cloner {
   clonePerformer() {
     if (this.performer) {
       var clone = this.performer.clone();
+      clone.visible = true;
       clone.scale.set(clone.scale.x * this.cloneSize, clone.scale.y * this.cloneSize, clone.scale.z * this.cloneSize);
       clone.traverse((part) => {
         if (part instanceof THREE.Mesh) {

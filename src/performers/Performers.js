@@ -12,9 +12,10 @@ class Performers {
     this.performers = {};
     this.dataBuffer = [];
   }
-  init(parent, colors) {
+  init(parent, colors, guiFolder) {
     this.parent = parent;
     this.colors = colors;
+    this.guiFolder = guiFolder;
 
     // this.gui = new dat.GUI();
     // this.guiDOM = this.gui.domElement;
@@ -29,7 +30,7 @@ class Performers {
   }
 
   getPosition() {
-    var defaultDistance = 3;
+    var defaultDistance = 1.25;
     if (_.size(this.performers)==0) {
       return 0;
     } else if (_.size(this.performers)==1) {
@@ -120,6 +121,12 @@ class Performers {
     var c = colors.slice();
     _.each(this.performers, (performer) => {
       performer.setColor(c.shift());
+    });
+  }
+
+  setVisible(val) {
+    _.each(this.performers, (performer) => {
+      performer.setVisible(val);
     });
   }
 

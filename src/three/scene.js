@@ -67,7 +67,7 @@ class Scene {
     // var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
 
     // this.camera.position.copy(src);
-    this.camera.position.set(0, 1.5000000041026476, 19.999990045581438);
+    this.camera.position.set(0, 0.91, 7.7);
 
     this.scene.add(this.camera);
 
@@ -88,7 +88,7 @@ class Scene {
     // this.controls.enableKeys = false;
 
     this.controls = new THREE.TrackballControls( this.camera );
-    this.controls.target = new THREE.Vector3(0,1.5,0);
+    this.controls.target = new THREE.Vector3(0,0.91,0);
     window.controls = this.controls;
 
 	this.controls.rotateSpeed = 1.0;

@@ -24,6 +24,10 @@ class InputManager {
     this.scene = threeScene; // bridge to threejs environment (/src/three/scene.js)
     this.parent = parent; // bridge to react environment (/src/react/pages/Main.jsx)
 
+    this.sceneId = 0
+    this.maxScenes = 10;
+    this.styleInterval = null;
+
     // connect all inputs in the input list
     _.forEach(inputList, this.connectInputs.bind(this)); // input list defined in config/index.js
   }
@@ -132,53 +136,206 @@ class InputManager {
 
 
   initGamepadCallbacks() {
+    let previous = {
+      dpadX:0,
+      dpadY:0,
+      lStickX:0,
+      lStickY:0,
+      rStickX:0,
+      rStickY:0,
+      x:0,
+      y:0,
+      a:0,
+      b:0,
+      lb:0,
+      rb:0,
+      lt:0,
+      rt:0
+    }
+
     this.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
       const leftStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) == 'Left'), (d) => {
         const obj = {};
-        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d.value;
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
         return obj;
       }));
-      if (leftStick.length > 0) { console.log('Left Stick: ', leftStick); }
+      if (leftStick.length > 0) {
+        if (leftStick[0].x) {
+            if (leftStick[0].x.value !== previous.lStickX) {
+              this.updateIntensity(1, Common.mapRange(Math.abs(leftStick[0].x.value), 0, 1, 0.1, 10));
+            }
+            previous.lStickX = leftStick[0].x.value;
+        }
+      }
 
 
       const rightStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 5) == 'Right'), (d) => {
         const obj = {};
-        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d.value;
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
         return obj;
       }));
-      if (rightStick.length > 0) { console.log('Right Stick: ', rightStick); }
+      if (rightStick.length > 0) {
+        if (rightStick[0].x) {
+            if (rightStick[0].x.value !== previous.rStickX) {
+              this.updateIntensity(2, Common.mapRange(Math.abs(rightStick[0].x.value), 0, 1, 0.1, 10));
+            }
+            previous.rStickX = rightStick[0].x.value;
+        }
+      }
 
       const dPad = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) == 'DPad'), (d) => {
         const obj = {};
-        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d.value;
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
         return obj;
       }));
-      if (dPad.length > 0) { console.log('DPad Stick: ', dPad); }
+      if (dPad.length > 0) {
+        if (dPad[0].x) {
+            if (dPad[0].x.direction !== previous.dpadX) {
+              if (dPad[0].x.direction == 1) {
+                this.timedStyleSwap("diff");
+              }
+
+              if (dPad[0].x.direction == -1) {
+                this.timedStyleSwap("same");
+              }
+
+              previous.dpadX = dPad[0].x.direction;
+            }
+        }
+        if (dPad[0].y) {
+            if (dPad[0].y.direction !== previous.dpadY) {
+              if (dPad[0].y.direction == 1) {
+                // this.switchScene("default");
+              }
+
+              if (dPad[0].y.direction == -1) {
+                // this.switchScene("default");
+              }
+
+              previous.dpadY = dPad[0].y.direction;
+            }
+        }
+      }
 
       const aButton = _.filter(data, d => d.id == 'A');
-      if (aButton.length > 0) { console.log('A Button: ', aButton); }
+      if (aButton.length > 0) {
+        if (aButton[0].pressed !== previous.a) {
+          if (aButton[0].pressed) {
+            this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performerEffects.effects[0].clonePerformer()
+          }
+        }
+        previous.a = aButton[0].pressed;
+      }
 
       const bButton = _.filter(data, d => d.id == 'B');
-      if (bButton.length > 0) { console.log('B Button: ', bButton); }
+      if (bButton.length > 0) {
+        if (bButton[0].pressed !== previous.b) {
+          if (bButton[0].pressed) {
+            
+          }
+        }
+        previous.b = bButton[0].pressed;
+      }
 
       const xButton = _.filter(data, d => d.id == 'X');
-      if (xButton.length > 0) { console.log('X Button: ', xButton); }
+      if (xButton.length > 0) {
+        if (xButton[0].pressed !== previous.x) {
+          if (xButton[0].pressed) {
+            this.switchScene("default");
+          }
+        }
+        previous.x = xButton[0].pressed;
+      }
 
       const yButton = _.filter(data, d => d.id == 'Y');
-      if (yButton.length > 0) { console.log('Y Button: ', yButton); }
+      if (yButton.length > 0) {
+        if (yButton[0].pressed !== previous.y) {
+          if (yButton[0].pressed) {
+            this.parent.toggleStartOverlay();
+          }
+        }
+        previous.y = yButton[0].pressed;
+      }
 
       const lbButton = _.filter(data, d => d.id == 'LB');
-      if (lbButton.length > 0) { console.log('LB Button: ', lbButton); }
+      if (lbButton.length > 0) {
+        if (lbButton[0].pressed !== previous.lb) {
+          if (lbButton[0].pressed) {
+            this.parent.cycleColors(4709);
+            //this.parent.prevColors();
+          }
+        }
+        previous.lb = lbButton[0].pressed;
+      }
 
       const rbButton = _.filter(data, d => d.id == 'RB');
-      if (rbButton.length > 0) { console.log('RB Button: ', rbButton); }
+      if (rbButton.length > 0) {
+        if (rbButton[0].pressed !== previous.rb) {
+          if (rbButton[0].pressed) {
+            // this.parent.nextColors();
+            this.parent.cycleColors(4709/2);
+          }
+        }
+        previous.rb = rbButton[0].pressed;
+      }
 
       const ltButton = _.filter(data, d => d.id == 'LT');
-      if (ltButton.length > 0) { console.log('LT Button: ', ltButton); }
+      if (ltButton.length > 0) {
+        if (ltButton[0].pressed !== previous.lt) {
+          if (ltButton[0].pressed) {
+            this.prevScene();
+          }
+        }
+        previous.lt = ltButton[0].pressed;
+      }
 
       const rtButton = _.filter(data, d => d.id == 'RT');
-      if (rtButton.length > 0) { console.log('RT Button: ', rtButton); }
+      if (rtButton.length > 0) {
+        if (rtButton[0].pressed !== previous.rt) {
+          if (rtButton[0].pressed) {
+            this.nextScene();
+          }
+        }
+        previous.rt = rtButton[0].pressed;
+      }
     });
+  }
+
+  timedStyleSwap(type) {
+    if (this.styleInterval !== null) {
+      clearInterval(this.styleInterval);
+    }
+    this.styleInterval = setInterval(
+      this.swapStyle.bind(this, type),
+      4709
+    );
+    this.swapStyle(type);
+  }
+
+  clearStyleSwap(type) {
+    if (this.styleInterval !== null) {
+      clearInterval(this.styleInterval);
+    }
+  }
+
+  swapStyle(type) {
+    switch(type) {
+      case "same":
+        var perf1 = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]];
+        var perf2 = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]];
+        var randoStyle = perf1.styles[Math.floor((Math.random()*perf1.styles.length))];
+        perf1.updateStyle(randoStyle);
+        perf2.updateStyle(randoStyle);
+        break;
+      case "diff":
+        var perf1 = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]];
+        var perf2 = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]];
+        var randoStyle1 = perf1.styles[Math.floor((Math.random()*perf1.styles.length))];
+        var randoStyle2 = perf2.styles[Math.floor((Math.random()*perf2.styles.length))];
+        perf1.updateStyle(randoStyle1);
+        perf2.updateStyle(randoStyle2);
+        break;
+    }
   }
 
   initMidiControllerCallbacks() {
@@ -629,7 +786,173 @@ class InputManager {
     this.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.scene));
   }
 
+  nextScene() {
+    this.sceneId++
+    if (this.sceneId>this.maxScenes) {
+      this.sceneId = this.maxScenes;
+    }
+    this.switchScene(this.sceneId);
+  }
+
+  prevScene() {
+    this.sceneId--
+    if (this.sceneId<0) {
+      this.sceneId = 0;
+    }
+    this.switchScene(this.sceneId);
+  }
+
+  switchScene(id) {
+    console.log("Switching to scene " + id);
+    switch (id) {
+      default:
+        this.sceneDefault();
+        break;
+      case 1:
+        this.sceneOne();
+        break;
+      case 2:
+        this.sceneTwo();
+        break;
+      case 3:
+        this.sceneThree();
+        break;
+      case 4:
+        this.sceneFour();
+        break;
+      case 5:
+        this.sceneFive();
+        break;
+      case 6:
+        this.sceneSix();
+        break;
+      case 7:
+        this.sceneSeven();
+        break;
+      case 8:
+        this.sceneEight();
+        break;
+      case 9:
+        this.sceneNine();
+        break;
+      case 10:
+      case 0:
+        this.sceneTen();
+        break;
+    }
+  }
+
+  sceneDefault() {
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle("planes");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle("planes");
+
+    this.parent.updateColors(this.parent.switchColorSet("dark")[0]);
+
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(false);
+  }
+
+  sceneOne() {
+    this.parent.updateColors(this.parent.switchColorSet("darkColors")[0]);
+  }
+
+  sceneTwo() {
+    this.parent.clearCycleColors();
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle("planes");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle("planes");
+
+    this.parent.updateColors(this.parent.switchColorSet("dark")[0]);
+    this.trackPerformer(0, 7.7);
+
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(true);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(true);
+  }
+
+  sceneThree() {
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle("spheres");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle("spheres");
+
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(true);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(true);
+  }
+
+  sceneFour() {
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle("discs");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle("discs");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].addEffect("cloner");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].addEffect("cloner");
+
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(true);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(true);
+  }
+
+  sceneFive() {
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(false);
+  }
+
+  sceneSix() {
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].removeEffect("cloner");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].removeEffect("cloner");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(false);
+  }
+
+  sceneSeven() {
+    this.parent.updateColors(this.parent.switchColorSet("colors1")[0]);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(true);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(true);
+  }
+
+  sceneEight() {
+    this.parent.clearCycleColors();
+    this.parent.updateColors(this.parent.switchColorSet("colors2")[0]);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(true);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(true);
+  }
+
+  sceneNine() {
+    this.clearStyleSwap();
+    this.parent.clearCycleColors();
+    this.parent.updateColors(this.parent.switchColorSet("dark")[0]);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].addEffect("cloner");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(false);
+  }
+
+  sceneTen() {
+    console.log("scene ten!");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].removeEffect("cloner");
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].setVisible(true);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].setVisible(false);
+    this.scene.cameraControl.clearTrack();
+  }
+
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
+    this.registerCallback('keyboard', '`', 'Switch to Default scene.', this.switchScene.bind(this, 'defaut'));
+    this.registerCallback('keyboard', '1', 'Switch to 1st scene.', this.switchScene.bind(this, 1));
+    this.registerCallback('keyboard', '2', 'Switch to 2nd scene.', this.switchScene.bind(this, 2));
+    this.registerCallback('keyboard', '3', 'Switch to 3rd scene.', this.switchScene.bind(this, 3));
+    this.registerCallback('keyboard', '4', 'Switch to 4th scene.', this.switchScene.bind(this, 4));
+    this.registerCallback('keyboard', '5', 'Switch to 5th scene.', this.switchScene.bind(this, 5));
+    this.registerCallback('keyboard', '6', 'Switch to 6th scene.', this.switchScene.bind(this, 6));
+    this.registerCallback('keyboard', '7', 'Switch to 7th scene.', this.switchScene.bind(this, 7));
+    this.registerCallback('keyboard', '8', 'Switch to 8th scene.', this.switchScene.bind(this, 8));
+    this.registerCallback('keyboard', '9', 'Switch to 9th scene.', this.switchScene.bind(this, 9));
+    this.registerCallback('keyboard', '0', 'Switch to 10th scene.', this.switchScene.bind(this, 0));
+
+
     this.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.parent.openKeyboardModal.bind(this.parent));
 
     this.registerCallback('keyboard', '-', 'Toggle GUI', this.parent.toggleGUI.bind(this.parent));
@@ -703,8 +1026,8 @@ class InputManager {
       this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].unParentPart('head', false);
     });
 
-    // this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
-    this.registerCallback('keyboard', 'space', 'Toggle Floor', () => { this.scene.environments.environments[0].toggleVisible(); });
+    this.registerCallback('keyboard', 'space', 'Show Overlay', this.parent.toggleStartOverlay.bind(this.parent));
+    // this.registerCallback('keyboard', 'space', 'Toggle Floor', () => { this.scene.environments.environments[0].toggleVisible(); });
 
     // this.registerCallback('keyboard', '1', 'Dark Grid Theme', function() { this.switchEnvironment("grid-dark"); }.bind(this.scene));
     // this.registerCallback('keyboard', '2', 'Water Theme', function() { this.switchEnvironment("water"); }.bind(this.scene));

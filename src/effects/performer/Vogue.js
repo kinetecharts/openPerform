@@ -5,7 +5,7 @@ import config from './../../config';
 
 class Vogue {
   constructor(parent, color, guiFolder) {
-    this.name = 'cloner';
+    this.name = 'vogue';
     this.parent = parent;
     this.color = color;
     this.guiFolder = guiFolder;
