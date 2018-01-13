@@ -10,10 +10,10 @@ import config from './../config';
 import Common from './../util/Common';
 
 // import all interfaces
-var inputTypes = require.context("./types");
+var inputTypes = require.context("./types", false, /\.js$/);
 
 // import all presets
-var presets = require.context("./presets");
+var presets = require.context("./presets", false, /\.js$/);
 
 class InputManager {
   constructor(allowedInputs, threeScene, parent) {
@@ -31,6 +31,8 @@ class InputManager {
 
     // initialize all interfaces
     this.initInputTypes();
+
+    console.log(inputTypes.keys());
 
     // connect current preset with inputs
     this.connectCallbacks();

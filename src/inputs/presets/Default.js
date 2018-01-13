@@ -6,7 +6,7 @@ class DefaultPreset {
   }
 
   initCallbacks(type) {
-    switch (type.toLowerCase()) { // input list defined in config/index.js
+    switch (type.toLowerCase()) {
       default:
       case 'keyboard':
         this.initKeyboardCallbacks();
@@ -32,54 +32,158 @@ class DefaultPreset {
     }
   }
 
-
   initGamepadCallbacks() {
+    let previous = {
+      dpadX:0, dpadY:0,
+      lStickX:0, lStickY:0, rStickX:0, rStickY:0,
+      x:0, y:0,
+      a:0, b:0,
+      lb:0, rb:0,
+      lt:0, rt:0
+    }
+
     this.inputManager.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
       const leftStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) == 'Left'), (d) => {
         const obj = {};
-        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d.value;
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
         return obj;
       }));
-      if (leftStick.length > 0) { console.log('Left Stick: ', leftStick); }
-
+      if (leftStick.length > 0) {
+        if (
+          leftStick[0].x.value !== previous.lStickX ||
+          leftStick[0].y.value !== previous.lStickY
+        ) {
+          console.log('Left Stick Moved: ', leftStick);
+        }
+      }
 
       const rightStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 5) == 'Right'), (d) => {
         const obj = {};
-        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d.value;
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
         return obj;
       }));
-      if (rightStick.length > 0) { console.log('Right Stick: ', rightStick); }
+      if (rightStick.length > 0) {
+        if (
+          rightStick[0].x.value !== previous.rStickX ||
+          rightStick[0].y.value !== previous.rStickY
+        ) {
+          console.log('Right Stick Moved: ', rightStick);
+        }
+      }
 
       const dPad = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) == 'DPad'), (d) => {
         const obj = {};
-        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d.value;
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
         return obj;
       }));
-      if (dPad.length > 0) { console.log('DPad Stick: ', dPad); }
+      if (dPad.length > 0) {
+        if (dPad[0].x) {
+            if (dPad[0].x.direction !== previous.dpadX) {
+              if (dPad[0].x.direction == 1) {
+                console.log('D-Pad Right: ', dPad[0].x.direction);
+              }
+
+              if (dPad[0].x.direction == -1) {
+                console.log('D-Pad Left: ', dPad[0].x.direction);
+              }
+
+              previous.dpadX = dPad[0].x.direction;
+            }
+        }
+        if (dPad[0].y) {
+            if (dPad[0].y.direction !== previous.dpadY) {
+              if (dPad[0].y.direction == 1) {
+                console.log('D-Pad Up: ', dPad[0].y.direction);
+              }
+
+              if (dPad[0].y.direction == -1) {
+                console.log('D-Pad Down: ', dPad[0].y.direction);
+              }
+
+              previous.dpadY = dPad[0].y.direction;
+            }
+        }
+      }
 
       const aButton = _.filter(data, d => d.id == 'A');
-      if (aButton.length > 0) { console.log('A Button: ', aButton); }
+      if (aButton.length > 0) {
+        if (aButton[0].pressed !== previous.a) {
+          if (aButton[0].pressed) {
+            console.log('A Button Pressed: ', aButton[0].pressed);
+          }
+        }
+        previous.a = aButton[0].pressed;
+      }
 
       const bButton = _.filter(data, d => d.id == 'B');
-      if (bButton.length > 0) { console.log('B Button: ', bButton); }
+      if (bButton.length > 0) {
+        if (bButton[0].pressed !== previous.b) {
+          if (bButton[0].pressed) {
+            console.log('B Button Pressed: ', bButton[0].pressed);
+          }
+        }
+        previous.b = bButton[0].pressed;
+      }
 
       const xButton = _.filter(data, d => d.id == 'X');
-      if (xButton.length > 0) { console.log('X Button: ', xButton); }
+      if (xButton.length > 0) {
+        if (xButton[0].pressed !== previous.x) {
+          if (xButton[0].pressed) {
+            console.log('X Button Pressed: ', xButton[0].pressed);
+          }
+        }
+        previous.x = xButton[0].pressed;
+      }
 
       const yButton = _.filter(data, d => d.id == 'Y');
-      if (yButton.length > 0) { console.log('Y Button: ', yButton); }
+      if (yButton.length > 0) {
+        if (yButton[0].pressed !== previous.y) {
+          if (yButton[0].pressed) {
+            console.log('Y Button Pressed: ', yButton[0].pressed);
+          }
+        }
+        previous.y = yButton[0].pressed;
+      }
 
       const lbButton = _.filter(data, d => d.id == 'LB');
-      if (lbButton.length > 0) { console.log('LB Button: ', lbButton); }
+      if (lbButton.length > 0) {
+        if (lbButton[0].pressed !== previous.lb) {
+          if (lbButton[0].pressed) {
+            console.log('LB Button Pressed: ', lbButton[0].pressed);
+          }
+        }
+        previous.lb = lbButton[0].pressed;
+      }
 
       const rbButton = _.filter(data, d => d.id == 'RB');
-      if (rbButton.length > 0) { console.log('RB Button: ', rbButton); }
+      if (rbButton.length > 0) {
+        if (rbButton[0].pressed !== previous.rb) {
+          if (rbButton[0].pressed) {
+            console.log('RB Button Pressed: ', rbButton[0].pressed);
+          }
+        }
+        previous.rb = rbButton[0].pressed;
+      }
 
       const ltButton = _.filter(data, d => d.id == 'LT');
-      if (ltButton.length > 0) { console.log('LT Button: ', ltButton); }
+      if (ltButton.length > 0) {
+        if (ltButton[0].pressed !== previous.lt) {
+          if (ltButton[0].pressed) {
+            console.log('LT Button Pressed: ', ltButton[0].pressed);
+          }
+        }
+        previous.lt = ltButton[0].pressed;
+      }
 
       const rtButton = _.filter(data, d => d.id == 'RT');
-      if (rtButton.length > 0) { console.log('RT Button: ', rtButton); }
+      if (rtButton.length > 0) {
+        if (rtButton[0].pressed !== previous.rt) {
+          if (rtButton[0].pressed) {
+            console.log('RT Button Pressed: ', rtButton[0].pressed);
+          }
+        }
+        previous.rt = rtButton[0].pressed;
+      }
     });
   }
 
