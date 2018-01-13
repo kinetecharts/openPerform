@@ -170,6 +170,10 @@ class PerceptionNeuron {
     this.callbacks[name] = cb;
   }
 
+  clearCallbacks() {
+    this.callbacks = {};
+  }
+
   parseFrameData(data, name) {
     const keyframe = {
       name,

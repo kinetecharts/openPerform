@@ -61,6 +61,10 @@ class Gamepads {
     this.callbacks[name] = cb;
   }
 
+  clearCallbacks() {
+    this.callbacks = {};
+  }
+
   send(msg, gamepadId) {
     if (this.connected) {
       try {

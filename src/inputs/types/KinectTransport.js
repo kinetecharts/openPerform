@@ -44,6 +44,10 @@ class KinectTransport {
   on(name, cb) {
     this.callbacks[name] = cb;
   }
+
+  clearCallbacks() {
+    this.callbacks = {};
+  }
 }
 
 module.exports = KinectTransport;

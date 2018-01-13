@@ -19,6 +19,10 @@ class NeuroSky {
     this.initCallbacks();
   }
 
+  clearCallbacks() {
+    this.callbacks = {};
+  }
+
   initCallbacks() {
     _.forEach(this.callbacks, this.initCallback.bind(this));
   }
