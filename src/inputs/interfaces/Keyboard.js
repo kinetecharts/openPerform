@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import Mousetrap from 'mousetrap';
 
-class KeyboardController {
+class Keyboard {
   constructor() {
     this.callbacks = {};
     this.events = [];
@@ -26,4 +26,4 @@ class KeyboardController {
   }
 }
 
-module.exports = KeyboardController;
+module.exports = Keyboard;

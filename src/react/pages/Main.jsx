@@ -1,18 +1,15 @@
 import React from 'react';
-import $ from 'jquery';
-import TWEEN from 'tween';
+import ConsoleLogHTML from 'console-log-html';
 
-const _ = require('lodash').mixin(require('lodash-keyarrange'));
+import 'bootstrap/dist/css/bootstrap.css';
 
-import InputList from './../components/InputList';
+// import InputList from './../components/InputList';
 import PerformerList from './../components/PerformerList';
 import EnvironmentList from './../components/EnvironmentList';
 import KeyboardHelpModal from './../components/KeyboardHelpModal';
 import PerformerEffectsModal from './../components/PerformerEffectsModal';
 import GroupEffectsModal from './../components/GroupEffectsModal';
 import EnvironmentSettingsModal from './../components/EnvironmentSettingsModal';
-
-import Common from './../../util/Common';
 
 import Scene from './../../three/scene';
 import InputManager from './../../inputs';
@@ -21,7 +18,6 @@ import Performers from './../../performers/Performers';
 
 import BVHPlayer from './../../performers/BVHPlayer';
 
-import 'bootstrap/dist/css/bootstrap.css';
 import colors from './colors.css';
 import fonts from './fonts.css';
 import main from './main.css';
@@ -50,28 +46,29 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    // coordinate input data and callbacks. Add / remove inputs in src/config/index.js (Includes keyboard and mouse control)
-    this.setState({
-      inputManger: new InputManager(this.state.inputs, this.state.scene, this),
-    });
+    // coordinate input data and callbacks.
+    // Add / remove inputs in src/config/index.js
+    // (Includes keyboard and mouse control)
+    this.state.inputManger = new InputManager(this.state.inputs, this.state.scene, this);
 
     this.performers = new Performers();
 
     // once the dom has mounted, initialize threejs
-    this.state.scene.initScene(this.state.home.target, this.state.inputs, this.state.stats, this.performers, this.state.backgroundColor);
+    this.state.scene.initScene(
+      this.state.inputs,
+      this.state.stats,
+      this.performers,
+      this.state.backgroundColor,
+    );
 
     this.performers.init(this.state.scene.scene);
-    this.setState({
-      environments: this.state.scene.environments,
-    });
+    this.state.environments = this.state.scene.environments;
 
     if (this.state.debug) {
       this.BVHPlayer = this.addBVHPerformer(this.BVHFiles[0]);
     }
 
     if (this.state.console2html) {
-      const ConsoleLogHTML = require('console-log-html');
-
       const con = document.createElement('ul');
       con.style.color = '#FFFFFF';
 
@@ -95,18 +92,22 @@ class Main extends React.Component {
   }
 
   addBVHPerformer(modelPath) {
-    const bvhPlayer = new BVHPlayer(modelPath, this.state.scene.scene, this.updatePerformers.bind(this));
+    const bvhPlayer = new BVHPlayer(
+      modelPath,
+      this.state.scene.scene,
+      this.updatePerformers.bind(this),
+    );
     this.BVHPlayers.push(bvhPlayer);
     return bvhPlayer;
   }
 
   toggleGUI() { // toggle loading overlay visablity
-    if ($('#lowerDisplay').css('display') == 'none') {
+    if ($('#lowerDisplay').css('display') === 'none') {
       $('#lowerDisplay').fadeIn(1000);
     } else {
       $('#lowerDisplay').fadeOut(1000);
     }
-    if ($('#upperDisplay').css('display') == 'none') {
+    if ($('#upperDisplay').css('display') === 'none') {
       $('#upperDisplay').fadeIn(1000);
     } else {
       $('#upperDisplay').fadeOut(1000);
@@ -114,7 +115,7 @@ class Main extends React.Component {
   }
 
   toggleStartOverlay() { // toggle start overlay visablity
-    if ($('#startOverlay').css('display') == 'none') {
+    if ($('#startOverlay').css('display') === 'none') {
       if (!$('#startOverlay:animated').length) {
         $('#startOverlay').fadeIn(1000);
       }
@@ -124,7 +125,7 @@ class Main extends React.Component {
   }
 
   toggleBlackOverlay() { // toggle black overlay visablity
-    if ($('#blackOverlay').css('display') == 'none') {
+    if ($('#blackOverlay').css('display') === 'none') {
       if (!$('#blackOverlay:animated').length) {
         $('#blackOverlay').fadeIn(1000);
       }
@@ -134,7 +135,7 @@ class Main extends React.Component {
   }
 
   toggleEndOverlay() { // toggle end overlay visablity
-    if ($('#endOverlay').css('display') == 'none') {
+    if ($('#endOverlay').css('display') === 'none') {
       if (!$('#endOverlay:animated').length) {
         $('#endOverlay').fadeIn(1000);
       }
@@ -144,8 +145,12 @@ class Main extends React.Component {
   }
 
   toggleFullscreen() { // toggle fullscreen window
-    if (!document.fullscreenElement && // alternative standard method
-      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) { // current working methods
+    if (
+      !document.fullscreenElement && // alternative standard method
+      !document.mozFullScreenElement &&
+      !document.webkitFullscreenElement &&
+      !document.msFullscreenElement
+    ) { // current working methods
       this.enterFullscreen();
     } else {
       this.exitFullscreen();
@@ -190,7 +195,7 @@ class Main extends React.Component {
   }
 
   openKeyboardModal() {
-    if (this.state.keyboardModal == false) {
+    if (this.state.keyboardModal === false) {
       this.setState({
         keyboardModal: true,
       });
@@ -198,7 +203,7 @@ class Main extends React.Component {
   }
 
   closeKeyboardModal() {
-    if (this.state.keyboardModal == true) {
+    if (this.state.keyboardModal === true) {
       this.setState({
         keyboardModal: false,
       });
@@ -206,25 +211,25 @@ class Main extends React.Component {
   }
 
   openPerformerModal(content) {
-    if (this.state.performerModal == false) {
+    if (this.state.performerModal === false) {
       this.setState({
         performerModal: true,
-        performerContent : content
+        performerContent: content,
       });
     }
   }
 
   closePerformerModal() {
-    if (this.state.performerModal == true) {
+    if (this.state.performerModal === true) {
       this.setState({
         performerModal: false,
-        performerContent : document.createElement("div")
+        performerContent: document.createElement('div'),
       });
     }
   }
 
   openGroupModal() {
-    if (this.state.groupModal == false) {
+    if (this.state.groupModal === false) {
       this.setState({
         groupModal: true,
       });
@@ -232,7 +237,7 @@ class Main extends React.Component {
   }
 
   closeGroupModal() {
-    if (this.state.groupModal == true) {
+    if (this.state.groupModal === true) {
       this.setState({
         groupModal: false,
       });
@@ -240,29 +245,32 @@ class Main extends React.Component {
   }
 
   openEnvironmentModal(content) {
-    if (this.state.environmentModal == false) {
+    if (this.state.environmentModal === false) {
       this.setState({
         environmentModal: true,
-        environmentContent : content
+        environmentContent: content,
       });
     }
   }
 
   closeEnvironmentModal() {
-    if (this.state.environmentModal == true) {
+    if (this.state.environmentModal === true) {
       this.setState({
         environmentModal: false,
-        environmentContent : document.createElement("div")
+        environmentContent: document.createElement('div'),
       });
     }
   }
 
   trackPerformer(performer) {
-    var distance = 19.999990045581438;
-    if (!this.state.scene.cameraControl.trackingObj || this.lastTracked.inputId !== performer.inputId) {
-      var target = performer.performer.meshes.robot_spine1;
-      
-      var pos = target.position;
+    const distance = 19.999990045581438;
+    if (
+      !this.state.scene.cameraControl.trackingObj ||
+      this.lastTracked.inputId !== performer.inputId
+    ) {
+      const target = performer.performer.meshes.robot_spine1;
+
+      const pos = target.position;
       pos.y = 1;
 
       this.state.scene.cameraControl.track(//track(target, look, offset) {

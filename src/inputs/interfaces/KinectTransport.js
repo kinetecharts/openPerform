@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 
-import config from './../config';
+import config from './../../config';
 
 class KinectTransport {
   constructor() {
@@ -13,7 +13,7 @@ class KinectTransport {
   }
 
   initializeWebSocket() {
-    this.websocket = new WebSocket(`ws://localhost:${config.kinectTransport.port}`);
+    this.websocket = new WebSocket(`ws://localhost:${config.kinecttransport.ports.outgoing}`);
     this.websocket.onopen = this.onOpen;
     this.websocket.onclose = this.oClose;
     this.websocket.onmessage = this.onMessage.bind(this);

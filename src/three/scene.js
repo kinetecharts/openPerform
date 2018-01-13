@@ -33,7 +33,7 @@ class Scene {
 
     this.environments = null;
   }
-  initScene(startPos, inputs, statsEnabled, performers, backgroundColor) {
+  initScene(inputs, statsEnabled, performers, backgroundColor) {
     this.container = $('#scenes');
 
     this.w = this.container.width();
@@ -64,9 +64,6 @@ class Scene {
 
     window.camera = this.camera;
 
-    // var src = Common.convertLatLonToVec3(startPos.lat, startPos.lon).multiplyScalar(radius);
-
-    // this.camera.position.copy(src);
     this.camera.position.set(0, 1.5000000041026476, 19.999990045581438);
 
     this.scene.add(this.camera);

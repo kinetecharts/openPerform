@@ -3,20 +3,14 @@ methods and handles response data and
 callbacks to the threejs environment.
 The input list is defined in config/index.js */
 
-import _ from 'lodash';
 import TWEEN from 'tween';
 
 import config from './../config';
 
 import Common from './../util/Common';
 
-import Myo from './Myo';
-import MidiController from './MidiController';
-import KinectTransport from './KinectTransport';
-import KeyboardController from './KeyboardController';
-import NeuroSky from './NeuroSky';
-import PerceptionNeuron from './PerceptionNeuron';
-import Gamepads from './Gamepads';
+// import all interfaces
+var interfaces = require.context("./interfaces");
 
 class InputManager {
   constructor(inputList, threeScene, parent) {
@@ -24,38 +18,47 @@ class InputManager {
     this.scene = threeScene; // bridge to threejs environment (/src/three/scene.js)
     this.parent = parent; // bridge to react environment (/src/react/pages/Main.jsx)
 
-    // connect all inputs in the input list
-    _.forEach(inputList, this.connectInputs.bind(this)); // input list defined in config/index.js
+    const ints = _.uniq(_.map(interfaces.keys(), i => i.split('.')[1].split('/')[1]));
+    _.each(_.without(inputList, ints), (i) => {
+      const InterfaceClass = require('./interfaces/' + i);
+      let url = '';
+      if (config[i.toLowerCase()]) {
+        url = 'ws://'+window.location.hostname+':'+config[i.toLowerCase()].ports.outgoing
+      }
+      this.inputs[i.toLowerCase()] = new InterfaceClass(url);
+      this.connectInputs(i.toLowerCase());
+    });
   }
 
   connectInputs(type) {
     switch (type) { // input list defined in config/index.js
+      default:
       case 'keyboard':
-        this.inputs[type] = new KeyboardController();
+        // this.inputs[type] = new KeyboardController();
         this.initKeyboardCallbacks();
         break;
       case 'kinecttransport':
-        this.inputs[type] = new KinectTransport();
+        // this.inputs[type] = new KinectTransport();
         this.initKinectTransportCallbacks();
         break;
       case 'myo':
-        this.inputs[type] = new Myo();
+        // this.inputs[type] = new Myo();
         this.initMyoCallbacks();
         break;
       case 'neurosky':
-        this.inputs[type] = new NeuroSky();
+        // this.inputs[type] = new NeuroSky();
         this.initNeuroSkyCallbacks();
         break;
-      case 'perceptionNeuron':
-        this.inputs[type] = new PerceptionNeuron(`ws://${window.location.hostname}:${config.perceptionNeuron.port}`);
+      case 'perceptionneuron':
+        // this.inputs[type] = new PerceptionNeuron(`ws://${window.location.hostname}:${config.perceptionNeuron.port}`);
         this.initPerceptionNeuronCallbacks();
         break;
       case 'gamepads':
-        this.inputs[type] = new Gamepads(`ws://${window.location.hostname}:${config.gamepads.ports.outgoing}`);
+        // this.inputs[type] = new Gamepads(`ws://${window.location.hostname}:${config.gamepads.ports.outgoing}`);
         this.initGamepadCallbacks();
         break;
-      case 'midiController':
-        this.inputs[type] = new MidiController(`ws://${window.location.hostname}:${config.midiController.ports.outgoing}`);
+      case 'midicontroller':
+        // this.inputs[type] = new MidiController(`ws://${window.location.hostname}:${config.midiController.ports.outgoing}`);
         this.initMidiControllerCallbacks();
         break;
     }
@@ -611,7 +614,7 @@ class InputManager {
   }
 
   initPerceptionNeuronCallbacks() {
-    this.registerCallback('perceptionNeuron', 'message', 'Perception Neuron', this.parent.updatePerformers.bind(this.parent));
+    this.registerCallback('perceptionneuron', 'message', 'Perception Neuron', this.parent.updatePerformers.bind(this.parent));
   }
 
   initNeuroSkyCallbacks() { // https://github.com/elsehow/mindwave

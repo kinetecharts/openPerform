@@ -1,7 +1,7 @@
 // Creates websocket, this.callbacks["message"](bones); should call the updateFromPN in Performer.js
 const _ = require('lodash').mixin(require('lodash-keyarrange'));
 
-import Common from './../util/Common';
+import Common from './../../util/Common';
 
 class PerceptionNeuron {
   constructor(url) {

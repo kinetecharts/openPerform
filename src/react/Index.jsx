@@ -1,13 +1,13 @@
-(function() {
-	var React = require('react')
-	var ReactDOM = require('react-dom');
-	
-	var Main = require('./pages/Main.jsx');
+function() {
+  var React = require('react')
+  var ReactDOM = require('react-dom');
 
-	//Needed for React Developer Tools
-	window.React = React;
+  var Main = require('./pages/Main.jsx');
 
-	// Render the main app react component into the document body.
-	ReactDOM.render(<Main/>, document.getElementById('App'));
+  //Needed for React Developer Tools
+  window.React = React;
 
-})();
+  // Render the main app react component into the document body.
+  ReactDOM.render(<Main/>, document.getElementById('App'));
+
+}();
