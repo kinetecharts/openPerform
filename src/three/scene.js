@@ -42,7 +42,8 @@ class Scene {
     // / Global : this.renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
-    this.renderer.setClearColor(backgroundColor);
+    this.renderer.setClearColor(new THREE.Color(backgroundColor));
+    // this.renderer.autoClear = false;
     this.renderer.setSize(this.w, this.h);
 
     // this.renderer.shadowMap.enabled = true;

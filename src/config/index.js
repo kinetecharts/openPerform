@@ -3,7 +3,7 @@ import config from './../../server/config.js';
 const defaults = {
   debug: true, // load bvh file / create performer from playback
   debugBVH: 'models/bvh/duality_edit.bvh',
-  backgroundColor: 0x333333,
+  backgroundColor: '0x000000',
   console2html: false,
   scene: null,
   camera: {
@@ -21,7 +21,7 @@ const defaults = {
     },
   },
   stats: true,
-  
+
   keyboardModal: false,
   keyboardContent: document.createElement("div"),
 

@@ -1,3 +1,16 @@
 {
-	"extends": "airbnb"
+  "extends": "airbnb",
+  "rules": {
+      "no-undef": "off",
+      "max-len": "off",
+      "prefer-template": "off",
+      "no-plusplus": "off",
+      "no-console": "off",
+      "no-param-reassign": "off",
+      "class-methods-use-this": "off",
+      "react/jsx-no-bind": [<enabled>, {
+        "allowBind": true
+      }],
+      "react/prop-types": [<enabled>, 0],
+  }
 }

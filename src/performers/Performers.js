@@ -1,7 +1,4 @@
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
-import _ from 'lodash';
-import dat from 'dat-gui';
-
 import Performer from './Performer';
 import GroupEffects from './../effects/group';
 
@@ -44,7 +41,7 @@ class Performers {
       // this.performers[inputId+"_-2"] = new Performer(this.parent, inputId+"_-2", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], -2, true);
       // this.performers[inputId+"_2"] = new Performer(this.parent, inputId+"_2", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], 2, true);
       // if (_.size(this.performers)>1) {
-      // 	this.addEffects(["line"]);
+      //  this.addEffects(["line"]);
       // }
     }
   }
@@ -68,6 +65,7 @@ class Performers {
 
   addEffect(effect) {
     switch (effect) {
+      default:
       case 'line':
         this.groupEffects.add('line');
         break;
@@ -87,7 +85,7 @@ class Performers {
   }
 
   clearTracking() {
-  	_.each(this.performers, (performer) => {
+    _.each(this.performers, (performer) => {
       performer.clearTracking();
     });
   }
@@ -99,13 +97,13 @@ class Performers {
   }
 
   update(inputId, data) {
-    // if (this.performers[inputId]) {
-    // 	this.performers[inputId].update(data);
-    // }
+    if (this.performers[inputId]) {
+      this.performers[inputId].update(data);
+    }
 
-    _.each(this.performers, (p) => {
-      p.update(data);
-    });
+    // _.each(this.performers, (p) => {
+    //   p.update(data);
+    // });
 
     this.groupEffects.update(this.performers);
   }

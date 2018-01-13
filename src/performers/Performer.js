@@ -1,13 +1,6 @@
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
-
-
-const fbxLoader = require('./../libs/three/loaders/FBXLoader.js');
-const objLoader = require('./../libs/three/loaders/OBJLoader.js');
-const bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
-const sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
-const colladaLoader = require('./../libs/three/loaders/ColladaLoader.js');
-
-require('./../libs/BufferGeometryMerge.js');
+import _ from 'lodash';
+import dat from 'dat-gui';
 
 import TWEEN from 'tween';
 
@@ -15,8 +8,15 @@ import Common from './../util/Common';
 
 import PerformerEffects from './../effects/performer';
 
-import _ from 'lodash';
-import dat from 'dat-gui';
+/* eslint-disable no-unused-vars */
+const fbxLoader = require('./../libs/three/loaders/FBXLoader.js');
+const objLoader = require('./../libs/three/loaders/OBJLoader.js');
+const bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
+const sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
+const colladaLoader = require('./../libs/three/loaders/ColladaLoader.js');
+/* eslint-enable no-unused-vars */
+
+require('./../libs/BufferGeometryMerge.js');
 
 class Performer {
   constructor(parent, inputId, performerId, type, color, visible, actions) {
@@ -25,7 +25,6 @@ class Performer {
     this.dataBuffer = [];
     this.offset = 0;
     this.delay = 0;
-    this.colors = ['#036B75', '#0x0AFCE8', '#0xFCE508', '#0xFA0AE3', '#0x260C58'];
 
     this.styleInt = null;
     this.modelGeos = {};
@@ -38,11 +37,11 @@ class Performer {
     this.performer = null;
     this.name = `Performer ${performerId}`;
     this.color = color;
-    
-    
+
+
     this.prefix = 'robot_';
 
-    this.wireframe = false;
+    this.wireframe = true;
     this.visible = true;
     this.tracking = false;
 
@@ -93,127 +92,18 @@ class Performer {
     this.scene = null;
     this.modelShrink = 100;
 
-    const bvhStructure = {
-      hips: {
-        rightupleg: {
-          rightleg: {
-            rightfoot: {},
-          },
-        },
-        leftupleg: {
-          leftleg: {
-            leftfoot: {},
-          },
-        },
-        spine: {
-          spine1: {
-            spine2: {
-              spine3: {
-                neck: {
-                  head: {},
-                },
-                rightshoulder: {
-                  rightarm: {
-                    rightforearm: {
-                      righthand: {
-                        righthandthumb1: {
-                          righthandthumb2: {
-                            righthandthumb3: {},
-                          },
-                        },
-                        rightinhandindex: {
-                          righthandindex1: {
-                            righthandindex2: {
-                              righthandindex3: {},
-                            },
-                          },
-                        },
-                        rightinhandmiddle: {
-                          righthandmiddle1: {
-                            righthandmiddle2: {
-                              righthandmiddle3: {},
-                            },
-                          },
-                        },
-                        rightinhandring: {
-                          righthandring1: {
-                            righthandring2: {
-                              righthandring3: {},
-                            },
-                          },
-                        },
-                        rightinhandpinky: {
-                          righthandpinky1: {
-                            righthandpinky2: {
-                              righthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                leftshoulder: {
-                  leftarm: {
-                    leftforearm: {
-                      lefthand: {
-                        lefthandthumb1: {
-                          lefthandthumb2: {
-                            lefthandthumb3: {},
-                          },
-                        },
-                        leftinhandindex: {
-                          lefthandindex1: {
-                            lefthandindex2: {
-                              lefthandindex3: {},
-                            },
-                          },
-                        },
-                        leftinhandmiddle: {
-                          lefthandmiddle1: {
-                            lefthandmiddle2: {
-                              lefthandmiddle3: {},
-                            },
-                          },
-                        },
-                        leftinhandring: {
-                          lefthandring1: {
-                            lefthandring2: {
-                              lefthandring3: {},
-                            },
-                          },
-                        },
-                        leftinhandpinky: {
-                          lefthandpinky1: {
-                            lefthandpinky2: {
-                              lefthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-
-
     this.hiddenParts = [
-      // "hips"
+      // 'hips'
     ];
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = ['constructor','vogue', 'cloner', 'datatags', 'trails', 'particleSystem'];
+    this.effects = ['constructor', 'vogue', 'cloner', 'datatags', 'trails', 'particleSystem'];
 
-    this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
+    this.gui = new dat.GUI({ autoPlace: false, width: '100%' });
     this.guiDOM = this.gui.domElement;
     this.guiFolder = this.gui.addFolder(this.name + ' Effects');
-    this.guiFolder.open()
+    this.guiFolder.open();
 
     this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.gui);
 
@@ -225,7 +115,7 @@ class Performer {
 
   loadColladaModels(models) {
     _.each(models, (m) => {
-      this.loadColladaModel(m.id, m.url, (model) => {
+      this.loadColladaModel(m.id, m.url, (/* model */) => {
         // object.geometry = model.geometry;
       });
     });
@@ -234,7 +124,7 @@ class Performer {
   loadColladaModel(id, url, callback) {
     const loader = new THREE.ColladaLoader();
     // console.log(loader);
-    loader.callbackProgress = function (progress, result) {
+    loader.callbackProgress = (/* progress, result */) => {
       // console.log(progress);
     };
     loader.load(url, (result) => {
@@ -248,7 +138,7 @@ class Performer {
 
   loadFBXModels(models) {
     _.each(models, (m) => {
-      this.loadFBXModel(m.id, m.url, (model) => {
+      this.loadFBXModel(m.id, m.url, (/* model */) => {
         // object.geometry = model.geometry;
       });
     });
@@ -258,12 +148,12 @@ class Performer {
     if (this.getModelGeo(id) !== undefined) { console.log('Geometry already exists.'); return this.getModelGeo(id); }
 
     const manager = new THREE.LoadingManager();
-    manager.onProgress = (item, loaded, total) => {
+    manager.onProgress = (/* item, loaded, total */) => {
       // console.log( item, loaded, total );
     };
     const onProgress = (xhr) => {
       if (xhr.lengthComputable) {
-        const percentComplete = xhr.loaded / xhr.total * 100;
+        // const percentComplete = (xhr.loaded / xhr.total) * 100;
         // console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
       }
     };
@@ -282,11 +172,12 @@ class Performer {
       this.setColladaScenes(id, object);
       callback(this.getColladaScenes(id));
     }, onProgress, onError);
+    return true;
   }
 
   loadObjModels(models) {
     _.each(models, (m) => {
-      this.loadObjModel(m.id, m.url, (model) => {
+      this.loadObjModel(m.id, m.url, (/* model */) => {
         // object.geometry = model.geometry;
       });
     });
@@ -295,21 +186,21 @@ class Performer {
   loadObjModel(id, url, callback) {
     if (this.getModelGeo(id) !== undefined) { console.log('Geometry already exists.'); return this.getModelGeo(id); }
 
-    // console.log("Loading...", typeof this.getModelGeo(id));
+    // console.log('Loading...', typeof this.getModelGeo(id));
 
     const manager = new THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
+    manager.onProgress = (/* item, loaded, total */) => {
       // console.log( item, loaded, total );
     };
 
-    const onProgress = function (xhr) {
+    const onProgress = (xhr) => {
       if (xhr.lengthComputable) {
-        const percentComplete = xhr.loaded / xhr.total * 100;
+        // const percentComplete = xhr.loaded / xhr.total * 100;
         // console.log( Math.round(percentComplete, 2) + '% downloaded' );
       }
     };
 
-    const onError = function (xhr) {};
+    const onError = (/* xhr */) => {};
 
     const loader = new THREE.OBJLoader(manager);
     // console.log(loader);
@@ -329,10 +220,13 @@ class Performer {
       this.setModelGeo(id, singleGeo);
       callback(this.getModelGeo(id));
     }, onProgress, onError);
+
+    return true;
   }
 
   loadPerformer(source, type, hide, size, style, intensity) {
     switch (type) {
+      default:
       case 'bvhMeshGroup':
         this.loadSceneBody(source, './models/json/avatar.json', hide, size, style, intensity);
         break;
@@ -342,7 +236,7 @@ class Performer {
     }
   }
 
-  loadColladaBody(source, filename, hide, size, style, intensity) {
+  loadColladaBody(source, filename, hide, size /* , style, intensity */) {
     this.prefix = 'robot_';
 
     this.setPerformer({
@@ -359,7 +253,7 @@ class Performer {
 
     const loader = new THREE.ColladaLoader(loadingManager);
 
-    loader.callbackProgress = function (progress, result) {
+    loader.callbackProgress = (/* progress, result */) => {
       // console.log(progress);
     };
 
@@ -371,8 +265,9 @@ class Performer {
 
       // console.log(result.scene);
       s.traverse((object) => {
-        //  // console.log(object.name + ": " + object.type);
+        //  // console.log(object.name + ': ' + object.type);
         switch (object.type) {
+          default:
           case 'SkinnedMesh':
             s = object;
       //      meshes[this.prefix+object.name.toLowerCase()] = object;
@@ -411,24 +306,20 @@ class Performer {
     this.prefix = 'robot_';
     const loader = new THREE.SceneLoader();
 
-    loader.callbackProgress = (progress, result) => {
+    loader.callbackProgress = (/* progress, result */) => {
       // console.log(progress);
     };
     loader.load(filename, (result) => {
-    result.scene.visible = false;
+      result.scene.visible = false;
       this.setScene(result.scene);
-      switch (source) {
-        case 'bvh':
-        case 'clone':
-          this.getScene().scale.set(size, size, size);
-          break;
-      }
+      this.getScene().scale.set(size, size, size);
 
       this.setPerformer(this.parseBVHGroup(source, hide, style, intensity));
       const s = this.getScene();
       s.position.x = this.offset;
       this.parent.add(s);
-      this.addEffects([this.effects[1]]);// defaults
+      //['constructor', 'vogue', 'cloner', 'datatags', 'trails', 'particleSystem'];
+      // this.addEffects([this.effects[0]]);// defaults
     });
   }
 
@@ -453,11 +344,11 @@ class Performer {
     }
   }
 
-  getType(type) {
+  getType() {
     return this.displayType;
   }
 
-  getTypes(type) {
+  getTypes() {
     return this.displayTypes;
   }
 
@@ -544,7 +435,7 @@ class Performer {
     return this.hiddenParts;
   }
 
-  toggleVisible(val) {
+  toggleVisible() {
     this.setVisible(!this.getVisible());
   }
 
@@ -557,7 +448,7 @@ class Performer {
     this.getScene().visible = val;
   }
 
-  toggleTracking(val) {
+  toggleTracking() {
     this.setTracking(!this.getTracking());
   }
 
@@ -569,13 +460,13 @@ class Performer {
     this.tracking = val;
   }
 
-  clearTracking(val) {
+  clearTracking() {
     this.tracking = false;
   }
 
   updateIntensity(intensity) {
     this.setIntensity(intensity);
-    // this.parseBVHGroup("bvh", this.getHiddenParts(), this.getStyle(), intensity);
+    // this.parseBVHGroup('bvh', this.getHiddenParts(), this.getStyle(), intensity);
     _.each(this.getPerformer().newMeshes, (mesh) => {
       mesh.scale.set(mesh.srcScale * intensity, mesh.srcScale * intensity, mesh.srcScale * intensity);
     });
@@ -583,11 +474,11 @@ class Performer {
 
   updateStyle(style) {
     this.setStyle(style);
-    this.getScene().visible=false;
+    this.getScene().visible = false;
     this.parseBVHGroup('bvh', this.getHiddenParts(), style, this.getIntensity());
   }
 
-  parseBVHGroup(source, hide, style, intensity) {
+  parseBVHGroup(source, hide, style /* , intensity */) {
     const meshes = {};
     const newMeshes = [];
     const keys = {};
@@ -611,7 +502,7 @@ class Performer {
 
             object.castShadow = true;
             object.receiveShadow = true;
-          } else if (object.hasOwnProperty('material')) {
+          } else if (Object.prototype.hasOwnProperty.call(object, 'material')) {
             object.material = new THREE.MeshPhongMaterial();
             object.material.wireframe = this.getWireframe();
             object.material.color.set(parseInt(this.getColor(), 16));
@@ -620,6 +511,9 @@ class Performer {
           }
           if (object instanceof THREE.Mesh) {
             switch (source) {
+              default:
+                object.scale.set(1, 1, 1);
+                break;
               case 'bvh':
               case 'clone':
                 object.scale.set(2, 2, 2);
@@ -636,9 +530,20 @@ class Performer {
               object.srcSphere = object.geometry.boundingSphere;
             }
             object.rotation.x = 0;
+
+            let scale = 1; // Common.mapRange(intensity, 1, 10, 0.01, 3)
+            let l = 0;
+            let longest = null;
+            let lineGeo;
+            let lineMat;
+
             switch (style) {
+              default:
+                scale = 0.075 * 6;
+                object.srcScale = 1;
+                break;
               case 'spheres':
-                var scale = 0.075*6;// Common.mapRange(intensity, 1, 10, 0.01, 3)
+                scale = 0.075 * 6;
                 object.geometry = new THREE.SphereGeometry(
                   object.srcSphere.radius * scale,
                   10, 10,
@@ -646,8 +551,9 @@ class Performer {
                 object.srcScale = 1;
                 break;
 
+
               case 'planes':
-                var scale = 2;// Common.mapRange(intensity, 1, 10, 0.01, 1)
+                scale = 2;
                 object.geometry = new THREE.BoxGeometry(
                   1,
                   object.srcSphere.radius * scale, object.srcSphere.radius * scale,
@@ -656,7 +562,7 @@ class Performer {
                 break;
 
               case 'boxes':
-                var scale = 0.125*6;// Common.mapRange(intensity, 1, 10, 0.01, 5)
+                scale = 0.125 * 6;// Common.mapRange(intensity, 1, 10, 0.01, 5)
                 object.geometry = new THREE.BoxGeometry(
                   object.srcSphere.radius * scale,
                   object.srcSphere.radius * scale,
@@ -666,7 +572,7 @@ class Performer {
                 break;
 
               case 'robot':
-                var scale = 0.5*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                scale = 0.5 * 2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.BoxGeometry(
                   object.srcBox.max.x * scale,
                   object.srcBox.max.z * scale,
@@ -676,7 +582,7 @@ class Performer {
                 break;
 
               case 'discs':
-                var scale = 0.5*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                scale = 0.5 * 2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.CylinderGeometry(
                   object.srcBox.max.x * scale,
                   object.srcBox.max.x * scale,
@@ -687,7 +593,7 @@ class Performer {
                 break;
 
               case 'oct':
-                var scale = 0.1*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                scale = 0.1 * 2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.TetrahedronGeometry(object.srcSphere.radius * scale, 1);
                 object.geometry.needsUpdate = true;
                 object.srcScale = 1;
@@ -697,7 +603,7 @@ class Performer {
                 object.geometry = this.getModelGeo('hand');
                 object.geometry.needsUpdate = true;
                 object.srcScale = object.srcSphere.radius * 0.01;
-                object.scale.set(object.srcScale*7, object.srcScale*7, object.srcScale*7);
+                object.scale.set(object.srcScale * 7, object.srcScale * 7, object.srcScale * 7);
                 break;
 
               case 'heads':
@@ -705,7 +611,7 @@ class Performer {
                 object.geometry.needsUpdate = true;
                 object.rotation.x = Math.PI;
                 object.srcScale = object.srcSphere.radius * 0.1;
-                object.scale.set(object.srcScale*10, object.srcScale*10, object.srcScale*10);
+                object.scale.set(object.srcScale * 10, object.srcScale * 10, object.srcScale * 10);
                 break;
 
               case 'hearts':
@@ -729,8 +635,6 @@ class Performer {
                 break;
 
               case 'lines':
-                var l = 0;
-                var longest = null;
                 if (object.srcBox.max.x > l) { l = object.srcBox.max.x; longest = 'x'; }
                 if (object.srcBox.max.y > l) { l = object.srcBox.max.y; longest = 'y'; }
                 if (object.srcBox.max.z > l) { l = object.srcBox.max.z; longest = 'z'; }
@@ -740,11 +644,11 @@ class Performer {
 
                 // console.log(l);
 
-                var lineGeo = new THREE.Geometry();
+                lineGeo = new THREE.Geometry();
                 lineGeo.vertices.push(new THREE.Vector3(0, 0, 0));
                 lineGeo.vertices.push(l);
 
-                var lineMat = new THREE.LineBasicMaterial({
+                lineMat = new THREE.LineBasicMaterial({
                   color: 0xffffff,
                   linewidth: 10,
                 });
@@ -759,7 +663,7 @@ class Performer {
       },
       250,
     ));
-  this.getScene().visible=true;
+    this.getScene().visible = true;
     return {
       keys: Common.getKeys(keys, ''),
       meshes,
@@ -769,34 +673,35 @@ class Performer {
   }
 
   getModelGeo(id) {
-    // console.log("Fetching geometry: ", id, this.modelGeos[id]);
+    // console.log('Fetching geometry: ', id, this.modelGeos[id]);
     return this.modelGeos[id];
   }
 
   setModelGeo(id, model) {
     this.modelGeos[id] = model;
-    // console.log("Adding geometry: " + id, this.modelGeos);
+    // console.log('Adding geometry: ' + id, this.modelGeos);
   }
 
   getColladaScenes(id) {
-    // console.log("Fetching Animated Mesh: ", id, this.colladaScenes[id]);
+    // console.log('Fetching Animated Mesh: ', id, this.colladaScenes[id]);
     return this.colladaScenes[id];
   }
 
   setColladaScenes(id, mesh) {
     this.colladaScenes[id] = mesh;
-    // console.log("Adding Animated Mesh: " + id, this.colladaScenes);
+    // console.log('Adding Animated Mesh: ' + id, this.colladaScenes);
   }
 
   updateParameters(data) {
     switch (data.parameter) {
-        case 'rate':
-          this.performerEffects.updateParameters(data);
-          break;
-        case 'life':
+      default:
+      case 'rate':
         this.performerEffects.updateParameters(data);
-          break;
-      }
+        break;
+      case 'life':
+        this.performerEffects.updateParameters(data);
+        break;
+    }
   }
 
   addEffects(effects) {
@@ -817,10 +722,6 @@ class Performer {
 
   removeEffect(effect) {
     this.performerEffects.remove(effect);
-  }
-
-  getScene() {
-    return this.scene;
   }
 
   getOffset() {
@@ -966,64 +867,48 @@ class Performer {
 
     const parts = Common.getKeys(bvhStructure, '');
     _.each(parts, (part) => {
-      this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3), switchTime);
+      this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3), switchTime, ()=>{});
     });
     if (this.scaleInterval) {
       clearInterval(this.scaleInterval);
     }
     this.scaleInterval = setInterval(() => {
       _.each(parts, (part) => {
-        this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3), switchTime);
+        this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3), switchTime, ()=>{});
       });
     }, switchTime);
   }
 
   setColor(color) {
     this.getScene().traverse((part) => {
-      if (part.hasOwnProperty('material')) {
+      if (Object.prototype.hasOwnProperty.call(part, 'material')) {
         part.material.color.set(color);
         part.material.needsUpdate = true;
       }
     });
   }
 
-  randomizeColors(switchTime) {
-    this.getScene().traverse((part) => {
-      if (part.hasOwnProperty('material')) {
-        // part.material = new THREE.MeshPhongMaterial();
-        part.material.wireframe = this.wireframe;
-        part.material.color.set(this.colors[Common.mapRange(Math.random(), 0, 1, 0, this.colors.length - 1)]);
-
-        part.material.needsUpdate = true;
-      }
-    });
-    if (this.colorInterval) {
-      clearInterval(this.colorInterval);
-    }
-    this.colorInterval = setInterval(() => {
-      this.getScene().traverse((part) => {
-        if (part.hasOwnProperty('material')) {
-          // part.material = new THREE.MeshPhongMaterial();
-          part.material.wireframe = this.wireframe;
-          part.material.color.set(this.colors[Common.mapRange(Math.random(), 0, 1, 0, this.colors.length - 1)]);
-
-          part.material.needsUpdate = true;
-        }
+  limbSequence(parts) {
+    if (parts.length === 0) { return false; }
+      const part = parts.shift()
+      this.scalePart(part.name, part.scale, part.time, ()=>{
+        setTimeout(() => {
+          this.limbSequence(parts);
+        }, part.delay);
       });
-    }, switchTime);
   }
 
   randomizeLimbs(switchTime) {
     const parts = ['head', 'leftshoulder', 'rightshoulder', 'leftupleg', 'rightupleg'];
     _.each(parts, (part) => {
-      this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.75, 1.5), switchTime);
+      this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.75, 1.5), switchTime, ()=>{});
     });
     if (this.scaleInterval) {
       clearInterval(this.scaleInterval);
     }
     this.scaleInterval = setInterval(() => {
       _.each(parts, (part) => {
-        this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.75, 1.5), switchTime);
+        this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.75, 1.5), switchTime, ()=>{});
       });
     }, switchTime);
   }
@@ -1147,16 +1032,17 @@ class Performer {
     });
   }
 
-  scalePart(partname, scale, animTime) {
+  scalePart(partname, scale, animTime, cb) {
     const part = this.getPerformer().meshes[`robot_${partname}`];
     const s = { x: part.scale.x };
     if (part) {
-      const tween = new TWEEN.Tween(s)
+      new TWEEN.Tween(s)
         .to({ x: scale }, animTime)
         .onUpdate(() => {
           part.scale.set(s.x, s.x, s.x);
         })
         .easing(TWEEN.Easing.Quadratic.InOut)
+        .onComplete(cb)
         .start();
     }
   }
@@ -1183,10 +1069,13 @@ class Performer {
       part.position.add(this.getPerformer().meshes.robot_hips.position);
       part.parent = this.getScene();
 
+      let parts = [];
+
       if (freeze) {
         switch (partname) {
+          default:
           case 'leftshoulder':
-            var parts = ['robot_leftshoulder',
+            parts = ['robot_leftshoulder',
               'robot_leftarm', 'robot_leftforearm', 'robot_lefthand',
               'robot_lefthandthumb1', 'robot_lefthandthumb2', 'robot_lefthandthumb3',
               'robot_leftinhandindex', 'robot_lefthandindex1', 'robot_lefthandindex2', 'robot_lefthandindex3',
@@ -1196,7 +1085,7 @@ class Performer {
             this.getPerformer().meshes = _.omit(this.getPerformer().meshes, parts);
             break;
           case 'rightshoulder':
-            var parts = ['robot_rightshoulder',
+            parts = ['robot_rightshoulder',
               'robot_rightarm', 'robot_rightforearm', 'robot_righthand',
               'robot_righthandthumb1', 'robot_righthandthumb2', 'robot_righthandthumb3',
               'robot_rightinhandindex', 'robot_righthandindex1', 'robot_righthandindex2', 'robot_righthandindex3',
@@ -1206,15 +1095,15 @@ class Performer {
             this.getPerformer().meshes = _.omit(this.getPerformer().meshes, parts);
             break;
           case 'leftupleg':
-            var parts = ['robot_leftupleg', 'robot_leftleg', 'robot_leftfoot'];
+            parts = ['robot_leftupleg', 'robot_leftleg', 'robot_leftfoot'];
             this.getPerformer().meshes = _.omit(this.getPerformer().meshes, parts);
             break;
           case 'rightupleg':
-            var parts = ['robot_rightupleg', 'robot_rightleg', 'robot_rightfoot'];
+            parts = ['robot_rightupleg', 'robot_rightleg', 'robot_rightfoot'];
             this.getPerformer().meshes = _.omit(this.getPerformer().meshes, parts);
             break;
           case 'head':
-            var parts = ['robot_head'];
+            parts = ['robot_head'];
             this.getPerformer().meshes = _.omit(this.getPerformer().meshes, parts);
             break;
         }
@@ -1226,7 +1115,7 @@ class Performer {
     this.wireframe = true;
     _.each(this.getPerformer().meshes, (parent) => {
       parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
+        if (Object.prototype.hasOwnProperty.call(object, 'material')) {
           object.material.wireframe = this.wireframe;
         }
       });
@@ -1237,7 +1126,7 @@ class Performer {
     this.wireframe = false;
     _.each(this.getPerformer().meshes, (parent) => {
       parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
+        if (Object.prototype.hasOwnProperty.call(object, 'material')) {
           object.material.wireframe = this.wireframe;
         }
       });
@@ -1248,16 +1137,16 @@ class Performer {
     this.wireframe = !this.wireframe;
     _.each(this.getPerformer().meshes, (parent) => {
       parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
+        if (Object.prototype.hasOwnProperty.call(object, 'material')) {
           object.material.wireframe = this.wireframe;
         }
       });
     });
   }
 
-  distanceBetween(part1, part2) {
-    var part1 = this.getPerformer().meshes[`robot_${part1}`]; // find first body part by name
-    var part2 = this.getPerformer().meshes[`robot_${part2}`]; // find second body part by name
+  distanceBetween(p1, p2) {
+    const part1 = this.getPerformer().meshes[`robot_${p1}`]; // find first body part by name
+    const part2 = this.getPerformer().meshes[`robot_${p2}`]; // find second body part by name
     if (part1 && part2) { // do they both exist?
       const joint1Global = new THREE.Vector3().setFromMatrixPosition(part1.matrixWorld);// we need the global position
       const joint2Global = new THREE.Vector3().setFromMatrixPosition(part2.matrixWorld);// we need the global position
@@ -1268,10 +1157,11 @@ class Performer {
 
   update(data) {
     this.dataBuffer.push(data);
-    // console.log(this.dataBuffer.length + " > " + this.delay);
+    // console.log(this.dataBuffer.length + ' > ' + this.delay);
     if (this.dataBuffer.length > this.delay) {
       // console.log(this.delay, this.type, this.dataBuffer.length)
       switch (this.type) {
+        default:
         case 'perceptionNeuron':
           this.updateFromPN(this.dataBuffer.shift());
           break;
@@ -1295,11 +1185,26 @@ class Performer {
     for (let i = 0; i < data.length; i++) {
       const jointName = this.prefix + data[i].name.toLowerCase();
       if (this.getPerformer() == null) {
+        let scale = null;
+        switch (this.type) { // scale source to match real height
+          case 'bvh':
+          case 'clone':
+            scale = 1 / 190;
+            break;
+          case 'perceptionNeuron':
+            scale = 1 / 101;
+            break;
+          default:
+            scale = 1 / 100;
+            break;
+        }
+
+
         this.loadPerformer(
           this.type,
           this.getType(),
           this.hiddenParts,
-          1 / this.modelShrink,
+          scale,
           this.style,
           this.intensity,
         );

@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
 var ejs = require('ejs');
-var path = require('path');  
+var path = require('path');
 
 var routes = require('./routes/index');
 
@@ -86,6 +86,13 @@ if (config.kinectTransport.enabled) {
 if (config.perceptionNeuron.enabled) {
     var PNServer = require('./sockets/PerceptionNeuron');
     var pnServer = new PNServer();
+}
+/* eslint-enable */
+
+//init kinect server
+/* eslint-disable */
+if (config.perceptionNeuron_udp.enabled) {
+    var pnUDPServer = require('./sockets/PerceptionNeuron_UDP');
 }
 /* eslint-enable */
 

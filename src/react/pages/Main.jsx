@@ -261,7 +261,7 @@ class Main extends React.Component {
     var distance = 19.999990045581438;
     if (!this.state.scene.cameraControl.trackingObj || this.lastTracked.inputId !== performer.inputId) {
       var target = performer.performer.meshes.robot_spine1;
-      
+
       var pos = target.position;
       pos.y = 1;
 

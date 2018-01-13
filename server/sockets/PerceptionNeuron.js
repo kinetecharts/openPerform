@@ -30,11 +30,11 @@ class PerceptionNeuron {
 	onBroadcastConnection() {
 		console.log('Perception Neuron Server Connected!');
 	}
-	
+
 	onBroadcastError() {
 		console.log('Perception Neuron Server Error!');
 	}
-	
+
 	onBroadcastListening() {
 		console.log('Perception Neuron Server Listening!');
 	}
@@ -42,21 +42,21 @@ class PerceptionNeuron {
 	onListenOpen() {
 		console.log('Perception Neuron Connected!');
 	}
-	
+
 	onListenClose() {
 		console.log('Perception Neuron Disconnected!');
 	}
-	
+
 	onListenError(err) {
 		console.log('Perception Neuron Error ', err);
 		// console.log('Trying again in 3000ms');
 		// setTimeout(this.createListenServer.bind(this), 3000);
 	}
-	
+
 	onListenMessage(msg) {
 		this.broadcast(msg);
 	}
-	
+
 	broadcast(data) {
 		this.wss.clients.forEach(function each(client) {
 			if (client.readyState === WebSocket.OPEN) {

@@ -41,6 +41,13 @@ var config = {
 			outgoing:9100 //port the browser connects on
 		}
 	},
+	perceptionNeuron_udp: {
+		enabled: false,
+		ports: {
+			incoming:7001,
+			outgoing:9999
+		}
+	},
 	gamepads: {
 		enabled: true,
 		ports: {

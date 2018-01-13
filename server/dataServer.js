@@ -24,6 +24,11 @@ if (config.perceptionNeuron.enabled) {
     var pnServer = new PNServer();
 }
 
+//init perceptionNeuron udp server
+if (config.perceptionNeuron_udp.enabled) {
+    var KTServer = require('./sockets/PerceptionNeuron_UDP');
+}
+
 //init gamepad server
 if (config.gamepads.enabled) {
     var GPServer = require('./sockets/Gamepads');
