@@ -8,6 +8,8 @@ class DefaultPreset {
   initCallbacks(type) {
     switch (type.toLowerCase()) {
       default:
+        console.log(type.toLowerCase() + ' input not found for this preset');
+        break;
       case 'keyboard':
         this.initKeyboardCallbacks();
         break;
