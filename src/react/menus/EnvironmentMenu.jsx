@@ -2,9 +2,11 @@ import React from 'react';
 import _ from 'lodash';
 import Select from 'react-select';
 
+import { Panel, MenuItem, DropdownButton } from 'react-bootstrap';
+
 import 'react-select/dist/react-select.css';
 
-class EnvironmentList extends React.Component {
+class EnvironmentMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -88,19 +90,25 @@ class EnvironmentList extends React.Component {
     }
 
     return (
-      <div className="environmentList">
-        <h5>Environments</h5>
-        <table id="environmentTable"><tbody>{
-          _.map(this.props.environments.getEnvironments(), (environment, idx) => (
-            <tr key={idx}>
-              <td title="Hide / Show"><div className={`glyphicon ${(environment.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, environment)} /></td>
-              <td title="Name"><span style={{ color: environment.color }}>{environment.name}</span></td>
-              <td title="Edit Settings"><div className="glyphicon glyphicon-cog" onClick={this.props.openEnvironmentModal.bind(this, environment.guiDOM)} /></td>
-          </tr>))
-        }</tbody></table>
-      </div>
+      <Panel className="environmentMenu" defaultExpanded>
+        <Panel.Heading>
+					<Panel.Title toggle><h5>Environments</h5></Panel.Title>
+				</Panel.Heading>
+        <Panel.Collapse>
+						<Panel.Body>
+              <table id="environmentTable"><tbody>{
+                _.map(this.props.environments.getEnvironments(), (environment, idx) => (
+                  <tr key={idx}>
+                    <td title="Hide / Show"><div className={`glyphicon ${(environment.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, environment)} /></td>
+                    <td title="Name"><span style={{ color: environment.color }}>{environment.name}</span></td>
+                    <td title="Edit Settings"><div className="glyphicon glyphicon-cog" onClick={this.props.openEnvironmentModal.bind(this, environment.guiDOM)} /></td>
+                </tr>))
+              }</tbody></table>
+						</Panel.Body>
+					</Panel.Collapse>
+      </Panel>
     );
   }
 }
 
-module.exports = EnvironmentList;
+module.exports = EnvironmentMenu;

@@ -3,13 +3,17 @@ import ConsoleLogHTML from 'console-log-html';
 
 import 'bootstrap/dist/css/bootstrap.css';
 
-import InputList from './../components/InputList';
-import PerformerList from './../components/PerformerList';
-import EnvironmentList from './../components/EnvironmentList';
-import KeyboardHelpModal from './../components/KeyboardHelpModal';
-import PerformerEffectsModal from './../components/PerformerEffectsModal';
-import GroupEffectsModal from './../components/GroupEffectsModal';
-import EnvironmentSettingsModal from './../components/EnvironmentSettingsModal';
+import InputMenu from './../menus/InputMenu';
+import PerformerMenu from './../menus/PerformerMenu';
+import EnvironmentMenu from './../menus/EnvironmentMenu';
+import CameraMenu from './../menus/CameraMenu';
+import StatsMenu from './../menus/StatsMenu';
+import VRMenu from './../menus/VRMenu';
+
+import KeyboardHelpModal from './../modals/KeyboardHelpModal';
+import PerformerEffectsModal from './../modals/PerformerEffectsModal';
+import GroupEffectsModal from './../modals/GroupEffectsModal';
+import EnvironmentSettingsModal from './../modals/EnvironmentSettingsModal';
 
 import Scene from './../../three/scene';
 import InputManager from './../../inputs';
@@ -300,16 +304,16 @@ class Main extends React.Component {
         <div id="scenes" />
         <div id="upperDisplay">
           <table><tbody><tr>
-            <td valign="top"><div id="statsBox"><h5>Stats</h5></div></td>
-            <td valign="top"><div id="cameraBox"><h5>Camera Controls</h5></div></td>
-            <td valign="top"><InputList openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changePreset.bind(this)} currentPreset={this.state.currentPreset} presets={this.state.presets} inputs={this.state.inputs}></InputList></td>
+            <td valign="top" width="33.33"><StatsMenu/></td>
+            <td valign="top" width="33.33%" align="center"><CameraMenu/></td>
+            <td valign="top" width="33.33%"><InputMenu openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changePreset.bind(this)} currentPreset={this.state.currentPreset} presets={this.state.presets} inputs={this.state.inputs}></InputMenu></td>
           </tr></tbody></table>
         </div>
         <div id="lowerDisplay">
           <table><tbody><tr>
-            <td valign="bottom" width="40%"><PerformerList trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
-            <td valign="bottom" width="20%" id="vrTD" align="center"></td>
-            <td valign="bottom" width="40%"><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
+            <td valign="bottom" width="40%"><PerformerMenu trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
+            <td valign="bottom" width="20%" align="center"><VRMenu/></td>
+            <td valign="bottom" width="40%"><EnvironmentMenu environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
           </tr></tbody></table>
         </div>
         <div id="startOverlay" />

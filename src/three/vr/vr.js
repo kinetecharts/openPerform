@@ -141,13 +141,7 @@ class VR {
         this.vrEffect.isPresenting ? $(vrButton).addClass('active') : $(vrButton).removeClass('active');
       });
 
-      const vrDiv = document.createElement('div');
-      $(vrDiv).attr('id', 'vrButton');
-      const h5 = document.createElement('h5');
-      h5.innerHTML = 'Enter VR';
-      vrDiv.append(h5);
-      vrDiv.append(vrButton);
-      $('#vrTD').append(vrDiv);
+      $('.vrMenuBody').append(vrButton);
       $(vrButton).click(() => {
         // RootObj.vrOffset = new THREE.Vector3();
 

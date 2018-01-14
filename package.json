@@ -54,7 +54,7 @@
     "net": "^1.0.2",
     "node-neurosky": "0.0.1",
     "react": "^16.0.0",
-    "react-bootstrap": "^0.31.5",
+    "react-bootstrap": "^0.32.0",
     "react-dom": "^16.0.0",
     "react-select": "^1.0.0-rc.10",
     "react-simple-select": "^1.2.2",

@@ -2,19 +2,11 @@
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	/*display: none;*/
+	padding: 15px;
 }
 
 #lowerDisplay > table {
 	width: 100%;
-}
-
-/*#lowerDisplay > table td {
-	width: 33%;
-}*/
-
-.dg.ac {
-	/*display: none;*/
 }
 
 .controllerDebug {
@@ -22,12 +14,9 @@
 	color: #fff;
 	bottom: 0;
 	padding: 10px;
-	/*border: 1px solid white;
-	border-radius: 10px;*/
 	margin: 10px;
 	display: inline-block;
 	float: left;
-	/*box-shadow: 1px 1px 1px #000000;*/
 	background: rgba(0, 0, 0, 0.125);
 }
 
@@ -51,43 +40,59 @@
 	text-shadow: 1px 1px 2px #000000;
 }
 
-.performerList {
+.performerMenu {
 	position: relative;
 	color: #fff;
-	padding: 10px;
-	/*border: 1px solid white;*/
+	padding: 0;
+	margin: 0;
+	border: none;
 	border-radius: 10px;
-	margin: 10px;
 	display: inline-block;
 	float: left;
-	/*box-shadow: 1px 1px 1px #000000;*/
 	background: rgba(0, 0, 0, 0.125);
 }
 
-.performerList #performerTable td {
+.performerMenu .panel-heading {
+	background: none;
+	color: #FFFFFF;
+	border: none;
+}
+
+.performerMenu h5 {
+	margin: 0;
+	padding: 0;
+	text-shadow: none;
+	display: inline-block;
+}
+
+.performerMenu .panel-collapse {
+	border-top: 1px solid #FFFFFF;
+}
+
+.performerMenu #performerTable td {
 	padding: 5px 10px;
 }
 
-.performerList #controlsTable td {
+.performerMenu #controlsTable td {
 	padding: 5px 5px;
 }
 
-.performerList .glyphicon {
+.performerMenu .glyphicon {
 	cursor: pointer; cursor: hand;
 }
 
-.performerList input {
+.performerMenu input {
 	background: none;
 	border:none;
 	border-bottom: 1px solid #ffffff;
 	width: 25px;
 }
 
-.performerList .Select {
+.performerMenu .Select {
 	width: 130px;
 }
 
-.performerList .Select .Select-control {
+.performerMenu .Select .Select-control {
 	background:none !important;
 	border:none !important;
 	box-shadow:none !important;
@@ -107,20 +112,13 @@
 	margin-top:-200%;
 }
 
-.performerList h5 {
-	margin-top: 0;
-	padding-bottom: 5px;
-	border-bottom: 1px solid white;
-	text-shadow: 1px 1px 2px #000000;
-}
-
-.performerList ul {
+.performerMenu ul {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-.performerList li {
+.performerMenu li {
 	text-transform: capitalize;
 	padding: 0;
 	margin: 0;
@@ -134,43 +132,61 @@
 	margin-left: 10px;
 }
 
-.environmentList {
+.environmentMenu {
 	position: relative;
 	color: #fff;
-	padding: 10px;
-	/*border: 1px solid white;*/
+	padding: 0;
+	margin: 0;
+	border: none;
 	border-radius: 10px;
-	margin: 10px;
 	display: inline-block;
 	float: right;
-	/*box-shadow: 1px 1px 1px #000000;*/
 	background: rgba(0, 0, 0, 0.125);
 }
 
-.environmentList #environmentTable td {
+.environmentMenu .panel-heading {
+	background: none;
+	color: #FFFFFF;
+	border: none;
+}
+
+.environmentMenu h5 {
+	margin: 0;
+	padding: 0;
+	text-shadow: none;
+	display: inline-block;
+	text-align: right;
+	width: 100%;
+}
+
+.environmentMenu .panel-collapse {
+	border-top: 1px solid #FFFFFF;
+}
+
+.environmentMenu #environmentTable td {
 	padding: 5px 10px;
 }
 
-.environmentList #controlsTable td {
+.environmentMenu #controlsTable td {
 	padding: 5px 5px;
 }
 
-.environmentList .glyphicon {
+.environmentMenu .glyphicon {
 	cursor: pointer; cursor: hand;
 }
 
-.environmentList input {
+.environmentMenu input {
 	background: none;
 	border:none;
 	border-bottom: 1px solid #ffffff;
 	width: 50px;
 }
 
-.environmentList .Select {
+.environmentMenu .Select {
 	width: 130px;
 }
 
-.environmentList .Select .Select-control {
+.environmentMenu .Select .Select-control {
 	background:none !important;
 	border:none !important;
 	box-shadow:none !important;
@@ -186,20 +202,13 @@
 	border-color: #ffffff transparent transparent !important;
 }
 
-.environmentList h5 {
-	margin-top: 0;
-	padding-bottom: 5px;
-	border-bottom: 1px solid white;
-	text-shadow: 1px 1px 2px #000000;
-}
-
-.environmentList ul {
+.environmentMenu ul {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-.environmentList li {
+.environmentMenu li {
 	text-transform: capitalize;
 	padding: 0;
 	margin: 0;
@@ -221,30 +230,40 @@
 	display: none;
 }
 
-#vrButton {
+.vrMenu {
 	position: relative;
 	color: #fff;
-	padding: 10px;
-	/*border: 1px solid white;*/
+	padding: 0;
+	margin: 0;
+	border: none;
 	border-radius: 10px;
-	margin: 10px;
 	display: inline-block;
-	/*box-shadow: 1px 1px 1px #000000;*/
+	float: left;
 	background: rgba(0, 0, 0, 0.125);
 }
 
-#vrButton h5 {
-	margin-top: 0;
-	padding-bottom: 5px;
-	border-bottom: 1px solid white;
-	text-shadow: 1px 1px 2px #000000;
+.vrMenu .panel-heading {
+	background: none;
+	color: #FFFFFF;
+	border: none;
 }
 
-#vrButton button {
+.vrMenu h5 {
+	margin: 0;
+	padding: 0;
+	text-shadow: none;
+	display: inline-block;
+}
+
+.vrMenu .panel-collapse {
+	border-top: 1px solid #FFFFFF;
+}
+
+.vrMenuBody button {
 	width: 100px;
 }
 
-#vrButton button i, #vrButton button img {
+.vrMenuBody button i, .vrMenuBody button img {
 	position: relative;
     display: block;
     width: 100%;

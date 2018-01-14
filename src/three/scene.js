@@ -101,7 +101,7 @@ class Scene {
     this.stats = new Stats();
     if (statsEnabled) {
       this.stats.dom.id = 'stats';
-      $('#statsBox').append(this.stats.dom);
+      $('.statsBody').append(this.stats.dom);
     }
 
     // attach this.renderer to DOM
