@@ -6,6 +6,8 @@ import Common from './../../util/Common';
 class PerceptionNeuron {
   constructor(url) {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
 
     this.websocket = null;
     this.initializeWebSocket(url);
@@ -166,12 +168,21 @@ class PerceptionNeuron {
     console.log('Perception Neuron  error:', evt);
   }
 
-  on(name, cb) {
+  on(name, cb, event, label) {
     this.callbacks[name] = cb;
+    this.events.push(event);
+    this.labels.push(label);
+    this.initCallbacks();
   }
 
   clearCallbacks() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
+  }
+
+  initCallbacks() {
+    // _.forEach(this.callbacks, this.initCallback.bind(this));
   }
 
   parseFrameData(data, name) {

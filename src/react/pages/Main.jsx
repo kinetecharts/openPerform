@@ -3,7 +3,7 @@ import ConsoleLogHTML from 'console-log-html';
 
 import 'bootstrap/dist/css/bootstrap.css';
 
-// import InputList from './../components/InputList';
+import InputList from './../components/InputList';
 import PerformerList from './../components/PerformerList';
 import EnvironmentList from './../components/EnvironmentList';
 import KeyboardHelpModal from './../components/KeyboardHelpModal';
@@ -286,6 +286,12 @@ class Main extends React.Component {
       this.state.scene.cameraControl.clearTrack();
     }
   }
+  changePreset(val) {
+    this.setState({
+      currentPreset:this.state.presets[val],
+    });
+    this.state.inputManger.connectCallbacks(this.state.presets[val]);
+  }
 
   render() {
     return (
@@ -294,15 +300,13 @@ class Main extends React.Component {
         <div id="scenes" />
         <div id="upperDisplay">
           <table><tbody><tr>
-            <td valign="top"><div id="cameraBox"><h5>Camera Controls</h5>
-            <table><tbody><tr><td></td></tr></tbody></table>
-            </div></td>
             <td valign="top"><div id="statsBox"><h5>Stats</h5></div></td>
+            <td valign="top"><div id="cameraBox"><h5>Camera Controls</h5></div></td>
+            <td valign="top"><InputList openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changePreset.bind(this)} currentPreset={this.state.currentPreset} presets={this.state.presets} inputs={this.state.inputs}></InputList></td>
           </tr></tbody></table>
         </div>
         <div id="lowerDisplay">
           <table><tbody><tr>
-            {/*<td><InputList inputs={this.state.inputs}></InputList></td>*/}
             <td valign="bottom" width="40%"><PerformerList trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
             <td valign="bottom" width="20%" id="vrTD" align="center"></td>
             <td valign="bottom" width="40%"><EnvironmentList environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>

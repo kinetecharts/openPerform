@@ -17,10 +17,11 @@
 	/*border: 1px solid white;*/
 	border-radius: 10px;
 	margin: 10px;
-	display: inline-block;
-	float: left;
+	display: block;
 	/*box-shadow: 1px 1px 1px #000000;*/
 	background: rgba(0, 0, 0, 0.125);
+	margin-right: auto;
+	margin-left: auto;
 }
 
 #cameraBox h5 {
@@ -38,7 +39,7 @@
 	border-radius: 10px;
 	margin: 10px;
 	display: inline-block;
-	float: right;
+	float: left;
 	/*box-shadow: 1px 1px 1px #000000;*/
 	background: rgba(0, 0, 0, 0.125);
 }
@@ -54,4 +55,50 @@
 	position: relative !important;
 	z-index: 100000 !important;
 	/*box-shadow: 1px 1px 1px #000000;*/
+}
+
+.inputList {
+	position: relative;
+	color: #fff;
+	padding: 10px;
+	/*border: 1px solid white;*/
+	border-radius: 10px;
+	margin: 10px;
+	display: inline-block;
+	float: right;
+	/*box-shadow: 1px 1px 1px #000000;*/
+	background: rgba(0, 0, 0, 0.125);
+}
+
+.inputList h5 {
+	margin-top: 0;
+	padding-bottom: 5px;
+	border-bottom: 1px solid white;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.inputList .dropdown {
+	padding-bottom: 10px;
+}
+
+.inputList .dropdown-menu > li > a {
+	text-shadow: none;
+}
+
+.inputList ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.inputList li {
+	text-transform: capitalize;
+	padding: 0;
+	margin: 0;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.inputList li > span {
+	margin-left: 10px;
+	cursor: pointer;
 }

@@ -7,6 +7,9 @@ import _ from 'lodash';
 class NeuroSky {
   constructor() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
+
     this.ns = neurosky.createClient({
 		    appName: 'KinevizMW',
 		    appKey: '1234567890abcdef...',
@@ -14,13 +17,17 @@ class NeuroSky {
     this.ns.connect();
   }
 
-  on(name, cb) {
+  on(name, cb, event, label) {
     this.callbacks[name] = cb;
+    this.events.push(event);
+    this.labels.push(label);
     this.initCallbacks();
   }
 
   clearCallbacks() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
   }
 
   initCallbacks() {

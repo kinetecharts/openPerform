@@ -19,6 +19,8 @@ class Keyboard {
 
   clearCallbacks() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
   }
 
   initCallbacks() {

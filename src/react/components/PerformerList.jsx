@@ -83,10 +83,10 @@ class PerformerList extends React.Component {
     if (this.props.performers.length < 1) {
       return false;
     }
-    
+
     return (
       <div className="performerList">
-        <h5>Active Performers</h5>
+        <h5>Performers</h5>
         <table id="performerTable"><tbody>{
           _.map(this.props.performers.getPerformers(), (performer, idx) => (<tr key={idx}>
             <td title="Hide / Show"><div className={`glyphicon ${(performer.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, performer)} /></td>

@@ -24,18 +24,14 @@ class InputManager {
     this.inputs = {};
     this.presets = {};
 
-    this.currentPreset = "default";
-
     // initialize all presets
     this.initPresets();
 
     // initialize all interfaces
     this.initInputTypes();
 
-    console.log(inputTypes.keys());
-
     // connect current preset with inputs
-    this.connectCallbacks();
+    this.connectCallbacks(this.parent.state.currentPreset);
   }
 
   initInputTypes() {
@@ -52,20 +48,21 @@ class InputManager {
 
   initPresets() {
     const pres = _.uniq(_.map(presets.keys(), p => p.split('.')[1].split('/')[1]));
+    this.parent.state.presets = pres.slice(0);
     _.each(pres, (p) => {
       const PresetClass = require('./presets/' + p);
       this.presets[p.toLowerCase()] = new PresetClass(this, this.parent, this.scene);
     });
   }
 
-  connectCallbacks() {
+  connectCallbacks(preset) {
     this.clearAllCallbacks();
 
     const types = _.uniq(_.map(inputTypes.keys(), t => t.split('.')[1].split('/')[1]));
     _.each(_.without(this.allowedInputs, types), (t) => {
-      this.presets[this.currentPreset].initCallbacks(t);
+      this.presets[preset.toLowerCase()].initCallbacks(t);
     });
-    console.log('Loading ' + this.currentPreset + ' preset.');
+    console.log('Loading ' + preset + ' preset.');
   }
 
   clearCallbacks(input) {

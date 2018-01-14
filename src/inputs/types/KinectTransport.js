@@ -7,6 +7,8 @@ import config from './../../config';
 class KinectTransport {
   constructor() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
 
     this.websocket = null;
     this.initializeWebSocket();
@@ -41,12 +43,21 @@ class KinectTransport {
     console.log('KinectTransport error:', evt);
   }
 
-  on(name, cb) {
+  on(name, cb, event, label) {
     this.callbacks[name] = cb;
+    this.events.push(event);
+    this.labels.push(label);
+    this.initCallbacks();
   }
 
   clearCallbacks() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
+  }
+
+  initCallbacks() {
+    // _.forEach(this.callbacks, this.initCallback.bind(this));
   }
 }
 

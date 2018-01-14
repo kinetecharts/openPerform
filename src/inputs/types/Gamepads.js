@@ -3,6 +3,9 @@ import _ from 'lodash';
 class Gamepads {
   constructor(url) {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
+
     this.connected = false;
     this.websocket = null;
 
@@ -57,12 +60,21 @@ class Gamepads {
     console.log('Gamepad Server error:', evt);
   }
 
-  on(name, cb) {
+  on(name, cb, event, label) {
     this.callbacks[name] = cb;
+    this.events.push(event);
+    this.labels.push(label);
+    this.initCallbacks();
   }
 
   clearCallbacks() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
+  }
+
+  initCallbacks() {
+    // _.forEach(this.callbacks, this.initCallback.bind(this));
   }
 
   send(msg, gamepadId) {

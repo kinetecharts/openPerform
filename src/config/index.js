@@ -35,6 +35,8 @@ const defaults = {
   environmentContent: document.createElement('div'),
 
   inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  presets: [],
+  currentPreset: 'Default',
   performers: [],
   performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
   // performerColors: ['FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF'],

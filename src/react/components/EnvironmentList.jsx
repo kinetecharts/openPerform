@@ -89,7 +89,7 @@ class EnvironmentList extends React.Component {
 
     return (
       <div className="environmentList">
-        <h5>Active Environments</h5>
+        <h5>Environments</h5>
         <table id="environmentTable"><tbody>{
           _.map(this.props.environments.getEnvironments(), (environment, idx) => (
             <tr key={idx}>

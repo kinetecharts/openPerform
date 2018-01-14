@@ -6,6 +6,8 @@ import _ from 'lodash';
 class MyoInput {
   constructor() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
 
     this.Myo = Myo;
     this.myos = [];
@@ -14,13 +16,17 @@ class MyoInput {
     this.Myo.on('connected', this.initMyos.bind(this));
   }
 
-  on(name, cb) {
+  on(name, cb, event, label) {
     this.callbacks[name] = cb;
+    this.events.push(event);
+    this.labels.push(label);
     this.initCallbacks();
   }
 
   clearCallbacks() {
     this.callbacks = {};
+    this.events = [];
+    this.labels = [];
   }
 
   initCallbacks() {
