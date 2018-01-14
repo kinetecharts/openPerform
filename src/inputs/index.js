@@ -65,6 +65,7 @@ class InputManager {
     _.each(_.without(this.allowedInputs, types), (t) => {
       this.presets[this.currentPreset].initCallbacks(t);
     });
+    console.log('Loading ' + this.currentPreset + ' preset.');
   }
 
   clearCallbacks(input) {

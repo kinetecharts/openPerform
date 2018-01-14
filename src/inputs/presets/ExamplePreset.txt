@@ -32,7 +32,6 @@ class PresetName {
     }
   }
 
-
   initGamepadCallbacks() {
     const previous = {
       dpadX: 0,
