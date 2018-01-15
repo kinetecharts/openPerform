@@ -40,10 +40,10 @@ class Scene {
     this.h = this.container.height();
 
     // / Global : this.renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true});
 
-    this.renderer.setClearColor(new THREE.Color(backgroundColor));
-    // this.renderer.autoClear = false;
+    this.renderer.autoClear = true;
+    this.renderer.setClearColor(new THREE.Color(0x000000));
     this.renderer.setSize(this.w, this.h);
 
     // this.renderer.shadowMap.enabled = true;

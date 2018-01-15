@@ -319,7 +319,7 @@ class Performer {
       s.position.x = this.offset;
       this.parent.add(s);
       //['constructor', 'vogue', 'cloner', 'datatags', 'trails', 'particleSystem'];
-      // this.addEffects([this.effects[0]]);// defaults
+      // this.addEffects([this.effects[2]]);// defaults
     });
   }
 

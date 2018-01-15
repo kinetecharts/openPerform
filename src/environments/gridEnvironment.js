@@ -14,7 +14,7 @@ class GridEnvironment {
     this.modalID = this.name+"_Settings";
     this.visible = true;
 
-    this.color = 0x333333;
+    this.color = 0x000000;
     this.floorSize = 50;
     this.numLines = 50;
 
@@ -35,7 +35,7 @@ class GridEnvironment {
 
     this.setColor(this.color);
     this.initGUI();
-    this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
+    // this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
     this.initLights();
   }
 
@@ -84,7 +84,7 @@ class GridEnvironment {
     this.hemiLight.color.setHSL(0.6250011825856442, 60.75949367088608, 30.980392156862745);
     this.hemiLight.groundColor.setHSL(4.190951334017909e-8, 33.68421052631579, 37.254901960784316);
     this.hemiLight.position.set(0, 500, 0);
-    
+
     this.parent.add(this.hemiLight);
 
     this.dirLight = new THREE.DirectionalLight(0xffffff, 1);
