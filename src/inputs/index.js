@@ -26,12 +26,6 @@ class InputManager {
 
     // initialize all presets
     this.initPresets();
-
-    // initialize all interfaces
-    this.initInputTypes();
-
-    // connect current preset with inputs
-    this.connectCallbacks(this.parent.state.currentPreset);
   }
 
   initInputTypes() {
@@ -44,6 +38,9 @@ class InputManager {
       }
       this.inputs[t.toLowerCase()] = new InterfaceClass(url);
     });
+
+    // connect current preset with inputs
+    this.connectCallbacks(this.parent.state.currentPreset);
   }
 
   initPresets() {
@@ -53,6 +50,9 @@ class InputManager {
       const PresetClass = require('./presets/' + p);
       this.presets[p.toLowerCase()] = new PresetClass(this, this.parent, this.scene);
     });
+
+    // initialize all interfaces
+    this.initInputTypes();
   }
 
   connectCallbacks(preset) {
@@ -66,8 +66,8 @@ class InputManager {
   }
 
   clearCallbacks(input) {
-    if (this.inputs[input]) {
-      this.inputs[input].clearCallbacks();
+    if (this.inputs[input.toLowerCase()]) {
+      this.inputs[input.toLowerCase()].clearCallbacks();
     }
   }
 
@@ -78,8 +78,8 @@ class InputManager {
   }
 
   registerCallback(input, event, label, callback) {
-    if (this.inputs[input]) {
-      this.inputs[input].on(event, callback, event, label);
+    if (this.inputs[input.toLowerCase()]) {
+      this.inputs[input.toLowerCase()].on(event, callback, event, label);
     }
   }
 
