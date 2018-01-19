@@ -22,12 +22,12 @@ import Performers from './../../performers/Performers';
 
 import BVHPlayer from './../../performers/BVHPlayer';
 
-import colors from './colors.css';
-import fonts from './fonts.css';
-import main from './main.css';
-import upperDisplay from './upperDisplay.css';
-import lowerDisplay from './lowerDisplay.css';
-import login from './login.css';
+import colors from './../../styles/colors.css';
+import fonts from './../../styles/fonts.css';
+import main from './../../styles/main.css';
+import upperDisplay from './../../styles/upperDisplay.css';
+import lowerDisplay from './../../styles/lowerDisplay.css';
+import login from './../../styles/login.css';
 
 import config from '../../config';
 

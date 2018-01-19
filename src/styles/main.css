@@ -128,7 +128,7 @@ h5 {
 	background-color: white;
 	position: absolute;
 	z-index: 1000000;
-	background-image: url('./../../images/OP_credits_2.jpg');
+	background-image: url('./../images/OP_credits_2.jpg');
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
