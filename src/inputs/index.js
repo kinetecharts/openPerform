@@ -10,10 +10,10 @@ import config from './../config';
 import Common from './../util/Common';
 
 // import all interfaces
-var inputTypes = require.context("./types", false, /\.js$/);
+const inputTypes = require.context('./types', false, /\.js$/);
 
 // import all presets
-var presets = require.context("./presets", false, /\.js$/);
+const presets = require.context('./presets', false, /\.js$/);
 
 class InputManager {
   constructor(allowedInputs, threeScene, parent) {
@@ -34,7 +34,7 @@ class InputManager {
       const InterfaceClass = require('./types/' + t);
       let url = '';
       if (config[t.toLowerCase()]) {
-        url = 'ws://'+window.location.hostname+':'+config[t.toLowerCase()].ports.outgoing
+        url = 'ws://' + window.location.hostname + ':' + config[t.toLowerCase()].ports.outgoing;
       }
       this.inputs[t.toLowerCase()] = new InterfaceClass(url);
     });
@@ -84,13 +84,17 @@ class InputManager {
   }
 
   resetScale() {
-    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].resetScale();
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].resetScale();
   }
 
   fixedTracking() {
     // this.parent.toggleStartOverlay();
     this.scene.cameraControl.trackZ(
-      this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes.robot_hips,
+      this.parent.performers.performers[
+        Object.keys(this.parent.performers.performers)[0]
+      ].performer.meshes.robot_hips,
       new THREE.Vector3(0, 0.5, 0),
       new THREE.Vector3(0, 0, 8),
     );
@@ -131,7 +135,9 @@ class InputManager {
   }
 
   scaleLimbs() {
-    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeLimbs(5000);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].randomizeLimbs(5000);
   }
 
   slowZoom2() {
@@ -143,7 +149,9 @@ class InputManager {
   }
 
   abominationMode() {
-    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].randomizeAll(5000);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].randomizeAll(5000);
   }
 
   updateIntensity(id, value) {
@@ -154,7 +162,7 @@ class InputManager {
 
   scalePerformer(id, value) {
     const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
-    const val = Common.mapRange(value, 0, 127, 1 / p.modelShrink / 2, 1 / p.modelShrink * 2);
+    const val = Common.mapRange(value, 0, 127, (1 / p.modelShrink) / 2, (1 / p.modelShrink) * 2);
     p.getScene().scale.set(val, val, val);
   }
 
@@ -191,7 +199,9 @@ class InputManager {
     }
     this.cutClose();
     this.scene.cameraControl.track(
-      this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes.robot_hips,
+      this.parent.performers.performers[
+        Object.keys(this.parent.performers.performers)[0]
+      ].performer.meshes.robot_hips,
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 0, 0),
     );
@@ -219,7 +229,9 @@ class InputManager {
 
   lowTrack() {
     this.scene.cameraControl.track(
-      this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes.robot_hips,
+      this.parent.performers.performers[
+        Object.keys(this.parent.performers.performers)[0]
+      ].performer.meshes.robot_hips,
       new THREE.Vector3(0, 0.5, 0),
       new THREE.Vector3(0, -0.25, 0),
     );
@@ -255,7 +267,9 @@ class InputManager {
 
   trackPerformer(id, distance) {
     this.scene.cameraControl.track(
-      this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]].performer.meshes.robot_hips,
+      this.parent.performers.performers[
+        Object.keys(this.parent.performers.performers)[id]
+      ].performer.meshes.robot_hips,
       new THREE.Vector3(0, 0.5, 0),
       new THREE.Vector3(0, -0.25, distance),
     );
@@ -274,7 +288,9 @@ class InputManager {
 
   firstPerson() {
     this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes.robot_head);
+    this.scene.cameraControl.changeParent(this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].performer.meshes.robot_head);
 
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 0, 1),
@@ -284,12 +300,301 @@ class InputManager {
 
   snorryCam() {
     this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(this.parent.performers.performers[Object.keys(this.parent.performers.performers)[0]].performer.meshes.robot_spine3);
+    this.scene.cameraControl.changeParent(this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].performer.meshes.robot_spine3);
 
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 15, 150),
       new THREE.Vector3(0, 15, 0),
     );
+  }
+
+  timedStyleSwap(type) {
+    if (this.styleInterval !== null) {
+      clearInterval(this.styleInterval);
+    }
+    this.styleInterval = setInterval(
+      this.swapStyle.bind(this, type),
+      4709,
+    );
+    this.swapStyle(type);
+  }
+
+  clearStyleSwap() {
+    if (this.styleInterval !== null) {
+      clearInterval(this.styleInterval);
+    }
+  }
+
+  swapStyle(type) {
+    let perf1 = null;
+    let perf2 = null;
+    let randoStyle1 = null;
+    let randoStyle2 = null;
+    switch (type) {
+      default:
+      case 'same':
+        perf1 = this.parent.performers.performers[
+          Object.keys(this.parent.performers.performers)[1]
+        ];
+        perf2 = this.parent.performers.performers[
+          Object.keys(this.parent.performers.performers)[2]
+        ];
+        randoStyle1 = perf1.styles[Math.floor((Math.random() * perf1.styles.length))];
+        perf1.updateStyle(randoStyle1);
+        perf2.updateStyle(randoStyle1);
+        break;
+      case 'diff':
+        perf1 = this.parent.performers.performers[
+          Object.keys(this.parent.performers.performers)[1]
+        ];
+        perf2 = this.parent.performers.performers[
+          Object.keys(this.parent.performers.performers)[2]
+        ];
+        randoStyle1 = perf1.styles[Math.floor((Math.random() * perf1.styles.length))];
+        randoStyle2 = perf2.styles[Math.floor((Math.random() * perf2.styles.length))];
+        perf1.updateStyle(randoStyle1);
+        perf2.updateStyle(randoStyle2);
+        break;
+    }
+  }
+
+  nextScene() {
+    this.sceneId++;
+    if (this.sceneId > this.maxScenes) {
+      this.sceneId = this.maxScenes;
+    }
+    this.switchScene(this.sceneId);
+  }
+
+  prevScene() {
+    this.sceneId--;
+    if (this.sceneId < 0) {
+      this.sceneId = 0;
+    }
+    this.switchScene(this.sceneId);
+  }
+
+  switchScene(id) {
+    console.log('Switching to scene ' + id);
+    switch (id) {
+      default:
+        this.sceneDefault();
+        break;
+      case 1:
+        this.sceneOne();
+        break;
+      case 2:
+        this.sceneTwo();
+        break;
+      case 3:
+        this.sceneThree();
+        break;
+      case 4:
+        this.sceneFour();
+        break;
+      case 5:
+        this.sceneFive();
+        break;
+      case 6:
+        this.sceneSix();
+        break;
+      case 7:
+        this.sceneSeven();
+        break;
+      case 8:
+        this.sceneEight();
+        break;
+      case 9:
+        this.sceneNine();
+        break;
+      case 10:
+      case 0:
+        this.sceneTen();
+        break;
+    }
+  }
+
+  sceneDefault() {
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle('planes');
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle('planes');
+
+    this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
+
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(false);
+  }
+
+  sceneOne() {
+    this.parent.updateColors(this.parent.switchColorSet('darkColors')[0]);
+  }
+
+  sceneTwo() {
+    this.parent.clearCycleColors();
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].updateStyle('planes');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].updateStyle('planes');
+
+    this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
+    this.trackPerformer(0, 7.7);
+
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(true);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(true);
+  }
+
+  sceneThree() {
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].updateStyle('spheres');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].updateStyle('spheres');
+
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(true);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(true);
+  }
+
+  sceneFour() {
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].updateStyle('discs');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].updateStyle('discs');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].addEffect('cloner');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].addEffect('cloner');
+
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(true);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(true);
+  }
+
+  sceneFive() {
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(false);
+  }
+
+  sceneSix() {
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].removeEffect('cloner');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].removeEffect('cloner');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(false);
+  }
+
+  sceneSeven() {
+    this.parent.updateColors(this.parent.switchColorSet('colors1')[0]);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(true);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(true);
+  }
+
+  sceneEight() {
+    this.parent.clearCycleColors();
+    this.parent.updateColors(this.parent.switchColorSet('colors2')[0]);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(true);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(true);
+  }
+
+  sceneNine() {
+    this.clearStyleSwap();
+    this.parent.clearCycleColors();
+    this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].addEffect('cloner');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(false);
+  }
+
+  sceneTen() {
+    console.log('scene ten!');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].removeEffect('cloner');
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].setVisible(true);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[1]
+    ].setVisible(false);
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[2]
+    ].setVisible(false);
+    this.scene.cameraControl.clearTrack();
   }
 }
 

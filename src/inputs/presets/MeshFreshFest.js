@@ -11,25 +11,25 @@ class MeshFreshFestPreset {
         console.log(type.toLowerCase() + ' input not found for this preset');
         break;
       case 'keyboard':
-        this.initKeyboardCallbacks();
+        this.inputManager.initKeyboardCallbacks();
         break;
       case 'kinecttransport':
-        this.initKinectTransportCallbacks();
+        this.inputManager.initKinectTransportCallbacks();
         break;
       case 'myo':
-        this.initMyoCallbacks();
+        this.inputManager.initMyoCallbacks();
         break;
       case 'neurosky':
-        this.initNeuroSkyCallbacks();
+        this.inputManager.initNeuroSkyCallbacks();
         break;
       case 'perceptionneuron':
-        this.initPerceptionNeuronCallbacks();
+        this.inputManager.initPerceptionNeuronCallbacks();
         break;
       case 'gamepads':
-        this.initGamepadCallbacks();
+        this.inputManager.initGamepadCallbacks();
         break;
       case 'midicontroller':
-        this.initMidiControllerCallbacks();
+        this.inputManager.initMidiControllerCallbacks();
         break;
     }
   }
@@ -52,7 +52,7 @@ class MeshFreshFestPreset {
       rt: 0,
     };
 
-    this.inputManager.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
+    this.inputManager.inputManager.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
       const leftStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) === 'Left'), (d) => {
         const obj = {};
         obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
@@ -198,14 +198,15 @@ class MeshFreshFestPreset {
   }
 
   initMidiControllerCallbacks() {
-    this.performerIdx = 0;
-    this.inputManager.registerCallback('midiController', 'message', 'Midi Controller', function(data) {
+    this.inputManager.performerIdx = 0;
+    this.inputManager.registerCallback('midiController', 'message', 'Midi Controller', (data) => {
       switch (data.name) {
-
+        default:
+          console.log('Midi button not found.');
+          break;
         case 'cycle':
           this.inputManager.resetScale();
-        break;
-
+          break;
         case 'marker set': // start overlay
           this.inputManager.fixedTracking();
           break;
@@ -218,15 +219,15 @@ class MeshFreshFestPreset {
 
         case 'rewind':
           this.inputManager.performerIdx--;
-          if (this.inputManager.performerIdx<0) {
-            this.inputManager.performerIdx=this.main.BVHPlayers.length-1;
+          if (this.inputManager.performerIdx < 0) {
+            this.inputManager.performerIdx = this.main.BVHPlayers.length - 1;
           }
           break;
 
         case 'fast forward':
           this.inputManager.performerIdx++;
-          if (this.inputManager.performerIdx>this.main.BVHPlayers.length-1) {
-            this.inputManager.performerIdx=0;
+          if (this.inputManager.performerIdx > this.main.BVHPlayers.length - 1) {
+            this.inputManager.performerIdx = 0;
           }
           break;
 
@@ -242,30 +243,93 @@ class MeshFreshFestPreset {
           this.inputManager.scaleLimbs();
           break;
       }
-    }.bind(this));
+    });
   }
 
   initPerceptionNeuronCallbacks() {
     this.inputManager.registerCallback('perceptionNeuron', 'message', 'Perception Neuron', this.main.updatePerformers.bind(this.main));
   }
 
-  initNeuroSkyCallbacks() { //https: //github.com/elsehow/mindwave
-    this.inputManager.registerCallback('mindwave', 'data', 'Mindwave', function(data) { console.log(data); });
+  initNeuroSkyCallbacks() { // https://github.com/elsehow/mindwave
+    this.inputManager.registerCallback('mindwave', 'data', 'Mindwave', (data) => { console.log(data); });
   }
 
-  initMyoCallbacks() { //https: //github.com/thalmiclabs/myo.js/blob/master/docs.md
-    this.inputManager.registerCallback('myo', 'imu', 'Myo', function(data) { console.log(data); });
+  initMyoCallbacks() { // https://github.com/thalmiclabs/myo.js/blob/master/docs.md
+    this.inputManager.registerCallback('myo', 'imu', 'Myo', (data) => { console.log(data); });
   }
 
-  initKinectTransportCallbacks() { //Reuires Kinect Transport app.
-    /*https: //github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
-    Returns either depth or bodies object.*/
+  initKinectTransportCallbacks() { // Reuires Kinect Transport app.
+    // https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
+    // Returns either depth or bodies object.
     this.inputManager.registerCallback('kinecttransport', 'depth', 'Kinect Depth', this.scene.viewKinectTransportDepth.bind(this.scene));
     this.inputManager.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.scene));
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-    this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
+    this.inputManager.registerCallback('keyboard', 'l', 'Tracking - Low Angle', () => {
+      this.scene.cameraControl.track(
+        this.main.performers.performers[
+          Object.keys(this.main.performers.performers)[0]
+        ].performer.meshes.robot_hips,
+        new THREE.Vector3(0, 0.5, 0),
+        new THREE.Vector3(0, 0, 7),
+      );
+    });
+
+    this.inputManager.registerCallback('keyboard', ';', 'Tracking - Zoom Out', () => {
+      this.scene.cameraControl.trackZoom(
+        new THREE.Vector3(0, 0, 100),
+        TWEEN.Easing.Quadratic.InOut,
+        5000,
+      );
+    });
+
+    this.inputManager.registerCallback('keyboard', '', 'Tracking - Zoom In', () => {
+      this.scene.cameraControl.trackZoom(
+        new THREE.Vector3(0, 0, 3),
+        TWEEN.Easing.Quadratic.InOut,
+        5000,
+      );
+    });
+
+    this.inputManager.registerCallback('keyboard', 'q', 'Randomize All Mesh Scale', () => {
+      this.main.performers.performers[
+        Object.keys(this.main.performers.performers)[0]
+      ].randomizeAll(5000);
+    });
+
+    this.inputManager.registerCallback('keyboard', 'w', 'Random Limb Scale', () => {
+      this.main.performers.performers[
+        Object.keys(this.main.performers.performers)[0]
+      ].randomizeLimbs(5000);
+    });
+
+    this.inputManager.registerCallback('keyboard', 'space', 'Toggle Floor', () => {
+      this.scene.environments.environments[0].toggleGrid();
+    });
+
+    this.inputManager.registerCallback('keyboard', 'n', 'Detach Left Arm', () => { // toggle environment input
+      this.main.performers.performers[
+        Object.keys(this.main.performers.performers)[0]
+      ].unParentPart('leftshoulder', false);
+    });
+
+    this.inputManager.registerCallback('keyboard', 'm', 'Detach Right Arm', () => { // toggle environment input
+      this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].unParentPart('rightshoulder', false);
+    });
+
+    this.inputManager.registerCallback('keyboard', ',', 'Detach Left Leg', () => { // toggle environment input
+      this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].unParentPart('leftupleg', false);
+    });
+
+    this.inputManager.registerCallback('keyboard', '.', 'Detach Right Leg', () => { // toggle environment input
+      this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].unParentPart('rightupleg', false);
+    });
+
+    this.inputManager.registerCallback('keyboard', '/', 'Detach Head', () => { // toggle environment input
+      this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].unParentPart('head', false);
+    });
+
 
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
     this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));

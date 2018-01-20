@@ -199,6 +199,8 @@ class PresetName {
     this.inputManager.registerCallback('midiController', 'message', 'Midi Controller', (data) => {
       switch (data.name) {
         default:
+          console.log('Midi button not found.');
+          break;
         case 'cycle':
           break;
 
