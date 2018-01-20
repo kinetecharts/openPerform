@@ -84,7 +84,7 @@ class Scene {
 
     // this.controls.enableKeys = false;
 
-    this.controls = new THREE.TrackballControls( this.camera );
+    this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement );
     this.controls.target = new THREE.Vector3(0,1.5,0);
     window.controls = this.controls;
 
