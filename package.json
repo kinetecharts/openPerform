@@ -46,6 +46,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "console-log-html": "^2.0.2",
+    "copy-webpack-plugin": "^4.3.1",
     "dat-gui": "^0.5.0",
     "jquery": "^3.2.1",
     "lodash-keyarrange": "^1.1.0",

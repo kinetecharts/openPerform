@@ -1,11 +1,13 @@
 const { resolve } = require('path');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+const config = require('./server/config');
 
 module.exports = {
   node: {
     fs: 'empty',
   },
-  context: resolve(__dirname, 'src'),
 
   entry: [
     'react-hot-loader/patch',
@@ -19,7 +21,7 @@ module.exports = {
     // bundle the client for hot reloading
     // only- means to only hot reload for successful updates
 
-    './index.jsx',
+    './src/index.jsx',
     // the entry point of our app
   ],
   output: {
@@ -87,6 +89,21 @@ module.exports = {
     extensions: ['.js', '.jsx', '.css'],
   },
   plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: resolve(__dirname, config.copy.html.src),
+        to: resolve(__dirname, config.copy.html.dest),
+      },
+      {
+        from: resolve(__dirname, config.copy.images.src),
+        to: resolve(__dirname, config.copy.images.dest),
+      },
+      {
+        from: resolve(__dirname, config.copy.models.src),
+        to: resolve(__dirname, config.copy.models.dest),
+      },
+    ]),
+
     new webpack.HotModuleReplacementPlugin(),
     // enable HMR globally
 
