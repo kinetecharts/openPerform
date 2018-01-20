@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-require('./../libs/three/SkyShader.js');
+require('three/examples/js/SkyShader.js');
 
 import config from './../config';
 

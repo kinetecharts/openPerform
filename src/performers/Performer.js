@@ -1,11 +1,11 @@
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 
 
-const fbxLoader = require('./../libs/three/loaders/FBXLoader.js');
-const objLoader = require('./../libs/three/loaders/OBJLoader.js');
-const bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
+require('three/examples/js/loaders/FBXLoader.js');
+require('three/examples/js/loaders/OBJLoader.js');
+require('three/examples/js/loaders/ColladaLoader.js');
+
 const sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
-const colladaLoader = require('./../libs/three/loaders/ColladaLoader.js');
 
 require('./../libs/BufferGeometryMerge.js');
 
@@ -414,10 +414,12 @@ class Performer {
     loader.callbackProgress = (progress, result) => {
       // console.log(progress);
     };
+    
     loader.load(filename, (result) => {
-    result.scene.visible = false;
+      result.scene.visible = false;
       this.setScene(result.scene);
       switch (source) {
+        default:
         case 'bvh':
         case 'clone':
           this.getScene().scale.set(size, size, size);
@@ -428,7 +430,7 @@ class Performer {
       const s = this.getScene();
       s.position.x = this.offset;
       this.parent.add(s);
-      this.addEffects([this.effects[1]]);// defaults
+      this.addEffects([this.effects[2]]);// defaults
     });
   }
 

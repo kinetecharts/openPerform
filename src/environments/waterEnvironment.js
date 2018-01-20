@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import WaterShader from '../shaders/WaterShader';
 import OceanShader from '../shaders/OceanShader';
-import Ocean from '../libs/ocean';
+import Ocean from 'three/examples/js/Ocean.js';
 import config from './../config';
 
 class WaterEnvironment {

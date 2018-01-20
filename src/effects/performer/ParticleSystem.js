@@ -1,8 +1,4 @@
-import _ from 'lodash';
-
-const GPUParticleSystem = require('./../../libs/three/GPUParticleSystem');
-
-import config from './../../config';
+require('three/examples/js/GPUParticleSystem');
 
 class ParticleSystem {
   constructor(parent, color, guiFolder) {

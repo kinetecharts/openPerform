@@ -1,5 +1,5 @@
 
-const bvhLoader = require('./../libs/three/loaders/BVHLoader.js');
+const bvhLoader = require('three/examples/js/loaders/BVHLoader.js');
 
 import Common from './../util/Common';
 
