@@ -40,7 +40,7 @@ class InputManager {
     });
 
     // connect current preset with inputs
-    this.connectCallbacks(this.parent.state.currentPreset);
+    this.connectCallbacks((this.parent.state.currentPreset === null) ? this.parent.state.defaults.preset : this.parent.state.currentPreset);
   }
 
   initPresets() {
@@ -83,14 +83,9 @@ class InputManager {
     }
   }
 
-  resetScale() {
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].resetScale();
-  }
+  /* ******** Start Tracking Camera Animations ********* */
 
   fixedTracking() {
-    // this.parent.toggleStartOverlay();
     this.scene.cameraControl.trackZ(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[0]
@@ -100,23 +95,68 @@ class InputManager {
     );
   }
 
-  shrink() {
-    // this.parent.toggleBlackOverlay();
-    this.scene.cameraControl.trackZoom(
-      new THREE.Vector3(0, 0, 105),
-      TWEEN.Easing.Quadratic.InOut,
-      6400,
+  trackClose() {
+    this.scene.unsetRotation();
+    if (this.scene.camera.parent.type !== 'Scene') {
+      this.scene.cameraControl.changeParent(this.scene);
+    }
+    this.cutClose();
+    this.scene.cameraControl.track(
+      this.parent.performers.performers[
+        Object.keys(this.parent.performers.performers)[0]
+      ].performer.meshes.robot_hips,
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0, 0),
     );
   }
 
-  grow() {
-    // this.parent.toggleEndOverlay();
-    this.scene.cameraControl.trackZoom(
-      new THREE.Vector3(0, 0, 5),
-      TWEEN.Easing.Quadratic.InOut,
-      5700,
+  lowTrack() {
+    this.scene.cameraControl.track(
+      this.parent.performers.performers[
+        Object.keys(this.parent.performers.performers)[0]
+      ].performer.meshes.robot_hips,
+      new THREE.Vector3(0, 0.5, 0),
+      new THREE.Vector3(0, -0.25, 0),
     );
   }
+
+  trackPerformer(id, distance) {
+    this.scene.cameraControl.track(
+      this.parent.performers.performers[
+        Object.keys(this.parent.performers.performers)[id]
+      ].performer.meshes.robot_hips,
+      new THREE.Vector3(0, 0.5, 0),
+      new THREE.Vector3(0, -0.25, distance),
+    );
+  }
+
+  firstPerson() {
+    this.scene.unsetRotation();
+    this.scene.cameraControl.changeParent(this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].performer.meshes.robot_head);
+
+    this.scene.cameraControl.jump(
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(0, 0, 2),
+    );
+  }
+
+  snorryCam() {
+    this.scene.unsetRotation();
+    this.scene.cameraControl.changeParent(this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].performer.meshes.robot_spine3);
+
+    this.scene.cameraControl.jump(
+      new THREE.Vector3(0, 15, 150),
+      new THREE.Vector3(0, 15, 0),
+    );
+  }
+
+  /* ******** End Tracking Camera Animations ********* */
+
+  /* ******** Start Static Camera Animations ********* */
 
   farTracking() {
     this.scene.cameraControl.trackZoom(
@@ -134,46 +174,12 @@ class InputManager {
     );
   }
 
-  scaleLimbs() {
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].randomizeLimbs(5000);
-  }
-
   slowZoom2() {
     this.scene.cameraControl.trackZoom(
       new THREE.Vector3(0, 0, 7),
       TWEEN.Easing.Quadratic.InOut,
       20000,
     );
-  }
-
-  abominationMode() {
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].randomizeAll(5000);
-  }
-
-  updateIntensity(id, value) {
-    const val = Common.mapRange(value, 0, 127, 1, 200);
-    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
-    p.updateIntensity(val);
-  }
-
-  scalePerformer(id, value) {
-    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
-    const val = Common.mapRange(value, 0, 127, (1 / p.modelShrink) / 2, (1 / p.modelShrink) * 2);
-    p.getScene().scale.set(val, val, val);
-  }
-
-  prevStyle(id) {
-    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
-    p.updateStyle(p.getPrevStyle());
-  }
-
-  nextStyle(id) {
-    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
-    p.updateStyle(p.getNextStyle());
   }
 
   flyOut() {
@@ -189,21 +195,6 @@ class InputManager {
       7000,
       1,
       () => { console.log('Camera moved!'); },
-    );
-  }
-
-  trackClose() {
-    this.scene.unsetRotation();
-    if (this.scene.camera.parent.type !== 'Scene') {
-      this.scene.cameraControl.changeParent(this.scene);
-    }
-    this.cutClose();
-    this.scene.cameraControl.track(
-      this.parent.performers.performers[
-        Object.keys(this.parent.performers.performers)[0]
-      ].performer.meshes.robot_hips,
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0, 0, 0),
     );
   }
 
@@ -225,16 +216,6 @@ class InputManager {
     this.scene.cameraControl.trackingObj = null;
     this.scene.setRotationSpeed(4.5);
     this.scene.setRotation();
-  }
-
-  lowTrack() {
-    this.scene.cameraControl.track(
-      this.parent.performers.performers[
-        Object.keys(this.parent.performers.performers)[0]
-      ].performer.meshes.robot_hips,
-      new THREE.Vector3(0, 0.5, 0),
-      new THREE.Vector3(0, -0.25, 0),
-    );
   }
 
   cutThreeQ() {
@@ -265,16 +246,6 @@ class InputManager {
     );
   }
 
-  trackPerformer(id, distance) {
-    this.scene.cameraControl.track(
-      this.parent.performers.performers[
-        Object.keys(this.parent.performers.performers)[id]
-      ].performer.meshes.robot_hips,
-      new THREE.Vector3(0, 0.5, 0),
-      new THREE.Vector3(0, -0.25, distance),
-    );
-  }
-
   cutMedium() {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene.scene);
@@ -286,28 +257,62 @@ class InputManager {
     );
   }
 
-  firstPerson() {
-    this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].performer.meshes.robot_head);
+/* ********* End Static Camera Animations ********** */
 
-    this.scene.cameraControl.jump(
-      new THREE.Vector3(0, 0, 1),
-      new THREE.Vector3(0, 0, 2),
+  resetScale() {
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].resetScale();
+  }
+
+  shrink() {
+    this.scene.cameraControl.trackZoom(
+      new THREE.Vector3(0, 0, 105),
+      TWEEN.Easing.Quadratic.InOut,
+      6400,
     );
   }
 
-  snorryCam() {
-    this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].performer.meshes.robot_spine3);
-
-    this.scene.cameraControl.jump(
-      new THREE.Vector3(0, 15, 150),
-      new THREE.Vector3(0, 15, 0),
+  grow() {
+    this.scene.cameraControl.trackZoom(
+      new THREE.Vector3(0, 0, 5),
+      TWEEN.Easing.Quadratic.InOut,
+      5700,
     );
+  }
+
+  scaleLimbs() {
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].randomizeLimbs(5000);
+  }
+
+  abominationMode() {
+    this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].randomizeAll(5000);
+  }
+
+  updateIntensity(id, value) {
+    const val = Common.mapRange(value, 0, 127, 1, 200);
+    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+    p.updateIntensity(val);
+  }
+
+  scalePerformer(id, value) {
+    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+    const val = Common.mapRange(value, 0, 127, (1 / p.modelShrink) / 2, (1 / p.modelShrink) * 2);
+    p.getScene().scale.set(val, val, val);
+  }
+
+  prevStyle(id) {
+    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+    p.updateStyle(p.getPrevStyle());
+  }
+
+  nextStyle(id) {
+    const p = this.parent.performers.performers[Object.keys(this.parent.performers.performers)[id]];
+    p.updateStyle(p.getNextStyle());
   }
 
   timedStyleSwap(type) {

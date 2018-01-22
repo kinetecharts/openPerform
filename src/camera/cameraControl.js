@@ -18,7 +18,9 @@ class CameraControl {
     this.centerCam = null;
     this.posCamera = null;
 
-    this.trackingObj = null;
+    this.trackingTarget = null;
+    this.movementType = 'cut'; // or 'track'
+
   }
 
   pause() {
@@ -132,7 +134,7 @@ class CameraControl {
       return false;
     }
 
-    this.trackingObj = null;
+    this.trackingTarget = null;
 
     switch (type) {
       case 'direct':
@@ -263,7 +265,7 @@ class CameraControl {
 
     console.log('Switching camera position...');
 
-    this.trackingObj = null;
+    this.trackingTarget = null;
 
     this.controls.object.position.copy(position);
     this.controls.target = look;
@@ -284,16 +286,16 @@ class CameraControl {
 
   trackZ(target, look, offset) {
     this.zTrack = true;
-    if (this.trackingObj) {
-      this.trackingObj = null;
+    if (this.trackingTarget) {
+      this.trackingTarget = null;
     }
-    this.trackingObj = target;
+    this.trackingTarget = target;
     this.offsetObj = offset;
     this.lookObj = look;
   }
 
   clearTrack() {
-    this.trackingObj = null;
+    this.trackingTarget = null;
   }
 
   track(target, look, offset) {
@@ -303,10 +305,10 @@ class CameraControl {
     this.controls.object.position.z = vector.z;
 
     this.zTrack = false;
-    if (this.trackingObj) {
-      this.trackingObj = null;
+    if (this.trackingTarget) {
+      this.trackingTarget = null;
     }
-    this.trackingObj = target;
+    this.trackingTarget = target;
     this.offsetObj = offset;
     this.lookObj = look;
   }
@@ -319,9 +321,9 @@ class CameraControl {
   }
 
   update(timeDelta) {
-    if (this.trackingObj) {
+    if (this.trackingTarget) {
       const vector = new THREE.Vector3();
-      vector.setFromMatrixPosition(this.trackingObj.matrixWorld);
+      vector.setFromMatrixPosition(this.trackingTarget.matrixWorld);
       vector.add(this.offsetObj);
       this.controls.object.position.x = vector.x;
       this.controls.object.position.y = vector.y;

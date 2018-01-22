@@ -1,11 +1,22 @@
 import config from './../../server/config';
 
-const defaults = {
-  debug: true, // load bvh file / create performer from playback
-  debugBVH: 'models/bvh/duality_edit.bvh',
-  backgroundColor: 0x333333,
-  console2html: false,
-  scene: null,
+module.exports = {
+  defaults: {
+    preset: 'Default',
+    backgroundColor: 0x333333, // will be overridden by environment settings
+    environment: 'Grid',
+  },
+
+  inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
+
+  debug: {
+    enabled: true, // load bvh file / create performer from playback
+    BVH: 'models/bvh/duality_edit.bvh',
+    stats: true,
+    console2html: false,
+  },
+
   camera: {
     closeShot: {
       position: new THREE.Vector3(0, 1.5, 5),
@@ -20,7 +31,6 @@ const defaults = {
       look: new THREE.Vector3(0, 1.5, 0),
     },
   },
-  stats: true,
 
   keyboardModal: false,
   keyboardContent: document.createElement('div'),
@@ -34,14 +44,13 @@ const defaults = {
   environmentModal: false,
   environmentContent: document.createElement('div'),
 
-  inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  scene: null,
   presets: [],
-  currentPreset: 'Default',
+  currentPreset: null,
   performers: [],
-  performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
-  // performerColors: ['FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF', 'FFFFFF'],
-  // performerColors: ['FF0000', '00FF00', '0000FF'],
+  trackedPerformer: null,
   environments: [],
+  currentEnvironment: null,
   kinecttransport: {
     ports: {
       outgoing: config.kinectTransport.ports.outgoing,
@@ -66,5 +75,3 @@ const defaults = {
   },
   data: [],
 };
-
-module.exports = defaults;

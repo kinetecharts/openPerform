@@ -1,12 +1,11 @@
-#lowerDisplay {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	padding: 15px;
+ #lowerDisplay {
+	display: table;
 }
 
-#lowerDisplay > table {
-	width: 100%;
+#lowerDisplay > div {
+	float: none;
+    display: table-cell;
+  	height: 100%;
 }
 
 .controllerDebug {

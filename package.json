@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.jsx",
   "scripts": {
-    "dev": "webpack-dev-server --history-api-fallback  --watch-poll --progress --colors",
+    "webpack": "webpack-dev-server --history-api-fallback  --watch-poll --progress --colors",
+    "data": "node server/dataServer.js",
     "build": "webpack --config webpack-production.config.js --progress --profile --colors",
-    "start": "node ./server.js"
+    "file": "node ./server.js",
+    "start": "npm run file | npm run data",
+    "dev": "npm run webpack | npm run data"
   },
   "repository": {
     "type": "git",

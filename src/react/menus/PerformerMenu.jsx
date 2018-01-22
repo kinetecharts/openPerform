@@ -96,7 +96,7 @@ class PerformerMenu extends React.Component {
               <table id="performerTable"><tbody>{
                 _.map(this.props.performers.getPerformers(), (performer, idx) => (<tr key={idx}>
                   <td title="Hide / Show"><div className={`glyphicon ${(performer.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, performer)} /></td>
-                  <td title="Track Performer"><div className={`glyphicon ${(performer.getTracking()) ? ' glyphicon-ban-circle' : ' glyphicon-facetime-video'}`} onClick={this.props.trackPerformer.bind(this, performer)} /></td>
+                  <td title="Track Performer"><div className={`glyphicon ${(performer.getTracking()) ? ' glyphicon-ban-circle' : ' glyphicon-facetime-video'}`} onClick={this.props.togglePerformerTrack.bind(this, performer)} /></td>
                   <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
                   <td title="Type"><span>{performer.type}</span></td>
                   <td>{ performer.type == 'bvh' ? <table id="controlsTable"><tbody><tr>

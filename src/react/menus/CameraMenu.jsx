@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, MenuItem, DropdownButton } from 'react-bootstrap';
+import { Grid, Row, Col, Panel, MenuItem, DropdownButton } from 'react-bootstrap';
 
 class CameraMenu extends React.Component {
   constructor(props) {
@@ -23,16 +23,40 @@ class CameraMenu extends React.Component {
     }
     return false;
   }
+  
+  renderTrackingList() {
+    if (this.props.performers.length < 1) {
+      return false;
+    }
+    return (
+      <DropdownButton
+        onSelect={this.props.selectTrackedPerformer}
+        title={(this.props.trackedPerformer === null) ? 'None' : this.props.trackedPerformer.name}
+        id="trackingTargetDropdown"
+      >
+        <MenuItem key="1" eventKey="1">None</MenuItem>
+        {_.map(this.props.performers.getPerformers(), (performer, idx) => {
+          return <MenuItem key={idx + 2} eventKey={idx + 2}>{performer.name}</MenuItem>
+        })}
+      </DropdownButton>
+    );
+  }
   render() {
     return (
       <Panel className="cameraMenu" defaultExpanded>
         <Panel.Heading>
-					<Panel.Title toggle><h5>Camera Controls</h5></Panel.Title>
-				</Panel.Heading>
+          <Panel.Title toggle><h5>Camera Controls</h5></Panel.Title>
+        </Panel.Heading>
         <Panel.Collapse>
-						<Panel.Body>
-						</Panel.Body>
-					</Panel.Collapse>
+          <Panel.Body>
+            <Grid fluid={true}><Row>
+              <Col xs={3} md={3}>Tracking:</Col>
+              <Col xs={3} md={3}>{this.renderTrackingList()}</Col>
+              <Col xs={3} md={3} />
+              <Col xs={3} md={3} />
+            </Row></Grid>
+          </Panel.Body>
+        </Panel.Collapse>
       </Panel>
     );
   }

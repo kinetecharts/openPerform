@@ -1,6 +1,7 @@
 import React from 'react';
 import ConsoleLogHTML from 'console-log-html';
 
+import { Grid, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import InputMenu from './../menus/InputMenu';
@@ -36,10 +37,9 @@ class Main extends React.Component {
     super(props);
     this.state = config;
     this.BVHFiles = [
-      config.debugBVH,
+      config.debug.BVH,
     ];
     this.BVHPlayers = [];
-    this.lastTracked = null;
   }
 
   componentWillMount() {
@@ -60,19 +60,19 @@ class Main extends React.Component {
     // once the dom has mounted, initialize threejs
     this.state.scene.initScene(
       this.state.inputs,
-      this.state.stats,
+      this.state.debug.stats,
       this.performers,
-      this.state.backgroundColor,
+      this.state.defaults.backgroundColor,
     );
 
     this.performers.init(this.state.scene.scene);
     this.state.environments = this.state.scene.environments;
 
-    if (this.state.debug) {
+    if (this.state.debug.enabled) {
       this.BVHPlayer = this.addBVHPerformer(this.BVHFiles[0]);
     }
 
-    if (this.state.console2html) {
+    if (this.state.debug.console2html) {
       const con = document.createElement('ul');
       con.style.color = '#FFFFFF';
 
@@ -106,15 +106,10 @@ class Main extends React.Component {
   }
 
   toggleGUI() { // toggle loading overlay visablity
-    if ($('#lowerDisplay').css('display') === 'none') {
-      $('#lowerDisplay').fadeIn(1000);
+    if ($('#page').css('display') === 'none') {
+      $('#page').fadeIn(1000);
     } else {
-      $('#lowerDisplay').fadeOut(1000);
-    }
-    if ($('#upperDisplay').css('display') === 'none') {
-      $('#upperDisplay').fadeIn(1000);
-    } else {
-      $('#upperDisplay').fadeOut(1000);
+      $('#page').fadeOut(1000);
     }
   }
 
@@ -266,30 +261,47 @@ class Main extends React.Component {
     }
   }
 
-  trackPerformer(performer) {
-    const distance = 19.999990045581438;
+  togglePerformerTrack(performer) {
     if (
-      !this.state.scene.cameraControl.trackingObj ||
-      this.lastTracked.inputId !== performer.inputId
+      !this.state.scene.cameraControl.trackingTarget ||
+      this.state.trackedPerformer.inputId !== performer.inputId
     ) {
-      const target = performer.performer.meshes.robot_spine1;
-
-      const pos = target.position;
-      pos.y = 1;
-
-      this.state.scene.cameraControl.track(//track(target, look, offset) {
-        target,
-        pos,
-        new THREE.Vector3(0, 0, distance),
-      );
-      this.state.performers.clearTracking();
-      performer.setTracking(true);
-      this.lastTracked = performer;
+      this.trackPerformer(performer, 20);
     } else {
-      this.state.performers.clearTracking();
-      this.state.scene.cameraControl.clearTrack();
+      this.clearTrackedPeformer();
     }
   }
+
+  trackPerformer(performer, distance) {
+    const target = performer.performer.meshes.robot_spine1;
+
+    const pos = target.position;
+    pos.y = 1;
+
+    this.state.scene.cameraControl.track(//track(target, look, offset) {
+      target,
+      pos,
+      new THREE.Vector3(0, 0, distance),
+    );
+    this.state.performers.clearTracking();
+    performer.setTracking(true);
+    this.state.trackedPerformer = performer;
+  }
+
+  clearTrackedPeformer() {
+    this.state.performers.clearTracking();
+    this.state.scene.cameraControl.clearTrack();
+    this.state.trackedPerformer = null;
+  }
+
+  selectTrackedPerformer(key) {
+    if (key == 1) {
+      this.clearTrackedPeformer();
+    } else {
+      this.trackPerformer(this.state.performers.getPerformers()[key-2], 20);
+    }
+  }
+
   changePreset(val) {
     this.setState({
       currentPreset:this.state.presets[val],
@@ -297,33 +309,42 @@ class Main extends React.Component {
     this.state.inputManger.connectCallbacks(this.state.presets[val]);
   }
 
+  renderConsoleOutput() {
+    if (this.state.debug.console2html) {
+      return (
+        <Grid fluid={true}><Row><Col id="consoleOutput" xs={12} md={12} /></Row></Grid>
+      );
+    } else {
+      return false;
+    }
+  }
+
   render() {
     return (
-      <div className="container-fluid" id="page">
-        <div id="consoleOutput" />
-        <div id="scenes" />
-        <div id="upperDisplay">
-          <table><tbody><tr>
-            <td valign="top" width="33.33"><StatsMenu/></td>
-            <td valign="top" width="33.33%" align="center"><CameraMenu/></td>
-            <td valign="top" width="33.33%"><InputMenu openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changePreset.bind(this)} currentPreset={this.state.currentPreset} presets={this.state.presets} inputs={this.state.inputs}></InputMenu></td>
-          </tr></tbody></table>
-        </div>
-        <div id="lowerDisplay">
-          <table><tbody><tr>
-            <td valign="bottom" width="40%"><PerformerMenu trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></td>
-            <td valign="bottom" width="20%" align="center"><VRMenu/></td>
-            <td valign="bottom" width="40%"><EnvironmentMenu environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></td>
-          </tr></tbody></table>
-        </div>
-        <div id="startOverlay" />
-        <div id="blackOverlay" />
-        <div id="endOverlay" />
+      <Grid className="container-no-padding" fluid={true}><Row className="row-no-margin">
+        <Grid className="container-no-padding" fluid={true}><Row className="row-no-margin"><Col id="scenes" xs={12} md={12} /></Row></Grid>
+        {this.renderConsoleOutput()}
+        <Grid fluid={true} id="page">
+          <Row className="row-third-height" id="upperDisplay">
+            <Col xs={4} md={4}><StatsMenu/></Col>
+            <Col xs={4} md={4}><CameraMenu selectTrackedPerformer={this.selectTrackedPerformer.bind(this)} trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} trackedPerformer={this.state.trackedPerformer}/></Col>
+            <Col xs={4} md={4}><InputMenu openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changePreset.bind(this)} currentPreset={(this.state.currentPreset === null) ? this.state.defaults.preset : this.state.currentPreset} presets={this.state.presets} inputs={this.state.inputs}></InputMenu></Col>
+          </Row>
+          <Row className="row-third-height"/>
+          <Row className="row-third-height" id="lowerDisplay">
+            <Col className="bottom-column" xs={4} md={4}><PerformerMenu togglePerformerTrack={this.togglePerformerTrack.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></Col>
+            <Col className="bottom-column" xs={4} md={4}><VRMenu/></Col>
+            <Col className="bottom-column" xs={4} md={4}><EnvironmentMenu environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></Col>
+          </Row>
+        </Grid>
+        <Grid fluid={true}><Row><Col id="startOverlay" xs={12} md={12} /></Row></Grid>
+        <Grid fluid={true}><Row><Col id="blackOverlay" xs={12} md={12} /></Row></Grid>
+        <Grid fluid={true}><Row><Col id="endOverlay" xs={12} md={12} /></Row></Grid>
         <KeyboardHelpModal show={this.state.keyboardModal} closeKeyboardModal={this.closeKeyboardModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
         <PerformerEffectsModal content={this.state.performerContent} show={this.state.performerModal} closePerformerModal={this.closePerformerModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
         <GroupEffectsModal show={this.state.groupModal} closeGroupModal={this.closeGroupModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
         <EnvironmentSettingsModal content={this.state.environmentContent} show={this.state.environmentModal} closeEnvironmentModal={this.closeEnvironmentModal.bind(this)}/>
-      </div>
+      </Row></Grid>
     );
   }
 }

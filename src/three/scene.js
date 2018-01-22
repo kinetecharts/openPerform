@@ -1,10 +1,3 @@
-
-
-// import $ from 'jquery'
-import TWEEN from 'tween';
-import _ from 'lodash';
-
-// const OrbitControls = require('three-orbit-controls')(THREE);
 require('imports-loader?THREE=three!three/examples/js/controls/TrackballControls.js');
 const Stats = require('imports-loader?THREE=three!three/examples/js/libs/stats.min.js');
 
@@ -71,41 +64,27 @@ class Scene {
     this.environments = new Environments(this.renderer, this.scene, performers);
     window.environments = this.environments;
 
-    // orbit control
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
-    // this.controls.enableDamping = false;
-    // this.controls.enableZoom = (inputs.indexOf('mouse') >= 0);
-    // this.controls.enableRotate = (inputs.indexOf('mouse') >= 0);
-    // this.controls.enablePan = (inputs.indexOf('mouse') >= 0);
-
-    // this.controls.autoRotate = false;
-    // this.controls.autoRotateSpeed = 3;
-
-    // this.controls.enableKeys = false;
+    // attach renderer to DOM
+    // must appear before controls or mouse events won't work
+    this.container.append(this.renderer.domElement);
 
     this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement );
     this.controls.target = new THREE.Vector3(0,1.5,0);
     window.controls = this.controls;
 
-	this.controls.rotateSpeed = 1.0;
-	this.controls.zoomSpeed = 1.2;
-	this.controls.panSpeed = 0.8;
-	this.controls.noZoom = false;
-	this.controls.noPan = false;
-	this.controls.staticMoving = true;
-	this.controls.dynamicDampingFactor = 0.3;
-	this.controls.keys = [ 65, 83, 16 ];
-	// this.controls.addEventListener( 'change', t )
+    this.controls.rotateSpeed = 1.0;
+    this.controls.zoomSpeed = 1.2;
+    this.controls.panSpeed = 0.8;
+    this.controls.noZoom = false;
+    this.controls.noPan = false;
+    this.controls.staticMoving = true;
+    this.controls.dynamicDampingFactor = 0.3;
 
     this.stats = new Stats();
     if (statsEnabled) {
       this.stats.dom.id = 'stats';
       $('.statsBody').append(this.stats.dom);
     }
-
-    // attach this.renderer to DOM
-    this.container.append(this.renderer.domElement);
 
     this.clock = new THREE.Clock();
 
@@ -200,7 +179,7 @@ class Scene {
   }
 
   onWindowResize() {
-    this.controls.update();
+    this.controls.handleResize();
 
     this.w = this.container.width();
     this.h = this.container.height();

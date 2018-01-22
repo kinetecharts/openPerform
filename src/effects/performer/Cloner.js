@@ -49,7 +49,7 @@ class Cloner {
         this.clickCount++;
       }.bind(this),
     };
-    f.add(tapButton, 'add').name('Tap to set');
+    f.add(tapButton, 'add').name('Tap to set clone rate');
     f.add(this, 'cloneRate', 0.25, 10).step(0.25).listen().onChange(this.updateCloneRate.bind(this));
     f.add(this, 'cloneLife', 0.25, 10).step(0.25).listen();
     f.add(this, 'cloneSize', 0.25, 10).step(0.25).listen();
