@@ -5,6 +5,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import InputMenu from './../menus/InputMenu';
+import MidiMenu from './../menus/MidiMenu';
 import PerformerMenu from './../menus/PerformerMenu';
 import EnvironmentMenu from './../menus/EnvironmentMenu';
 import CameraMenu from './../menus/CameraMenu';
@@ -18,6 +19,7 @@ import EnvironmentSettingsModal from './../modals/EnvironmentSettingsModal';
 
 import Scene from './../../three/scene';
 import InputManager from './../../inputs';
+import OutputManager from './../../outputs';
 
 import Performers from './../../performers/Performers';
 
@@ -36,9 +38,7 @@ class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = config;
-    this.BVHFiles = [
-      config.debug.BVH,
-    ];
+    this.BVHFiles = config.debug.bvh.files;
     this.BVHPlayers = [];
   }
 
@@ -54,6 +54,7 @@ class Main extends React.Component {
     // Add / remove inputs in src/config/index.js
     // (Includes keyboard and mouse control)
     this.state.inputManger = new InputManager(this.state.inputs, this.state.scene, this);
+    this.state.outputManger = new OutputManager(this.state.scene, this);
 
     this.performers = new Performers();
 
@@ -68,8 +69,10 @@ class Main extends React.Component {
     this.performers.init(this.state.scene.scene);
     this.state.environments = this.state.scene.environments;
 
-    if (this.state.debug.enabled) {
-      this.BVHPlayer = this.addBVHPerformer(this.BVHFiles[0]);
+    if (this.state.debug.bvh.enabled) {
+      _.each(this.BVHFiles, (file) => {
+        this.addBVHPerformer(file, this.state.debug.bvh.autoplay);
+      });
     }
 
     if (this.state.debug.console2html) {
@@ -95,10 +98,11 @@ class Main extends React.Component {
     }
   }
 
-  addBVHPerformer(modelPath) {
+  addBVHPerformer(modelPath, autoplay) {
     const bvhPlayer = new BVHPlayer(
       modelPath,
       this.state.scene.scene,
+      autoplay,      
       this.updatePerformers.bind(this),
     );
     this.BVHPlayers.push(bvhPlayer);
@@ -302,11 +306,18 @@ class Main extends React.Component {
     }
   }
 
-  changePreset(val) {
+  changeInputPreset(val) {
     this.setState({
-      currentPreset:this.state.presets[val],
+      currentInputPreset:this.state.inputPresets[val],
     });
-    this.state.inputManger.connectCallbacks(this.state.presets[val]);
+    this.state.inputManger.connectCallbacks(this.state.inputPresets[val]);
+  }
+
+  changeOutputPreset(val) {
+    this.setState({
+      currentOutputPreset:this.state.outputPresets[val],
+    });
+    this.state.outputManger.connectCallbacks(this.state.outputPresets[val]);
   }
 
   renderConsoleOutput() {
@@ -379,6 +390,60 @@ class Main extends React.Component {
     }
   }
 
+  updateMidiOutputs(deviceNames, currentDeviceName) {
+    this.setState({
+      midiDevices: deviceNames,
+      currentMidiDevice: currentDeviceName,
+    });
+  }
+
+  changeMidiDevice(key) {
+    let device = null;
+    if (key !== 0) {
+      device = this.state.midiDevices[key - 1];
+    }
+    this.setState({
+      currentMidiDevice: device,
+    });
+    this.state.outputManger.outputs.midicontroller.changeDevice(this.state.midiDevices[key - 1]);
+  }
+
+  changeMidiChannel(key) {
+    this.setState({
+      currentMidiChannel: key,
+    });
+    this.state.outputManger.outputs.midicontroller.changeChannel(key);
+  }
+
+  sendMidiTest() {
+    this.state.outputManger.outputs.midicontroller.sendTest();
+  }
+
+  renderMidiMenu() {
+    if (this.state.midiDevices.length > 0) {
+      return (<MidiMenu
+        changePreset={this.changeOutputPreset.bind(this)}
+        currentPreset={(this.state.currentOutputPreset === null) ? this.state.defaults.outputPreset : this.state.currentOutputPreset}
+        presets={this.state.outputPresets}
+        changeMidiDevice={this.changeMidiDevice.bind(this)}
+        currentMidiDevice={this.state.currentMidiDevice}
+        midiDevices={this.state.midiDevices}
+        currentMidiChannel={this.state.currentMidiChannel}
+        changeMidiChannel={this.changeMidiChannel.bind(this)}
+        sendMidiTest={this.sendMidiTest.bind(this)}></MidiMenu>);
+    } else {
+      return null;
+    }
+  }
+
+  renderStatsMenu() {
+    if (this.state.debug.stats) {
+      return (<StatsMenu/>);
+    } else {
+      return null;
+    }
+  }
+
   render() {
     return (
       <Grid className="container-no-padding" fluid={true}><Row className="row-no-margin">
@@ -386,9 +451,10 @@ class Main extends React.Component {
         {this.renderConsoleOutput()}
         <Grid fluid={true} id="page">
           <Row className="row-third-height" id="upperDisplay">
-            <Col xs={4} md={4}><StatsMenu/></Col>
+            <Col xs={4} md={4}>{this.renderStatsMenu()}</Col>
             <Col xs={4} md={4}><CameraMenu selectTrackedPerformer={this.selectTrackedPerformer.bind(this)} trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} trackedPerformer={this.state.trackedPerformer}/></Col>
-            <Col xs={4} md={4}><InputMenu openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changePreset.bind(this)} currentPreset={(this.state.currentPreset === null) ? this.state.defaults.preset : this.state.currentPreset} presets={this.state.presets} inputs={this.state.inputs}></InputMenu></Col>
+            <Col xs={2} md={2}>{this.renderMidiMenu()}</Col>
+            <Col xs={2} md={2}><InputMenu openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changeInputPreset.bind(this)} currentPreset={(this.state.currentInputPreset === null) ? this.state.defaults.inputPreset : this.state.currentInputPreset} presets={this.state.inputPresets} inputs={this.state.inputs}></InputMenu></Col>
           </Row>
           <Row className="row-third-height"/>
           <Row className="row-third-height" id="lowerDisplay">

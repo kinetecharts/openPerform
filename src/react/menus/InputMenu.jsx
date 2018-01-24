@@ -31,7 +31,7 @@ class InputMenu extends React.Component {
 				</Panel.Heading>
         <Panel.Collapse>
 						<Panel.Body>
-              <DropdownButton bsSize="xsmall" pullRight={true} onSelect={this.props.changePreset} title={this.props.currentPreset.replace(/([a-z](?=[A-Z]))/g, '$1 ')} key={this.props.presets.indexOf(this.props.currentPreset)} id="presetDropdown" >
+              Preset: <DropdownButton bsSize="xsmall" pullRight={true} onSelect={this.props.changePreset} title={this.props.currentPreset.replace(/([a-z](?=[A-Z]))/g, '$1 ')} key={this.props.presets.indexOf(this.props.currentPreset)} id="presetDropdown" >
                 {
                   _.map(this.props.presets, (p, idx) => <MenuItem eventKey={idx} key={idx}>{p.replace(/([a-z](?=[A-Z]))/g, '$1 ')}</MenuItem>)
                 }

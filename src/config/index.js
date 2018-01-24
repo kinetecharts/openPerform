@@ -2,17 +2,22 @@ import config from './../../server/config';
 
 module.exports = {
   defaults: {
-    preset: 'Default',
+    inputPreset: 'Default',
+    outputPreset: 'Default',
     backgroundColor: 0x333333, // will be overridden by environment settings
-    environment: 'Grid',
+    environment: 'Grid'
   },
 
   inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  outputs: ['MidiController'],
   performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
 
   debug: {
-    enabled: true, // load bvh file / create performer from playback
-    BVH: 'models/bvh/duality_edit.bvh',
+    bvh: {
+      enabled: true, // load bvh file / create performer from playback
+      files: ['models/bvh/duality_edit.bvh'],
+      autoplay: true,
+    },
     stats: true,
     console2html: false,
   },
@@ -46,8 +51,16 @@ module.exports = {
 
   scene: null,
 
-  presets: [],
-  currentPreset: null,
+  inputPresets: [],
+  currentInputPreset: null,
+
+  outputPresets: [],
+  currentOutputPreset: null,
+
+  midiDevices: [],
+  currentMidiDevice: null,
+
+  currentMidiChannel: 1,
 
   performers: [],
   trackedPerformer: null,

@@ -85,6 +85,70 @@
 	border-top: 1px solid #FFFFFF;
 }
 
+.midiMenu {
+	position: relative;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	border: none;
+	border-radius: 10px;
+	display: inline-block;
+	float: right;
+	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
+}
+
+.midiMenu .panel-heading {
+	background: none;
+	color: #FFFFFF;
+	border: none;
+}
+
+.midiMenu h5 {
+	margin: 0;
+	padding: 0;
+	text-shadow: none;
+	display: inline-block;
+	text-align: right;
+	width: 100%;
+}
+
+.midiMenu .panel-collapse {
+	border-top: 1px solid #FFFFFF;
+}
+
+.midiMenu .dropdown {
+	padding-bottom: 10px;
+}
+
+.midiMenu .dropdown-menu > li > a {
+	text-shadow: none;
+}
+
+.midiMenu ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.midiMenu li {
+	text-transform: capitalize;
+	padding: 0;
+	margin: 0;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.midiMenu li > span {
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+#midiTestButton {
+	margin-right: auto;
+	margin-left: auto;
+	display: block;
+}
+
 .inputMenu {
 	position: relative;
 	color: #fff;

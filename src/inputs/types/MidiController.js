@@ -91,10 +91,10 @@ class MidiController {
   }
 
   onMIDISuccess(conn) {
-    conn.inputs.forEach((port) => {
-      console.log('Midi controller found: ', port);
-      port.onmidimessage = this.onMidiIn.bind(this);
-      port.onstatechange = this.onStateChange.bind(this);
+    conn.inputs.forEach((device) => {
+      console.log('Midi input found: ', device);
+      device.onmidimessage = this.onMidiIn.bind(this);
+      device.onstatechange = this.onStateChange.bind(this);
     });
   }
 

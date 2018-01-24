@@ -1,0 +1,371 @@
+class PresetName {
+  constructor(inputManager, main, scene) {
+    this.inputManager = inputManager;
+    this.main = main;
+    this.scene = scene;
+  }
+
+  initCallbacks(type) {
+    switch (type.toLowerCase()) {
+      default:
+      case 'keyboard':
+        this.initKeyboardCallbacks();
+        break;
+      case 'kinecttransport':
+        this.initKinectTransportCallbacks();
+        break;
+      case 'myo':
+        this.initMyoCallbacks();
+        break;
+      case 'neurosky':
+        this.initNeuroSkyCallbacks();
+        break;
+      case 'perceptionneuron':
+        this.initPerceptionNeuronCallbacks();
+        break;
+      case 'gamepads':
+        this.initGamepadCallbacks();
+        break;
+      case 'midicontroller':
+        this.initMidiControllerCallbacks();
+        break;
+    }
+  }
+
+  initGamepadCallbacks() {
+    const previous = {
+      dpadX: 0,
+      dpadY: 0,
+      lStickX: 0,
+      lStickY: 0,
+      rStickX: 0,
+      rStickY: 0,
+      x: 0,
+      y: 0,
+      a: 0,
+      b: 0,
+      lb: 0,
+      rb: 0,
+      lt: 0,
+      rt: 0,
+    };
+
+    this.inputManager.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
+      const leftStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) === 'Left'), (d) => {
+        const obj = {};
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
+        return obj;
+      }));
+      if (leftStick.length > 0) {
+        if (
+          leftStick[0].x.value !== previous.lStickX ||
+          leftStick[0].y.value !== previous.lStickY
+        ) {
+          console.log('Left Stick Moved: ', leftStick);
+        }
+      }
+
+      const rightStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 5) === 'Right'), (d) => {
+        const obj = {};
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
+        return obj;
+      }));
+      if (rightStick.length > 0) {
+        if (
+          rightStick[0].x.value !== previous.rStickX ||
+          rightStick[0].y.value !== previous.rStickY
+        ) {
+          console.log('Right Stick Moved: ', rightStick);
+        }
+      }
+
+      const dPad = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) === 'DPad'), (d) => {
+        const obj = {};
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
+        return obj;
+      }));
+      if (dPad.length > 0) {
+        if (dPad[0].x) {
+          if (dPad[0].x.direction !== previous.dpadX) {
+            if (dPad[0].x.direction === 1) {
+              console.log('D-Pad Right: ', dPad[0].x.direction);
+            }
+
+            if (dPad[0].x.direction === -1) {
+              console.log('D-Pad Left: ', dPad[0].x.direction);
+            }
+
+            previous.dpadX = dPad[0].x.direction;
+          }
+        }
+        if (dPad[0].y) {
+          if (dPad[0].y.direction !== previous.dpadY) {
+            if (dPad[0].y.direction === 1) {
+              console.log('D-Pad Up: ', dPad[0].y.direction);
+            }
+
+            if (dPad[0].y.direction === -1) {
+              console.log('D-Pad Down: ', dPad[0].y.direction);
+            }
+
+            previous.dpadY = dPad[0].y.direction;
+          }
+        }
+      }
+
+      const aButton = _.filter(data, d => d.id === 'A');
+      if (aButton.length > 0) {
+        if (aButton[0].pressed !== previous.a) {
+          if (aButton[0].pressed) {
+            console.log('A Button Pressed: ', aButton[0].pressed);
+          }
+        }
+        previous.a = aButton[0].pressed;
+      }
+
+      const bButton = _.filter(data, d => d.id === 'B');
+      if (bButton.length > 0) {
+        if (bButton[0].pressed !== previous.b) {
+          if (bButton[0].pressed) {
+            console.log('B Button Pressed: ', bButton[0].pressed);
+          }
+        }
+        previous.b = bButton[0].pressed;
+      }
+
+      const xButton = _.filter(data, d => d.id === 'X');
+      if (xButton.length > 0) {
+        if (xButton[0].pressed !== previous.x) {
+          if (xButton[0].pressed) {
+            console.log('X Button Pressed: ', xButton[0].pressed);
+          }
+        }
+        previous.x = xButton[0].pressed;
+      }
+
+      const yButton = _.filter(data, d => d.id === 'Y');
+      if (yButton.length > 0) {
+        if (yButton[0].pressed !== previous.y) {
+          if (yButton[0].pressed) {
+            console.log('Y Button Pressed: ', yButton[0].pressed);
+          }
+        }
+        previous.y = yButton[0].pressed;
+      }
+
+      const lbButton = _.filter(data, d => d.id === 'LB');
+      if (lbButton.length > 0) {
+        if (lbButton[0].pressed !== previous.lb) {
+          if (lbButton[0].pressed) {
+            console.log('LB Button Pressed: ', lbButton[0].pressed);
+          }
+        }
+        previous.lb = lbButton[0].pressed;
+      }
+
+      const rbButton = _.filter(data, d => d.id === 'RB');
+      if (rbButton.length > 0) {
+        if (rbButton[0].pressed !== previous.rb) {
+          if (rbButton[0].pressed) {
+            console.log('RB Button Pressed: ', rbButton[0].pressed);
+          }
+        }
+        previous.rb = rbButton[0].pressed;
+      }
+
+      const ltButton = _.filter(data, d => d.id === 'LT');
+      if (ltButton.length > 0) {
+        if (ltButton[0].pressed !== previous.lt) {
+          if (ltButton[0].pressed) {
+            console.log('LT Button Pressed: ', ltButton[0].pressed);
+          }
+        }
+        previous.lt = ltButton[0].pressed;
+      }
+
+      const rtButton = _.filter(data, d => d.id === 'RT');
+      if (rtButton.length > 0) {
+        if (rtButton[0].pressed !== previous.rt) {
+          if (rtButton[0].pressed) {
+            console.log('RT Button Pressed: ', rtButton[0].pressed);
+          }
+        }
+        previous.rt = rtButton[0].pressed;
+      }
+    });
+  }
+
+  initMidiControllerCallbacks() {
+    this.inputManager.registerCallback('midiController', 'message', 'Midi Controller', (data) => {
+      switch (data.name) {
+        default:
+          console.log('Midi button not found.');
+          break;
+        case 'cycle':
+          break;
+
+        /* ************************************** */
+
+        case 'track left':
+          break;
+        case 'track right':
+          break;
+
+        /* ************************************** */
+
+        case 'marker set':
+          break;
+        case 'marker left':
+          break;
+        case 'marker right':
+          break;
+
+        /* ************************************** */
+
+        case 'rewind':
+          break;
+        case 'fast forward':
+          break;
+        case 'stop':
+          break;
+        case 'play':
+          break;
+        case 'record':
+          break;
+
+        /* ************************************** */
+
+        case 'solo 1':
+          break;
+        case 'mute 1':
+          break;
+        case 'record 1':
+          break;
+        case 'slider 1':
+          break;
+        case 'knob 1':
+          break;
+
+        /* ************************************** */
+
+        case 'solo 2':
+          break;
+        case 'mute 2':
+          break;
+        case 'record 2':
+          break;
+        case 'slider 2':
+          break;
+        case 'knob 2':
+          break;
+
+        /* ************************************** */
+
+        case 'solo 3':
+          break;
+        case 'mute 3':
+          break;
+        case 'record 3':
+          break;
+        case 'slider 3':
+          break;
+        case 'knob 3':
+          break;
+
+        /* ************************************** */
+
+        case 'solo 4':
+          break;
+        case 'mute 4':
+          break;
+        case 'record 4':
+          break;
+        case 'slider 4':
+          break;
+        case 'knob 4':
+          break;
+
+        /* ************************************** */
+
+        case 'solo 5':
+          break;
+        case 'mute 5':
+          break;
+        case 'record 5':
+          break;
+        case 'slider 5':
+          break;
+        case 'knob 5':
+          break;
+
+        /* ************************************** */
+
+        case 'solo 6':
+          break;
+        case 'mute 6':
+          break;
+        case 'record 6':
+          break;
+        case 'slider 6':
+          break;
+        case 'knob 6':
+          break;
+
+          /* ************************************** */
+
+        case 'solo 7':
+          break;
+        case 'mute 7':
+          break;
+        case 'record 7':
+          break;
+        case 'slider 7':
+          break;
+        case 'knob 7':
+          break;
+
+          /* ************************************** */
+
+        case 'solo 8':
+          break;
+        case 'mute 8':
+          break;
+        case 'record 8':
+          break;
+        case 'slider 8':
+          break;
+        case 'knob 8':
+          break;
+      }
+    });
+  }
+
+  initPerceptionNeuronCallbacks() {
+    // input, event, label, callback) {
+    this.inputManager.registerCallback('perceptionneuron', 'message', 'Perception Neuron', this.main.updatePerformers.bind(this.main));
+  }
+
+  initNeuroSkyCallbacks() { // https://github.com/elsehow/mindwave
+    this.inputManager.registerCallback('mindwave', 'data', 'Mindwave', (data) => { console.log(data); });
+  }
+
+  initMyoCallbacks() { // https://github.com/thalmiclabs/myo.js/blob/master/docs.md
+    this.inputManager.registerCallback('myo', 'imu', 'Myo', (data) => { console.log(data); });
+  }
+
+  initKinectTransportCallbacks() { // Reuires Kinect Transport app.
+    /* https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
+    Returns either depth or bodies object. */
+    this.inputManager.registerCallback('kinecttransport', 'depth', 'Kinect Depth', this.scene.viewKinectTransportDepth.bind(this.scene));
+    this.inputManager.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.scene));
+  }
+
+  initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
+    this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
+
+    this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
+    this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
+  }
+}
+
+module.exports = PresetName;

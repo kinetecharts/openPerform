@@ -8,9 +8,11 @@ const _ = require('lodash').mixin(require('lodash-keyarrange'));
 import dat from 'dat-gui';
 
 class BVHPlayer {
-  constructor(file, parent, callback) {
+  constructor(file, parent, autoplay, callback) {
     this.parent = parent;
     this.callback = callback;
+
+    this.autoplay = autoplay;
 
     this.clock = new THREE.Clock();
 
@@ -64,7 +66,9 @@ class BVHPlayer {
       this.clip = result.clip;
 
       this.play();
-      // this.stop();
+      if (!this.autoplay) {
+        this.stop();
+      }
     });
   }
 
