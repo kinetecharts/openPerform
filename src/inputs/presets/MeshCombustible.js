@@ -13,27 +13,190 @@ class MeshCombustiblePreset {
         console.log(type.toLowerCase() + ' input not found for this preset');
         break;
       case 'keyboard':
-        this.inputManager.initKeyboardCallbacks();
+        this.initKeyboardCallbacks();
         break;
       case 'kinecttransport':
-        this.inputManager.initKinectTransportCallbacks();
+        this.initKinectTransportCallbacks();
         break;
       case 'myo':
-        this.inputManager.initMyoCallbacks();
+        this.initMyoCallbacks();
         break;
       case 'neurosky':
-        this.inputManager.initNeuroSkyCallbacks();
+        this.initNeuroSkyCallbacks();
         break;
       case 'perceptionneuron':
-        this.inputManager.initPerceptionNeuronCallbacks();
+        this.initPerceptionNeuronCallbacks();
         break;
       case 'gamepads':
-        this.inputManager.initGamepadCallbacks();
+        this.initGamepadCallbacks();
         break;
       case 'midicontroller':
-        this.inputManager.initMidiControllerCallbacks();
+        this.initMidiControllerCallbacks();
         break;
     }
+  }
+
+  initGamepadCallbacks() {
+    const previous = {
+      dpadX: 0,
+      dpadY: 0,
+      lStickX: 0,
+      lStickY: 0,
+      rStickX: 0,
+      rStickY: 0,
+      x: 0,
+      y: 0,
+      a: 0,
+      b: 0,
+      lb: 0,
+      rb: 0,
+      lt: 0,
+      rt: 0,
+    };
+
+    this.inputManager.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
+      const leftStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) === 'Left'), (d) => {
+        const obj = {};
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
+        return obj;
+      }));
+      if (leftStick.length > 0) {
+        if (
+          leftStick[0].x.value !== previous.lStickX ||
+          leftStick[0].y.value !== previous.lStickY
+        ) {
+          console.log('Left Stick Moved: ', leftStick);
+        }
+      }
+
+      const rightStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 5) === 'Right'), (d) => {
+        const obj = {};
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
+        return obj;
+      }));
+      if (rightStick.length > 0) {
+        if (
+          rightStick[0].x.value !== previous.rStickX ||
+          rightStick[0].y.value !== previous.rStickY
+        ) {
+          console.log('Right Stick Moved: ', rightStick);
+        }
+      }
+
+      const dPad = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) === 'DPad'), (d) => {
+        const obj = {};
+        obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
+        return obj;
+      }));
+      if (dPad.length > 0) {
+        if (dPad[0].x) {
+          if (dPad[0].x.direction !== previous.dpadX) {
+            if (dPad[0].x.direction === 1) {
+              console.log('D-Pad Right: ', dPad[0].x.direction);
+            }
+
+            if (dPad[0].x.direction === -1) {
+              console.log('D-Pad Left: ', dPad[0].x.direction);
+            }
+
+            previous.dpadX = dPad[0].x.direction;
+          }
+        }
+        if (dPad[0].y) {
+          if (dPad[0].y.direction !== previous.dpadY) {
+            if (dPad[0].y.direction === 1) {
+              console.log('D-Pad Up: ', dPad[0].y.direction);
+            }
+
+            if (dPad[0].y.direction === -1) {
+              console.log('D-Pad Down: ', dPad[0].y.direction);
+            }
+
+            previous.dpadY = dPad[0].y.direction;
+          }
+        }
+      }
+
+      const aButton = _.filter(data, d => d.id === 'A');
+      if (aButton.length > 0) {
+        if (aButton[0].pressed !== previous.a) {
+          if (aButton[0].pressed) {
+            console.log('A Button Pressed: ', aButton[0].pressed);
+          }
+        }
+        previous.a = aButton[0].pressed;
+      }
+
+      const bButton = _.filter(data, d => d.id === 'B');
+      if (bButton.length > 0) {
+        if (bButton[0].pressed !== previous.b) {
+          if (bButton[0].pressed) {
+            console.log('B Button Pressed: ', bButton[0].pressed);
+          }
+        }
+        previous.b = bButton[0].pressed;
+      }
+
+      const xButton = _.filter(data, d => d.id === 'X');
+      if (xButton.length > 0) {
+        if (xButton[0].pressed !== previous.x) {
+          if (xButton[0].pressed) {
+            console.log('X Button Pressed: ', xButton[0].pressed);
+          }
+        }
+        previous.x = xButton[0].pressed;
+      }
+
+      const yButton = _.filter(data, d => d.id === 'Y');
+      if (yButton.length > 0) {
+        if (yButton[0].pressed !== previous.y) {
+          if (yButton[0].pressed) {
+            console.log('Y Button Pressed: ', yButton[0].pressed);
+          }
+        }
+        previous.y = yButton[0].pressed;
+      }
+
+      const lbButton = _.filter(data, d => d.id === 'LB');
+      if (lbButton.length > 0) {
+        if (lbButton[0].pressed !== previous.lb) {
+          if (lbButton[0].pressed) {
+            console.log('LB Button Pressed: ', lbButton[0].pressed);
+          }
+        }
+        previous.lb = lbButton[0].pressed;
+      }
+
+      const rbButton = _.filter(data, d => d.id === 'RB');
+      if (rbButton.length > 0) {
+        if (rbButton[0].pressed !== previous.rb) {
+          if (rbButton[0].pressed) {
+            console.log('RB Button Pressed: ', rbButton[0].pressed);
+          }
+        }
+        previous.rb = rbButton[0].pressed;
+      }
+
+      const ltButton = _.filter(data, d => d.id === 'LT');
+      if (ltButton.length > 0) {
+        if (ltButton[0].pressed !== previous.lt) {
+          if (ltButton[0].pressed) {
+            console.log('LT Button Pressed: ', ltButton[0].pressed);
+          }
+        }
+        previous.lt = ltButton[0].pressed;
+      }
+
+      const rtButton = _.filter(data, d => d.id === 'RT');
+      if (rtButton.length > 0) {
+        if (rtButton[0].pressed !== previous.rt) {
+          if (rtButton[0].pressed) {
+            console.log('RT Button Pressed: ', rtButton[0].pressed);
+          }
+        }
+        previous.rt = rtButton[0].pressed;
+      }
+    });
   }
 
   initMidiControllerCallbacks() {
@@ -250,7 +413,7 @@ class MeshCombustiblePreset {
   }
 
   initPerceptionNeuronCallbacks() {
-    this.inputManager.registerCallback('perceptionNeuron', 'message', 'Perception Neuron', this.main.updatePerformers.bind(this.inputManager.parent));
+    this.inputManager.registerCallback('perceptionNeuron', 'message', 'Perception Neuron', this.main.updatePerformers.bind(this.main));
   }
 
   initNeuroSkyCallbacks() { // https://github.com/elsehow/mindwave
@@ -264,11 +427,16 @@ class MeshCombustiblePreset {
   initKinectTransportCallbacks() { // Reuires Kinect Transport app.
     // https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
     // Returns either depth or bodies object.
-    this.inputManager.registerCallback('kinecttransport', 'depth', 'Kinect Depth', this.scene.viewKinectTransportDepth.bind(this.inputManager.scene));
-    this.inputManager.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.inputManager.scene));
+    this.inputManager.registerCallback('kinecttransport', 'depth', 'Kinect Depth', this.scene.viewKinectTransportDepth.bind(this.scene));
+    this.inputManager.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.scene));
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
+    this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
+
+    this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
+    this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
+
     this.inputManager.registerCallback('keyboard', 'l', 'low track', () => {
       this.scene.cameraControl.track(
         this.main.performers.performers[
@@ -328,12 +496,6 @@ class MeshCombustiblePreset {
     this.inputManager.registerCallback('keyboard', '/', 'Unparent', () => { // toggle environment input
       this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].unParentPart('head', false);
     });
-
-
-    this.inputManager.registerCallback('keyboard', '-', 'Hide GUI', this.main.toggleGUI.bind(this.inputManager.parent));
-    this.inputManager.registerCallback('keyboard', '=', 'Fullscreen', this.main.toggleFullscreen.bind(this.inputManager.parent));
-
-    this.inputManager.registerCallback('keyboard', 'esc', 'Show Keys', this.main.openKeyboardHelp.bind(this.inputManager.parent));
   }
 }
 

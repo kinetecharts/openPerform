@@ -40,7 +40,9 @@ class InputManager {
     });
 
     // connect current preset with inputs
-    this.connectCallbacks((this.parent.state.currentPreset === null) ? this.parent.state.defaults.preset : this.parent.state.currentPreset);
+    this.connectCallbacks((this.parent.state.currentPreset === null) ?
+      this.parent.state.defaults.preset :
+      this.parent.state.currentPreset);
   }
 
   initPresets() {
@@ -257,7 +259,7 @@ class InputManager {
     );
   }
 
-/* ********* End Static Camera Animations ********** */
+  /* ********* End Static Camera Animations ********** */
 
   resetScale() {
     this.parent.performers.performers[

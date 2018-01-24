@@ -1,5 +1,6 @@
  #lowerDisplay {
 	display: table;
+	width: 100%;
 }
 
 #lowerDisplay > div {
@@ -17,6 +18,7 @@
 	display: inline-block;
 	float: left;
 	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
 }
 
 .controllerDebug h5 {
@@ -49,6 +51,7 @@
 	display: inline-block;
 	float: left;
 	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
 }
 
 .performerMenu .panel-heading {
@@ -68,12 +71,11 @@
 	border-top: 1px solid #FFFFFF;
 }
 
-.performerMenu #performerTable td {
-	padding: 5px 10px;
-}
-
-.performerMenu #controlsTable td {
-	padding: 5px 5px;
+.performerMenu span {
+	white-space: nowrap;
+	margin-right: auto;
+    margin-left: auto;
+	display: table;
 }
 
 .performerMenu .glyphicon {
@@ -97,6 +99,14 @@
 	box-shadow:none !important;
 	border-bottom:1px solid #ffffff !important;
 	border-radius: 0;
+}
+
+#performerTable {
+	margin-bottom: 0;
+}
+
+#performerTable .fa {
+	cursor: pointer;
 }
 
 #performerTable .Select-value-label {
@@ -124,6 +134,7 @@
 	text-shadow: 1px 1px 2px #000000;
 }
 
+
 .performerColor {
 	width: 15px;
 	height: 15px;
@@ -141,6 +152,7 @@
 	display: inline-block;
 	float: right;
 	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
 }
 
 .environmentMenu .panel-heading {
@@ -164,6 +176,16 @@
 
 .environmentMenu #environmentTable td {
 	padding: 5px 10px;
+}
+
+#controlsTable {
+	margin-bottom: 0;
+	background: none;
+}
+
+#controlsTable td {
+	border: none;
+	padding: 0;
 }
 
 .environmentMenu #controlsTable td {
@@ -236,15 +258,18 @@
 	margin: 0;
 	border: none;
 	border-radius: 10px;
-	display: inline-block;
-	float: left;
+	display: table;
 	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 .vrMenu .panel-heading {
 	background: none;
 	color: #FFFFFF;
 	border: none;
+	text-align: center;
 }
 
 .vrMenu h5 {
@@ -252,6 +277,7 @@
 	padding: 0;
 	text-shadow: none;
 	display: inline-block;
+	text-align: center;
 }
 
 .vrMenu .panel-collapse {
@@ -259,7 +285,7 @@
 }
 
 .vrMenuBody button {
-	width: 100px;
+	width: 80px;
 }
 
 .vrMenuBody button i, .vrMenuBody button img {

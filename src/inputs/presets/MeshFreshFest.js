@@ -11,25 +11,25 @@ class MeshFreshFestPreset {
         console.log(type.toLowerCase() + ' input not found for this preset');
         break;
       case 'keyboard':
-        this.inputManager.initKeyboardCallbacks();
+        this.initKeyboardCallbacks();
         break;
       case 'kinecttransport':
-        this.inputManager.initKinectTransportCallbacks();
+        this.initKinectTransportCallbacks();
         break;
       case 'myo':
-        this.inputManager.initMyoCallbacks();
+        this.initMyoCallbacks();
         break;
       case 'neurosky':
-        this.inputManager.initNeuroSkyCallbacks();
+        this.initNeuroSkyCallbacks();
         break;
       case 'perceptionneuron':
-        this.inputManager.initPerceptionNeuronCallbacks();
+        this.initPerceptionNeuronCallbacks();
         break;
       case 'gamepads':
-        this.inputManager.initGamepadCallbacks();
+        this.initGamepadCallbacks();
         break;
       case 'midicontroller':
-        this.inputManager.initMidiControllerCallbacks();
+        this.initMidiControllerCallbacks();
         break;
     }
   }
@@ -52,7 +52,7 @@ class MeshFreshFestPreset {
       rt: 0,
     };
 
-    this.inputManager.inputManager.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
+    this.inputManager.registerCallback('gamepads', 'message', 'Gamepad', (data) => {
       const leftStick = _.merge(_.map(_.filter(data, d => d.id.slice(0, 4) === 'Left'), (d) => {
         const obj = {};
         obj[d.id.slice(d.id.length - 1, d.id.length).toLowerCase()] = d;
@@ -266,6 +266,11 @@ class MeshFreshFestPreset {
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
+    this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
+
+    this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
+    this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
+    
     this.inputManager.registerCallback('keyboard', 'l', 'Tracking - Low Angle', () => {
       this.scene.cameraControl.track(
         this.main.performers.performers[
@@ -329,10 +334,6 @@ class MeshFreshFestPreset {
     this.inputManager.registerCallback('keyboard', '/', 'Detach Head', () => { // toggle environment input
       this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].unParentPart('head', false);
     });
-
-
-    this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
-    this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
   }
 }
 

@@ -30,6 +30,7 @@ class CameraMenu extends React.Component {
     }
     return (
       <DropdownButton
+        bsSize="xsmall"
         onSelect={this.props.selectTrackedPerformer}
         title={(this.props.trackedPerformer === null) ? 'None' : this.props.trackedPerformer.name}
         id="trackingTargetDropdown"
@@ -50,10 +51,12 @@ class CameraMenu extends React.Component {
         <Panel.Collapse>
           <Panel.Body>
             <Grid fluid={true}><Row>
-              <Col xs={3} md={3}>Tracking:</Col>
-              <Col xs={3} md={3}>{this.renderTrackingList()}</Col>
-              <Col xs={3} md={3} />
-              <Col xs={3} md={3} />
+              <Col xs={2} md={2}>Track:</Col>
+              <Col xs={2} md={2}>{this.renderTrackingList()}</Col>
+              <Col xs={2} md={2} />
+              <Col xs={2} md={2} />
+              <Col xs={2} md={2} />
+              <Col xs={2} md={2} />
             </Row></Grid>
           </Panel.Body>
         </Panel.Collapse>

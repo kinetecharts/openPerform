@@ -14,25 +14,25 @@ class TransformWorkPreset {
         console.log(type.toLowerCase() + ' input not found for this preset');
         break;
       case 'keyboard':
-        this.inputManager.inputManager.initKeyboardCallbacks();
+        this.initKeyboardCallbacks();
         break;
       case 'kinecttransport':
-        this.inputManager.inputManager.initKinectTransportCallbacks();
+        this.initKinectTransportCallbacks();
         break;
       case 'myo':
-        this.inputManager.inputManager.initMyoCallbacks();
+        this.initMyoCallbacks();
         break;
       case 'neurosky':
-        this.inputManager.inputManager.initNeuroSkyCallbacks();
+        this.initNeuroSkyCallbacks();
         break;
       case 'perceptionneuron':
-        this.inputManager.inputManager.initPerceptionNeuronCallbacks();
+        this.initPerceptionNeuronCallbacks();
         break;
       case 'gamepads':
-        this.inputManager.inputManager.initGamepadCallbacks();
+        this.initGamepadCallbacks();
         break;
       case 'midicontroller':
-        this.inputManager.inputManager.initMidiControllerCallbacks();
+        this.initMidiControllerCallbacks();
         break;
     }
   }
@@ -429,23 +429,22 @@ class TransformWorkPreset {
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
-    this.inputManager.registerCallback('keyboard', '`', 'Switch to Default scene.', this.inputManager.switchScene.bind(this, 'defaut'));
-    this.inputManager.registerCallback('keyboard', '1', 'Switch to 1st scene.', this.inputManager.switchScene.bind(this, 1));
-    this.inputManager.registerCallback('keyboard', '2', 'Switch to 2nd scene.', this.inputManager.switchScene.bind(this, 2));
-    this.inputManager.registerCallback('keyboard', '3', 'Switch to 3rd scene.', this.inputManager.switchScene.bind(this, 3));
-    this.inputManager.registerCallback('keyboard', '4', 'Switch to 4th scene.', this.inputManager.switchScene.bind(this, 4));
-    this.inputManager.registerCallback('keyboard', '5', 'Switch to 5th scene.', this.inputManager.switchScene.bind(this, 5));
-    this.inputManager.registerCallback('keyboard', '6', 'Switch to 6th scene.', this.inputManager.switchScene.bind(this, 6));
-    this.inputManager.registerCallback('keyboard', '7', 'Switch to 7th scene.', this.inputManager.switchScene.bind(this, 7));
-    this.inputManager.registerCallback('keyboard', '8', 'Switch to 8th scene.', this.inputManager.switchScene.bind(this, 8));
-    this.inputManager.registerCallback('keyboard', '9', 'Switch to 9th scene.', this.inputManager.switchScene.bind(this, 9));
-    this.inputManager.registerCallback('keyboard', '0', 'Switch to 10th scene.', this.inputManager.switchScene.bind(this, 0));
-
-
     this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
 
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
     this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
+    
+    this.inputManager.registerCallback('keyboard', '`', 'Switch to Default scene.', this.inputManager.switchScene.bind(this.inputManager, 'defaut'));
+    this.inputManager.registerCallback('keyboard', '1', 'Switch to 1st scene.', this.inputManager.switchScene.bind(this.inputManager, 1));
+    this.inputManager.registerCallback('keyboard', '2', 'Switch to 2nd scene.', this.inputManager.switchScene.bind(this.inputManager, 2));
+    this.inputManager.registerCallback('keyboard', '3', 'Switch to 3rd scene.', this.inputManager.switchScene.bind(this.inputManager, 3));
+    this.inputManager.registerCallback('keyboard', '4', 'Switch to 4th scene.', this.inputManager.switchScene.bind(this.inputManager, 4));
+    this.inputManager.registerCallback('keyboard', '5', 'Switch to 5th scene.', this.inputManager.switchScene.bind(this.inputManager, 5));
+    this.inputManager.registerCallback('keyboard', '6', 'Switch to 6th scene.', this.inputManager.switchScene.bind(this.inputManager, 6));
+    this.inputManager.registerCallback('keyboard', '7', 'Switch to 7th scene.', this.inputManager.switchScene.bind(this.inputManager, 7));
+    this.inputManager.registerCallback('keyboard', '8', 'Switch to 8th scene.', this.inputManager.switchScene.bind(this.inputManager, 8));
+    this.inputManager.registerCallback('keyboard', '9', 'Switch to 9th scene.', this.inputManager.switchScene.bind(this.inputManager, 9));
+    this.inputManager.registerCallback('keyboard', '0', 'Switch to 10th scene.', this.inputManager.switchScene.bind(this.inputManager, 0));
 
     this.inputManager.registerCallback('keyboard', 'l', 'Tracking Camera - Low Angle', () => {
       if (!this.scene.cameraControl.trackingObj) {
@@ -561,17 +560,17 @@ class TransformWorkPreset {
       );
     });
 
-    this.inputManager.registerCallback('keyboard', 'g', 'Snorry Cam', this.inputManager.snorryCam.bind(this)); // look at face
+    this.inputManager.registerCallback('keyboard', 'g', 'Snorry Cam', this.inputManager.snorryCam.bind(this.inputManager)); // look at face
 
-    this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this)); // first person view
+    this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this.inputManager)); // first person view
 
-    this.inputManager.registerCallback('keyboard', 't', 'Track Performer', this.inputManager.trackPerformer.bind(this)); // follow x position of performer
+    this.inputManager.registerCallback('keyboard', 't', 'Track Performer', this.inputManager.trackPerformer.bind(this.inputManager)); // follow x position of performer
 
-    this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this)); // follow x position of performer
+    this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this.inputManager)); // follow x position of performer
 
-    this.inputManager.registerCallback('keyboard', 'u', '3/4 View', this.inputManager.cutThreeQ.bind(this)); // follow x position of performer
+    this.inputManager.registerCallback('keyboard', 'u', '3/4 View', this.inputManager.cutThreeQ.bind(this.inputManager)); // follow x position of performer
 
-    this.inputManager.registerCallback('keyboard', 'i', 'Fly Out', this.inputManager.flyOut.bind(this)); // follow x position of performer
+    this.inputManager.registerCallback('keyboard', 'i', 'Fly Out', this.inputManager.flyOut.bind(this.inputManager)); // follow x position of performer
 
     this.inputManager.registerCallback('keyboard', 'left', 'Previous Colors', this.main.prevColors.bind(this.main));
     this.inputManager.registerCallback('keyboard', 'right', 'Next Colors', this.main.nextColors.bind(this.main));

@@ -22,6 +22,7 @@
 	margin-right: auto;
 	margin-left: auto;
 	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
 }
 
 .cameraMenu .panel-heading {
@@ -53,6 +54,7 @@
 	display: inline-block;
 	float: left;
 	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
 }
 
 .statsMenu .panel-heading {
@@ -93,6 +95,7 @@
 	display: inline-block;
 	float: right;
 	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
 }
 
 .inputMenu .panel-heading {

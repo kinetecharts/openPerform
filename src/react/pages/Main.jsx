@@ -319,6 +319,66 @@ class Main extends React.Component {
     }
   }
 
+  clearCycleColors() {
+    if (this.colorInterval !== null) {
+      clearInterval(this.colorInterval);
+    }
+  }
+
+  cycleColors(speed) {
+    if (this.colorInterval !== null) {
+      clearInterval(this.colorInterval);
+    }
+    this.colorInterval = setInterval(
+      this.nextColors.bind(this),
+      speed
+    );
+    this.nextColors();
+  }
+
+  prevColors() {
+    this.colorIdx--;
+    if (this.colorIdx < 0) { this.colorIdx = this.state.colorSet.length-1 }
+    this.updateColors(this.state.colorSet[this.colorIdx]);
+  }
+
+  nextColors() {
+    this.colorIdx++;
+    if (this.colorIdx >= this.state.colorSet.length) { this.colorIdx = 0 }
+    this.updateColors(this.state.colorSet[this.colorIdx]);
+  }
+
+  setColor(id) {
+    this.setState({
+      colorIdx:id
+    });
+    this.updateColors(this.state.colorSet[id]);
+  }
+
+  updateColors(colors) {
+    if (this.state.scene.environments && this.performers) {
+      this.state.scene.environments.updateColors(colors.background);
+      this.performers.updateColors(colors.performers);
+    }
+  }
+
+  switchColorSet(setName) {
+    switch(setName) {
+      case "darkColors":
+        return this.state.colorSet = this.state.darkColors
+        break;
+      case "colors1":
+        return this.state.colorSet = this.state.colors1
+        break;
+      case "colors2":
+        return this.state.colorSet = this.state.colors2
+        break;
+      default:
+        return this.state.colorSet = this.state.dark
+        break;
+    }
+  }
+
   render() {
     return (
       <Grid className="container-no-padding" fluid={true}><Row className="row-no-margin">

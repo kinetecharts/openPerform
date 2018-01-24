@@ -45,12 +45,16 @@ module.exports = {
   environmentContent: document.createElement('div'),
 
   scene: null,
+
   presets: [],
   currentPreset: null,
+
   performers: [],
   trackedPerformer: null,
+
   environments: [],
   currentEnvironment: null,
+
   kinecttransport: {
     ports: {
       outgoing: config.kinectTransport.ports.outgoing,

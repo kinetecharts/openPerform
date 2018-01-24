@@ -9,7 +9,7 @@
     "build": "webpack --config webpack-production.config.js --progress --profile --colors",
     "file": "node ./server.js",
     "start": "npm run file | npm run data",
-    "dev": "npm run webpack | npm run data"
+    "dev": "npm run webpack"
   },
   "repository": {
     "type": "git",
@@ -60,6 +60,7 @@
     "react": "^16.0.0",
     "react-bootstrap": "^0.32.0",
     "react-dom": "^16.0.0",
+    "react-fa": "^5.0.0",
     "react-select": "^1.0.0-rc.10",
     "react-simple-select": "^1.2.2",
     "three": "^0.87.1",

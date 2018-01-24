@@ -2,9 +2,12 @@ import React from 'react';
 import _ from 'lodash';
 import Select from 'react-select';
 
-import { Panel, MenuItem, DropdownButton } from 'react-bootstrap';
+import {Icon} from 'react-fa'
+
+import { Panel, MenuItem, DropdownButton, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import 'react-select/dist/react-select.css';
+
 
 class PerformerMenu extends React.Component {
   constructor(props) {
@@ -81,6 +84,53 @@ class PerformerMenu extends React.Component {
     performer.setOffset(parseFloat(event.target.value));
     this.setState({ forceUpdate: true });
   }
+  renderStyleMenu(performer) {
+    const popoverTop = (
+      <Popover id="popover-positioned-scrolling-top" title="Update Style">
+        <ListGroup>
+          <ListGroupItem>
+            <Select
+              clearable={false}
+              autoBlur={true}
+              autofocus={false}
+              searchable={false}
+              backspaceRemoves={false}
+              deleteRemoves={false}
+              name="displayType"
+              value={performer.getType()}
+              options={performer.getTypes()}
+              onChange={this.changeType.bind(this, performer)}
+            />
+          </ListGroupItem>
+          <ListGroupItem>
+            <Select
+              clearable={false}
+              autoBlur={true}
+              autofocus={false}
+              searchable={false}
+              backspaceRemoves={false}
+              deleteRemoves={false}
+              name="displayStyle"
+              value={performer.getStyle()}
+              options={_.map(performer.styles, s => ({ value: s, label: s }))}
+              onChange={this.changeStyle.bind(this, performer)}
+            />
+          </ListGroupItem>
+        </ListGroup>
+      </Popover>
+    );
+    return(
+      <td>
+        <OverlayTrigger
+          trigger={['click', 'focus']}
+          placement="top"
+          overlay={popoverTop}
+        >
+          <Icon name="paint-brush" />
+        </OverlayTrigger>
+      </td>
+    );
+  }
   render() {
     if (this.props.performers.length < 1) {
       return false;
@@ -93,55 +143,42 @@ class PerformerMenu extends React.Component {
 				</Panel.Heading>
         <Panel.Collapse>
 						<Panel.Body>
-              <table id="performerTable"><tbody>{
+              <Table id="performerTable">
+                <thead>
+                  <tr>
+                    <th>Visible</th>
+                    <th>Track</th>
+                    <th>Name</th>
+                    <th>Source</th>
+                    <th>Options</th>
+                    <th>Style</th>
+                    <th>Effects</th>
+                    <th>Clone</th>
+                  </tr>
+                </thead><tbody>{
                 _.map(this.props.performers.getPerformers(), (performer, idx) => (<tr key={idx}>
-                  <td title="Hide / Show"><div className={`glyphicon ${(performer.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, performer)} /></td>
-                  <td title="Track Performer"><div className={`glyphicon ${(performer.getTracking()) ? ' glyphicon-ban-circle' : ' glyphicon-facetime-video'}`} onClick={this.props.togglePerformerTrack.bind(this, performer)} /></td>
+                  <td title="Hide / Show" onClick={this.toggleVisible.bind(this, performer)}>{(performer.getVisible()) ? <Icon name="eye" /> : <Icon name="eye-slash" />}</td>
+                  <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
                   <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
                   <td title="Type"><span>{performer.type}</span></td>
-                  <td>{ performer.type == 'bvh' ? <table id="controlsTable"><tbody><tr>
-                    <td title="Play / Pause"><div className={`glyphicon ${(this.state.playing) ? ' glyphicon-pause' : ' glyphicon-play'}`} onClick={this.playPause.bind(this, performer.actions)} /></td>
-                    <td title="Stop"><div className="glyphicon glyphicon-stop" onClick={this.stop.bind(this, performer.actions)} /></td>
+                  <td style={{border:'none'}}>{ performer.type == 'bvh' ? <Table id="controlsTable"><tbody><tr>
+                    <td title="Play / Pause">{(this.state.playing) ? <Icon name="pause" onClick={this.playPause.bind(this, performer.actions)}/> : <Icon name="play" onClick={this.playPause.bind(this, performer.actions)}/>}</td>
+                    <td title="Stop"><Icon name="stop" onClick={this.stop.bind(this, performer.actions)}/></td>
                     {/* <td><div className={"glyphicon " + ((this.state.looping)?" glyphicon-repeat":" glyphicon-ban-circle")} onClick={this.loopNoLoop.bind(this, performer.actions)}></div></td> */}
-                    </tr></tbody></table>
+                    </tr></tbody></Table>
                     : <table id="inputsTable"><tbody><tr>
                       <td title="Playback Delay"><input onChange={this.updateDelay.bind(this, performer)} type="text" id="delayInput" value={performer.getDelay()} /></td>
                       <td title="Offset"><input onChange={this.updateOffset.bind(this, performer)} type="text" id="offsetInput" value={performer.getOffset()} /></td>
                     </tr></tbody></table>
                   }</td>
-                  <td title="Render Type"><Select
-                    clearable={false}
-                    autoBlur={true}
-                    autofocus={false}
-                    searchable={false}
-                    backspaceRemoves={false}
-                    deleteRemoves={false}
-                    name="displayType"
-                    value={performer.getType()}
-                    options={performer.getTypes()}
-                    onChange={this.changeType.bind(this, performer)}
-                  />
-                  </td>
-                  <td title="Render Style"><Select
-                    clearable={false}
-                    autoBlur={true}
-                    autofocus={false}
-                    searchable={false}
-                    backspaceRemoves={false}
-                    deleteRemoves={false}
-                    name="displayStyle"
-                    value={performer.getStyle()}
-                    options={_.map(performer.styles, s => ({ value: s, label: s }))}
-                    onChange={this.changeStyle.bind(this, performer)}
-                  />
-                  </td>
-                  <td title="Edit Effects"><div className="glyphicon glyphicon-fire" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)} /></td>
+                  {this.renderStyleMenu(performer)}
+                  <td title="Edit Effects" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)}><Icon name="bolt" /></td>
                   <td>{ (performer.type == 'clone') ?
-                    <div title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
-                  : <div title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />
+                    <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
+                  : <Icon name="plus" title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />
                   }</td>
                 </tr>))
-              }</tbody></table>
+              }</tbody></Table>
 						</Panel.Body>
 					</Panel.Collapse>
       </Panel>
