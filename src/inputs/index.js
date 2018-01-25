@@ -47,12 +47,13 @@ class InputManager {
 
   initPresets() {
     const pres = _.uniq(_.map(presets.keys(), p => p.split('.')[1].split('/')[1]));
-    this.parent.state.inputPreset = pres.slice(0);
+    this.parent.state.inputPresets = pres.slice(0);
     _.each(pres, (p) => {
       const PresetClass = require('./presets/' + p);
       this.presets[p.toLowerCase()] = new PresetClass(this, this.parent, this.scene);
     });
 
+    
     // initialize all interfaces
     this.initInputTypes();
   }

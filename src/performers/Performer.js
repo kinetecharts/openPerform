@@ -208,7 +208,7 @@ class Performer {
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = ['constructor','vogue', 'cloner', 'datatags', 'trails', 'particleSystem'];
+    this.effects = ['constructor','vogue', 'cloner', 'datatags', 'trails', 'particleSystem', 'midiStream'];
 
     this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
     this.guiDOM = this.gui.domElement;
@@ -430,7 +430,7 @@ class Performer {
       const s = this.getScene();
       s.position.x = this.offset;
       this.parent.add(s);
-      this.addEffects([this.effects[2]]);// defaults
+      this.addEffects([this.effects[2], this.effects[6]]);// defaults
     });
   }
 

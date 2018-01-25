@@ -98,11 +98,81 @@ class Main extends React.Component {
     }
   }
 
+  renderConsoleOutput() {
+    if (this.state.debug.console2html === true) {
+      return (
+        <Grid fluid><Row><Col id='consoleOutput' xs={12} md={12} /></Row></Grid>
+      );
+    } else {
+      return false;
+    }
+  }
+
+  setColor(id) {
+    this.setState({
+      colorIdx: id,
+    });
+    this.updateColors(this.state.colorSet[id]);
+  }
+
+  clearCycleColors() {
+    if (this.colorInterval !== null) {
+      clearInterval(this.colorInterval);
+    }
+  }
+
+  cycleColors(speed) {
+    if (this.colorInterval !== null) {
+      clearInterval(this.colorInterval);
+    }
+    this.colorInterval = setInterval(
+      this.nextColors.bind(this),
+      speed,
+    );
+    this.nextColors();
+  }
+
+  prevColors() {
+    this.colorIdx--;
+    if (this.colorIdx < 0) { this.colorIdx = this.state.colorSet.length - 1; }
+    this.updateColors(this.state.colorSet[this.colorIdx]);
+  }
+
+  nextColors() {
+    this.colorIdx++;
+    if (this.colorIdx >= this.state.colorSet.length) { this.colorIdx = 0; }
+    this.updateColors(this.state.colorSet[this.colorIdx]);
+  }
+
+  updateColors(colors) {
+    if (this.state.scene.environments && this.performers) {
+      this.state.scene.environments.updateColors(colors.background);
+      this.performers.updateColors(colors.performers);
+    }
+  }
+
+  switchColorSet(setName) {
+    switch (setName) {
+      case 'darkColors':
+        return this.state.colorSet = this.state.darkColors;
+        break;
+      case 'colors1':
+        return this.state.colorSet = this.state.colors1;
+        break;
+      case 'colors2':
+        return this.state.colorSet = this.state.colors2;
+        break;
+      default:
+        return this.state.colorSet = this.state.dark;
+        break;
+    }
+  }
+
   addBVHPerformer(modelPath, autoplay) {
     const bvhPlayer = new BVHPlayer(
       modelPath,
       this.state.scene.scene,
-      autoplay,      
+      autoplay,
       this.updatePerformers.bind(this),
     );
     this.BVHPlayers.push(bvhPlayer);
@@ -183,20 +253,6 @@ class Main extends React.Component {
     }
   }
 
-  updatePerformers(id, data, type, actions) {
-    if (this.performers) {
-      if (!this.performers.exists(id)) {
-        this.performers.add(id, type, actions);
-      } else {
-        this.performers.update(id, data);
-      }
-
-      this.setState({
-        performers: this.performers,
-      });
-    }
-  }
-
   openKeyboardModal() {
     if (this.state.keyboardModal === false) {
       this.setState({
@@ -265,6 +321,20 @@ class Main extends React.Component {
     }
   }
 
+  updatePerformers(id, data, type, actions) {
+    if (this.performers) {
+      if (!this.performers.exists(id)) {
+        this.performers.add(id, type, actions);
+      } else {
+        this.performers.update(id, data);
+      }
+
+      this.setState({
+        performers: this.performers,
+      });
+    }
+  }
+
   togglePerformerTrack(performer) {
     if (
       !this.state.scene.cameraControl.trackingTarget ||
@@ -282,7 +352,7 @@ class Main extends React.Component {
     const pos = target.position;
     pos.y = 1;
 
-    this.state.scene.cameraControl.track(//track(target, look, offset) {
+    this.state.scene.cameraControl.track(// track(target, look, offset) {
       target,
       pos,
       new THREE.Vector3(0, 0, distance),
@@ -302,92 +372,22 @@ class Main extends React.Component {
     if (key == 1) {
       this.clearTrackedPeformer();
     } else {
-      this.trackPerformer(this.state.performers.getPerformers()[key-2], 20);
+      this.trackPerformer(this.state.performers.getPerformers()[key - 2], 20);
     }
   }
 
   changeInputPreset(val) {
     this.setState({
-      currentInputPreset:this.state.inputPresets[val],
+      currentInputPreset: this.state.inputPresets[val],
     });
     this.state.inputManger.connectCallbacks(this.state.inputPresets[val]);
   }
 
   changeOutputPreset(val) {
     this.setState({
-      currentOutputPreset:this.state.outputPresets[val],
+      currentOutputPreset: this.state.outputPresets[val],
     });
     this.state.outputManger.connectCallbacks(this.state.outputPresets[val]);
-  }
-
-  renderConsoleOutput() {
-    if (this.state.debug.console2html) {
-      return (
-        <Grid fluid={true}><Row><Col id="consoleOutput" xs={12} md={12} /></Row></Grid>
-      );
-    } else {
-      return false;
-    }
-  }
-
-  clearCycleColors() {
-    if (this.colorInterval !== null) {
-      clearInterval(this.colorInterval);
-    }
-  }
-
-  cycleColors(speed) {
-    if (this.colorInterval !== null) {
-      clearInterval(this.colorInterval);
-    }
-    this.colorInterval = setInterval(
-      this.nextColors.bind(this),
-      speed
-    );
-    this.nextColors();
-  }
-
-  prevColors() {
-    this.colorIdx--;
-    if (this.colorIdx < 0) { this.colorIdx = this.state.colorSet.length-1 }
-    this.updateColors(this.state.colorSet[this.colorIdx]);
-  }
-
-  nextColors() {
-    this.colorIdx++;
-    if (this.colorIdx >= this.state.colorSet.length) { this.colorIdx = 0 }
-    this.updateColors(this.state.colorSet[this.colorIdx]);
-  }
-
-  setColor(id) {
-    this.setState({
-      colorIdx:id
-    });
-    this.updateColors(this.state.colorSet[id]);
-  }
-
-  updateColors(colors) {
-    if (this.state.scene.environments && this.performers) {
-      this.state.scene.environments.updateColors(colors.background);
-      this.performers.updateColors(colors.performers);
-    }
-  }
-
-  switchColorSet(setName) {
-    switch(setName) {
-      case "darkColors":
-        return this.state.colorSet = this.state.darkColors
-        break;
-      case "colors1":
-        return this.state.colorSet = this.state.colors1
-        break;
-      case "colors2":
-        return this.state.colorSet = this.state.colors2
-        break;
-      default:
-        return this.state.colorSet = this.state.dark
-        break;
-    }
   }
 
   updateMidiOutputs(deviceNames, currentDeviceName) {
@@ -423,14 +423,16 @@ class Main extends React.Component {
     if (this.state.midiDevices.length > 0) {
       return (<MidiMenu
         changePreset={this.changeOutputPreset.bind(this)}
-        currentPreset={(this.state.currentOutputPreset === null) ? this.state.defaults.outputPreset : this.state.currentOutputPreset}
+        currentPreset={(this.state.currentOutputPreset === null) ?
+          this.state.defaults.outputPreset :
+          this.state.currentOutputPreset}
         presets={this.state.outputPresets}
         changeMidiDevice={this.changeMidiDevice.bind(this)}
         currentMidiDevice={this.state.currentMidiDevice}
         midiDevices={this.state.midiDevices}
         currentMidiChannel={this.state.currentMidiChannel}
         changeMidiChannel={this.changeMidiChannel.bind(this)}
-        sendMidiTest={this.sendMidiTest.bind(this)}></MidiMenu>);
+        sendMidiTest={this.sendMidiTest.bind(this)} />);
     } else {
       return null;
     }
@@ -444,28 +446,38 @@ class Main extends React.Component {
     }
   }
 
+  renderInputsMenu() {
+    return (<InputMenu
+      openKeyboardModal={this.openKeyboardModal.bind(this)}
+      changePreset={this.changeInputPreset.bind(this)}
+      currentPreset={(this.state.currentInputPreset === null) ? this.state.defaults.inputPreset : this.state.currentInputPreset}
+      presets={this.state.inputPresets}
+      inputs={this.state.inputs}>
+    </InputMenu>);
+  }
+
   render() {
     return (
-      <Grid className="container-no-padding" fluid={true}><Row className="row-no-margin">
-        <Grid className="container-no-padding" fluid={true}><Row className="row-no-margin"><Col id="scenes" xs={12} md={12} /></Row></Grid>
+      <Grid className='container-no-padding' fluid={true}><Row className='row-no-margin'>
+        <Grid className='container-no-padding' fluid={true}><Row className='row-no-margin'><Col id='scenes' xs={12} md={12} /></Row></Grid>
         {this.renderConsoleOutput()}
-        <Grid fluid={true} id="page">
-          <Row className="row-third-height" id="upperDisplay">
+        <Grid fluid={true} id='page'>
+          <Row className='row-third-height' id='upperDisplay'>
             <Col xs={4} md={4}>{this.renderStatsMenu()}</Col>
             <Col xs={4} md={4}><CameraMenu selectTrackedPerformer={this.selectTrackedPerformer.bind(this)} trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} trackedPerformer={this.state.trackedPerformer}/></Col>
             <Col xs={2} md={2}>{this.renderMidiMenu()}</Col>
-            <Col xs={2} md={2}><InputMenu openKeyboardModal={this.openKeyboardModal.bind(this)} changePreset={this.changeInputPreset.bind(this)} currentPreset={(this.state.currentInputPreset === null) ? this.state.defaults.inputPreset : this.state.currentInputPreset} presets={this.state.inputPresets} inputs={this.state.inputs}></InputMenu></Col>
+            <Col xs={2} md={2}>{this.renderInputsMenu()}</Col>
           </Row>
-          <Row className="row-third-height"/>
-          <Row className="row-third-height" id="lowerDisplay">
-            <Col className="bottom-column" xs={4} md={4}><PerformerMenu togglePerformerTrack={this.togglePerformerTrack.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></Col>
-            <Col className="bottom-column" xs={4} md={4}><VRMenu/></Col>
-            <Col className="bottom-column" xs={4} md={4}><EnvironmentMenu environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></Col>
+          <Row className='row-third-height'/>
+          <Row className='row-third-height' id='lowerDisplay'>
+            <Col className='bottom-column' xs={4} md={4}><PerformerMenu togglePerformerTrack={this.togglePerformerTrack.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></Col>
+            <Col className='bottom-column' xs={4} md={4}><VRMenu/></Col>
+            <Col className='bottom-column' xs={4} md={4}><EnvironmentMenu environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></Col>
           </Row>
         </Grid>
-        <Grid fluid={true}><Row><Col id="startOverlay" xs={12} md={12} /></Row></Grid>
-        <Grid fluid={true}><Row><Col id="blackOverlay" xs={12} md={12} /></Row></Grid>
-        <Grid fluid={true}><Row><Col id="endOverlay" xs={12} md={12} /></Row></Grid>
+        <Grid fluid={true}><Row><Col id='startOverlay' xs={12} md={12} /></Row></Grid>
+        <Grid fluid={true}><Row><Col id='blackOverlay' xs={12} md={12} /></Row></Grid>
+        <Grid fluid={true}><Row><Col id='endOverlay' xs={12} md={12} /></Row></Grid>
         <KeyboardHelpModal show={this.state.keyboardModal} closeKeyboardModal={this.closeKeyboardModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
         <PerformerEffectsModal content={this.state.performerContent} show={this.state.performerModal} closePerformerModal={this.closePerformerModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
         <GroupEffectsModal show={this.state.groupModal} closeGroupModal={this.closeGroupModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />

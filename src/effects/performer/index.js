@@ -7,6 +7,7 @@ import Constructor from './Constructor';
 import Cloner from './Cloner';
 import Drawing from './Drawing';
 import DataTags from './DataTags';
+import MidiStream from './MidiStream';
 
 import config from './../../config';
 
@@ -44,6 +45,9 @@ class PerformerEffects {
         break;
       case 'datatags':
         this.effects.push(new DataTags(this.parent, this.color, this.guiFolder));
+        break;
+      case 'midiStream':
+        this.effects.push(new MidiStream(this.parent, this.color, this.guiFolder));
         break;
     }
     console.log(this.effects);
