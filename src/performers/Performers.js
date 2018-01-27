@@ -8,7 +8,10 @@ import GroupEffects from './../effects/group';
 import config from './../config';
 
 class Performers {
-  constructor() {
+  constructor(inputManager, outputManager) {
+    this.inputManager = inputManager;
+    this.outputManager = outputManager;
+    
     this.performers = {};
     this.dataBuffer = [];
   }
@@ -38,6 +41,8 @@ class Performers {
         this.colors[_.size(this.performers) % this.colors.length],
         true,
         actions,
+        this.inputManager,
+        this.outputManager,
       );
       // this.performers[inputId+"_-1"] = new Performer(this.parent, inputId+"_-1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], -1, true);
       // this.performers[inputId+"_1"] = new Performer(this.parent, inputId+"_1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], 1, true);

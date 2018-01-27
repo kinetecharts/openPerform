@@ -1,8 +1,7 @@
 import React from 'react';
-import _ from 'lodash';
 import Select from 'react-select';
 
-import { Panel, MenuItem, DropdownButton } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 
 import 'react-select/dist/react-select.css';
 
@@ -16,6 +15,7 @@ class EnvironmentMenu extends React.Component {
       forceUpdate: false,
     };
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.forceUpdate == true) {
       this.setState({ forceUpdate: false });
@@ -31,6 +31,7 @@ class EnvironmentMenu extends React.Component {
     }
     return false;
   }
+
   playPause(actions) {
     if (this.state.playing) {
       actions.pause();
@@ -40,6 +41,7 @@ class EnvironmentMenu extends React.Component {
       this.setState({ playing: true });
     }
   }
+
   loopNoLoop(actions) {
     if (this.state.looping) {
       actions.noLoop();
@@ -49,21 +51,24 @@ class EnvironmentMenu extends React.Component {
       this.setState({ looping: true });
     }
   }
+
   stop(actions) {
     actions.stop();
     this.setState({ playing: false });
   }
+
   changeType(environment, val) {
     environment.setType(val.value);
     this.setState({ forceUpdate: true });
   }
+
   changeStyle(environment, val) {
     environment.updateStyle(val.value);
     this.setState({ forceUpdate: true });
   }
-  editEffects(environment) {
 
-  }
+  editEffects(environment) {}
+
   addClone(environment) {
     this.props.environments.add(`Clone_${_.size(this.props.environments.getEnvironments()) + 1}`, 'clone', null);
     this.setState({ forceUpdate: true });

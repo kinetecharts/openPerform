@@ -1,10 +1,9 @@
 import React from 'react';
-import _ from 'lodash';
 import Select from 'react-select';
 
-import {Icon} from 'react-fa'
+import Icon from 'react-fa';
 
-import { Panel, MenuItem, DropdownButton, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Panel, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import 'react-select/dist/react-select.css';
 
@@ -20,7 +19,7 @@ class PerformerMenu extends React.Component {
     };
   }
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.forceUpdate == true) {
+    if (this.state.forceUpdate === true) {
       this.setState({ forceUpdate: false });
       return true;
     }
@@ -57,11 +56,14 @@ class PerformerMenu extends React.Component {
     this.setState({ playing: false });
   }
   changeType(performer, val) {
-    performer.setType(val.value);
+    performer.setType(performer.getTypes()[val]);
     this.setState({ forceUpdate: true });
   }
   changeStyle(performer, val) {
-    performer.updateStyle(val.value);
+    performer.updateStyle(performer.getStyles()[val]);
+    if (val === 0) { // reset model to default
+      performer.setType(performer.getType());
+    }
     this.setState({ forceUpdate: true });
   }
   addClone(performer) {
@@ -89,37 +91,40 @@ class PerformerMenu extends React.Component {
       <Popover id="popover-positioned-scrolling-top" title="Update Style">
         <ListGroup>
           <ListGroupItem>
-            <Select
-              clearable={false}
-              autoBlur={true}
-              autofocus={false}
-              searchable={false}
-              backspaceRemoves={false}
-              deleteRemoves={false}
+            Type: <DropdownButton
+              dropup
+              bsStyle="default"
+              bsSize="xsmall"
+              title={performer.getType().label}
               name="displayType"
-              value={performer.getType()}
-              options={performer.getTypes()}
-              onChange={this.changeType.bind(this, performer)}
-            />
+              id="performer-style-type-dropdown"
+              onSelect={this.changeType.bind(this, performer)}>
+              {_.map(performer.getTypes(), (type, idx) => {
+                return (<MenuItem key={idx} eventKey={idx}>{type.label}</MenuItem>);
+              })}
+            </DropdownButton>
           </ListGroupItem>
           <ListGroupItem>
-            <Select
-              clearable={false}
-              autoBlur={true}
-              autofocus={false}
-              searchable={false}
-              backspaceRemoves={false}
-              deleteRemoves={false}
-              name="displayStyle"
-              value={performer.getStyle()}
-              options={_.map(performer.styles, s => ({ value: s, label: s }))}
-              onChange={this.changeStyle.bind(this, performer)}
-            />
+            Style: <DropdownButton
+              dropup
+              bsStyle="default"
+              bsSize="xsmall"
+              title={performer.getStyle()}
+              name="displayStype"
+              id="performer-style-stype-dropdown"
+              onSelect={this.changeStyle.bind(this, performer)}>
+              {_.map(performer.getStyles(), (style, idx) => {
+                return (<MenuItem key={idx} eventKey={idx}>{style}</MenuItem>);
+              })}
+            </DropdownButton>
           </ListGroupItem>
         </ListGroup>
       </Popover>
     );
-    return(
+    if (performer == undefined) {
+      return false;
+    }
+    return (
       <td>
         <OverlayTrigger
           trigger={['click', 'focus']}

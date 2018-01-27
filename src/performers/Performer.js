@@ -19,7 +19,10 @@ import _ from 'lodash';
 import dat from 'dat-gui';
 
 class Performer {
-  constructor(parent, inputId, performerId, type, color, visible, actions) {
+  constructor(parent, inputId, performerId, type, color, visible, actions, inputManager, outputManager) {
+    this.inputManager = inputManager;
+    // this.outputManager = outputManager;
+
     this.actions = actions;
 
     this.dataBuffer = [];
@@ -51,10 +54,10 @@ class Performer {
     this.style = this.styles[this.styleId];
     this.intensity = 1;
 
-    this.displayType = 'bvhMeshGroup';
+    this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
       { value: 'bvhMeshGroup', label: 'Mesh Group' },
-      { value: 'riggedMesh', label: 'Rigged Model' },
+      // { value: 'riggedMesh', label: 'Rigged Model' },
     ];
 
     // this.loadColladaModels([
@@ -430,7 +433,7 @@ class Performer {
       const s = this.getScene();
       s.position.x = this.offset;
       this.parent.add(s);
-      this.addEffects([this.effects[2], this.effects[6]]);// defaults
+      // this.addEffects([this.effects[2], this.effects[6]]);// defaults
     });
   }
 
@@ -470,6 +473,8 @@ class Performer {
 
   setScene(scene) {
     this.scene = scene;
+    // this.scene.distances = {};
+    // this.scene.outputManager = this.outputManager;
   }
 
   getScene() {
@@ -1283,6 +1288,7 @@ class Performer {
           break;
       }
     }
+    // this.getScene().distances['hands'] = this.distanceBetween('lefthand', 'righthand');
     this.performerEffects.update(this.getScene());
   }
 
@@ -1299,7 +1305,7 @@ class Performer {
       if (this.getPerformer() == null) {
         this.loadPerformer(
           this.type,
-          this.getType(),
+          this.getType().value,
           this.hiddenParts,
           1 / this.modelShrink,
           this.style,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, MenuItem, DropdownButton } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 
 class StatsMenu extends React.Component {
   constructor(props) {
@@ -27,12 +27,11 @@ class StatsMenu extends React.Component {
     return (
       <Panel className="statsMenu" defaultExpanded>
         <Panel.Heading>
-					<Panel.Title toggle><h5>Stats</h5></Panel.Title>
-				</Panel.Heading>
+          <Panel.Title toggle><h5>Stats</h5></Panel.Title>
+        </Panel.Heading>
         <Panel.Collapse>
-						<Panel.Body className="statsBody">
-						</Panel.Body>
-					</Panel.Collapse>
+          <Panel.Body className="statsBody" />
+        </Panel.Collapse>
       </Panel>
     );
   }

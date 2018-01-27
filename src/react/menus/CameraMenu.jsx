@@ -8,6 +8,7 @@ class CameraMenu extends React.Component {
       forceUpdate: false,
     };
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.forceUpdate === true) {
       this.setState({ forceUpdate: false });
@@ -23,25 +24,6 @@ class CameraMenu extends React.Component {
     }
     return false;
   }
-  
-  renderTrackingList() {
-    if (this.props.performers.length < 1) {
-      return false;
-    }
-    return (
-      <DropdownButton
-        bsSize="xsmall"
-        onSelect={this.props.selectTrackedPerformer}
-        title={(this.props.trackedPerformer === null) ? 'None' : this.props.trackedPerformer.name}
-        id="trackingTargetDropdown"
-      >
-        <MenuItem key="1" eventKey="1">None</MenuItem>
-        {_.map(this.props.performers.getPerformers(), (performer, idx) => {
-          return <MenuItem key={idx + 2} eventKey={idx + 2}>{performer.name}</MenuItem>
-        })}
-      </DropdownButton>
-    );
-  }
   render() {
     return (
       <Panel className="cameraMenu" defaultExpanded>
@@ -50,9 +32,21 @@ class CameraMenu extends React.Component {
         </Panel.Heading>
         <Panel.Collapse>
           <Panel.Body>
-            <Grid fluid={true}><Row>
+            <Grid fluid><Row>
               <Col xs={2} md={2}>Track:</Col>
-              <Col xs={2} md={2}>{this.renderTrackingList()}</Col>
+              <Col xs={2} md={2}>
+                <DropdownButton
+                  bsSize="xsmall"
+                  onSelect={this.props.selectTrackedPerformer}
+                  title={(this.props.trackedPerformer === null) ? 'None' : this.props.trackedPerformer.name}
+                  id="trackingTargetDropdown"
+                >
+                  <MenuItem key="1" eventKey="1">None</MenuItem>
+                  {_.map(this.props.performers, (name, idx) => {
+                    return <MenuItem key={idx + 2} eventKey={idx + 2}>{name}</MenuItem>
+                  })}
+                </DropdownButton>
+              </Col>
               <Col xs={2} md={2} />
               <Col xs={2} md={2} />
               <Col xs={2} md={2} />

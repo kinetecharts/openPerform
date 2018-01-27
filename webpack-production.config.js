@@ -1,5 +1,8 @@
 const webpack = require('webpack');
 const { resolve } = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+const config = require('./server/config');
 
 module.exports = {
 	/*watch: true,
@@ -65,28 +68,44 @@ module.exports = {
 		extensions: ['.js', '.jsx', '.css']
 	},
 	plugins: [
+		new CopyWebpackPlugin([
+      {
+        from: resolve(__dirname, config.copy.html.src),
+        to: resolve(__dirname, config.copy.html.dest),
+      },
+      {
+        from: resolve(__dirname, config.copy.images.src),
+        to: resolve(__dirname, config.copy.images.dest),
+      },
+      {
+        from: resolve(__dirname, config.copy.models.src),
+        to: resolve(__dirname, config.copy.models.dest),
+      },
+    ]),
 		new webpack.LoaderOptionsPlugin({
 		  minimize: true,
 		  debug: false
 		}),
-		new webpack.optimize.UglifyJsPlugin({
-		  beautify: false,
-		  mangle: {
-		    screw_ie8: false,
-		    keep_fnames: true
-		  },
-		  compress: {
-		    screw_ie8: false
-		  },
-		  comments: false
-		}),
+		// new webpack.optimize.UglifyJsPlugin({
+		//   beautify: false,
+		//   mangle: {
+		//     screw_ie8: false,
+		//     keep_fnames: true
+		//   },
+		//   compress: {
+		//     screw_ie8: false
+		//   },
+		//   comments: false
+		// }),
 		new webpack.ProvidePlugin({
-			$: "jquery",
-			jQuery: "jquery",
-			"window.jQuery": "jquery",
-			"THREE": 'three',
-			"window.THREE": 'three'
-		}),
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      THREE: 'three',
+      'window.THREE': 'three',
+      TWEEN: 'tween',
+      'window.TWEEN': 'tween',
+    }),
 
 		new webpack.optimize.CommonsChunkPlugin({
 		  name: "vendor",

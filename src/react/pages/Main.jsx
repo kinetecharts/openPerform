@@ -56,7 +56,7 @@ class Main extends React.Component {
     this.state.inputManger = new InputManager(this.state.inputs, this.state.scene, this);
     this.state.outputManger = new OutputManager(this.state.scene, this);
 
-    this.performers = new Performers();
+    this.performers = new Performers(this.state.inputManger, this.state.outputManger);
 
     // once the dom has mounted, initialize threejs
     this.state.scene.initScene(
@@ -95,16 +95,6 @@ class Main extends React.Component {
       setInterval(() => {
         div.scrollTop = div.scrollHeight;
       }, 1000);
-    }
-  }
-
-  renderConsoleOutput() {
-    if (this.state.debug.console2html === true) {
-      return (
-        <Grid fluid><Row><Col id='consoleOutput' xs={12} md={12} /></Row></Grid>
-      );
-    } else {
-      return false;
     }
   }
 
@@ -325,13 +315,13 @@ class Main extends React.Component {
     if (this.performers) {
       if (!this.performers.exists(id)) {
         this.performers.add(id, type, actions);
+        this.setState({
+          performers: this.performers,
+          performerNames: _.map(this.performers.getPerformers(), 'name'),
+        });
       } else {
         this.performers.update(id, data);
       }
-
-      this.setState({
-        performers: this.performers,
-      });
     }
   }
 
@@ -359,13 +349,17 @@ class Main extends React.Component {
     );
     this.state.performers.clearTracking();
     performer.setTracking(true);
-    this.state.trackedPerformer = performer;
+    this.setState({
+      trackedPerformer: performer,
+    });
   }
 
   clearTrackedPeformer() {
     this.state.performers.clearTracking();
     this.state.scene.cameraControl.clearTrack();
-    this.state.trackedPerformer = null;
+    this.setState({
+      trackedPerformer: null,
+    });
   }
 
   selectTrackedPerformer(key) {
@@ -419,70 +413,102 @@ class Main extends React.Component {
     this.state.outputManger.outputs.midicontroller.sendTest();
   }
 
-  renderMidiMenu() {
-    if (this.state.midiDevices.length > 0) {
-      return (<MidiMenu
-        changePreset={this.changeOutputPreset.bind(this)}
-        currentPreset={(this.state.currentOutputPreset === null) ?
-          this.state.defaults.outputPreset :
-          this.state.currentOutputPreset}
-        presets={this.state.outputPresets}
-        changeMidiDevice={this.changeMidiDevice.bind(this)}
-        currentMidiDevice={this.state.currentMidiDevice}
-        midiDevices={this.state.midiDevices}
-        currentMidiChannel={this.state.currentMidiChannel}
-        changeMidiChannel={this.changeMidiChannel.bind(this)}
-        sendMidiTest={this.sendMidiTest.bind(this)} />);
-    } else {
-      return null;
-    }
-  }
-
-  renderStatsMenu() {
-    if (this.state.debug.stats) {
-      return (<StatsMenu/>);
-    } else {
-      return null;
-    }
-  }
-
-  renderInputsMenu() {
-    return (<InputMenu
-      openKeyboardModal={this.openKeyboardModal.bind(this)}
-      changePreset={this.changeInputPreset.bind(this)}
-      currentPreset={(this.state.currentInputPreset === null) ? this.state.defaults.inputPreset : this.state.currentInputPreset}
-      presets={this.state.inputPresets}
-      inputs={this.state.inputs}>
-    </InputMenu>);
-  }
-
   render() {
     return (
-      <Grid className='container-no-padding' fluid={true}><Row className='row-no-margin'>
-        <Grid className='container-no-padding' fluid={true}><Row className='row-no-margin'><Col id='scenes' xs={12} md={12} /></Row></Grid>
-        {this.renderConsoleOutput()}
-        <Grid fluid={true} id='page'>
-          <Row className='row-third-height' id='upperDisplay'>
-            <Col xs={4} md={4}>{this.renderStatsMenu()}</Col>
-            <Col xs={4} md={4}><CameraMenu selectTrackedPerformer={this.selectTrackedPerformer.bind(this)} trackPerformer={this.trackPerformer.bind(this)} performers={this.state.performers} trackedPerformer={this.state.trackedPerformer}/></Col>
-            <Col xs={2} md={2}>{this.renderMidiMenu()}</Col>
-            <Col xs={2} md={2}>{this.renderInputsMenu()}</Col>
-          </Row>
-          <Row className='row-third-height'/>
-          <Row className='row-third-height' id='lowerDisplay'>
-            <Col className='bottom-column' xs={4} md={4}><PerformerMenu togglePerformerTrack={this.togglePerformerTrack.bind(this)} performers={this.state.performers} openPerformerModal={this.openPerformerModal.bind(this)} /></Col>
-            <Col className='bottom-column' xs={4} md={4}><VRMenu/></Col>
-            <Col className='bottom-column' xs={4} md={4}><EnvironmentMenu environments={this.state.environments} openEnvironmentModal={this.openEnvironmentModal.bind(this)} /></Col>
-          </Row>
-        </Grid>
-        <Grid fluid={true}><Row><Col id='startOverlay' xs={12} md={12} /></Row></Grid>
-        <Grid fluid={true}><Row><Col id='blackOverlay' xs={12} md={12} /></Row></Grid>
-        <Grid fluid={true}><Row><Col id='endOverlay' xs={12} md={12} /></Row></Grid>
-        <KeyboardHelpModal show={this.state.keyboardModal} closeKeyboardModal={this.closeKeyboardModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
-        <PerformerEffectsModal content={this.state.performerContent} show={this.state.performerModal} closePerformerModal={this.closePerformerModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
-        <GroupEffectsModal show={this.state.groupModal} closeGroupModal={this.closeGroupModal.bind(this)} keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}} />
-        <EnvironmentSettingsModal content={this.state.environmentContent} show={this.state.environmentModal} closeEnvironmentModal={this.closeEnvironmentModal.bind(this)}/>
-      </Row></Grid>
+      <Grid className="container-no-padding" fluid>
+        <Row className="row-no-margin">
+          <Grid className="container-no-padding" fluid>
+            <Row className="row-no-margin">
+              <Col id="scenes" xs={12} md={12} />
+            </Row>
+          </Grid>
+          <Grid fluid><Row><Col id="consoleOutput" xs={12} md={12} /></Row></Grid>
+          <Grid fluid id="page">
+            <Row className="row-third-height" id="upperDisplay">
+              <Col xs={4} md={4}>
+                <StatsMenu />
+              </Col>
+              <Col xs={4} md={4}>
+                <CameraMenu
+                  selectTrackedPerformer={this.selectTrackedPerformer.bind(this)}
+                  trackPerformer={this.trackPerformer.bind(this)}
+                  performers={this.state.performerNames}
+                  trackedPerformer={this.state.trackedPerformer}
+                />
+              </Col>
+              <Col xs={2} md={2}>
+                {/*<MidiMenu
+                  changePreset={this.changeOutputPreset.bind(this)}
+                  currentPreset={(this.state.currentOutputPreset === null) ?
+                    this.state.defaults.outputPreset :
+                    this.state.currentOutputPreset}
+                  presets={this.state.outputPresets}
+                  changeMidiDevice={this.changeMidiDevice.bind(this)}
+                  currentMidiDevice={this.state.currentMidiDevice}
+                  midiDevices={this.state.midiDevices}
+                  currentMidiChannel={this.state.currentMidiChannel}
+                  changeMidiChannel={this.changeMidiChannel.bind(this)}
+                  sendMidiTest={this.sendMidiTest.bind(this)}
+                  />*/}
+              </Col>
+              <Col xs={2} md={2}>
+                {/*<InputMenu
+                  openKeyboardModal={this.openKeyboardModal.bind(this)}
+                  changePreset={this.changeInputPreset.bind(this)}
+                  currentPreset={(this.state.currentInputPreset === null) ?
+                    this.state.defaults.inputPreset :
+                    this.state.currentInputPreset}
+                  presets={this.state.inputPresets}
+                  inputs={this.state.inputs}
+                  />*/}
+              </Col>
+            </Row>
+            <Row className="row-third-height" />
+            <Row className="row-third-height" id="lowerDisplay">
+              <Col className="bottom-column" xs={4} md={4}>
+                <PerformerMenu
+                  togglePerformerTrack={this.togglePerformerTrack.bind(this)}
+                  performers={this.state.performers}
+                  openPerformerModal={this.openPerformerModal.bind(this)}
+                />
+              </Col>
+              <Col className="bottom-column" xs={4} md={4}>
+                <VRMenu />
+              </Col>
+              <Col className="bottom-column" xs={4} md={4}>
+                <EnvironmentMenu
+                  environments={this.state.environments}
+                  openEnvironmentModal={this.openEnvironmentModal.bind(this)}
+                />
+              </Col>
+            </Row>
+          </Grid>
+          <Grid fluid><Row><Col id="startOverlay" xs={12} md={12} /></Row></Grid>
+          <Grid fluid><Row><Col id="blackOverlay" xs={12} md={12} /></Row></Grid>
+          <Grid fluid><Row><Col id="endOverlay" xs={12} md={12} /></Row></Grid>
+          <KeyboardHelpModal
+            show={this.state.keyboardModal}
+            closeKeyboardModal={this.closeKeyboardModal.bind(this)}
+            keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}}
+          />
+          <PerformerEffectsModal
+            content={this.state.performerContent}
+            show={this.state.performerModal}
+            closePerformerModal={this.closePerformerModal.bind(this)}
+            keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}}
+          />
+          <GroupEffectsModal
+            show={this.state.groupModal}
+            closeGroupModal={this.closeGroupModal.bind(this)}
+            keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}}
+          />
+          <EnvironmentSettingsModal
+            content={this.state.environmentContent}
+            show={this.state.environmentModal}
+            closeEnvironmentModal={this.closeEnvironmentModal.bind(this)}
+          />
+        </Row>
+      </Grid>
     );
   }
 }

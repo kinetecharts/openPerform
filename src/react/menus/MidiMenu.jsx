@@ -8,8 +8,9 @@ class MidiMenu extends React.Component {
       forceUpdate: false,
     };
   }
+
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.forceUpdate === true) {
+    if (this.state.forceUpdate == true) {
       this.setState({ forceUpdate: false });
       return true;
     }
@@ -23,6 +24,7 @@ class MidiMenu extends React.Component {
     }
     return false;
   }
+
   render() {
     return (
       <Panel className="midiMenu" defaultExpanded>

@@ -27,6 +27,11 @@ class Gamepads {
     this.websocket.onclose = this.onClose.bind(this);
     this.websocket.onmessage = this.onMessage.bind(this);
     this.websocket.onerror = this.onError.bind(this);
+
+    // stop Chrome from ruining things and crashing the socket server
+    window.addEventListener('beforeunload', () => {
+      this.websocket.close();
+    });
   }
 
 

@@ -2,7 +2,7 @@ import config from './../../server/config';
 
 module.exports = {
   defaults: {
-    inputPreset: 'Default',
+    inputPreset: 'MeshFreshFest',
     outputPreset: 'Default',
     backgroundColor: 0x333333, // will be overridden by environment settings
     environment: 'Grid'
@@ -63,6 +63,7 @@ module.exports = {
   currentMidiChannel: 1,
 
   performers: [],
+  performerName: null,
   trackedPerformer: null,
 
   environments: [],

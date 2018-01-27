@@ -20,6 +20,11 @@ class KinectTransport {
     this.websocket.onclose = this.oClose;
     this.websocket.onmessage = this.onMessage.bind(this);
     this.websocket.onerror = this.onError;
+
+    // stop Chrome from ruining things and crashing the socket server
+    window.addEventListener('beforeunload', () => {
+      this.websocket.close();
+    });
   }
 
   onOpen(evt) {

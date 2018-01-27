@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
 	font-family: 'lato-black-webfont';
 	src: url('./../fonts/lato-black-webfont.eot?#iefix') format('embedded-opentype'),
 		url('./../fonts/lato-black-webfont.woff') format('woff'), url('./../fonts/lato-black-webfont.ttf') format('truetype'), url('./../fonts/lato-black-webfont.svg#lato-black-webfont') format('svg');
@@ -44,7 +44,7 @@
 	font-family: 'lato-semibold-webfont';
 	src: url('./../fonts/lato-semibold-webfont.eot?#iefix') format('embedded-opentype'),
 		url('./../fonts/lato-semibold-webfont.woff') format('woff'), url('./../fonts/lato-semibold-webfont.ttf') format('truetype'), url('./../fonts/lato-semibold-webfont.svg#lato-semibold-webfont') format('svg');
-}
+} */
 
 @font-face {
 	font-family: 'lato-thin-webfont';

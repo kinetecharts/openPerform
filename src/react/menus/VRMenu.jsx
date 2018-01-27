@@ -8,6 +8,7 @@ class VRMenu extends React.Component {
       forceUpdate: false,
     };
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.forceUpdate === true) {
       this.setState({ forceUpdate: false });
@@ -23,6 +24,7 @@ class VRMenu extends React.Component {
     }
     return false;
   }
+
   render() {
     return (
       <Panel className="vrMenu" defaultExpanded>

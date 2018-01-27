@@ -55,6 +55,7 @@ h5 {
 	top: 0;
 	overflow: scroll;
 	opacity: 0.5;
+	pointer-events: none;
 }
 
 #App {

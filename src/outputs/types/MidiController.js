@@ -38,7 +38,7 @@ class MidiController {
 
     this.currentChannel = 1;
 
-    this.initializeMidi();
+    // this.initializeMidi();
   }
 
   initializeMidi() {
