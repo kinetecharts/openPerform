@@ -110,7 +110,7 @@ class Vogue {
     	}
   }
 
-  update(data) {
+  update(data, currentPose, distances) {
     this.performer = data;
   }
 }

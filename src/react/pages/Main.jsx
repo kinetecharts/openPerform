@@ -437,7 +437,7 @@ class Main extends React.Component {
                 />
               </Col>
               <Col xs={2} md={2}>
-                {/*<MidiMenu
+                <MidiMenu
                   changePreset={this.changeOutputPreset.bind(this)}
                   currentPreset={(this.state.currentOutputPreset === null) ?
                     this.state.defaults.outputPreset :
@@ -449,10 +449,10 @@ class Main extends React.Component {
                   currentMidiChannel={this.state.currentMidiChannel}
                   changeMidiChannel={this.changeMidiChannel.bind(this)}
                   sendMidiTest={this.sendMidiTest.bind(this)}
-                  />*/}
+                  />
               </Col>
               <Col xs={2} md={2}>
-                {/*<InputMenu
+                <InputMenu
                   openKeyboardModal={this.openKeyboardModal.bind(this)}
                   changePreset={this.changeInputPreset.bind(this)}
                   currentPreset={(this.state.currentInputPreset === null) ?
@@ -460,7 +460,7 @@ class Main extends React.Component {
                     this.state.currentInputPreset}
                   presets={this.state.inputPresets}
                   inputs={this.state.inputs}
-                  />*/}
+                  />
               </Col>
             </Row>
             <Row className="row-third-height" />

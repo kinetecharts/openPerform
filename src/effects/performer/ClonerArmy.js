@@ -113,7 +113,7 @@ class ClonerArmy {
 		this.guiFolder.removeFolder("ClonerArmy");
 	}
 
-	updateParameters(data) {
+	updateParameters(data, currentPose, distances) {
 		switch(data.parameter) {
     		case 'rate':
     			this.ClonerArmyate = (data.value*10)+0.25;

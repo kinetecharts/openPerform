@@ -14,49 +14,49 @@ class MidiStream {
     this.performer = null;
 
     // this.addToDatGui(this.guiFolder);
-    this.handDistanceRange = [0, 2.46];
-    this.handMidiDistance = 0;
+    this.handDistanceRange = [1000, -1000];
+    this.handDistance = 1000;
 
     this.headYPos = 0;
-
-
-    // this.on = setInterval(() => {
-    //   if (this.performer !== null) {
-    //     clearInterval(this.off);
-    //     // this.performer.outputManager.outputs.midicontroller.sendTest();
-    //     // this.performer.outputManager.outputs.midicontroller.sendMidiNoteOff(60, this.handMidiVelocity);
-    //     this.performer.outputManager.outputs.midicontroller.sendMidiNoteOn(60, this.handMidiDistance);
-    //     // this.performer.outputManager.outputs.midicontroller.sendTest();
-    //     this.off = setInterval(() => {
-    //       this.performer.outputManager.outputs.midicontroller.sendMidiNoteOff(60, this.handMidiDistance);
-    //     }, 500);
-    //   }
-    // }, 1000);
+    
+    this.streamData = false;
+    this.streamInterval = null;
   }
 
-  update(data) {
-    this.performer = data;
-
-    data.traverse((d) => {
-      if ('robot_head' == d.name.toLowerCase()) {
-        this.headYPos = Common.mapRange(d.position.y, 0, 16, 1, 60);
-      }
-    });
-        
-    // console.log(this.headYRange);
-
-    this.handMidiDistance = Common.mapRange(this.performer.distances['hands'], this.handDistanceRange[0], this.handDistanceRange[1], 0, 127);
-
-    setTimeout( () => {
-      // clearInterval(this.off);
-        // this.performer.outputManager.outputs.midicontroller.sendTest();
-        // this.performer.outputManager.outputs.midicontroller.sendMidiNoteOff(60, this.handMidiVelocity);
-        this.performer.outputManager.outputs.midicontroller.sendMidiNoteOn(this.handMidiDistance, this.handMidiDistance);
-        // this.performer.outputManager.outputs.midicontroller.sendTest();
+  update(performer, currentPose, distances) {
+    this.performer = performer;
+    if (distances.hands < this.handDistanceRange[0]) {
+      this.handDistanceRange[0] = distances.hands;
+    }
+    if (distances.hands > this.handDistanceRange[1]) {
+      this.handDistanceRange[1] = distances.hands;
+    }
+    
+    // if (distances.hands < this.handDistance) {
+    if (this.streamInterval == null) {
+      this.streamInterval = setTimeout(() => {
+        this.performer.outputManager.outputs.midicontroller.sendMidiNoteOn(60, 127);
         setTimeout(() => {
-          this.performer.outputManager.outputs.midicontroller.sendMidiNoteOff(this.handMidiDistance, this.handMidiDistance);
-        },  500 / this.headYPos);
-    }, 1000 / this.headYPos );
+          this.performer.outputManager.outputs.midicontroller.sendMidiNoteOff(60, 127);
+          this.handDistance = 1000;
+          clearInterval(this.streamInterval);
+          this.streamInterval = null;
+        }, Common.mapRange(
+          distances.hands,
+          this.handDistanceRange[0],
+          this.handDistanceRange[1],
+          250,
+          1000,
+        ) / 4);
+      }, Common.mapRange(
+        distances.hands,
+        this.handDistanceRange[0],
+        this.handDistanceRange[1],
+        250,
+        1000,
+      ));
+    }
+    // }
   }
 }
 

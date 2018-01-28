@@ -67,9 +67,9 @@ class PerformerEffects {
     });
   }
 
-  update(data) {
+  update(data, currentPose, distances) {
     _.each(this.effects, (effect) => {
-      effect.update(data);
+      effect.update(data, currentPose, distances);
     });
   }
 }

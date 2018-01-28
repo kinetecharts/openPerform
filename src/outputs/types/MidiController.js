@@ -11,7 +11,7 @@ class MidiController {
     this.currentDevice = null;
     
     this.channelOns = {
-      1: 0x90,
+      // 1: 0x90,
       2: 0x91,
       3: 0x92,
       4: 0x93,
@@ -24,7 +24,7 @@ class MidiController {
     };
 
     this.channelOffs = {
-      1: 0x80,
+      // 1: 0x80,
       2: 0x81,
       3: 0x82,
       4: 0x83,
@@ -36,9 +36,9 @@ class MidiController {
       10: 0x89,
     };
 
-    this.currentChannel = 1;
+    this.currentChannel = 2;
 
-    // this.initializeMidi();
+    this.initializeMidi();
   }
 
   initializeMidi() {

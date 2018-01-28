@@ -21,7 +21,7 @@ import dat from 'dat-gui';
 class Performer {
   constructor(parent, inputId, performerId, type, color, visible, actions, inputManager, outputManager) {
     this.inputManager = inputManager;
-    // this.outputManager = outputManager;
+    this.outputManager = outputManager;
 
     this.actions = actions;
 
@@ -95,6 +95,8 @@ class Performer {
 
     this.scene = null;
     this.modelShrink = 100;
+    this.currentPose = null;
+    this.distances = null;
 
     const bvhStructure = {
       hips: {
@@ -433,7 +435,10 @@ class Performer {
       const s = this.getScene();
       s.position.x = this.offset;
       this.parent.add(s);
-      // this.addEffects([this.effects[2], this.effects[6]]);// defaults
+      this.addEffects([
+        /*this.effects[2], */
+        // this.effects[6] // Midi Streamer
+      ]);// defaults
     });
   }
 
@@ -473,8 +478,8 @@ class Performer {
 
   setScene(scene) {
     this.scene = scene;
-    // this.scene.distances = {};
-    // this.scene.outputManager = this.outputManager;
+    this.scene.distances = {};
+    this.scene.outputManager = this.outputManager;
   }
 
   getScene() {
@@ -1288,8 +1293,7 @@ class Performer {
           break;
       }
     }
-    // this.getScene().distances['hands'] = this.distanceBetween('lefthand', 'righthand');
-    this.performerEffects.update(this.getScene());
+    this.performerEffects.update(this.getScene(), this.currentPose, this.distances);
   }
 
   // p.dataBuffer.push(data);
@@ -1299,7 +1303,56 @@ class Performer {
   // }
   // idx++;
 
+  calculateDistances(data) {
+    this.head = new THREE.Vector3();
+    this.head.set(  
+      _.filter(data, ['name', 'head'])[0].position.x,
+      _.filter(data, ['name', 'head'])[0].position.y,
+      _.filter(data, ['name', 'head'])[0].position.z,
+    );
+
+    this.lefthand = new THREE.Vector3();
+    this.lefthand.set(
+      _.filter(data, ['name', 'lefthand'])[0].position.x,
+      _.filter(data, ['name', 'lefthand'])[0].position.y,
+      _.filter(data, ['name', 'lefthand'])[0].position.z,
+    );
+    this.righthand = new THREE.Vector3();
+    this.righthand.set(
+      _.filter(data, ['name', 'righthand'])[0].position.x,
+      _.filter(data, ['name', 'righthand'])[0].position.y,
+      _.filter(data, ['name', 'righthand'])[0].position.z,
+    );
+
+    this.leftfoot = new THREE.Vector3();
+    this.leftfoot.set(
+      _.filter(data, ['name', 'leftfoot'])[0].position.x,
+      _.filter(data, ['name', 'leftfoot'])[0].position.y,
+      _.filter(data, ['name', 'leftfoot'])[0].position.z,
+    );
+    
+    this.rightfoot = new THREE.Vector3();
+    this.rightfoot.set(
+      _.filter(data, ['name', 'rightfoot'])[0].position.x,
+      _.filter(data, ['name', 'rightfoot'])[0].position.y,
+      _.filter(data, ['name', 'rightfoot'])[0].position.z,
+    );
+
+    return {
+      hands: this.lefthand.distanceTo(this.righthand),
+      feet: this.leftfoot.distanceTo(this.rightfoot),
+      leftHalf: this.lefthand.distanceTo(this.leftfoot),
+      rightHalf: this.righthand.distanceTo(this.rightfoot),
+      leftCross: this.lefthand.distanceTo(this.rightfoot),
+      rightCross: this.righthand.distanceTo(this.leftfoot),
+      leftHeadToe: this.head.distanceTo(this.leftfoot),
+      rightHeadToe: this.head.distanceTo(this.rightfoot),
+    };
+  }
+
   updateFromPN(data) {
+    this.currentPose = data;
+    this.distances = this.calculateDistances(data);
     for (let i = 0; i < data.length; i++) {
       const jointName = this.prefix + data[i].name.toLowerCase();
       if (this.getPerformer() == null) {

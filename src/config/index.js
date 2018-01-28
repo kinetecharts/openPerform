@@ -2,7 +2,7 @@ import config from './../../server/config';
 
 module.exports = {
   defaults: {
-    inputPreset: 'MeshFreshFest',
+    inputPreset: 'Default',
     outputPreset: 'Default',
     backgroundColor: 0x333333, // will be overridden by environment settings
     environment: 'Grid'
@@ -14,7 +14,7 @@ module.exports = {
 
   debug: {
     bvh: {
-      enabled: true, // load bvh file / create performer from playback
+      enabled: false, // load bvh file / create performer from playback
       files: ['models/bvh/duality_edit.bvh'],
       autoplay: true,
     },

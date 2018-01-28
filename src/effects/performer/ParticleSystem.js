@@ -77,7 +77,7 @@ class ParticleSystem {
     	}
   }
 
-  update(data) {
+  update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
       if (_.filter(this.targets, t => `robot_${t}` == d.name.toLowerCase()).length > 0) {
