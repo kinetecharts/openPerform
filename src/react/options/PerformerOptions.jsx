@@ -40,12 +40,10 @@ class PerformerOptions extends React.Component {
         </ListGroup>
       </Popover>
     );
-    if (this.props.performer == undefined) {
-      return false;
-    }
     return (
       <OverlayTrigger
           trigger={['click', 'focus']}
+          rootClose
           placement="top"
           overlay={popoverTop}
         >

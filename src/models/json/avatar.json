@@ -2871,9 +2871,7 @@
 	"materials": {
 		"shou_4:blinn1": {
 			"parameters": {
-				"ambient": 0,
 				"color": 15066597,
-				"emissive": 0,
 				"opacity": 1.0,
 				"reflectivity": 1,
 				"transparent": false,
@@ -2884,9 +2882,7 @@
 		},
 		"shou_4:blinn2": {
 			"parameters": {
-				"ambient": 0,
 				"color": 2697513,
-				"emissive": 0,
 				"opacity": 1.0,
 				"reflectivity": 1,
 				"transparent": false,
@@ -2897,9 +2893,7 @@
 		},
 		"shou_4:lambert2": {
 			"parameters": {
-				"ambient": 0,
 				"color": 0,
-				"emissive": 0,
 				"opacity": 1.0,
 				"reflectivity": 1,
 				"transparent": false,

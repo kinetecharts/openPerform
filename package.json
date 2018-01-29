@@ -60,6 +60,7 @@
     "rc-input-number": "^4.0.2",
     "react": "^16.0.0",
     "react-bootstrap": "^0.32.0",
+    "react-color": "^2.13.8",
     "react-dom": "^16.0.0",
     "react-fa": "^5.0.0",
     "react-select": "^1.0.0-rc.10",

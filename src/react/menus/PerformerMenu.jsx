@@ -7,8 +7,9 @@ import { Panel, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem, Dropdo
 
 import 'react-select/dist/react-select.css';
 
-import PerformerOptions from './../options/PerformerOptions'
-import PerformerControls from './../controls/PerformerControls'
+import PerformerOptions from './../options/PerformerOptions';
+import PerformerControls from './../controls/PerformerControls';
+import PerformerStyles from './../styles/PerformerStyles';
 import NumberInput from './../inputs/NumberInput';
 
 class PerformerMenu extends React.Component {
@@ -46,7 +47,7 @@ class PerformerMenu extends React.Component {
     this.setState({ forceUpdate: true });
   }
   addClone(performer) {
-    this.props.performers.add(`Clone_${_.size(this.props.performers.getPerformers()) + 1}`, 'clone', performer, null);
+    this.props.performers.add('Clone_' + _.size(this.props.performers.getPerformers()) + 1, 'clone_' + performer.type, performer, null);
     this.setState({ forceUpdate: true });
   }
   removeClone(performer) {
@@ -55,6 +56,10 @@ class PerformerMenu extends React.Component {
   }
   toggleVisible(performer) {
     performer.toggleVisible();
+    this.setState({ forceUpdate: true });
+  }
+  toggleWireframe(performer) {
+    performer.toggleWireframe();
     this.setState({ forceUpdate: true });
   }
   updateDelay(performer, value) {
@@ -79,58 +84,10 @@ class PerformerMenu extends React.Component {
     performer.setOffset(off);
     this.setState({ forceUpdate: true });
   }
-  renderStyleMenu(performer) {
-    const popoverTop = (
-      <Popover id="popover-positioned-scrolling-top" title="Update Style">
-        <ListGroup>
-          <ListGroupItem>
-            Type: <DropdownButton
-              dropup
-              bsStyle="default"
-              bsSize="xsmall"
-              title={performer.getType().label}
-              name="displayType"
-              id="performer-style-type-dropdown"
-              onSelect={this.changeType.bind(this, performer)}>
-              {_.map(performer.getTypes(), (type, idx) => {
-                return (<MenuItem key={idx} eventKey={idx}>{type.label}</MenuItem>);
-              })}
-            </DropdownButton>
-          </ListGroupItem>
-          <ListGroupItem>
-            Style: <DropdownButton
-              dropup
-              bsStyle="default"
-              bsSize="xsmall"
-              title={performer.getStyle()}
-              name="displayStype"
-              id="performer-style-stype-dropdown"
-              onSelect={this.changeStyle.bind(this, performer)}>
-              {_.map(performer.getStyles(), (style, idx) => {
-                return (<MenuItem key={idx} eventKey={idx}>{style}</MenuItem>);
-              })}
-            </DropdownButton>
-          </ListGroupItem>
-          <ListGroupItem title="Hide / Show" onClick={this.toggleVisible.bind(this, performer)}>
-            {(performer.getVisible()) ? <Icon name="eye" /> : <Icon name="eye-slash" />}
-          </ListGroupItem>
-        </ListGroup>
-      </Popover>
-    );
-    if (performer == undefined) {
-      return false;
-    }
-    return (
-      <td>
-        <OverlayTrigger
-          trigger={['click', 'focus']}
-          placement="top"
-          overlay={popoverTop}
-        >
-          <Icon name="paint-brush" />
-        </OverlayTrigger>
-      </td>
-    );
+  handleColorChange(performer, val) {
+    console.log(val);
+    performer.setMaterialColor(val.hex.replace(/^#/, ''));
+    this.setState({forceUpdate: true});
   }
   render() {
     if (this.props.performers.length < 1) {
@@ -166,10 +123,9 @@ class PerformerMenu extends React.Component {
                   </td>
                   <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
                   <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
-                  <td title="Type"><span>{(performer.leader !== null) ? performer.leader.name : performer.type}</span></td>
+                  <td title="Type"><span>{(performer.leader !== null && performer.leader !== undefined) ? performer.leader.name : performer.type}</span></td>
                   <td style={{border:'none'}}>
                     <PerformerOptions
-                      performer={performer}
                       offset={performer.getOffset()}
                       delay={performer.getDelay()}
                       updateOffsetX={this.updateOffsetX.bind(this, performer)}
@@ -178,7 +134,22 @@ class PerformerMenu extends React.Component {
                       updateDelay={this.updateDelay.bind(this, performer)}
                     />
                   </td>
-                  {this.renderStyleMenu(performer)}
+                  <td style={{border:'none'}}>
+                    <PerformerStyles
+                      style={performer.getStyle()}
+                      styles={performer.getStyles()}
+                      changeStyle={this.changeStyle.bind(this, performer)}
+                      type={performer.getType()}
+                      types={performer.getTypes()}
+                      changeType={this.changeType.bind(this, performer)}
+                      visible={performer.getVisible()}
+                      toggleVisible={this.toggleVisible.bind(this, performer)}
+                      wireframe={performer.getWireframe()}
+                      toggleWireframe={this.toggleWireframe.bind(this, performer)}
+                      color={performer.getMaterialColor()}
+                      handleColorChange={this.handleColorChange.bind(this, performer)}
+                    />
+                  </td>
                   <td title="Edit Effects" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)}><Icon name="bolt" /></td>
                   <td>{ (performer.type == 'clone') ?
                     <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />

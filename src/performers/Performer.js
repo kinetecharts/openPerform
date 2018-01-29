@@ -28,8 +28,7 @@ class Performer {
     this.dataBuffer = [];
     this.offset = new THREE.Vector3(0, 0, 0);
     this.delay = 0;
-    this.colors = ['#036B75', '#0x0AFCE8', '#0xFCE508', '#0xFA0AE3', '#0x260C58'];
-
+    
     this.styleInt = null;
     this.modelGeos = {};
     this.colladaScenes = {};
@@ -41,9 +40,8 @@ class Performer {
     this.leader = leader;
 
     this.performer = null;
-    this.name = `Performer ${performerId}`;
+    this.name = 'Performer ' + performerId;
     this.color = color;
-    
     
     this.prefix = 'robot_';
 
@@ -434,14 +432,9 @@ class Performer {
       result.scene.visible = false;
       console.log(result.scene);
       this.setScene(result.scene);
-      switch (source) {
-        default:
-        case 'bvh':
-        case 'clone':
-          this.getScene().scale.set(size, size, size);
-          break;
-      }
-
+      
+      this.getScene().scale.set(size, size, size);
+      
       this.setPerformer(this.parseBVHGroup(source, hide, style, intensity));
       const s = this.getScene();
       s.position.copy(this.getOffset().clone());
@@ -556,8 +549,23 @@ class Performer {
     return this.wireframe;
   }
 
-  getColor() {
+  getMaterialColor() {
     return this.color;
+  }
+
+  setMaterialColor(color) {
+    this.color = color;
+    this.updateMaterialColor();
+  }
+
+  updateMaterialColor() {
+    _.each(this.getPerformer().meshes, (parent) => {
+      parent.traverse((object) => {
+        if (object.hasOwnProperty('material')) {
+          object.material.color.set(parseInt(this.getMaterialColor(), 16));
+        }
+      });
+    });
   }
 
   getStyleInt() {
@@ -691,7 +699,7 @@ class Performer {
           } else if (object.hasOwnProperty('material')) {
             object.material = new THREE.MeshPhongMaterial();
             object.material.wireframe = this.getWireframe();
-            object.material.color.set(parseInt(this.getColor(), 16));
+            object.material.color.set(parseInt(this.getMaterialColor(), 16));
 
             object.material.needsUpdate = true;
           }
@@ -950,7 +958,7 @@ class Performer {
   setColor(color) {
     this.getScene().traverse((part) => {
       if (part.hasOwnProperty('material')) {
-        part.material.color.set(color);
+        part.material.color.set(parseInt(color, 16));
         part.material.needsUpdate = true;
       }
     });
@@ -1186,11 +1194,20 @@ class Performer {
     for (let i = 0; i < data.length; i++) {
       const jointName = this.prefix + data[i].name.toLowerCase();
       if (this.getPerformer() == null) {
+        let size = 1 / this.modelShrink;
+
+        console.log(this.type);
+        switch (this.type) {
+          case 'bvh':
+          case 'clone_bvh':
+            size = (1 / this.modelShrink) / 2;
+            break;
+        }
         this.loadPerformer(
           this.type,
           this.getType().value,
           this.hiddenParts,
-          1 / this.modelShrink,
+          size,
           this.style,
           this.intensity,
         );

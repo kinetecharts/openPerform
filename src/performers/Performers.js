@@ -108,7 +108,7 @@ class Performers {
     if (this.performers[inputId]) {
       this.performers[inputId].update(data);
       _.each(_.filter(this.performers, (p) => {
-        if (p.leader === null) {
+        if (p.leader === null || p.leader === undefined) {
           return false;
         }
         return p.leader.inputId === inputId;

@@ -320,3 +320,20 @@
 #performer-options-popover #offsetXInput {
 	
 }
+
+#colorSquare {
+	border: 1px solid black;
+	width: 15px;
+	height: 15px;
+	border-radius: 3px;
+	margin: 3px auto;
+}
+
+.styleOptionsTable td > span {
+	margin: 3px auto;
+	display: table;
+}
+
+.chrome-picker {
+	box-shadow: none !important;
+}
