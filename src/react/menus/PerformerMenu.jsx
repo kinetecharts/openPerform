@@ -46,7 +46,7 @@ class PerformerMenu extends React.Component {
     this.setState({ forceUpdate: true });
   }
   addClone(performer) {
-    this.props.performers.add(`Clone_${_.size(this.props.performers.getPerformers()) + 1}`, 'clone', null);
+    this.props.performers.add(`Clone_${_.size(this.props.performers.getPerformers()) + 1}`, 'clone', performer, null);
     this.setState({ forceUpdate: true });
   }
   removeClone(performer) {
@@ -166,7 +166,7 @@ class PerformerMenu extends React.Component {
                   </td>
                   <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
                   <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
-                  <td title="Type"><span>{performer.type}</span></td>
+                  <td title="Type"><span>{(performer.leader !== null) ? performer.leader.name : performer.type}</span></td>
                   <td style={{border:'none'}}>
                     <PerformerOptions
                       performer={performer}

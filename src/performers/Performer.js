@@ -19,7 +19,7 @@ import _ from 'lodash';
 import dat from 'dat-gui';
 
 class Performer {
-  constructor(parent, inputId, performerId, type, color, visible, actions, inputManager, outputManager) {
+  constructor(parent, inputId, performerId, type, leader, color, visible, actions, inputManager, outputManager) {
     this.inputManager = inputManager;
     this.outputManager = outputManager;
 
@@ -38,6 +38,8 @@ class Performer {
     this.parent = parent;
     this.inputId = inputId;
     this.type = type;
+    this.leader = leader;
+
     this.performer = null;
     this.name = `Performer ${performerId}`;
     this.color = color;
@@ -57,8 +59,8 @@ class Performer {
     this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
       { value: 'bvhMeshGroup', label: 'Mesh Group' },
-      { value: 'abstractLines', label: 'Abstract Lines' },
-      { value: 'stickFigure', label: 'Stick Figure' },
+      // { value: 'abstractLines', label: 'Abstract Lines' },
+      // { value: 'stickFigure', label: 'Stick Figure' },
       
       // { value: 'riggedMesh', label: 'Rigged Model' },
     ];
@@ -98,8 +100,6 @@ class Performer {
 
     this.scene = null;
     this.modelShrink = 100;
-    this.currentPose = null;
-    this.distances = null;
 
     this.bvhStructure = {
       hips: {
@@ -1127,31 +1127,6 @@ class Performer {
     return 0;
   }
 
-  update(data) {
-    this.dataBuffer.push(data);
-    // console.log(this.dataBuffer.length + " > " + this.delay);
-    if (this.dataBuffer.length > this.delay) {
-      // console.log(this.delay, this.type, this.dataBuffer.length)
-      switch (this.type) {
-        case 'perceptionNeuron':
-          this.updateFromPN(this.dataBuffer.shift());
-          break;
-        case 'bvh':
-        case 'clone':
-          this.updateFromPN(this.dataBuffer.shift());// this.updateFromBVH(data);
-          break;
-      }
-    }
-    this.performerEffects.update(this.getScene(), this.currentPose, this.distances);
-  }
-
-  // p.dataBuffer.push(data);
-  // // console.log(p.dataBuffer.length);
-  // if (p.dataBuffer.length > (500*idx)+1) {
-  //  p.update(p.dataBuffer.shift());
-  // }
-  // idx++;
-
   calculateDistances(data) {
     this.head = new THREE.Vector3();
     this.head.set(  
@@ -1199,9 +1174,15 @@ class Performer {
     };
   }
 
+  update(data) {
+    this.dataBuffer.push(data);
+    if (this.dataBuffer.length > (this.delay * 60)) { // Number of seconds * 60 fps
+      this.updateFromPN(this.dataBuffer.shift());
+    }
+    this.performerEffects.update(this.getScene(), data, this.calculateDistances(data));
+  }
+
   updateFromPN(data) {
-    this.currentPose = data;
-    this.distances = this.calculateDistances(data);
     for (let i = 0; i < data.length; i++) {
       const jointName = this.prefix + data[i].name.toLowerCase();
       if (this.getPerformer() == null) {

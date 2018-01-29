@@ -311,10 +311,10 @@ class Main extends React.Component {
     }
   }
 
-  updatePerformers(id, data, type, actions) {
+  updatePerformers(id, data, type, leader, actions) {
     if (this.performers) {
       if (!this.performers.exists(id)) {
-        this.performers.add(id, type, actions);
+        this.performers.add(id, type, leader, actions);
         this.setState({
           performers: this.performers,
           performerNames: _.map(this.performers.getPerformers(), 'name'),

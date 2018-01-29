@@ -16,7 +16,7 @@ class PerformerOptions extends React.Component {
       <Popover id="performer-options-popover" title="Update Options">
         <ListGroup>
           <ListGroupItem key={0}>
-            <h6>Offset</h6>
+            <h6>Position Offset</h6>
             <Table>
               <tbody>
                 <tr>
@@ -27,7 +27,7 @@ class PerformerOptions extends React.Component {
               </tbody>
             </Table>
           </ListGroupItem>
-          <ListGroupItem key={1}>
+          {/* <ListGroupItem key={1}>
             <h6>Delay</h6>
             <Table>
               <tbody>
@@ -36,7 +36,7 @@ class PerformerOptions extends React.Component {
                 </tr>
               </tbody>
             </Table>
-          </ListGroupItem>
+          </ListGroupItem> */}
         </ListGroup>
       </Popover>
     );

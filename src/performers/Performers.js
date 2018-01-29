@@ -31,13 +31,14 @@ class Performers {
     return _.has(this.performers, inputId);
   }
 
-  add(inputId, type, actions) {
+  add(inputId, type, leader, actions) {
     if (this.performers && !this.performers[inputId] && this.colors) {
       this.performers[inputId] = new Performer(
         this.parent,
         inputId,
         _.size(this.performers) + 1,
         type,
+        leader,
         this.colors[_.size(this.performers) % this.colors.length],
         true,
         actions,
@@ -104,14 +105,15 @@ class Performers {
   }
 
   update(inputId, data) {
-    // if (this.performers[inputId]) {
-    // 	this.performers[inputId].update(data);
-    // }
-
-    _.each(this.performers, (p) => {
-      p.update(data);
-    });
-
+    if (this.performers[inputId]) {
+      this.performers[inputId].update(data);
+      _.each(_.filter(this.performers, (p) => {
+        if (p.leader === null) {
+          return false;
+        }
+        return p.leader.inputId === inputId;
+      }), (p) => p.update(data));
+    }
     this.groupEffects.update(this.performers);
   }
 }

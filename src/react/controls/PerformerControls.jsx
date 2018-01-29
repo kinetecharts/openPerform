@@ -37,41 +37,58 @@ class PerformerControls extends React.Component {
     this.setState({ playing: false });
   }
   render() {
-    if (this.props.type.toLowerCase() !== "bvh") {
+    switch (this.props.type.toLowerCase()) {
+      default: 
+        return (
+          <Table id="controlsTable">
+            <tbody>
+              <tr>
+                <td title="Live Data">
+                  Live
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        );
+        break;
+      case 'clone':
+        return (
+          <Table id="controlsTable">
+            <tbody>
+              <tr>
+                <td title="Clone Data">
+                  Clone
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        );
+        break;
+      case 'bvh':
       return (
         <Table id="controlsTable">
           <tbody>
             <tr>
-              <td title="Live Data">
-                Live
+              <td>
+                {(this.state.playing === true) ?
+                    <Icon title="Pause" name="pause" onClick={this.playPause.bind(this)} /> :
+                    <Icon title="Play" name="play" onClick={this.playPause.bind(this)} />}
+              </td>
+              <td>
+                <Icon title="Stop" name="stop" onClick={this.stop.bind(this)} />
+              </td>
+              <td>
+                {(this.state.looping === true) ?
+                  <Icon title="No Loop" name="ban" onClick={this.loopNoLoop.bind(this)} /> :
+                  <Icon title="Loop" name="repeat" onClick={this.loopNoLoop.bind(this)} />
+                }
               </td>
             </tr>
           </tbody>
         </Table>
       );
+      break;
     }
-    return (
-      <Table id="controlsTable">
-        <tbody>
-          <tr>
-            <td>
-              {(this.state.playing === true) ?
-                  <Icon title="Pause" name="pause" onClick={this.playPause.bind(this)} /> :
-                  <Icon title="Play" name="play" onClick={this.playPause.bind(this)} />}
-            </td>
-            <td>
-              <Icon title="Stop" name="stop" onClick={this.stop.bind(this)} />
-            </td>
-            <td>
-              {(this.state.looping === true) ?
-                <Icon title="No Loop" name="ban" onClick={this.loopNoLoop.bind(this)} /> :
-                <Icon title="Loop" name="repeat" onClick={this.loopNoLoop.bind(this)} />
-              }
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-    );
   }
 }
 

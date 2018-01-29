@@ -104,7 +104,7 @@ class BVHPlayer {
       const bones = _.map(_.uniqBy(_.map(this.mixer._bindingsByRootAndName[Object.keys(this.mixer._bindingsByRootAndName)[0]], (part, key) => part.binding.targetObject), 'name'), part => this.parseFrameData(part, part.name));
 
       if (bones.length > 0) {
-        this.callback(`BVH_User_${Object.keys(this.mixer._bindingsByRootAndName)[0]}`, bones, 'bvh', {
+        this.callback(`BVH_User_${Object.keys(this.mixer._bindingsByRootAndName)[0]}`, bones, 'bvh', null, {
           play: this.play.bind(this),
           pause: this.pause.bind(this),
           stop: this.stop.bind(this),
