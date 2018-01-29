@@ -7,14 +7,15 @@ import { Panel, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem, Dropdo
 
 import 'react-select/dist/react-select.css';
 
+import PerformerOptions from './../options/PerformerOptions'
+import PerformerControls from './../controls/PerformerControls'
+import NumberInput from './../inputs/NumberInput';
 
 class PerformerMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.state = {
-      playing: true,
-      looping: true,
       forceUpdate: false,
     };
   }
@@ -32,28 +33,6 @@ class PerformerMenu extends React.Component {
       return false;
     }
     return false;
-  }
-  playPause(actions) {
-    if (this.state.playing) {
-      actions.pause();
-      this.setState({ playing: false });
-    } else {
-      actions.play();
-      this.setState({ playing: true });
-    }
-  }
-  loopNoLoop(actions) {
-    if (this.state.looping) {
-      actions.noLoop();
-      this.setState({ looping: false });
-    } else {
-      actions.loop();
-      this.setState({ looping: true });
-    }
-  }
-  stop(actions) {
-    actions.stop();
-    this.setState({ playing: false });
   }
   changeType(performer, val) {
     performer.setType(performer.getTypes()[val]);
@@ -78,12 +57,26 @@ class PerformerMenu extends React.Component {
     performer.toggleVisible();
     this.setState({ forceUpdate: true });
   }
-  updateDelay(performer, event) {
-    performer.setDelay(parseFloat(event.target.value));
+  updateDelay(performer, value) {
+    performer.setDelay(parseFloat(value));
     this.setState({ forceUpdate: true });
   }
-  updateOffset(performer, event) {
-    performer.setOffset(parseFloat(event.target.value));
+  updateOffsetX(performer, value) {
+    let off = performer.getOffset();
+    off.x = parseFloat(value);
+    performer.setOffset(off);
+    this.setState({ forceUpdate: true });
+  }
+  updateOffsetY(performer, value) {
+    let off = performer.getOffset();
+    off.y = parseFloat(value);
+    performer.setOffset(off);
+    this.setState({ forceUpdate: true });
+  }
+  updateOffsetZ(performer, value) {
+    let off = performer.getOffset();
+    off.z = parseFloat(value);
+    performer.setOffset(off);
     this.setState({ forceUpdate: true });
   }
   renderStyleMenu(performer) {
@@ -118,6 +111,9 @@ class PerformerMenu extends React.Component {
               })}
             </DropdownButton>
           </ListGroupItem>
+          <ListGroupItem title="Hide / Show" onClick={this.toggleVisible.bind(this, performer)}>
+            {(performer.getVisible()) ? <Icon name="eye" /> : <Icon name="eye-slash" />}
+          </ListGroupItem>
         </ListGroup>
       </Popover>
     );
@@ -151,7 +147,7 @@ class PerformerMenu extends React.Component {
               <Table id="performerTable">
                 <thead>
                   <tr>
-                    <th>Visible</th>
+                    <th>Control</th>
                     <th>Track</th>
                     <th>Name</th>
                     <th>Source</th>
@@ -162,20 +158,26 @@ class PerformerMenu extends React.Component {
                   </tr>
                 </thead><tbody>{
                 _.map(this.props.performers.getPerformers(), (performer, idx) => (<tr key={idx}>
-                  <td title="Hide / Show" onClick={this.toggleVisible.bind(this, performer)}>{(performer.getVisible()) ? <Icon name="eye" /> : <Icon name="eye-slash" />}</td>
+                  <td title="Control Performer" >
+                    <PerformerControls
+                      type={performer.type}
+                      actions={performer.actions}
+                    />
+                  </td>
                   <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
                   <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
                   <td title="Type"><span>{performer.type}</span></td>
-                  <td style={{border:'none'}}>{ performer.type == 'bvh' ? <Table id="controlsTable"><tbody><tr>
-                    <td title="Play / Pause">{(this.state.playing) ? <Icon name="pause" onClick={this.playPause.bind(this, performer.actions)}/> : <Icon name="play" onClick={this.playPause.bind(this, performer.actions)}/>}</td>
-                    <td title="Stop"><Icon name="stop" onClick={this.stop.bind(this, performer.actions)}/></td>
-                    {/* <td><div className={"glyphicon " + ((this.state.looping)?" glyphicon-repeat":" glyphicon-ban-circle")} onClick={this.loopNoLoop.bind(this, performer.actions)}></div></td> */}
-                    </tr></tbody></Table>
-                    : <table id="inputsTable"><tbody><tr>
-                      <td title="Playback Delay"><input onChange={this.updateDelay.bind(this, performer)} type="text" id="delayInput" value={performer.getDelay()} /></td>
-                      <td title="Offset"><input onChange={this.updateOffset.bind(this, performer)} type="text" id="offsetInput" value={performer.getOffset()} /></td>
-                    </tr></tbody></table>
-                  }</td>
+                  <td style={{border:'none'}}>
+                    <PerformerOptions
+                      performer={performer}
+                      offset={performer.getOffset()}
+                      delay={performer.getDelay()}
+                      updateOffsetX={this.updateOffsetX.bind(this, performer)}
+                      updateOffsetY={this.updateOffsetY.bind(this, performer)}
+                      updateOffsetZ={this.updateOffsetZ.bind(this, performer)}
+                      updateDelay={this.updateDelay.bind(this, performer)}
+                    />
+                  </td>
                   {this.renderStyleMenu(performer)}
                   <td title="Edit Effects" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)}><Icon name="bolt" /></td>
                   <td>{ (performer.type == 'clone') ?

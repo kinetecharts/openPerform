@@ -14,7 +14,7 @@ module.exports = {
 
   debug: {
     bvh: {
-      enabled: false, // load bvh file / create performer from playback
+      enabled: true, // load bvh file / create performer from playback
       files: ['models/bvh/duality_edit.bvh'],
       autoplay: true,
     },

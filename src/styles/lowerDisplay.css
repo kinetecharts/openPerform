@@ -121,6 +121,10 @@
 	margin-top:-200%;
 }
 
+#performerTable td {
+	padding: 3px;
+}
+
 .performerMenu ul {
 	list-style: none;
 	padding: 0;
@@ -292,4 +296,27 @@
 	position: relative;
     display: block;
     width: 100%;
+}
+
+#performer-pn-options {
+	cursor: pointer;
+	background: none;
+	margin: 0;
+}
+
+#performer-pn-options td {
+	border: none;
+	padding: 3px;
+}
+
+#playbackDelay, #offset {
+	padding: 0 5px;
+}
+
+.rc-input-number {
+	height: 28px;
+}
+
+#performer-options-popover #offsetXInput {
+	
 }

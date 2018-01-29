@@ -57,6 +57,7 @@
     "myo": "^3.0.0",
     "net": "^1.0.2",
     "node-neurosky": "0.0.1",
+    "rc-input-number": "^4.0.2",
     "react": "^16.0.0",
     "react-bootstrap": "^0.32.0",
     "react-dom": "^16.0.0",

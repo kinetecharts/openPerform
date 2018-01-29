@@ -26,7 +26,7 @@ class Performer {
     this.actions = actions;
 
     this.dataBuffer = [];
-    this.offset = 0;
+    this.offset = new THREE.Vector3(0, 0, 0);
     this.delay = 0;
     this.colors = ['#036B75', '#0x0AFCE8', '#0xFCE508', '#0xFA0AE3', '#0x260C58'];
 
@@ -57,6 +57,9 @@ class Performer {
     this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
       { value: 'bvhMeshGroup', label: 'Mesh Group' },
+      { value: 'abstractLines', label: 'Abstract Lines' },
+      { value: 'stickFigure', label: 'Stick Figure' },
+      
       // { value: 'riggedMesh', label: 'Rigged Model' },
     ];
 
@@ -98,7 +101,7 @@ class Performer {
     this.currentPose = null;
     this.distances = null;
 
-    const bvhStructure = {
+    this.bvhStructure = {
       hips: {
         rightupleg: {
           rightleg: {
@@ -206,6 +209,7 @@ class Performer {
       },
     };
 
+    this.bvhKeys = Common.getKeys(this.bvhStructure, '');
 
     this.hiddenParts = [
       // "hips"
@@ -344,6 +348,12 @@ class Performer {
       case 'riggedMesh':
         this.loadColladaBody(source, './models/dae/neuron-bones.dae', hide, size, style, intensity);
         break;
+      case 'abstractLines':
+        this.createAbstractLines(source, '', hide, size, style, intensity);
+        break;
+      case 'stickFigure':
+        this.createStickFigure(source, '', hide, size, style, intensity);
+        break;
     }
   }
 
@@ -422,6 +432,7 @@ class Performer {
     
     loader.load(filename, (result) => {
       result.scene.visible = false;
+      console.log(result.scene);
       this.setScene(result.scene);
       switch (source) {
         default:
@@ -433,13 +444,68 @@ class Performer {
 
       this.setPerformer(this.parseBVHGroup(source, hide, style, intensity));
       const s = this.getScene();
-      s.position.x = this.offset;
+      s.position.copy(this.getOffset().clone());
       this.parent.add(s);
       this.addEffects([
         /*this.effects[2], */
         // this.effects[6] // Midi Streamer
       ]);// defaults
     });
+  }
+
+  createStickFigure(source, filename, hide, size, style, intensity) {
+  }
+
+  createAbstractLines(source, filename, hide, size, style, intensity) {
+    // this.setScene(result.scene);
+    // this.parent.add(s);
+
+    var geometry = new THREE.BufferGeometry();
+    var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
+    var indices = [];
+    var positions = [];
+    var colors = [];
+    
+    positions.push( 0, 0, 0 );
+    colors.push( Math.random() * 0.5 + 0.5, Math.random() * 0.5 + 0.5, 1 );
+    indices.push( 0, 0 + 1 );
+    positions.push( 10, 0, 0 );
+    colors.push( Math.random() * 0.5 + 0.5, Math.random() * 0.5 + 0.5, 1 );
+    indices.push( 1, 1 + 1 );
+    
+    geometry.setIndex( indices );
+    geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+    geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+    geometry.computeBoundingSphere();
+    var mesh = new THREE.LineSegments( geometry, material );
+    
+    // this.setScene(mesh);
+    // this.parent.add(mesh);
+
+  const scene = new THREE.Object3D();
+  scene.add(mesh);
+  this.setScene(scene);
+  switch (source) {
+    default:
+      case 'bvh':
+      case 'clone':
+      this.getScene().scale.set(size, size, size);
+      break;
+  }
+
+  this.setPerformer({
+    keys: this.bvhKeys,
+    meshes: {},
+    newMeshes: {},
+    scene: scene,
+  });
+  const s = this.getScene();
+  s.position.copy(this.getOffset().clone());
+  this.parent.add(s);
+  this.addEffects([
+    /*this.effects[2], */
+    // this.effects[6] // Midi Streamer
+  ]);// defaults
   }
 
   setPerformer(performer) {
@@ -613,8 +679,7 @@ class Performer {
         this.getScene().traverse((object) => {
           if (object.name.toLowerCase().match(/robot_/g)) {
             meshes[object.name.toLowerCase()] = object;
-            keys[object.name.toLowerCase()] = object.name.toLowerCase();
-
+            
             if (_.some(hide, el => _.includes(object.name.toLowerCase(), el))) {
               object.visible = false;
             } else {
@@ -773,7 +838,7 @@ class Performer {
     ));
   this.getScene().visible=true;
     return {
-      keys: Common.getKeys(keys, ''),
+      keys: this.bvhKeys,
       meshes,
       newMeshes,
       scene,
@@ -842,7 +907,7 @@ class Performer {
   setOffset(val) {
     this.offset = val;
     const s = this.getScene();
-    s.position.x = this.getOffset();
+    s.position.copy(this.getOffset().clone());
   }
 
   getDelay() {
@@ -868,116 +933,8 @@ class Performer {
 
   randomizeAll(switchTime) {
     // var parts = ['head', 'leftshoulder', 'rightshoulder', 'leftupleg',  'rightupleg'];
-    const bvhStructure = {
-      hips: {
-        rightupleg: {
-          rightleg: {
-            rightfoot: {},
-          },
-        },
-        leftupleg: {
-          leftleg: {
-            leftfoot: {},
-          },
-        },
-        spine: {
-          spine1: {
-            spine2: {
-              spine3: {
-                neck: {
-                  head: {},
-                },
-                rightshoulder: {
-                  rightarm: {
-                    rightforearm: {
-                      righthand: {
-                        righthandthumb1: {
-                          righthandthumb2: {
-                            righthandthumb3: {},
-                          },
-                        },
-                        rightinhandindex: {
-                          righthandindex1: {
-                            righthandindex2: {
-                              righthandindex3: {},
-                            },
-                          },
-                        },
-                        rightinhandmiddle: {
-                          righthandmiddle1: {
-                            righthandmiddle2: {
-                              righthandmiddle3: {},
-                            },
-                          },
-                        },
-                        rightinhandring: {
-                          righthandring1: {
-                            righthandring2: {
-                              righthandring3: {},
-                            },
-                          },
-                        },
-                        rightinhandpinky: {
-                          righthandpinky1: {
-                            righthandpinky2: {
-                              righthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                leftshoulder: {
-                  leftarm: {
-                    leftforearm: {
-                      lefthand: {
-                        lefthandthumb1: {
-                          lefthandthumb2: {
-                            lefthandthumb3: {},
-                          },
-                        },
-                        leftinhandindex: {
-                          lefthandindex1: {
-                            lefthandindex2: {
-                              lefthandindex3: {},
-                            },
-                          },
-                        },
-                        leftinhandmiddle: {
-                          lefthandmiddle1: {
-                            lefthandmiddle2: {
-                              lefthandmiddle3: {},
-                            },
-                          },
-                        },
-                        leftinhandring: {
-                          lefthandring1: {
-                            lefthandring2: {
-                              lefthandring3: {},
-                            },
-                          },
-                        },
-                        leftinhandpinky: {
-                          lefthandpinky1: {
-                            lefthandpinky2: {
-                              lefthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-
-    const parts = Common.getKeys(bvhStructure, '');
-    _.each(parts, (part) => {
+    
+    _.each(this.bvhKeys, (part) => {
       this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3), switchTime);
     });
     if (this.scaleInterval) {
@@ -1044,116 +1001,8 @@ class Performer {
     if (this.scaleInterval) {
       clearInterval(this.scaleInterval);
     }
-    const bvhStructure = {
-      hips: {
-        rightupleg: {
-          rightleg: {
-            rightfoot: {},
-          },
-        },
-        leftupleg: {
-          leftleg: {
-            leftfoot: {},
-          },
-        },
-        spine: {
-          spine1: {
-            spine2: {
-              spine3: {
-                neck: {
-                  head: {},
-                },
-                rightshoulder: {
-                  rightarm: {
-                    rightforearm: {
-                      righthand: {
-                        righthandthumb1: {
-                          righthandthumb2: {
-                            righthandthumb3: {},
-                          },
-                        },
-                        rightinhandindex: {
-                          righthandindex1: {
-                            righthandindex2: {
-                              righthandindex3: {},
-                            },
-                          },
-                        },
-                        rightinhandmiddle: {
-                          righthandmiddle1: {
-                            righthandmiddle2: {
-                              righthandmiddle3: {},
-                            },
-                          },
-                        },
-                        rightinhandring: {
-                          righthandring1: {
-                            righthandring2: {
-                              righthandring3: {},
-                            },
-                          },
-                        },
-                        rightinhandpinky: {
-                          righthandpinky1: {
-                            righthandpinky2: {
-                              righthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                leftshoulder: {
-                  leftarm: {
-                    leftforearm: {
-                      lefthand: {
-                        lefthandthumb1: {
-                          lefthandthumb2: {
-                            lefthandthumb3: {},
-                          },
-                        },
-                        leftinhandindex: {
-                          lefthandindex1: {
-                            lefthandindex2: {
-                              lefthandindex3: {},
-                            },
-                          },
-                        },
-                        leftinhandmiddle: {
-                          lefthandmiddle1: {
-                            lefthandmiddle2: {
-                              lefthandmiddle3: {},
-                            },
-                          },
-                        },
-                        leftinhandring: {
-                          lefthandring1: {
-                            lefthandring2: {
-                              lefthandring3: {},
-                            },
-                          },
-                        },
-                        leftinhandpinky: {
-                          lefthandpinky1: {
-                            lefthandpinky2: {
-                              lefthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    };
 
-    const parts = Common.getKeys(bvhStructure, '');
-    _.each(parts, (partname) => {
+    _.each(this.bvhKeys, (partname) => {
       const part = this.getPerformer().meshes[`robot_${partname}`];
       part.scale.set(1, 1, 1);
     });

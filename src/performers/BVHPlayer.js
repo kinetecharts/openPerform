@@ -13,6 +13,8 @@ class BVHPlayer {
     this.callback = callback;
 
     this.autoplay = autoplay;
+    this.playing = false;
+    this.looping = false;
 
     this.clock = new THREE.Clock();
 
@@ -31,25 +33,39 @@ class BVHPlayer {
   play() {
     if (this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).paused == false) {
       this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).play();
+      this.playing = true;
     } else {
       this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).paused = false;
+      this.playing = false;
     }
   }
 
   pause() {
     this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).paused = true;
+    this.playing = false;
   }
 
   stop() {
     this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).stop();
+    this.playing = false;
   }
 
   loop() {
     this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).setLoop(THREE.LoopRepeat);
+    this.looping = true;
   }
 
   noLoop() {
     this.mixer.clipAction(this.clip).setEffectiveWeight(1.0).setLoop(THREE.LoopOnce, 0);
+    this.looping = false;
+  }
+
+  getPlay() {
+    return this.playing;
+  }
+
+  getLoop() {
+    return this.looping;
   }
 
   loadBVH(bvhFile) {
@@ -94,6 +110,8 @@ class BVHPlayer {
           stop: this.stop.bind(this),
           loop: this.loop.bind(this),
           noLoop: this.noLoop.bind(this),
+          playing: this.playing,
+          looping: this.looping,
         });
       }
     }
