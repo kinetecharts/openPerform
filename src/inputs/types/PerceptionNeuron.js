@@ -37,6 +37,7 @@ class PerceptionNeuron {
   }
 
   onMessage(msg) {
+    // build consistent list of bone names
     const bvhStructure = {
       hips: {
         rightupleg: {
@@ -145,27 +146,22 @@ class PerceptionNeuron {
       },
     };
 
-    this.boneNames = Common.getKeys(bvhStructure, '');
-    // this.boneNames = _.shuffle(this.boneNames);
-
-    const datas = JSON.parse(msg.data);
-    _.each(datas, (data, key) => {
-      var data = data.split(' ');
+    this.boneNames = Common.getKeys(bvhStructure, ''); // compile to array
+    
+    const datas = JSON.parse(msg.data); // parse each perfomrer stream
+    _.each(datas, (data, key) => { //loop through performers
+      var data = data.split(' '); // list of float values, total of 59. Each position x, y, x followed by euler x, y, x
       const bones = [];
 
-      bones.push(this.parseFrameData(data.slice(0, 6), this.boneNames[0]));
+      bones.push(this.parseFrameData(data.slice(0, 6), this.boneNames[0])); // hips position
 
       let idx = 1;
-      for (let i = idx * 6; i < data.length; i += 6) {
+      for (let i = idx * 6; i < data.length; i += 6) { // loop the rest of the bones
         bones.push(this.parseFrameData(data.slice(i, i + 6), this.boneNames[idx]));
         idx++;
       }
 
       this.callbacks.message(`PN_User_${key}`, bones, 'perceptionNeuron');
-      // bones[0].position.x += 100;
-      // this.callbacks["message"]('PN_User_2', bones, 'perceptionNeuron');
-      // bones[0].position.x += 100;
-      // this.callbacks["message"]('PN_User_2', bones, 'perceptionNeuron');
     });
   }
 
@@ -191,24 +187,24 @@ class PerceptionNeuron {
   }
 
   parseFrameData(data, name) {
-    const keyframe = {
-      name,
-      position: { x: 0, y: 1, z: 2 },
-      quaternion: new THREE.Quaternion(),
-      rotation: new THREE.Euler(data[3], data[4], data[5], 'XYZ'),
+    const keyframe = { // setup default data obj
+      name, // bone name from bvhStructure
+      position: { x: 0, y: 1, z: 2 }, //default
+      quaternion: new THREE.Quaternion(), //default
+      rotation: new THREE.Euler(data[3], data[4], data[5], 'XYZ'), //default
     };
+
+    // parse values for each channel in node
+
+    keyframe.position.x = parseFloat(data[0]); //set position values from data stream
+    keyframe.position.y = parseFloat(data[1]);
+    keyframe.position.z = parseFloat(data[2]);
 
     const quat = new THREE.Quaternion();
 
     const vx = new THREE.Vector3(1, 0, 0);
     const vy = new THREE.Vector3(0, 1, 0);
     const vz = new THREE.Vector3(0, 0, 1);
-
-    // parse values for each channel in node
-
-    keyframe.position.x = parseFloat(data[0]);
-    keyframe.position.y = parseFloat(data[1]);
-    keyframe.position.z = parseFloat(data[2]);
 
     quat.setFromAxisAngle(vy, parseFloat(data[3]) * Math.PI / 180);
     keyframe.quaternion.multiply(quat);
