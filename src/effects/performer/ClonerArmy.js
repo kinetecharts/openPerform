@@ -4,7 +4,8 @@ import TWEEN from 'tween'
 import config from './../../config'
 
 class ClonerArmy {
-	constructor(parent, color, guiFolder) {
+	constructor(effectId, parent, color, guiFolder) {
+		this.id = effectId;
 		this.name = 'clonerArmy';
 		this.parent = parent;
 		this.color = color;

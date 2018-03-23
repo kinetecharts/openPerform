@@ -1,27 +1,36 @@
+import React from 'react';
 import _ from 'lodash';
+
+import DatGui, { DatNumber, DatBoolean } from 'react-dat-gui';
+import datGuiCss from 'react-dat-gui/build/react-dat-gui.css';
+
 import TWEEN from 'tween';
 
 import config from './../../config';
 
 class Cloner {
-  constructor(parent, color, guiFolder) {
+  constructor(effectId, parent, color) {
+    this.id = effectId;
     this.name = 'cloner';
     this.parent = parent;
     this.color = color;
-    this.guiFolder = guiFolder;
+    
     this.performer = null;
     this.clones = [];
     this.cloneInterval = null;
     this.lastClick = 0;
     this.clickCount = 0;
 
-    this.cloneRate = 0.25;
-    this.cloneLife = 1.25;
-    this.cloneSize = 1;
+    this.options = {
+      cloneRate: 0.25,
+      cloneLife: 1.25,
+      cloneSize: 1,
+      isPlaying: true,
+    };
 
-    this.addToDatGui(this.guiFolder);
-
-    this.updateCloneRate(this.cloneRate);
+    if (this.options.isPlaying == true) {
+      this.updateCloneRate(this.options.cloneRate);
+    }
   }
 
   updateCloneRate(val) {
@@ -31,43 +40,20 @@ class Cloner {
     this.cloneInterval = setInterval(this.clonePerformer.bind(this), 1000 * val);
   }
 
-  addToDatGui(guiFolder) {
-    const f = guiFolder.addFolder('Cloner');
-    const tapButton = {
-      add: function () {
-        const d = new Date();
-        const t = d.getTime();
-        const clickDiff = t - this.lastClick;
-
-        if (this.clickCount == 3) {
-          console.log(clickDiff / 1000);
-          this.cloneRate = clickDiff / 1000;
-          this.clickCount = 0;
-        }
-
-        this.lastClick = t;
-        this.clickCount++;
-      }.bind(this),
-    };
-    f.add(tapButton, 'add').name('Tap to set clone rate');
-    f.add(this, 'cloneRate', 0.25, 10).step(0.25).listen().onChange(this.updateCloneRate.bind(this));
-    f.add(this, 'cloneLife', 0.25, 10).step(0.25).listen();
-    f.add(this, 'cloneSize', 0.25, 10).step(0.25).listen();
-
-    const cloneButton = {
-      add: function () {
-        this.clonePerformer.bind(this);
-      }.bind(this),
-    };
-    f.add(cloneButton, 'add').name('Create clone');
+  stopCloning() {
+    if (this.cloneInterval) {
+      clearInterval(this.cloneInterval);
+    }
   }
 
   clonePerformer() {
     if (this.performer) {
       var clone = this.performer.clone();
-      clone.scale.set(clone.scale.x * this.cloneSize, clone.scale.y * this.cloneSize, clone.scale.z * this.cloneSize);
+      clone.scale.set(clone.scale.x * this.options.cloneSize, clone.scale.y * this.options.cloneSize, clone.scale.z * this.options.cloneSize);
       clone.traverse((part) => {
         if (part instanceof THREE.Mesh) {
+          part.castShadow = false;
+          part.receiveShadow = false;
           part.material = part.material.clone();
           part.material.opacity = 0.15;
           part.material.transparent = true;
@@ -86,7 +72,7 @@ class Cloner {
       clone.traverse((part) => {
         if (part instanceof THREE.Mesh) {
           new TWEEN.Tween({ opacity: part.material.opacity })
-            .to({ opacity: 0 }, this.cloneLife * 1000)
+            .to({ opacity: 0 }, this.options.cloneLife * 1000)
             .onUpdate(function () {
               part.material.opacity = this.opacity;
             })
@@ -100,7 +86,6 @@ class Cloner {
         }
       });
     }
-    // }.bind(this), this.cloneLife*1000);
   }
 
   remove() {
@@ -110,24 +95,65 @@ class Cloner {
       this.parent.remove(clone);
       clone = null;
     });
-    this.guiFolder.removeFolder('Cloner');
   }
 
   updateParameters(data) {
     switch (data.parameter) {
-    		case 'rate':
-    			this.cloneRate = (data.value * 10) + 0.25;
-    			this.updateCloneRate(this.cloneRate);
-    			break;
-    		case 'life':
-        this.cloneLife = (data.value * 10) + 0.25;
-    			break;
-    	}
+      default:
+      case 'rate':
+        this.options.cloneRate = (data.value * 10) + 0.25;
+        this.updateCloneRate(this.options.cloneRate);
+        break;
+      case 'life':
+        this.options.cloneLife = (data.value * 10) + 0.25;
+        break;
+    }
+  }
+
+  updateOptions(data) {
+    
+    this.options.isPlaying = data.isPlaying;
+    this.options.cloneRate = data.cloneRate;
+    this.options.cloneLife = data.cloneLife;
+    this.options.cloneSize = data.cloneSize;
+
+    if (this.options.isPlaying) {
+      this.updateCloneRate(this.options.cloneRate);
+    } else {
+      this.stopCloning();
+    }
+    
+    this.options.isPlaying = data.isPlaying;
+
   }
 
   update(data, currentPose, distances) {
     this.performer = data;
   }
+
+  getGUI() {
+    return <GUI data={{thickness:0.5}} updateOptions={this.updateOptions.bind(this)} />;
+  }
 }
 
 module.exports = Cloner;
+
+class GUI extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {};
+  }
+  render() {
+    return (
+      <div>
+        <DatGui data={this.props.data} onUpdate={this.props.updateOptions.bind(this)}>
+          <DatNumber min={0.5} max={10} step={0.5} path='cloneRate' label='Clone Rate' />
+          <DatNumber min={0.5} max={10} step={0.5} path='cloneLife' label='Clone Life' />
+          <DatNumber min={0.5} max={10} step={0.5} path='cloneSize' label='Clone Size' />
+          <DatBoolean path='isPlaying' label='Playing' />
+        </DatGui>
+      </div>
+    );
+  }
+}

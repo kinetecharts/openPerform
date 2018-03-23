@@ -7,10 +7,11 @@ import { Panel, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem, Dropdo
 
 import 'react-select/dist/react-select.css';
 
-import PerformerOptions from './../options/PerformerOptions';
+import PerformerTranslate from './../options/PerformerTranslate';
 import PerformerControls from './../controls/PerformerControls';
 import PerformerStyles from './../styles/PerformerStyles';
 import NumberInput from './../inputs/NumberInput';
+import PerformerEffects from './../effects/PerformerEffects';
 
 class PerformerMenu extends React.Component {
   constructor(props) {
@@ -40,9 +41,10 @@ class PerformerMenu extends React.Component {
     this.setState({ forceUpdate: true });
   }
   changeStyle(performer, val) {
-    performer.updateStyle(performer.getStyles()[val]);
     if (val === 0) { // reset model to default
-      performer.setType(performer.getType());
+      performer.clearPerformer();
+    } else {
+      performer.updateStyle(performer.getStyles()[val]);
     }
     this.setState({ forceUpdate: true });
   }
@@ -85,17 +87,30 @@ class PerformerMenu extends React.Component {
     this.setState({ forceUpdate: true });
   }
   handleColorChange(performer, val) {
-    console.log(val);
     performer.setMaterialColor(val.hex.replace(/^#/, ''));
     this.setState({forceUpdate: true});
   }
+  handleMaterialChange(performer, val) {
+    performer.setMaterial(performer.getMaterials()[val]);
+    performer.updateMaterial();
+    
+    this.setState({forceUpdate: true});
+  }
+  handleChangeEffect(performer, val) {
+    performer.performerEffects.removeAll();
+    if (val !== 0) {
+      performer.performerEffects.add(performer.effects[val - 1]);
+    }
+    this.setState({
+      forceUpdate: true
+    });
+  } 
   render() {
     if (this.props.performers.length < 1) {
       return false;
     }
-
     return (
-      <Panel className="performerMenu" defaultExpanded>
+      <Panel className="performerMenu" /* defaultExpanded */>
         <Panel.Heading>
 					<Panel.Title toggle><h5>Performers</h5></Panel.Title>
 				</Panel.Heading>
@@ -108,9 +123,9 @@ class PerformerMenu extends React.Component {
                     <th>Track</th>
                     <th>Name</th>
                     <th>Source</th>
-                    <th>Options</th>
+                    <th>Translate</th>
                     <th>Style</th>
-                    <th>Effects</th>
+                    <th>Effect</th>
                     <th>Clone</th>
                   </tr>
                 </thead><tbody>{
@@ -124,8 +139,8 @@ class PerformerMenu extends React.Component {
                   <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
                   <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
                   <td title="Type"><span>{(performer.leader !== null && performer.leader !== undefined) ? performer.leader.name : performer.type}</span></td>
-                  <td style={{border:'none'}}>
-                    <PerformerOptions
+                  <td>
+                    <PerformerTranslate
                       offset={performer.getOffset()}
                       delay={performer.getDelay()}
                       updateOffsetX={this.updateOffsetX.bind(this, performer)}
@@ -134,7 +149,7 @@ class PerformerMenu extends React.Component {
                       updateDelay={this.updateDelay.bind(this, performer)}
                     />
                   </td>
-                  <td style={{border:'none'}}>
+                  <td>
                     <PerformerStyles
                       style={performer.getStyle()}
                       styles={performer.getStyles()}
@@ -148,10 +163,21 @@ class PerformerMenu extends React.Component {
                       toggleWireframe={this.toggleWireframe.bind(this, performer)}
                       color={performer.getMaterialColor()}
                       handleColorChange={this.handleColorChange.bind(this, performer)}
+                      material={performer.getMaterial()}
+                      materials={performer.getMaterials()}
+                      handleMaterialChange={this.handleMaterialChange.bind(this, performer)}
                     />
                   </td>
-                  <td title="Edit Effects" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)}><Icon name="bolt" /></td>
-                  <td>{ (performer.type == 'clone') ?
+                  {/* <td title="Edit Effects"><div className="glyphicon glyphicon-fire" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)} /></td> */}
+                  <td title="Edit Effects">
+                    <PerformerEffects
+                      effects={performer.effects}
+                      effect={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].id : 'none'}
+                      changeEffect={this.handleChangeEffect.bind(this, performer)}
+                      gui={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].getGUI() : null}
+                    />
+                  </td>
+                  <td>{ (performer.type == 'clone_bvh') ?
                     <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
                   : <Icon name="plus" title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />
                   }</td>

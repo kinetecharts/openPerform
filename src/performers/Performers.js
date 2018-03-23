@@ -113,8 +113,8 @@ class Performers {
         }
         return p.leader.inputId === inputId;
       }), (p) => p.update(data));
+      this.groupEffects.update(this.performers);
     }
-    this.groupEffects.update(this.performers);
   }
 }
 

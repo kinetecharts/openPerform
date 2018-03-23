@@ -48,9 +48,9 @@ class PerformerStyles extends React.Component {
       </Popover>
     );
     const popoverTop = (
-      <Popover id="popover-positioned-scrolling-top" title="Update Style">
+      <Popover id="performer-styles-popover" title="Style">
         <ListGroup>
-          <ListGroupItem>
+          {/* <ListGroupItem>
             Type: <DropdownButton
               dropup
               bsStyle="default"
@@ -63,15 +63,15 @@ class PerformerStyles extends React.Component {
                 return (<MenuItem key={idx} eventKey={idx}>{type.label}</MenuItem>);
               })}
             </DropdownButton>
-          </ListGroupItem>
+          </ListGroupItem> */}
           <ListGroupItem>
-            Style: <DropdownButton
+            Geometry: <DropdownButton
               dropup
               bsStyle="default"
               bsSize="xsmall"
               title={this.props.style}
               name="displayStype"
-              id="performer-style-stype-dropdown"
+              id="performer-style-type-dropdown"
               onSelect={this.props.changeStyle}>
               {_.map(this.props.styles, (style, idx) => {
                 return (<MenuItem key={idx} eventKey={idx}>{style}</MenuItem>);
@@ -79,14 +79,28 @@ class PerformerStyles extends React.Component {
             </DropdownButton>
           </ListGroupItem>
           <ListGroupItem>
-              <Table className="styleOptionsTable">
+            Material: <DropdownButton
+                dropup
+                bsStyle="default"
+                bsSize="xsmall"
+                title={this.props.material}
+                name="displayMaterial"
+                id="performer-material-type-dropdown"
+                onSelect={this.props.handleMaterialChange}>
+                {_.map(this.props.materials, (mat, idx) => {
+                  return (<MenuItem key={idx} eventKey={idx}>{mat}</MenuItem>);
+                })}
+              </DropdownButton>
+              <Table className="styleMaterialsTable">
                 <tbody>
                   <tr>
                     <td title="Hide / Show" onClick={this.props.toggleVisible}>
                       {(this.props.visible) ? <Icon name="eye" /> : <Icon name="eye-slash" />}
+                      <span>Visible</span>
                     </td>
                     <td title="Wireframe" onClick={this.props.toggleWireframe}>
                       {(this.props.wireframe) ? <Icon name="circle-o" /> : <Icon name="circle" />}
+                      <span>Wireframe</span>
                     </td>
                     <td title="Color Picker">
                       <OverlayTrigger
@@ -99,6 +113,7 @@ class PerformerStyles extends React.Component {
                           backgroundColor:'#'+this.props.color.toString(16)
                         }}></div>
                       </OverlayTrigger>
+                      <span>Color</span>
                     </td>
                   </tr>
                 </tbody>

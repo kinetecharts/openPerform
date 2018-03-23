@@ -6,6 +6,8 @@ import IslandEnvironment from './islandEnvironment';
 import GridEnvironment from './gridEnvironment';
 import GradientEnvironment from './gradientEnvironment';
 import WaterEnvironment from './waterEnvironment';
+import SimpleAREnvironment from './simpleAREnvironment';
+import ForestEnvironment from './forestEnvironment';
 
 import config from './../config';
 
@@ -14,7 +16,11 @@ class Environments {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
+    this.defaultEnvironment = 'simpleAR';
 
+    this.currentEnvironment = this.defaultEnvironment;
+
+    this.availEnvironments = [/*'muse', 'island', 'water', */'forest', 'grid-dark', /*'grid-light', 'gradient',*/ 'simpleAR'];
     this.environments = [];
 
     this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
@@ -22,16 +28,23 @@ class Environments {
     // this.guiFolder = this.gui.addFolder('Environments');
     // this.guiFolder.open();
 
-    this.add('grid-dark'); // default
+    this.add(this.defaultEnvironment); // default
   }
 
   getEnvironments() {
     return this.environments;
   }
 
+  updateEnvironment(val) {
+    this.add(this.availEnvironments[val]);
+  }
+
   add(type) {
     this.removeAll();
     switch (type) {
+      case 'forest':
+        this.environments.push(new ForestEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
+        break;
       case 'muse':
         this.environments.push(new MuseEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'dark'));
         break;
@@ -50,7 +63,11 @@ class Environments {
       case 'gradient':
         this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
         break;
+      case 'simpleAR':
+        this.environments.push(new SimpleAREnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
+        break;
     }
+    this.currentEnvironment = type;
   }
 
   removeAll() {

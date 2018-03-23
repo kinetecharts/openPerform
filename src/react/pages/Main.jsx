@@ -1,21 +1,20 @@
 import React from 'react';
 import ConsoleLogHTML from 'console-log-html';
 
+import WEBVR from './../../three/vr/WebVR';
+
 import { Grid, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import InputMenu from './../menus/InputMenu';
-import MidiMenu from './../menus/MidiMenu';
+import IOMenu from './../menus/IOMenu';
 import PerformerMenu from './../menus/PerformerMenu';
 import EnvironmentMenu from './../menus/EnvironmentMenu';
 import CameraMenu from './../menus/CameraMenu';
-import StatsMenu from './../menus/StatsMenu';
+import DebugMenu from './../menus/DebugMenu';
 import VRMenu from './../menus/VRMenu';
+import ARMenu from './../menus/ARMenu';
 
 import KeyboardHelpModal from './../modals/KeyboardHelpModal';
-import PerformerEffectsModal from './../modals/PerformerEffectsModal';
-import GroupEffectsModal from './../modals/GroupEffectsModal';
-import EnvironmentSettingsModal from './../modals/EnvironmentSettingsModal';
 
 import Scene from './../../three/scene';
 import InputManager from './../../inputs';
@@ -64,10 +63,15 @@ class Main extends React.Component {
       this.state.debug.stats,
       this.performers,
       this.state.defaults.backgroundColor,
+      this.sceneInit.bind(this),
     );
+  }
 
-    this.performers.init(this.state.scene.scene);
+  sceneInit(scene) {
+    this.performers.init(this.state.scene.sceneGroup);
     this.state.environments = this.state.scene.environments;
+    this.state.availEnvironments = this.state.scene.availEnvironments;
+    this.state.currentEnvironment = this.state.scene.currentEnvironment;
 
     if (this.state.debug.bvh.enabled) {
       _.each(this.BVHFiles, (file) => {
@@ -96,6 +100,10 @@ class Main extends React.Component {
         div.scrollTop = div.scrollHeight;
       }, 1000);
     }
+
+    this.setState({
+      isVR: WEBVR.isAvailable()
+    });
   }
 
   setColor(id) {
@@ -161,7 +169,7 @@ class Main extends React.Component {
   addBVHPerformer(modelPath, autoplay) {
     const bvhPlayer = new BVHPlayer(
       modelPath,
-      this.state.scene.scene,
+      this.state.scene.sceneGroup,
       autoplay,
       this.updatePerformers.bind(this),
     );
@@ -425,8 +433,11 @@ class Main extends React.Component {
           <Grid fluid><Row><Col id="consoleOutput" xs={12} md={12} /></Row></Grid>
           <Grid fluid id="page">
             <Row className="row-third-height" id="upperDisplay">
-              <Col xs={4} md={4}>
-                <StatsMenu />
+              <Col xs={2} md={2}>
+                <DebugMenu />
+              </Col>
+              <Col xs={2} md={2}>
+                <ARMenu active={this.state.isAR} />
               </Col>
               <Col xs={4} md={4}>
                 <CameraMenu
@@ -436,30 +447,29 @@ class Main extends React.Component {
                   trackedPerformer={this.state.trackedPerformer}
                 />
               </Col>
-              <Col xs={2} md={2}>
-                <MidiMenu
-                  changePreset={this.changeOutputPreset.bind(this)}
-                  currentPreset={(this.state.currentOutputPreset === null) ?
+              <Col xs={4} md={4}>
+                <IOMenu
+                  // inputs
+                  openKeyboardModal={this.openKeyboardModal.bind(this)}
+                  changeInputPreset={this.changeInputPreset.bind(this)}
+                  currentInputPreset={(this.state.currentInputPreset === null) ?
+                    this.state.defaults.inputPreset :
+                    this.state.currentInputPreset}
+                  inputPresets={this.state.inputPresets}
+                  inputs={this.state.inputs}
+
+                  // outputs
+                  changeOutputPreset={this.changeOutputPreset.bind(this)}
+                  currentOutputPreset={(this.state.currentOutputPreset === null) ?
                     this.state.defaults.outputPreset :
                     this.state.currentOutputPreset}
-                  presets={this.state.outputPresets}
+                  outputPresets={this.state.outputPresets}
                   changeMidiDevice={this.changeMidiDevice.bind(this)}
                   currentMidiDevice={this.state.currentMidiDevice}
                   midiDevices={this.state.midiDevices}
                   currentMidiChannel={this.state.currentMidiChannel}
                   changeMidiChannel={this.changeMidiChannel.bind(this)}
                   sendMidiTest={this.sendMidiTest.bind(this)}
-                  />
-              </Col>
-              <Col xs={2} md={2}>
-                <InputMenu
-                  openKeyboardModal={this.openKeyboardModal.bind(this)}
-                  changePreset={this.changeInputPreset.bind(this)}
-                  currentPreset={(this.state.currentInputPreset === null) ?
-                    this.state.defaults.inputPreset :
-                    this.state.currentInputPreset}
-                  presets={this.state.inputPresets}
-                  inputs={this.state.inputs}
                   />
               </Col>
             </Row>
@@ -473,11 +483,14 @@ class Main extends React.Component {
                 />
               </Col>
               <Col className="bottom-column" xs={4} md={4}>
-                <VRMenu />
+                <VRMenu active={this.state.isVR}/>
               </Col>
               <Col className="bottom-column" xs={4} md={4}>
                 <EnvironmentMenu
+                  availEnvironments={this.state.environments.availEnvironments}
+                  environment={this.state.environments.currentEnvironment}
                   environments={this.state.environments}
+                  updateEnvironment={this.state.environments.updateEnvironment}
                   openEnvironmentModal={this.openEnvironmentModal.bind(this)}
                 />
               </Col>
@@ -490,22 +503,6 @@ class Main extends React.Component {
             show={this.state.keyboardModal}
             closeKeyboardModal={this.closeKeyboardModal.bind(this)}
             keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}}
-          />
-          <PerformerEffectsModal
-            content={this.state.performerContent}
-            show={this.state.performerModal}
-            closePerformerModal={this.closePerformerModal.bind(this)}
-            keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}}
-          />
-          <GroupEffectsModal
-            show={this.state.groupModal}
-            closeGroupModal={this.closeGroupModal.bind(this)}
-            keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}}
-          />
-          <EnvironmentSettingsModal
-            content={this.state.environmentContent}
-            show={this.state.environmentModal}
-            closeEnvironmentModal={this.closeEnvironmentModal.bind(this)}
           />
         </Row>
       </Grid>

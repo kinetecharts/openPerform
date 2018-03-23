@@ -6,7 +6,8 @@ import config from './../../config';
 import Common from './../../util/Common'
 
 class MidiStream {
-  constructor(parent, color, guiFolder) {
+  constructor(effectId, parent, color, guiFolder) {
+    this.id = effectId;
     this.name = 'midiStream';
     this.parent = parent;
     this.color = color;
@@ -25,12 +26,12 @@ class MidiStream {
 
   update(performer, currentPose, distances) {
     this.performer = performer;
-    if (distances.hands < this.handDistanceRange[0]) {
-      this.handDistanceRange[0] = distances.hands;
-    }
-    if (distances.hands > this.handDistanceRange[1]) {
-      this.handDistanceRange[1] = distances.hands;
-    }
+    // if (distances.hands < this.handDistanceRange[0]) {
+    //   this.handDistanceRange[0] = distances.hands;
+    // }
+    // if (distances.hands > this.handDistanceRange[1]) {
+    //   this.handDistanceRange[1] = distances.hands;
+    // }
     
     // if (distances.hands < this.handDistance) {
     if (this.streamInterval == null) {

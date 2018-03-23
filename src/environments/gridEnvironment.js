@@ -33,26 +33,42 @@ class GridEnvironment {
       },
     };
 
+    this.params = {
+      shadowBias: 0.001,
+      lRotate: false,
+      lFollow: true,
+      lHeight: 4,
+      lRot: 1.55,
+      lRadius: 5,
+      lColor: 0xFFFFFF,
+      lIntense: 1,
+      lDist: 200,
+      lAngle: 1,//Math.PI / 4,
+      lPen: 1,
+      lDecay: 10,
+    };
+
     this.setColor(this.color);
-    this.initGUI();
+    // this.initGUI();
     this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
-    this.initLights();
+    this.initShadowFloor(this.floorSize);
+    this.initLights(this.floorSize);
   }
 
   setColor(color) {
     this.renderer.setClearColor( color );
   }
 
-  initGUI() {
-    this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
-    this.guiDOM = this.gui.domElement;
-    this.guiFolder = this.gui.addFolder("Grid Environment");
-    this.guiFolder.open();
-    this.guiFolder.add(this, 'floorSize', 1, 100).step(1).name('Size').listen()
-      .onChange(this.redrawGrid.bind(this));
-    this.guiFolder.add(this, 'numLines', 1, 100).step(1).name('# Lines').listen()
-      .onChange(this.redrawGrid.bind(this));
-  }
+  // initGUI() {
+  //   this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
+  //   this.guiDOM = this.gui.domElement;
+  //   this.guiFolder = this.gui.addFolder("Grid Environment");
+  //   this.guiFolder.open();
+  //   this.guiFolder.add(this, 'floorSize', 1, 100).step(1).name('Size').listen()
+  //     .onChange(this.redrawGrid.bind(this));
+  //   this.guiFolder.add(this, 'numLines', 1, 100).step(1).name('# Lines').listen()
+  //     .onChange(this.redrawGrid.bind(this));
+  // }
 
   toggleVisible(val) {
     this.setVisible(!this.getVisible());
@@ -79,45 +95,65 @@ class GridEnvironment {
     this.parent.add(this.gridFloor);
   }
 
-  initLights(scene, camera) {
-    this.hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
-    this.hemiLight.color.setHSL(0.6250011825856442, 60.75949367088608, 30.980392156862745);
-    this.hemiLight.groundColor.setHSL(4.190951334017909e-8, 33.68421052631579, 37.254901960784316);
-    this.hemiLight.position.set(0, 500, 0);
-    
-    this.parent.add(this.hemiLight);
+  initShadowFloor(size) {
+    var geoFloor = new THREE.PlaneBufferGeometry( size, size, 1 );
+    var matStdFloor = new THREE.ShadowMaterial();
+    matStdFloor.opacity = 0.9;
+    this.shadowFloor = new THREE.Mesh(geoFloor, matStdFloor);
+    this.shadowFloor.rotation.x = -Math.PI/2;
+    this.shadowFloor.receiveShadow = true;
+    this.parent.add(this.shadowFloor);
+    this.elements.push(this.shadowFloor);
+  }
 
-    this.dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    this.dirLight.position.set(-1, 0.75, 1);
-    this.dirLight.position.multiplyScalar(50);
-    this.dirLight.name = 'dirlight';
+  setSpotlightPos(t, y, r) {
+    var lx = r * Math.cos( t );
+    var lz = r * Math.sin( t );
+    // var ly = 5.0 + 5.0 * Math.sin( t / 3.0 );
+    let spotOffset = new THREE.Vector3( lx, y, lz );
+    this.spotLight.position.copy(spotOffset);
+    this.spotLight.lookAt(new THREE.Vector3());
+  }
 
-    this.parent.add(this.dirLight);
+  initLights(floorSize) {
+    this.spotLight = new THREE.SpotLight(0xffffff);
+    this.spotLight.castShadow = true;
 
-    this.dirLight.castShadow = true;
+    //Set up shadow properties for the light
+    this.spotLight.shadow.mapSize.width = 2048;  // default
+    this.spotLight.shadow.mapSize.height = 2048; // default
+    this.spotLight.shadow.camera.near = 0.5;       // default
+    this.spotLight.shadow.camera.far = 500      // default
+    this.spotLight.shadow.camera.left = -floorSize;
+    this.spotLight.shadow.camera.right = floorSize;
+    this.spotLight.shadow.camera.top = floorSize;
+    this.spotLight.shadow.camera.bottom = -floorSize;
 
-    this.dirLight.shadow.mapSize.width = this.dirLight.shadow.mapSize.height = 1024 * 2;
+    this.spotLight.color.setHex(this.params.lColor);
+    this.spotLight.intensity = this.params.lIntense;
+    this.spotLight.distance = this.params.lDist;
+    this.spotLight.angle = this.params.lAngle;
+    this.spotLight.penumbra = this.params.lPen;
+    this.spotLight.decay = this.params.lDecay;
+    this.spotLight.shadow.bias = this.params.shadowBias;
 
-    const d = 300;
+    this.parent.add(this.spotLight);
+    this.elements.push(this.spotLight);
 
-    this.dirLight.shadow.camera.left = -d;
-    this.dirLight.shadow.camera.right = d;
-    this.dirLight.shadow.camera.top = d;
-    this.dirLight.shadow.camera.bottom = -d;
+    // this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
+    // this.parent.add(this.spotLightHelper);
 
-    this.dirLight.shadow.camera.far = 3500;
-    this.dirLight.shadow.bias = -0.0001;
-    this.dirLight.shadow.darkness = 0.35;
+    this.setSpotlightPos(this.params.lRot, this.params.lHeight, this.params.lRadius);
 
-    this.dirLight.shadow.camera.visible = true;
+    var light = new THREE.AmbientLight(0x404040); // soft white light
+    this.parent.add(light);
+    this.elements.push(light);
   }
 
   remove() {
-    this.parent.remove(this.gridFloor);
-    this.parent.remove(this.hemiLight);
-    this.parent.remove(this.dirLight);
-
-    this.guiFolder.removeFolder('Grid');
+    this.elements.forEach((element) => {
+      this.parent.remove(element);
+    });
   }
 
   redrawGrid() {

@@ -1,11 +1,15 @@
 html, body {
 	position: absolute;
-	background: #FFFFFF !important;
+	background: none !important;
 	width:100%;
 	height:100%;
 	font-family: 'lato-thin-webfont' !important;
 	width:100%;
 	height:100%;
+}
+
+.hidden {
+	display: none;
 }
 
 h5 {

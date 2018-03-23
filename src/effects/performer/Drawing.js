@@ -6,7 +6,8 @@ import Common from './../../util/Common';
 import config from './../../config';
 
 class Drawing {
-  constructor(parent, color, guiFolder) {
+  constructor(effectId, parent, color, guiFolder) {
+    this.id = effectId;
     this.name = 'trails';
     this.parent = parent;
 

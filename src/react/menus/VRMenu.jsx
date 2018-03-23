@@ -27,7 +27,7 @@ class VRMenu extends React.Component {
 
   render() {
     return (
-      <Panel className="vrMenu" defaultExpanded>
+      <Panel className={(this.props.active) ? "vrMenu" : "vrMenu hidden"} defaultExpanded>
         <Panel.Heading>
 					<Panel.Title toggle><h5>Enter VR</h5></Panel.Title>
 				</Panel.Heading>

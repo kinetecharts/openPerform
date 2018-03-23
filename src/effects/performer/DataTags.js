@@ -8,7 +8,8 @@ import Common from './../../util/Common';
 import config from './../../config';
 
 class DataTags {
-  constructor(parent, color, guiFolder) {
+  constructor(effectId, parent, color, guiFolder) {
+    this.id = effectId;
     this.name = 'datatags';
     this.parent = parent;
 

@@ -1,6 +1,8 @@
 import config from './../../server/config';
 
 module.exports = {
+  isAR: false,
+  isVR: false,
   defaults: {
     inputPreset: 'Default',
     outputPreset: 'Default',
@@ -14,7 +16,7 @@ module.exports = {
 
   debug: {
     bvh: {
-      enabled: false, // load bvh file / create performer from playback
+      enabled: true, // load bvh file / create performer from playback
       files: ['models/bvh/duality_edit.bvh'],
       autoplay: true,
     },
@@ -67,7 +69,8 @@ module.exports = {
   trackedPerformer: null,
 
   environments: [],
-  currentEnvironment: null,
+  availEnvironments: [],
+  currentEnvironment: '',
 
   kinecttransport: {
     ports: {

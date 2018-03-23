@@ -26,7 +26,7 @@ class CameraMenu extends React.Component {
   }
   render() {
     return (
-      <Panel className="cameraMenu" defaultExpanded>
+      <Panel className="cameraMenu" /* defaultExpanded */>
         <Panel.Heading>
           <Panel.Title toggle><h5>Camera Controls</h5></Panel.Title>
         </Panel.Heading>

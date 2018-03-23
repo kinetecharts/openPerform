@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 
-import { Panel } from 'react-bootstrap';
+import { Panel, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import 'react-select/dist/react-select.css';
 
@@ -13,6 +13,7 @@ class EnvironmentMenu extends React.Component {
       playing: false,
       looping: true,
       forceUpdate: false,
+      currentEnvironment: null,
     };
   }
 
@@ -89,18 +90,32 @@ class EnvironmentMenu extends React.Component {
     environment.setOffset(parseFloat(event.target.value));
     this.setState({ forceUpdate: true });
   }
+
   render() {
-    if (this.props.environments.length == 0) {
+    if (this.props.environments == null || this.props.environments.length == 0) {
       return false;
     }
 
     return (
-      <Panel className="environmentMenu" defaultExpanded>
+      <Panel className="environmentMenu" /* defaultExpanded */>
         <Panel.Heading>
-					<Panel.Title toggle><h5>Environments</h5></Panel.Title>
+					<Panel.Title toggle><h5>Environment</h5></Panel.Title>
 				</Panel.Heading>
         <Panel.Collapse>
 						<Panel.Body>
+              <DropdownButton
+                dropup
+                bsStyle="default"
+                bsSize="xsmall"
+                title={this.props.environment?this.props.environment:''}
+                name="environmentSelect"
+                id="environment-dropdown"
+                onSelect={this.props.updateEnvironment.bind(this.props.environments)}
+                >
+                {_.map(this.props.availEnvironments, (environment, idx) => {
+                  return (<MenuItem key={idx} eventKey={idx}>{environment}</MenuItem>);
+                })}
+              </DropdownButton>
               <table id="environmentTable"><tbody>{
                 _.map(this.props.environments.getEnvironments(), (environment, idx) => (
                   <tr key={idx}>

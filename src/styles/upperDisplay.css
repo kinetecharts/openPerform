@@ -44,7 +44,7 @@
 	border-top: 1px solid #FFFFFF;
 }
 
-.statsMenu {
+.debugMenu {
 	position: relative;
 	color: #fff;
 	padding: 0;
@@ -57,13 +57,13 @@
 	pointer-events: all;
 }
 
-.statsMenu .panel-heading {
+.debugMenu .panel-heading {
 	background: none;
 	color: #FFFFFF;
 	border: none;
 }
 
-.statsMenu h5 {
+.debugMenu h5 {
 	margin: 0;
 	padding: 0;
 	text-shadow: none;
@@ -72,7 +72,7 @@
 	width: 100%;
 }
 
-.statsMenu .panel-collapse {
+.debugMenu .panel-collapse {
 	border-top: 1px solid #FFFFFF;
 }
 
@@ -144,9 +144,9 @@
 }
 
 #midiTestButton {
-	margin-right: auto;
+	/* margin-right: auto;
 	margin-left: auto;
-	display: block;
+	display: block; */
 }
 
 .inputMenu {
@@ -205,4 +205,47 @@
 .inputMenu li > span {
 	margin-left: 10px;
 	cursor: pointer;
+}
+
+.arMenu {
+	position: relative;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	border: none;
+	border-radius: 10px;
+	display: table;
+	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.arMenu .panel-heading {
+	background: none;
+	color: #FFFFFF;
+	border: none;
+	text-align: center;
+}
+
+.arMenu h5 {
+	margin: 0;
+	padding: 0;
+	text-shadow: none;
+	display: inline-block;
+	text-align: center;
+}
+
+.arMenu .panel-collapse {
+	border-top: 1px solid #FFFFFF;
+}
+
+.arMenuBody button {
+	width: 80px;
+}
+
+.arMenuBody button i, .arMenuBody button img {
+	position: relative;
+    display: block;
+    width: 100%;
 }

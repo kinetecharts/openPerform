@@ -26,7 +26,6 @@ class Performer {
     this.actions = actions;
 
     this.dataBuffer = [];
-    this.offset = new THREE.Vector3(0, 0, 0);
     this.delay = 0;
     
     this.styleInt = null;
@@ -41,6 +40,12 @@ class Performer {
 
     this.performer = null;
     this.name = 'Performer ' + performerId;
+    
+    this.offset = new THREE.Vector3(0, 0, 0);
+    if (this.type == 'clone_bvh') {
+      this.offset = new THREE.Vector3((parseInt(performerId) - 1), 0, 0);
+      this.name = 'Clone ' + (parseInt(performerId) - 1);
+    }
     this.color = color;
     
     this.prefix = 'robot_';
@@ -53,6 +58,9 @@ class Performer {
     this.styleId = 0;
     this.style = this.styles[this.styleId];
     this.intensity = 1;
+
+    this.material = 'Phong';
+    this.materials = ['Basic', 'Lambert', 'Phong', 'Standard'];
 
     this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
@@ -215,14 +223,13 @@ class Performer {
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = ['constructor','vogue', 'cloner', 'datatags', 'trails', 'particleSystem', 'midiStream'];
+    this.effects = [/* 'constructor', */'vogue', 'cloner', /* 'datatags', */'trails', 'particleSystem', 'midiStream'];
 
-    this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
-    this.guiDOM = this.gui.domElement;
-    this.guiFolder = this.gui.addFolder(this.name + ' Effects');
-    this.guiFolder.open()
+    // this.gui = new dat.GUI({ autoPlace: true });
+    // this.guiFolder = this.gui.addFolder(this.name + ' Effects');
+    // this.guiFolder.open()
 
-    this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16), this.gui);
+    this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16));
 
     // this.addEffects(this.effects[0]);//defaults
 
@@ -439,10 +446,10 @@ class Performer {
       const s = this.getScene();
       s.position.copy(this.getOffset().clone());
       this.parent.add(s);
-      this.addEffects([
-        /*this.effects[2], */
-        // this.effects[6] // Midi Streamer
-      ]);// defaults
+      // this.addEffects([
+        // this.effects[4],
+      //   // this.effects[6] // Midi Streamer
+      // ]);// defaults
     });
   }
 
@@ -475,30 +482,31 @@ class Performer {
     // this.setScene(mesh);
     // this.parent.add(mesh);
 
-  const scene = new THREE.Object3D();
-  scene.add(mesh);
-  this.setScene(scene);
-  switch (source) {
-    default:
-      case 'bvh':
-      case 'clone':
-      this.getScene().scale.set(size, size, size);
-      break;
-  }
+    const scene = new THREE.Object3D();
+    scene.add(mesh);
+    this.setScene(scene);
+    console.log(source);
+    switch (source) {
+      default:
+        case 'bvh':
+        case 'clone_bvh':
+          this.getScene().scale.set(size, size, size);
+          break;
+    }
 
-  this.setPerformer({
-    keys: this.bvhKeys,
-    meshes: {},
-    newMeshes: {},
-    scene: scene,
-  });
-  const s = this.getScene();
-  s.position.copy(this.getOffset().clone());
-  this.parent.add(s);
-  this.addEffects([
-    /*this.effects[2], */
-    // this.effects[6] // Midi Streamer
-  ]);// defaults
+    this.setPerformer({
+      keys: this.bvhKeys,
+      meshes: {},
+      newMeshes: {},
+      scene: scene,
+    });
+    const s = this.getScene();
+    s.position.copy(this.getOffset().clone());
+    this.parent.add(s);
+    this.addEffects([
+      /*this.effects[2], */
+      // this.effects[6] // Midi Streamer
+    ]);// defaults
   }
 
   setPerformer(performer) {
@@ -532,7 +540,7 @@ class Performer {
 
   clearScene() {
     this.parent.remove(this.getScene());
-    this.setScene(null);
+    this.scene = null;
   }
 
   setScene(scene) {
@@ -643,6 +651,48 @@ class Performer {
     this.getScene().visible = val;
   }
 
+  getMaterial() {
+    return this.material;
+  }
+
+  setMaterial(val) {
+    this.material = val;
+  }
+
+  getMaterials() {
+    return this.materials;
+  }
+
+  generateMaterial() {
+    let material = new THREE.MeshBasicMaterial(); 
+    switch (this.getMaterial().toLowerCase()) {
+      case 'lambert':
+        material = new THREE.MeshLambertMaterial();
+        break;
+      default:
+      case 'phong':
+        material = new THREE.MeshPhongMaterial();
+        break;
+      case 'standard':
+        material = new THREE.MeshStandardMaterial();
+        break;
+    }
+    material.wireframe = this.getWireframe();
+    material.color.set(parseInt(this.getMaterialColor(), 16));
+    return material;
+  }
+
+  updateMaterial() {
+    _.each(this.getPerformer().meshes, (parent) => {
+      parent.traverse((object) => {
+        if (object.hasOwnProperty('material')) {
+          object.material = this.generateMaterial(this.getMaterial());
+          object.material.needsUpdate = true;
+        }
+      });
+    });
+  }
+
   toggleTracking(val) {
     this.setTracking(!this.getTracking());
   }
@@ -686,7 +736,9 @@ class Performer {
       () => {
         this.getScene().traverse((object) => {
           if (object.name.toLowerCase().match(/robot_/g)) {
-            meshes[object.name.toLowerCase()] = object;
+            if (meshes[object.name.toLowerCase()] == undefined) {
+              meshes[object.name.toLowerCase()] = object;
+            }
             
             if (_.some(hide, el => _.includes(object.name.toLowerCase(), el))) {
               object.visible = false;
@@ -696,17 +748,15 @@ class Performer {
 
             object.castShadow = true;
             object.receiveShadow = true;
-          } else if (object.hasOwnProperty('material')) {
-            object.material = new THREE.MeshPhongMaterial();
-            object.material.wireframe = this.getWireframe();
-            object.material.color.set(parseInt(this.getMaterialColor(), 16));
-
+          }
+          if (object.hasOwnProperty('material')) {
+            object.material = this.generateMaterial(this.material);
             object.material.needsUpdate = true;
           }
           if (object instanceof THREE.Mesh) {
             switch (source) {
               case 'bvh':
-              case 'clone':
+              case 'clone_bvh':
                 object.scale.set(2, 2, 2);
                 break;
             }
@@ -838,6 +888,9 @@ class Performer {
                 object.srcScale = 1;
                 break;
             }
+
+            object.castShadow = true;
+            object.receiveShadow = true;
             newMeshes.push(object);
           }
         });

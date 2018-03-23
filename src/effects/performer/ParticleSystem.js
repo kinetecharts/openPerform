@@ -1,7 +1,8 @@
 require('three/examples/js/GPUParticleSystem');
 
 class ParticleSystem {
-  constructor(parent, color, guiFolder) {
+  constructor(effectId, parent, color, guiFolder) {
+    this.id = effectId;
     this.name = 'particleSystem';
     this.parent = parent;
     this.systems = [];

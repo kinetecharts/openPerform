@@ -440,7 +440,9 @@ class VR {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
 
-    this.vrEffect.setSize(width, height);
+    if (this.vrEffect) {
+      this.vrEffect.setSize(width, height);
+    }
   }
 
   update() {

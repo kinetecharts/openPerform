@@ -12,11 +12,10 @@ import MidiStream from './MidiStream';
 import config from './../../config';
 
 class PerformerEffects {
-  constructor(parent, color, guiFolder) {
+  constructor(parent, color) {
     this.parent = parent;
     this.effects = [];
     this.color = color;
-    this.guiFolder = guiFolder;
   }
 
   add(effect) {
@@ -26,28 +25,28 @@ class PerformerEffects {
     }
     switch (effect) {
       case 'cloner':
-        this.effects.push(new Cloner(this.parent, this.color, this.guiFolder));
+        this.effects.push(new Cloner(effect, this.parent, this.color));
         break;
       case 'vogue':
-        this.effects.push(new Vogue(this.parent, this.color, this.guiFolder));
+        this.effects.push(new Vogue(effect, this.parent, this.color));
         break;
        case 'constructor':
-        this.effects.push(new Constructor(this.parent, this.color, this.guiFolder));
+        this.effects.push(new Constructor(effect, this.parent, this.color));
         break;
       case 'particleSystem':
-        this.effects.push(new ParticleSystem(this.parent, this.color, this.guiFolder));
+        this.effects.push(new ParticleSystem(effect, this.parent, this.color));
         break;
       case 'trails':
-        this.effects.push(new Trails(this.parent, this.color, this.guiFolder));
+        this.effects.push(new Trails(effect, this.parent, this.color));
         break;
       case 'drawing':
-        this.effects.push(new Drawing(this.parent, this.color, this.guiFolder));
+        this.effects.push(new Drawing(effect, this.parent, this.color));
         break;
       case 'datatags':
-        this.effects.push(new DataTags(this.parent, this.color, this.guiFolder));
+        this.effects.push(new DataTags(effect, this.parent, this.color));
         break;
       case 'midiStream':
-        this.effects.push(new MidiStream(this.parent, this.color, this.guiFolder));
+        this.effects.push(new MidiStream(effect, this.parent, this.color));
         break;
     }
     console.log(this.effects);
@@ -59,6 +58,14 @@ class PerformerEffects {
       this.effects[0].remove();
       _.remove(this.effects, eff => eff.name == effect);
     }
+  }
+
+  removeAll() {
+    _.each(this.effects, (effect) => {
+      effect.remove();
+      _.remove(this.effects, eff => eff.name == effect);
+    });
+    this.effects = [];
   }
 
   updateParameters(data) {
