@@ -15,8 +15,10 @@ class PerformerOptions extends React.Component {
     const popoverTop = (
       <Popover id="performer-options-popover" title="Translate">
         <ListGroup>
-          <ListGroupItem>
+        <ListGroupItem>
             <h6>Position</h6>
+          </ListGroupItem>
+          <ListGroupItem>
             <Table id="positionOffsetTable">
               <tbody>
                 <tr>
@@ -30,6 +32,29 @@ class PerformerOptions extends React.Component {
                   </td>
                   <td align="center">
                     <NumberInput min={-100} max={100} onChange={this.props.updateOffsetZ} id="offsetZInput" value={this.props.offset.z}/>
+                    <span>Z</span>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </ListGroupItem>
+          <ListGroupItem>
+            <h6>Rotation</h6>
+          </ListGroupItem>
+          <ListGroupItem>
+            <Table id="rotationOffsetTable">
+              <tbody>
+                <tr>
+                  <td align="center">
+                    <NumberInput min={0} max={Math.PI*2} onChange={this.props.updateRotationX} id="rotationXInput" value={this.props.rotation.x}/>
+                    <span>X</span>
+                  </td>
+                  <td align="center">
+                    <NumberInput min={0} max={Math.PI*2} onChange={this.props.updateRotationY} id="rotationYInput" value={this.props.rotation.y}/>
+                    <span>Y</span>
+                  </td>
+                  <td align="center">
+                    <NumberInput min={0} max={Math.PI*2} onChange={this.props.updateRotationZ} id="rotationZInput" value={this.props.rotation.z}/>
                     <span>Z</span>
                   </td>
                 </tr>

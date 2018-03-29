@@ -123,6 +123,8 @@ class Scene {
     this.renderer.shadowMapSoft = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    this.renderer.domElement.id = "threeCanvas";
+
     // / Global : this.scene
     this.scene = new THREE.Scene();
     window.scene = this.scene;
@@ -243,7 +245,7 @@ class Scene {
 
   addEventListeners() {
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
-    window.addEventListener('touchstart', this.onTouch.bind(this), false);
+    document.getElementById("threeCanvas").addEventListener('touchstart', this.onTouch.bind(this), false);
     // this.gui.domElement.addEventListener( 'mousedown', () => { this.controls.enabled = false; }, false );
     // document.addEventListener( 'mouseup', () => { this.controls.enabled = true; }, false );
   }
@@ -254,7 +256,7 @@ class Scene {
     this.stats = new Stats();
     if (this.statsEnabled) {
       this.stats.dom.id = 'stats';
-      $('.debugBody').append(this.stats.dom);
+      $('#statsBox').append(this.stats.dom);
     }
 
     // attach renderer to DOM

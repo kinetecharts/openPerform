@@ -91,6 +91,8 @@ class PerformerStyles extends React.Component {
                   return (<MenuItem key={idx} eventKey={idx}>{mat}</MenuItem>);
                 })}
               </DropdownButton>
+          </ListGroupItem>
+          <ListGroupItem>
               <Table className="styleMaterialsTable">
                 <tbody>
                   <tr>
@@ -126,6 +128,7 @@ class PerformerStyles extends React.Component {
       <OverlayTrigger
         trigger="click"
         placement="top"
+        rootClose
         overlay={popoverTop}
       >
         <Icon name="paint-brush" />

@@ -36,40 +36,18 @@ class ForestEnvironment {
       lDecay: 10,
     };
 
-    // this.setColor(this.color);
     // this.initGUI();
     this.initFloor(200);
     this.initLights(200);
 
     this.loadMtl('models/mtl/forest.mtl', (materials) => {
       materials.preload();
-      this.loadObj('models/obj/forest.obj', materials/*{
-        color: 0xFF0000,
-        opacity: 0.01,
-        wireframe: false,
-        transparent: false,
-        side: THREE.BackSide,
-        depthTest: false,
-      }*/, (obj) => {
+      this.loadObj('models/obj/forest.obj', materials, (obj) => {
         this.parent.add(obj);
+        this.elements.push(obj);
       });
     });
   }
-
-  setColor(color) {
-    this.renderer.setClearColor( color );
-  }
-
-  // initGUI() {
-  //   this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
-  //   this.guiDOM = this.gui.domElement;
-  //   this.guiFolder = this.gui.addFolder("Grid Environment");
-  //   this.guiFolder.open();
-  //   this.guiFolder.add(this, 'floorSize', 1, 100).step(1).name('Size').listen()
-  //     .onChange(this.redrawGrid.bind(this));
-  //   this.guiFolder.add(this, 'numLines', 1, 100).step(1).name('# Lines').listen()
-  //     .onChange(this.redrawGrid.bind(this));
-  // }
 
   toggleVisible(val) {
     this.setVisible(!this.getVisible());

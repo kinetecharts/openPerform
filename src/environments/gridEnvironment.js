@@ -48,16 +48,16 @@ class GridEnvironment {
       lDecay: 10,
     };
 
-    this.setColor(this.color);
+    // this.setColor(this.color);
     // this.initGUI();
     this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
     this.initShadowFloor(this.floorSize);
     this.initLights(this.floorSize);
   }
 
-  setColor(color) {
-    this.renderer.setClearColor( color );
-  }
+  // setColor(color) {
+  //   this.renderer.setClearColor( color );
+  // }
 
   // initGUI() {
   //   this.gui = new dat.GUI({ autoPlace: false, width: "100%" });

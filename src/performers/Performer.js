@@ -42,7 +42,9 @@ class Performer {
     this.name = 'Performer ' + performerId;
     
     this.offset = new THREE.Vector3(0, 0, 0);
-    if (this.type == 'clone_bvh') {
+    this.rotation = new THREE.Euler(0, 0, 0);
+    console.log('!!!!!!!', this.type);
+    if (this.type === 'clone_bvh' || this.type === 'clone_perceptionNeuron') {
       this.offset = new THREE.Vector3((parseInt(performerId) - 1), 0, 0);
       this.name = 'Clone ' + (parseInt(performerId) - 1);
     }
@@ -223,7 +225,7 @@ class Performer {
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = [/* 'constructor', */'vogue', 'cloner', /* 'datatags', */'trails', 'particleSystem', 'midiStream'];
+    this.effects = [/* 'constructor', */'vogue', 'cloner', /* 'datatags', */'trails', /*'particleSystem', 'midiStream'*/];
 
     // this.gui = new dat.GUI({ autoPlace: true });
     // this.guiFolder = this.gui.addFolder(this.name + ' Effects');
@@ -969,6 +971,16 @@ class Performer {
     this.offset = val;
     const s = this.getScene();
     s.position.copy(this.getOffset().clone());
+  }
+
+  getRotation() {
+    return this.rotation;
+  }
+
+  setRotation(val) {
+    this.rotation = val;
+    const s = this.getScene();
+    s.rotation.copy(this.getRotation().clone());
   }
 
   getDelay() {

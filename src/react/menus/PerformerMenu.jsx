@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 import Select from 'react-select';
 
 import Icon from 'react-fa';
@@ -19,6 +20,10 @@ class PerformerMenu extends React.Component {
     this.props = props;
     this.state = {
       forceUpdate: false,
+      effectPosition: {
+        x: 0,
+        y: 0,
+      },
     };
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -86,6 +91,26 @@ class PerformerMenu extends React.Component {
     performer.setOffset(off);
     this.setState({ forceUpdate: true });
   }
+
+  updateRotationX(performer, value) {
+    let rot = performer.getRotation();
+    rot.x = parseFloat(value);
+    performer.setRotation(rot);
+    this.setState({ forceUpdate: true });
+  }
+  updateRotationY(performer, value) {
+    let rot = performer.getRotation();
+    rot.y = parseFloat(value);
+    performer.setRotation(rot);
+    this.setState({ forceUpdate: true });
+  }
+  updateRotationZ(performer, value) {
+    let rot = performer.getRotation();
+    rot.z = parseFloat(value);
+    performer.setRotation(rot);
+    this.setState({ forceUpdate: true });
+  }
+
   handleColorChange(performer, val) {
     performer.setMaterialColor(val.hex.replace(/^#/, ''));
     this.setState({forceUpdate: true});
@@ -96,15 +121,35 @@ class PerformerMenu extends React.Component {
     
     this.setState({forceUpdate: true});
   }
-  handleChangeEffect(performer, val) {
+  handleChangeEffect(performer, val, event) {
+    event.persist();
+    // this.recenterEffectsPopover(event);
     performer.performerEffects.removeAll();
     if (val !== 0) {
       performer.performerEffects.add(performer.effects[val - 1]);
     }
     this.setState({
       forceUpdate: true
+    }, () => {
+      this.recenterEffectsPopover(event);
     });
-  } 
+  }
+
+  recenterEffectsPopover(event) {
+    $('#performer-effects-popover').css('top', 'auto');
+    // console.log(window.innerHeight / 2);
+    const bottom = $('.performerMenu').height() - (this.state.effectTarget.position().top / 2) - 16;
+    console.log(bottom);
+    $('#performer-effects-popover').css('left', this.state.effectTarget.position().left - 103);
+    $('#performer-effects-popover').css('bottom', bottom);
+  }
+
+  clickOverTrigger(event) {
+    this.setState({
+      effectTarget: $(event.currentTarget),
+    });
+  }
+
   render() {
     if (this.props.performers.length < 1) {
       return false;
@@ -142,10 +187,14 @@ class PerformerMenu extends React.Component {
                   <td>
                     <PerformerTranslate
                       offset={performer.getOffset()}
-                      delay={performer.getDelay()}
                       updateOffsetX={this.updateOffsetX.bind(this, performer)}
                       updateOffsetY={this.updateOffsetY.bind(this, performer)}
                       updateOffsetZ={this.updateOffsetZ.bind(this, performer)}
+                      rotation={performer.getRotation()}
+                      updateRotationX={this.updateRotationX.bind(this, performer)}
+                      updateRotationY={this.updateRotationY.bind(this, performer)}
+                      updateRotationZ={this.updateRotationZ.bind(this, performer)}
+                      delay={performer.getDelay()}
                       updateDelay={this.updateDelay.bind(this, performer)}
                     />
                   </td>
@@ -171,13 +220,14 @@ class PerformerMenu extends React.Component {
                   {/* <td title="Edit Effects"><div className="glyphicon glyphicon-fire" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)} /></td> */}
                   <td title="Edit Effects">
                     <PerformerEffects
+                      clickOverTrigger={this.clickOverTrigger.bind(this)}
                       effects={performer.effects}
                       effect={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].id : 'none'}
                       changeEffect={this.handleChangeEffect.bind(this, performer)}
                       gui={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].getGUI() : null}
                     />
                   </td>
-                  <td>{ (performer.type == 'clone_bvh') ?
+                  <td>{ (performer.type === 'clone_bvh' || performer.type === 'clone_perceptionNeuron') ?
                     <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
                   : <Icon name="plus" title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />
                   }</td>

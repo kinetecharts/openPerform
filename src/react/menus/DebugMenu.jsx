@@ -30,7 +30,10 @@ class DebugMenu extends React.Component {
           <Panel.Title toggle><h5>Debug</h5></Panel.Title>
         </Panel.Heading>
         <Panel.Collapse>
-          <Panel.Body className="debugBody" />
+          <Panel.Body className="debugBody">
+            <div id="statsBox"></div>
+            <div></div>
+          </Panel.Body>
         </Panel.Collapse>
       </Panel>
     );

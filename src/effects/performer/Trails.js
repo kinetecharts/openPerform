@@ -168,7 +168,7 @@ class GUI extends React.Component {
   render() {
     return (
       <div>
-        <ToggleButtonGroup onChange={this.props.updateParts.bind(this)} type="checkbox" name="options" defaultValue={this.props.currentTargets}>
+        <ToggleButtonGroup id="trailParts" onChange={this.props.updateParts.bind(this)} type="checkbox" name="options" defaultValue={this.props.currentTargets}>
           {_.map(this.props.possibleTargets, (t, idx) => {
             return (<ToggleButton bsSize="xsmall" key={idx} value={t}>{t}</ToggleButton>);
           })}
