@@ -21,6 +21,9 @@ class CameraControl {
     this.trackingTarget = null;
     this.movementType = 'cut'; // or 'track'
 
+    this.trackSpeed = {t:0.01};
+    window._trackSpeed = this.trackSpeed
+
   }
 
   pause() {
@@ -325,13 +328,15 @@ class CameraControl {
       const vector = new THREE.Vector3();
       vector.setFromMatrixPosition(this.trackingTarget.matrixWorld);
       vector.add(this.offsetObj);
-      this.controls.object.position.x = vector.x;
-      this.controls.object.position.y = vector.y;
+      this.controls.object.position.x = vector.x * this.trackSpeed.t + this.controls.object.position.x * (1-this.trackSpeed.t);
+      this.controls.object.position.y = vector.y * this.trackSpeed.t + this.controls.object.position.y * (1-this.trackSpeed.t);
       if (this.zTrack) {
-        this.controls.object.position.z = vector.z;
+        this.controls.object.position.z = vector.z * this.trackSpeed.t + this.controls.object.position.z * (1-this.trackSpeed.t);
       }
       vector.z = 0;
-      this.controls.target = vector;
+      this.controls.target = vector.clone()
+        .multiplyScalar(this.trackSpeed.t)
+        .add(this.controls.target.clone().multiplyScalar(1-this.trackSpeed.t));
     }
   }
 }
