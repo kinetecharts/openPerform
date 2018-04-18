@@ -52,7 +52,7 @@ class GridEnvironment {
     // this.initGUI();
     this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
     this.initShadowFloor(this.floorSize);
-    this.initLights(this.floorSize);
+    this.initLights();
   }
 
   // setColor(color) {
@@ -115,39 +115,16 @@ class GridEnvironment {
     this.spotLight.lookAt(new THREE.Vector3());
   }
 
-  initLights(floorSize) {
-    this.spotLight = new THREE.SpotLight(0xffffff);
-    this.spotLight.castShadow = true;
+  initLights() {
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
+    directionalLight.position.set( -5, 10, 10 );
+    directionalLight.castShadow = true;
+    this.parent.add( directionalLight );
 
-    //Set up shadow properties for the light
-    this.spotLight.shadow.mapSize.width = 2048;  // default
-    this.spotLight.shadow.mapSize.height = 2048; // default
-    this.spotLight.shadow.camera.near = 0.5;       // default
-    this.spotLight.shadow.camera.far = 500      // default
-    this.spotLight.shadow.camera.left = -floorSize;
-    this.spotLight.shadow.camera.right = floorSize;
-    this.spotLight.shadow.camera.top = floorSize;
-    this.spotLight.shadow.camera.bottom = -floorSize;
-
-    this.spotLight.color.setHex(this.params.lColor);
-    this.spotLight.intensity = this.params.lIntense;
-    this.spotLight.distance = this.params.lDist;
-    this.spotLight.angle = this.params.lAngle;
-    this.spotLight.penumbra = this.params.lPen;
-    this.spotLight.decay = this.params.lDecay;
-    this.spotLight.shadow.bias = this.params.shadowBias;
-
-    this.parent.add(this.spotLight);
-    this.elements.push(this.spotLight);
-
-    // this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
-    // this.parent.add(this.spotLightHelper);
-
-    this.setSpotlightPos(this.params.lRot, this.params.lHeight, this.params.lRadius);
-
-    var light = new THREE.AmbientLight(0x404040); // soft white light
-    this.parent.add(light);
-    this.elements.push(light);
+    directionalLight.shadow.mapSize.width = 512;  // default
+    directionalLight.shadow.mapSize.height = 512; // default
+    directionalLight.shadow.camera.near = 0.5;    // default
+    directionalLight.shadow.camera.far = 500;     // default
   }
 
   remove() {

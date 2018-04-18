@@ -6,14 +6,13 @@ module.exports = {
   defaults: {
     inputPreset: 'Default',
     outputPreset: 'Default',
-    backgroundColor: 0x333333, // will be overridden by environment settings
+    backgroundColor: '#000000', // will be overridden by environment settings
     environment: 'Grid'
   },
 
   inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: ['MidiController'],
-  performerColors: ['FFFFFF', 'CB2402', 'F0F7FA', '5992AE', 'FF009B'],
-
+  performerColors: ['FFFFFF', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   debug: {
     bvh: {
       enabled: true, // load bvh file / create performer from playback

@@ -1,3 +1,6 @@
+import React from 'react';
+import DatGui, { DatFolder, DatBoolean, DatNumber } from 'react-dat-gui';
+
 require('imports-loader?THREE=three!three/examples/js/controls/TrackballControls.js');
 const Stats = require('imports-loader?THREE=three!three/examples/js/libs/stats.min.js');
 const dat = require('imports-loader?THREE=three!three/examples/js/libs/dat.gui.min.js');
@@ -20,6 +23,7 @@ class Scene {
     this.controls = null;
 
     this.sceneGroup = new THREE.Object3D();
+    // this.sceneGroup.visible = false;
 
     this.container;
     this.w;
@@ -34,6 +38,13 @@ class Scene {
 
     this.statsEnabled = false;
     this.performer = null;
+
+    this.guiOptions = {
+      showTargetPlanes: true,
+      sceneSize: 1,
+    };
+
+    this.isAR = false;
   }
   initScene(inputs, statsEnabled, performers, backgroundColor, callback) {
     this.statsEnabled = statsEnabled;
@@ -45,9 +56,11 @@ class Scene {
 
     THREE.ARUtils.getARDisplay().then((display) => {
       if (display) {
+        this.isAR = true;
         this.arDisplay = display;
         this.initArScene(inputs, backgroundColor, callback);
       } else {
+        this.isAR = false;
         // THREE.ARUtils.displayUnsupportedMessage();
         this.initVRScene(inputs, backgroundColor, callback);
       }
@@ -103,7 +116,7 @@ class Scene {
     this.scene.add(this.planes);
 
     this.addCreateCommon();
-    this.initARGui();
+    // this.initARGui();
     // initiating renderer
     this.renderAR();
 
@@ -117,7 +130,7 @@ class Scene {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.w, this.h);
-    this.renderer.setClearColor(backgroundColor);
+    this.renderer.setClearColor(new THREE.Color(backgroundColor));
     this.renderer.autoClear = true;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMapSoft = true;
@@ -165,7 +178,7 @@ class Scene {
     // GUI
     this.gui = new dat.GUI({ autoPlace: false });
 
-    var customContainer = document.getElementById('arMenuBody');
+    var customContainer = document.body;//.getElementById('arMenuBody');
     customContainer.appendChild(this.gui.domElement);
 
     this.gui.open();
@@ -245,7 +258,7 @@ class Scene {
 
   addEventListeners() {
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
-    document.getElementById("threeCanvas").addEventListener('touchstart', this.onTouch.bind(this), false);
+    this.renderer.domElement.addEventListener('touchstart', this.onTouch.bind(this), false);
     // this.gui.domElement.addEventListener( 'mousedown', () => { this.controls.enabled = false; }, false );
     // document.addEventListener( 'mouseup', () => { this.controls.enabled = true; }, false );
   }
@@ -393,8 +406,53 @@ class Scene {
         1,
         true,
      );
+     this.sceneGroup.visible = true;
+    }
+  }
+  updateGuiOptions(data) {
+    if (data.showTargetPlanes !== this.guiOptions.showTargetPlanes) {
+      if (data.showTargetPlanes === true) {
+        this.planes.showPlanes();
+      } else {
+        this.planes.hidePlanes();
+      }
+    }
+
+    if (data.sceneSize !== this.guiOptions.sceneSize) {
+      this.sceneGroup.scale.set(data.sceneSize, data.sceneSize, data.sceneSize);
+    }
+
+    this.guiOptions = data;
+  }
+
+  getARGUI() {
+    if (this.isAR) {
+      return <GUI data={this.guiOptions}
+        updateOptions={this.updateGuiOptions.bind(this)} />;
+    } else {
+      return null;
     }
   }
 }
 
 export default Scene;
+
+class GUI extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {};
+  }
+  render() {
+    return (
+      <div>
+        <DatGui data={this.props.data} onUpdate={this.props.updateOptions.bind(this)}>
+          <DatFolder title="Aug Real">
+            <DatNumber min={0.1} max={3} step={0.1} path='sceneSize' label='Scene Size' />
+            <DatBoolean path='showTargetPlanes' label='Show AR Planes'/>
+          </DatFolder>
+        </DatGui>
+      </div>
+    );
+  }
+}

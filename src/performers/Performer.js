@@ -27,6 +27,8 @@ class Performer {
 
     this.dataBuffer = [];
     this.delay = 0;
+    this.origScale = 1;
+    this.scale = 1;
     
     this.styleInt = null;
     this.modelGeos = {};
@@ -43,7 +45,7 @@ class Performer {
     
     this.offset = new THREE.Vector3(0, 0, 0);
     this.rotation = new THREE.Euler(0, 0, 0);
-    console.log('!!!!!!!', this.type);
+    // console.log('!!!!!!!', this.type);
     if (this.type === 'clone_bvh' || this.type === 'clone_perceptionNeuron') {
       this.offset = new THREE.Vector3((parseInt(performerId) - 1), 0, 0);
       this.name = 'Clone ' + (parseInt(performerId) - 1);
@@ -969,8 +971,16 @@ class Performer {
 
   setOffset(val) {
     this.offset = val;
+    
     const s = this.getScene();
+    s.position.copy(new THREE.Vector3(0,0,0));
     s.position.copy(this.getOffset().clone());
+  }
+
+  setScale(val) {
+    this.scale = this.origScale + val;  
+    const s = this.getScene();
+    s.scale.set(this.scale, this.scale, this.scale)
   }
 
   getRotation() {
@@ -1248,11 +1258,12 @@ class Performer {
   }
 
   update(data) {
-    this.dataBuffer.push(data);
+    const d = _.cloneDeep(data);
+    this.dataBuffer.push(d);
     if (this.dataBuffer.length > (this.delay * 60)) { // Number of seconds * 60 fps
       this.updateFromPN(this.dataBuffer.shift());
     }
-    this.performerEffects.update(this.getScene(), data, this.calculateDistances(data));
+    this.performerEffects.update(this.getScene(), d, this.calculateDistances(d));
   }
 
   updateFromPN(data) {
@@ -1260,12 +1271,14 @@ class Performer {
       const jointName = this.prefix + data[i].name.toLowerCase();
       if (this.getPerformer() == null) {
         let size = 1 / this.modelShrink;
+        this.origScale = size;
 
         console.log(this.type);
         switch (this.type) {
           case 'bvh':
           case 'clone_bvh':
             size = (1 / this.modelShrink) / 2;
+            this.origScale = size;
             break;
         }
         this.loadPerformer(

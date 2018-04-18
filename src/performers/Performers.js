@@ -13,6 +13,7 @@ class Performers {
     this.outputManager = outputManager;
     
     this.performers = {};
+    window.performers = this.performers;
     this.dataBuffer = [];
   }
   init(parent) {
@@ -102,6 +103,57 @@ class Performers {
     _.each(this.performers, (performer) => {
       performer.updateParameters(data);
     });
+  }
+
+  spreadAll(val) {
+    _.each(_.pickBy(_.groupBy(this.performers, 'leader'), function(value, key) {
+      return (key !== null
+        && key !== 'null'
+        && key !== undefined
+        && key !== 'undefined');
+    }), (performerGroup, idx) => {
+      let v = val.clone();
+      let s = 1;
+      _.each(performerGroup, (performer) => {
+        console.log(val);
+        v.setX(val.x * s);
+        v.setY(val.y * s);
+        v.setZ(val.z * s);
+        console.log(s, v);
+        performer.setOffset(v);
+        s++;
+      });
+    })
+  }
+
+  delayAll(delay) {
+    _.each(_.pickBy(_.groupBy(this.performers, 'leader'), function(value, key) {
+      return (key !== null
+        && key !== 'null'
+        && key !== undefined
+        && key !== 'undefined');
+    }), (performerGroup, idx) => {
+      let s = 1;
+      _.each(performerGroup, (performer) => {
+        performer.setDelay(delay * s);
+        s++;
+      });
+    })
+  }
+
+  scaleAll(scale) {
+    _.each(_.pickBy(_.groupBy(this.performers, 'leader'), function(value, key) {
+      return (key !== null
+        && key !== 'null'
+        && key !== undefined
+        && key !== 'undefined');
+    }), (performerGroup, idx) => {
+      let s = 1;
+      _.each(performerGroup, (performer) => {
+        performer.setScale(scale * s);
+        s++;
+      });
+    })
   }
 
   update(inputId, data) {

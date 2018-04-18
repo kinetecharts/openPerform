@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Row, Col, Panel, MenuItem, DropdownButton } from 'react-bootstrap';
+import { Grid, Row, Col, Panel, MenuItem, DropdownButton, Button } from 'react-bootstrap';
 
 class CameraMenu extends React.Component {
   constructor(props) {
@@ -25,6 +25,10 @@ class CameraMenu extends React.Component {
     return false;
   }
   render() {
+    // console.log(this.props.inputManager);
+    if (this.props.flyTop == null) {
+      this.state.forceUpdate = true;
+    }
     return (
       <Panel className="cameraMenu" /* defaultExpanded */>
         <Panel.Heading>
@@ -33,8 +37,8 @@ class CameraMenu extends React.Component {
         <Panel.Collapse>
           <Panel.Body>
             <Grid fluid><Row>
-              <Col xs={2} md={2}>Track:</Col>
-              <Col xs={2} md={2}>
+              <Col xs={3} md={3}>
+                <h6>Track</h6>
                 <DropdownButton
                   bsSize="xsmall"
                   onSelect={this.props.selectTrackedPerformer}
@@ -47,10 +51,21 @@ class CameraMenu extends React.Component {
                   })}
                 </DropdownButton>
               </Col>
-              <Col xs={2} md={2} />
-              <Col xs={2} md={2} />
-              <Col xs={2} md={2} />
-              <Col xs={2} md={2} />
+              <Col xs={3} md={3}>
+                <h6>Fly</h6>
+                <Button bsSize="xsmall" onClick={this.props.flyTop}>Top</Button>
+              </Col>
+              <Col xs={3} md={3}>
+                <h6>Cut</h6>
+                <Button bsSize="xsmall" onClick={this.props.cutClose}>Close</Button>
+                <Button bsSize="xsmall" onClick={this.props.cutMedium}>Medium</Button>
+                <Button bsSize="xsmall" onClick={this.props.cutThreeQ}>3 / 4</Button>
+              </Col>
+              <Col xs={3} md={3}>
+                <h6>Attach</h6>
+                <Button bsSize="xsmall" onClick={this.props.firstPerson}>First Person</Button>
+                <Button bsSize="xsmall" onClick={this.props.snorryCam}>Snorry</Button>
+              </Col>
             </Row></Grid>
           </Panel.Body>
         </Panel.Collapse>

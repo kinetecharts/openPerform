@@ -182,3 +182,7 @@ h5 {
 	text-align: center;
 	margin-top: 20%;
 }
+
+.debugBody .react-dat-gui {
+	min-width: 460px;
+}

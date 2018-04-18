@@ -13,7 +13,7 @@ module.exports = {
     'react-hot-loader/patch',
     // activate HMR for React
 
-    'webpack-dev-server/client?http://0.0.0.0:8080',
+    'webpack-dev-server/client?http://0.0.0.0:' + config.browserSync.port,
     // bundle the client for webpack-dev-server
     // and connect to the provided endpoint
 
@@ -44,7 +44,7 @@ module.exports = {
 
     host: '0.0.0.0',
 
-    port: 8080,
+    port: config.browserSync.port,
   },
   module: {
     rules: [

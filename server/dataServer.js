@@ -32,3 +32,23 @@ if (config.midiController.enabled) {
   const MidiController = require('./sockets/MidiController');
   const midiController = new MidiController();
 }
+
+const express = require('express');
+const fileUpload = require('express-fileupload');
+
+const app = express();
+app.use(fileUpload());
+app.post('/upload', (req, res, next) => {
+  let f = req.files.file;
+
+  f.mv(`${__dirname}/../dist/models/upload/${f.name}`, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    res.json({file: `/../dist/models/upload/${f.name}`});
+  });
+});
+app.listen(config.fileUpload.port, () => {
+  console.log('File upload sever running on ' + config.fileUpload.port);
+});

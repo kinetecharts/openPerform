@@ -22,6 +22,9 @@ const config = {
       dest: './dist/models',
     },
   },
+  fileUpload: {
+    port: 8888,
+  },
   // input sockets
   kinectTransport: {
     enabled: false,

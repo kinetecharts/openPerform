@@ -6,7 +6,7 @@ import IslandEnvironment from './islandEnvironment';
 import GridEnvironment from './gridEnvironment';
 import GradientEnvironment from './gradientEnvironment';
 import WaterEnvironment from './waterEnvironment';
-import SimpleAREnvironment from './simpleAREnvironment';
+import EmptyEnvironment from './emptyEnvironment';
 import ForestEnvironment from './forestEnvironment';
 
 import config from './../config';
@@ -16,11 +16,11 @@ class Environments {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
-    this.defaultEnvironment = 'simpleAR';
+    this.defaultEnvironment = 'empty';
 
     this.currentEnvironment = this.defaultEnvironment;
 
-    this.availEnvironments = [/*'muse', 'island', 'water', */'forest', 'grid-dark', /*'grid-light', 'gradient',*/ 'simpleAR'];
+    this.availEnvironments = [/*'muse', 'island', 'water', */'forest', 'grid-white', /*'grid-light', 'gradient',*/ 'empty'];
     this.environments = [];
 
     this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
@@ -54,17 +54,14 @@ class Environments {
       case 'water':
         this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.guiFolder));
         break;
-      case 'grid-dark':
+      case 'grid-white':
         this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, 'dark'));
-        break;
-      case 'grid-light':
-        this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, this.guiFolder, 'light'));
         break;
       case 'gradient':
         this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
         break;
-      case 'simpleAR':
-        this.environments.push(new SimpleAREnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
+      case 'empty':
+        this.environments.push(new EmptyEnvironment(this.renderer, this.parent, this.performers, this.guiFolder));
         break;
     }
     this.currentEnvironment = type;

@@ -421,6 +421,10 @@ class Main extends React.Component {
     this.state.outputManger.outputs.midicontroller.sendTest();
   }
 
+  uploadBVH(url) {
+    this.addBVHPerformer(url.slice(8), true);
+  }
+
   render() {
     return (
       <Grid className="container-no-padding" fluid>
@@ -434,7 +438,7 @@ class Main extends React.Component {
           <Grid fluid id="page">
             <Row className="row-third-height" id="upperDisplay">
               <Col xs={2} md={2}>
-                <DebugMenu />
+                <DebugMenu fileUpload={this.uploadBVH.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />
               </Col>
               <Col xs={2} md={2}>
                 <ARMenu active={this.state.isAR} />
@@ -445,6 +449,15 @@ class Main extends React.Component {
                   trackPerformer={this.trackPerformer.bind(this)}
                   performers={this.state.performerNames}
                   trackedPerformer={this.state.trackedPerformer}
+                  
+                  flyTop={(this.state.inputManger) ? this.state.inputManger.flyTop.bind(this.state.inputManger) : null}
+                  
+                  firstPerson={(this.state.inputManger) ? this.state.inputManger.firstPerson.bind(this.state.inputManger) : null}
+                  snorryCam={(this.state.inputManger) ? this.state.inputManger.snorryCam.bind(this.state.inputManger) : null}
+                  
+                  cutClose={(this.state.inputManger) ? this.state.inputManger.cutClose.bind(this.state.inputManger) : null}
+                  cutThreeQ={(this.state.inputManger) ? this.state.inputManger.cutThreeQ.bind(this.state.inputManger) : null}
+                  cutMedium={(this.state.inputManger) ? this.state.inputManger.cutMedium.bind(this.state.inputManger) : null}
                 />
               </Col>
               <Col xs={4} md={4}>

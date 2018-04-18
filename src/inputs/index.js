@@ -262,6 +262,12 @@ class InputManager {
 
   /* ********* End Static Camera Animations ********** */
 
+  cannonize(pos, spread, scale, delay) {
+    this.parent.performers.spreadAll(pos.clone().multiplyScalar(spread));
+    // this.parent.performers.scaleAll(scale);
+    // this.parent.performers.delayAll(delay);
+  }
+
   resetScale() {
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[0]

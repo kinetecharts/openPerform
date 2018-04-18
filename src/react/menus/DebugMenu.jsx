@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel } from 'react-bootstrap';
+import { Panel, FormGroup, FormControl } from 'react-bootstrap';
 
 class DebugMenu extends React.Component {
   constructor(props) {
@@ -23,6 +23,21 @@ class DebugMenu extends React.Component {
     }
     return false;
   }
+  handleUploadImage(ev) {
+    ev.preventDefault();
+
+    const data = new FormData();
+    data.append('file', ev.currentTarget.files[0]);
+
+    fetch(window.location.protocol + '//' + window.location.hostname + ':8888/upload', {
+      method: 'POST',
+      body: data,
+    }).then((response) => {
+      response.json().then((body) => {
+        this.props.fileUpload(body.file);
+      });
+    });
+  }
   render() {
     return (
       <Panel className="debugMenu" /* defaultExpanded */>
@@ -32,7 +47,13 @@ class DebugMenu extends React.Component {
         <Panel.Collapse>
           <Panel.Body className="debugBody">
             <div id="statsBox"></div>
-            <div></div>
+            <FormGroup controlId={'formControlsFile'}>
+              <FormControl id="formControlsFile"
+                type="file"
+                label="File"
+                onChange={this.handleUploadImage.bind(this)}/>
+            </FormGroup>
+            {this.props.arGui}
           </Panel.Body>
         </Panel.Collapse>
       </Panel>

@@ -491,31 +491,31 @@ class DefaultPreset {
     // Camera positions
     this.inputManager.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); // enable / disable camera rotation
 
-    this.inputManager.registerCallback('keyboard', 'q', 'Fly Close', () => { // fly to close up shot
-      this.scene.cameraControl.fly_to(
-        Config.camera.closeShot.position,
-        new THREE.Vector3(0, 0, 0),
-        Config.camera.closeShot.look,
-        TWEEN.Easing.Quadratic.InOut,
-        'path',
-        3000,
-        1,
-        () => { console.log('Camera moved!'); },
-      );
-    });
+    // this.inputManager.registerCallback('keyboard', 'q', 'Fly Close', () => { // fly to close up shot
+    //   this.scene.cameraControl.fly_to(
+    //     Config.camera.closeShot.position,
+    //     new THREE.Vector3(0, 0, 0),
+    //     Config.camera.closeShot.look,
+    //     TWEEN.Easing.Quadratic.InOut,
+    //     'path',
+    //     3000,
+    //     1,
+    //     () => { console.log('Camera moved!'); },
+    //   );
+    // });
 
-    this.inputManager.registerCallback('keyboard', 'w', 'Fly Medium', () => { // fly to medium shot
-      this.scene.cameraControl.fly_to(
-        Config.camera.mediumShot.position,
-        new THREE.Vector3(0, 0, 0),
-        Config.camera.mediumShot.look,
-        TWEEN.Easing.Quadratic.InOut,
-        'path',
-        3000,
-        1,
-        () => { console.log('Camera moved!'); },
-      );
-    });
+    // this.inputManager.registerCallback('keyboard', 'w', 'Fly Medium', () => { // fly to medium shot
+    //   this.scene.cameraControl.fly_to(
+    //     Config.camera.mediumShot.position,
+    //     new THREE.Vector3(0, 0, 0),
+    //     Config.camera.mediumShot.look,
+    //     TWEEN.Easing.Quadratic.InOut,
+    //     'path',
+    //     3000,
+    //     1,
+    //     () => { console.log('Camera moved!'); },
+    //   );
+    // });
 
     this.inputManager.registerCallback('keyboard', 'e', 'Fly Wide', () => { // fly to wide shot
       this.scene.cameraControl.fly_to(
@@ -541,6 +541,14 @@ class DefaultPreset {
     this.inputManager.registerCallback('keyboard', 'u', '3/4 View', this.inputManager.cutThreeQ.bind(this.inputManager)); // follow x position of performer
 
     this.inputManager.registerCallback('keyboard', 'i', 'Fly Out', this.inputManager.flyOut.bind(this.inputManager)); // follow x position of performer
+
+    const spread = 0.5;
+    const scale = 0.001;
+    const delay = 0.25;
+    this.inputManager.registerCallback('keyboard', 'left', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(-1,0,0), spread, scale, delay));
+    this.inputManager.registerCallback('keyboard', 'up', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(0,0,-1), spread, scale, delay));
+    this.inputManager.registerCallback('keyboard', 'right', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(1,0,0), spread, scale, delay));
+    this.inputManager.registerCallback('keyboard', 'down', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(0,0,1), spread, scale, delay));
   }
 }
 

@@ -5,6 +5,8 @@ import { Panel, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import 'react-select/dist/react-select.css';
 
+import EnvironmentStyles from './../styles/EnvironmentStyles';
+
 class EnvironmentMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -121,7 +123,9 @@ class EnvironmentMenu extends React.Component {
                   <tr key={idx}>
                     <td title="Hide / Show"><div className={`glyphicon ${(environment.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, environment)} /></td>
                     <td title="Name"><span style={{ color: environment.color }}>{environment.name}</span></td>
-                    <td title="Edit Settings">{ /*<div className="glyphicon glyphicon-cog" onClick={this.props.openEnvironmentModal.bind(this, environment.guiDOM)} /> */}</td>
+                    <td title="Edit Settings">
+                      <EnvironmentStyles stylesGUI={environment.getStylesGui()} />
+                    </td>
                 </tr>))
               }</tbody></table>
 						</Panel.Body>

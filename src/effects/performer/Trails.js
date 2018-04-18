@@ -29,12 +29,12 @@ class Trails {
 
     // initialize the trail
     this.options = {
-      thickness: 2,
+      thickness: 10,
       length: 75,
-      headColor: '#352f9d',
-      tailColor: '#ff0000',
-      headAlpha: 0.75,
-      tailAlpha: 0.35,
+      headColor: '#4a90e2',
+      tailColor: '#d9e8f9',
+      headAlpha: 1,
+      tailAlpha: 0.5,
     };
   }
 

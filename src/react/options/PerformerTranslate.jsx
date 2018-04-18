@@ -15,7 +15,7 @@ class PerformerOptions extends React.Component {
     const popoverTop = (
       <Popover id="performer-options-popover" title="Translate">
         <ListGroup>
-        <ListGroupItem>
+          <ListGroupItem>
             <h6>Position</h6>
           </ListGroupItem>
           <ListGroupItem>
@@ -61,8 +61,10 @@ class PerformerOptions extends React.Component {
               </tbody>
             </Table>
           </ListGroupItem>
-          {/* <ListGroupItem key={1}>
+          <ListGroupItem>
             <h6>Delay</h6>
+          </ListGroupItem>
+          <ListGroupItem>
             <Table>
               <tbody>
                 <tr>
@@ -70,7 +72,7 @@ class PerformerOptions extends React.Component {
                 </tr>
               </tbody>
             </Table>
-          </ListGroupItem> */}
+          </ListGroupItem>
         </ListGroup>
       </Popover>
     );

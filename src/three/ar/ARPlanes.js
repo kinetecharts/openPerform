@@ -13,19 +13,21 @@ class ARPlanes extends THREE.Object3D {
 
   addPlane_(plane) {
     // console.log('addPlane_',plane, this);
-    let planeObj = this.createPlane(plane, 'plane');
-    let shadowObj = this.createPlane(plane, 'shadow');
+    if (plane !== undefined) {
+      let planeObj = this.createPlane(plane, 'plane');
+      let shadowObj = this.createPlane(plane, 'shadow');
 
-    if (planeObj && shadowObj) {
-      planeObj.visible = this.planesVisible;
-      shadowObj.visible = this.planesVisible;
+      if (planeObj && shadowObj) {
+        planeObj.visible = this.planesVisible;
+        shadowObj.visible = this.planesVisible;
 
-      this.add(planeObj);
-      // this.add(shadowObj);
+        this.add(planeObj);
+        // this.add(shadowObj);
 
-      this.planes.set(plane.identifier, planeObj);
-      // this.shadows.set(plane.identifier, shadowObj);
-      this.addPlaneCallback(this.size());
+        this.planes.set(plane.identifier, planeObj);
+        // this.shadows.set(plane.identifier, shadowObj);
+        this.addPlaneCallback(this.size());
+      }
     }
   }
 
@@ -44,7 +46,7 @@ class ARPlanes extends THREE.Object3D {
   }
 
   onPlaneAdded_(event) {
-    console.log('onPlaneAdded_', event, this);
+    // console.log('onPlaneAdded_', event, this);
     if (event.planes.length > 0 && event.planes[0] !== undefined) {
       event.planes.forEach(plane => this.addPlane_(plane));
     }
@@ -52,10 +54,14 @@ class ARPlanes extends THREE.Object3D {
 
   onPlaneUpdated_(event) {
     // console.log('onPlaneUpdated_', event, this);
-    if (event.planes[0] !== undefined) {
-      for (let plane of event.planes) {
-        this.removePlane_(plane.identifier);
-        this.addPlane_(plane);
+    if (event !== undefined) {
+      if (event.planes !== undefined) {
+        if (event.planes[0] !== undefined) {
+          for (let plane of event.planes) {
+            this.removePlane_(plane.identifier);
+            this.addPlane_(plane);
+          }
+        }
       }
     }
   }
@@ -118,7 +124,7 @@ class ARPlanes extends THREE.Object3D {
     // } else {
     //   // Otherwise, generate a new color, and assign the color to
     //   // this plane's ID
-      console.log("!!!!!!!! Creating ", type);
+      // console.log("!!!!!!!! Creating ", type);
       switch(type) {
         case 'plane':
           material = new THREE.MeshBasicMaterial({
