@@ -1,5 +1,11 @@
+import React from 'react';
 import _ from 'lodash';
+
 import dat from 'dat-gui';
+
+import { ChromePicker } from 'react-color';
+
+import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import config from './../config';
 
@@ -172,6 +178,52 @@ class GridEnvironment {
   update(timeDelta) {
     // put frame updates here.
   }
+
+  handleBackgroundColorChange(color, event) {
+    this.color = color.hex;
+    this.renderer.setClearColor(new THREE.Color(color.hex));
+  }
+
+  getStylesGui() {
+    return <StylesGUI
+      handleBackgroundColorChange={this.handleBackgroundColorChange.bind(this)}
+      backgroundColor={this.color}
+    />;
+  }
 }
 
 module.exports = GridEnvironment;
+
+class StylesGUI extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {};
+  }
+  render() {
+    const cPicker = (
+      <Popover id="popover-positioned-top" title="Background Color">
+        <ChromePicker 
+          color={this.props.backgroundColor}
+          onChange={this.props.handleBackgroundColorChange}
+        />
+      </Popover>
+    );
+    return (
+      <ListGroup>
+          <ListGroupItem>
+            <OverlayTrigger
+              trigger="click"
+              rootClose
+              placement="top"
+              overlay={cPicker}
+            >
+              <div id="colorSquare" style={{
+                backgroundColor:this.props.backgroundColor
+              }}></div>
+            </OverlayTrigger>
+          </ListGroupItem>
+      </ListGroup>
+    );
+  }
+}

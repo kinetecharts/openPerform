@@ -78,6 +78,10 @@ module.exports = {
         to: resolve(__dirname, config.copy.images.dest),
       },
       {
+        from: resolve(__dirname, config.copy.textures.src),
+        to: resolve(__dirname, config.copy.textures.dest),
+			},
+			{
         from: resolve(__dirname, config.copy.models.src),
         to: resolve(__dirname, config.copy.models.dest),
       },

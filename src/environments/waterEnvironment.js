@@ -1,8 +1,17 @@
+import React from 'react';
 import _ from 'lodash';
+
+import dat from 'dat-gui';
+
+import { ChromePicker } from 'react-color';
+
+import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
+
 
 import WaterShader from '../shaders/WaterShader';
 import OceanShader from '../shaders/OceanShader';
 import Ocean from 'three/examples/js/Ocean.js';
+
 import config from './../config';
 
 class WaterEnvironment {
@@ -36,10 +45,10 @@ class WaterEnvironment {
     this.initLights();
     this.initFloor(this.floorSize, this.numLines, this.colors.light.floor);
 
-    const f = this.guiFolder.addFolder('Water');
-    f.add(this, 'waves', 0.1, 10).step(0.1).name('# Waves').listen();
-    // f.add(this.ms_Ocean, "choppiness", 0, 10).step(1).name("# chopiness");
-    f.add(this.parent.fog, 'density', 0, 0.1).step(0.0001).name('# fog');
+    // const f = this.guiFolder.addFolder('Water');
+    // f.add(this, 'waves', 0.1, 10).step(0.1).name('# Waves').listen();
+    // // f.add(this.ms_Ocean, "choppiness", 0, 10).step(1).name("# chopiness");
+    // f.add(this.parent.fog, 'density', 0, 0.1).step(0.0001).name('# fog');
   }
 
   initFloor(floorSize, numLines, color) {
@@ -215,6 +224,26 @@ class WaterEnvironment {
     this.light.castShadow = true;
     this.parent.add(this.light);
   }
+  
+  setColor(color) {
+    this.renderer.setClearColor( color );
+  }
+
+  toggleVisible(val) {
+    this.setVisible(!this.getVisible());
+  }
+
+  getVisible() {
+    return this.visible;
+  }
+
+  setVisible(val) {
+    console.log(val);
+    this.visible = val;
+    this.elements.forEach((element) => {
+      element.visible = val;
+    });
+  }
 
   remove() {
     this.parent.remove(this.light);
@@ -262,6 +291,52 @@ class WaterEnvironment {
     // this.ms_Ocean.materialOcean.uniforms.u_cameraPosition.value = window.camera.position;
     // this.ms_Ocean.materialOcean.depthTest = true;
   }
+
+
+  handleBackgroundColorChange(color, event) {
+    this.color = color.hex;
+    this.renderer.setClearColor(new THREE.Color(color.hex));
+  }
+  getStylesGui() {
+    return <StylesGUI
+      handleBackgroundColorChange={this.handleBackgroundColorChange.bind(this)}
+      backgroundColor={this.color}
+    />;
+  }
 }
 
 module.exports = WaterEnvironment;
+
+class StylesGUI extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {};
+  }
+  render() {
+    const cPicker = (
+      <Popover id="popover-positioned-top" title="Background Color">
+        <ChromePicker 
+          color={this.props.backgroundColor}
+          onChange={this.props.handleBackgroundColorChange}
+        />
+      </Popover>
+    );
+    return (
+      <ListGroup>
+          <ListGroupItem>
+            <OverlayTrigger
+              trigger="click"
+              rootClose
+              placement="top"
+              overlay={cPicker}
+            >
+              <div id="colorSquare" style={{
+                backgroundColor:this.props.backgroundColor
+              }}></div>
+            </OverlayTrigger>
+          </ListGroupItem>
+      </ListGroup>
+    );
+  }
+}

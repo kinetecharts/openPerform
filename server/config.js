@@ -17,6 +17,10 @@ const config = {
       src: './src/images',
       dest: './dist/images',
     },
+    textures: {
+      src: './src/textures',
+      dest: './dist/textures',
+    },
     models: {
       src: './src/models',
       dest: './dist/models',

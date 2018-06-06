@@ -7,7 +7,7 @@ module.exports = {
     inputPreset: 'Default',
     outputPreset: 'Default',
     backgroundColor: '#000000', // will be overridden by environment settings
-    environment: 'Grid'
+    environment: 'water',
   },
 
   inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController

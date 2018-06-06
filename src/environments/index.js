@@ -16,11 +16,11 @@ class Environments {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
-    this.defaultEnvironment = 'empty';
+    this.defaultEnvironment = config.defaults.environment.toLowerCase();
 
     this.currentEnvironment = this.defaultEnvironment;
-
-    this.availEnvironments = [/*'muse', 'island', 'water', */'forest', 'grid-white', /*'grid-light', 'gradient',*/ 'empty'];
+    console.log(this.currentEnvironment);
+    this.availEnvironments = [/*'muse', 'island', */'water', 'forest', 'grid-white', /*'grid-light', 'gradient',*/ 'empty'];
     this.environments = [];
 
     this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
