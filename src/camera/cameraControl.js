@@ -1,4 +1,4 @@
-import TWEEN from 'tween';
+import TWEEN from 'tween.js';
 
 import AnimateAlongSpline from './animations/animateAlongSpline';
 

@@ -3,7 +3,7 @@ methods and handles response data and
 callbacks to the threejs environment.
 The input list is defined in config/index.js */
 
-import TWEEN from 'tween';
+import TWEEN from 'tween.js';
 
 import config from './../config';
 
@@ -24,6 +24,20 @@ class InputManager {
     this.inputs = {};
     this.presets = {};
 
+    this.spread = 0.5;
+    this.spreadAngle = new THREE.Vector3(-1, 0, 0);
+    window.cannons = this.cannons = [
+      {
+        spread: Math.random()*127,
+        scale: Math.random()*127,
+        angle: Math.random()*127,
+      },
+      {
+        spread: Math.random()*127,
+        scale: Math.random()*127,
+        angle: Math.random()*127,
+      },
+    ];
     // initialize all presets
     this.initPresets();
   }
@@ -238,7 +252,7 @@ class InputManager {
       this.scene.cameraControl.changeParent(this.scene.scene);
     }
     this.scene.cameraControl.fly_to(
-      new THREE.Vector3(0, 13, 0),
+      new THREE.Vector3(0, 22, 0),
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 0, 0),
       TWEEN.Easing.Quadratic.InOut,
@@ -262,10 +276,101 @@ class InputManager {
 
   /* ********* End Static Camera Animations ********** */
 
+
+  circleClonesById(idx) {
+    // this.parent.performers.resetClonesPositionById(Object.keys(this.parent.performers.performers)[idx]);
+    this.parent.performers.circleClonesById(Object.keys(this.parent.performers.performers)[idx]);
+  }
+
+  addEffectToClones(idx, effect) {
+    this.parent.performers.addEffectsToClonesById(Object.keys(this.parent.performers.performers)[idx], effect);
+  }
+
+  addEffectToClonesAndLeader(idx, effect) {
+    this.parent.performers.addEffectsToPerformer(Object.keys(this.parent.performers.performers)[idx], effect);
+    this.parent.performers.addEffectsToClonesById(Object.keys(this.parent.performers.performers)[idx], effect);
+  }
+
+  toggleClones(idx) {
+    this.parent.performers.toggleClonesById(Object.keys(this.parent.performers.performers)[idx]);
+  }
+
+  toggleClonesAndLeader(idx) {
+    this.parent.performers.togglePerformer(Object.keys(this.parent.performers.performers)[idx]);
+    this.parent.performers.toggleClonesById(Object.keys(this.parent.performers.performers)[idx]);
+  }
+
   cannonize(pos, spread, scale, delay) {
     this.parent.performers.spreadAll(pos.clone().multiplyScalar(spread));
-    // this.parent.performers.scaleAll(scale);
+    this.parent.performers.scaleAll(scale);
     // this.parent.performers.delayAll(delay);
+  }
+
+  timedCannonize(idx) {
+    setInterval(() => {
+      this.cannonizeById(idx, 0)
+      this.cannonizeById(idx, 0);
+    }, 5000);
+  }
+
+  cannonizeById(idx, val) {
+    this.tweenCannon(idx, val);
+  }
+
+  tweenCannon(idx, newCannon) {
+    this.delayClonesById(idx, newCannon.delay);
+    var that = this;
+    new TWEEN.Tween(this.cannons[idx])
+      .to(newCannon, 1000)
+      .easing(TWEEN.Easing.Quadratic.In)
+      .onUpdate(function() {
+        that.scaleClonesById(idx, this.scale);
+        that.rotateClonesById(idx, this.angle);
+        that.spreadClonesById(idx, this.spread);
+      })
+      .onComplete(() => {
+        this.cannons[idx] = newCannon;
+      })
+      .start();
+  }
+
+  setCannonById(idx, newCannon) {
+    this.delayClonesById(idx, newCannon.delay);
+    this.scaleClonesById(idx, newCannon.scale);
+    this.rotateClonesById(idx, newCannon.angle);
+    this.spreadClonesById(idx, newCannon.spread);
+  }
+
+  delayClonesById(idx, delay) {
+    this.cannons[idx].delay = delay;
+    this.parent.performers.delayClonesById(Object.keys(this.parent.performers.performers)[idx], Common.mapRange(delay, 0, 127, 0, 1));
+  }
+
+  scaleClonesById(idx, scale) {
+    this.cannons[idx].scale = scale;
+    this.parent.performers.scaleClonesById(Object.keys(this.parent.performers.performers)[idx], Common.mapRange(scale, 0, 127, -0.00075, 0.01));
+  }
+
+  rotateClonesById(idx, angle) {
+    this.cannons[idx].angle = angle;
+    this.spreadAngle = new THREE.Vector3(0,0,0);
+
+    let theta = Common.mapRange(angle, 0, 127, -Math.PI, Math.PI);
+    let radius = 1;
+    let centerX = 0;
+    let centerZ = 0;
+    this.spreadAngle.x = centerX + radius * Math.cos(theta);
+    this.spreadAngle.y = 0;
+    this.spreadAngle.z = centerZ - radius * Math.sin(theta);
+
+    this.parent.performers.spreadClonesById(Object.keys(this.parent.performers.performers)[idx], this.spreadAngle.clone().multiplyScalar(this.spread));
+  }
+
+  spreadClonesById(idx, spread) {
+    // this.parent.performers.resetClonesRotationById(Object.keys(this.parent.performers.performers)[idx]);
+    this.cannons[idx].spread = spread;
+    this.spread = Common.mapRange(spread, 0, 127, -2, 2);
+    this.parent.performers.spreadClonesById(Object.keys(this.parent.performers.performers)[idx], this.spreadAngle.clone().multiplyScalar(this.spread));
   }
 
   resetScale() {
@@ -276,7 +381,7 @@ class InputManager {
 
   shrink() {
     this.scene.cameraControl.trackZoom(
-      new THREE.Vector3(0, 0, 105),
+      new THREE.Vector3(0, 0, 15),
       TWEEN.Easing.Quadratic.InOut,
       6400,
     );
@@ -430,105 +535,200 @@ class InputManager {
     }
   }
 
+  prepScene() {
+    // this.inputManager.resetScale();
+    _.map(this.parent.performers.getPerformers(), (performer, idx) => {
+      // console.log(idx, performer);
+      this.parent.performers.add(performer.name + ' Clone 1', 'clone_' + performer.type, performer, null);
+      this.parent.performers.add(performer.name + ' Clone 2', 'clone_' + performer.type, performer, null);
+      // this.parent.performers.add(performer.name + ' Clone 3', 'clone_' + performer.type, performer, null);
+      // this.parent.performers.add(performer.name + ' Clone 4', 'clone_' + performer.type, performer, null);
+      // this.parent.performers.add(performer.name + ' Clone 5', 'clone_' + performer.type, performer, null);
+    });
+  }
+
   sceneDefault() {
-    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle('planes');
-    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle('planes');
+    this.tweenCannon(0, {
+      spread: 43,
+      scale: 10,
+      angle: 0,
+      delay: 109,
+    });
+    this.toggleClones(0);
+    // this.toggleClonesAndLeader(1);
+    this.trackPerformer(0, 7.7);
+    // this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle('planes');
+    // this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle('planes');
 
-    this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
+    // this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
 
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[0]
+    // ].setVisible(false);
 
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].setVisible(false);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].setVisible(false);
   }
 
   sceneOne() {
-    this.parent.updateColors(this.parent.switchColorSet('darkColors')[0]);
+    this.trackPerformer(1, 7.7);
+    this.toggleClones(0);
+    // this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].toggleVisible();
+    // this.scene.cameraControl.clearTrack();
+    // this.shrink();
+    // this.parent.updateColors(this.parent.switchColorSet('darkColors')[0]);
   }
 
   sceneTwo() {
-    this.parent.clearCycleColors();
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].updateStyle('planes');
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].updateStyle('planes');
+    this.tweenCannon(0, {
+      spread: 63,
+      scale: 9,
+      angle: 0,
+      delay: 109,
+    });
+    // this.tweenCannon(0, {
+    //   spread: 46,
+    //   scale: 1,
+    //   angle: 0,
+    //   delay: 0,
+    // });
 
-    this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
-    this.trackPerformer(0, 7.7);
+    // this.tweenCannon(1, {
+    //   spread: 46,
+    //   scale: 1,
+    //   angle: 53,
+    //   delay: 0,
+    // });
 
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].setVisible(false);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].setVisible(true);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].setVisible(true);
+    // this.toggleClones(0);
+    // this.toggleClones(1);
+    // this.parent.clearCycleColors();
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].updateStyle('planes');
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].updateStyle('planes');
+
+    // this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
+    // this.trackPerformer(0, 7.7);
+
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[0]
+    // ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].setVisible(true);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].setVisible(true);
   }
 
   sceneThree() {
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].updateStyle('spheres');
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].updateStyle('spheres');
+    this.toggleClonesAndLeader(0);
+    this.addEffectToClonesAndLeader(0, 'trails');
+    this.trackPerformer(1, 7.7);
+    // this.tweenCannon(0, {
+    //   spread: 63,
+    //   scale: 9,
+    //   angle: 0,
+    //   delay: 3,
+    // });
 
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].setVisible(false);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].setVisible(true);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].setVisible(true);
+    // this.tweenCannon(1, {
+    //   spread: 63,
+    //   scale: 9,
+    //   angle: 0,
+    //   delay: 3,
+    // });
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].updateStyle('spheres');
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].updateStyle('spheres');
+
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[0]
+    // ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].setVisible(true);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].setVisible(true);
   }
 
   sceneFour() {
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].updateStyle('discs');
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].updateStyle('discs');
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].addEffect('cloner');
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].addEffect('cloner');
+    this.toggleClonesAndLeader(1);
+    this.trackPerformer(0, 9);
+    this.setCannonById(0, {
+      spread: 63,
+      scale: 9,
+      angle: 0,
+      delay: 0,
+    });
+    this.circleClonesById(0);
+    this.flyTop();
 
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].setVisible(false);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].setVisible(true);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].setVisible(true);
+    
+    // this.tweenCannon(0, {
+    //   spread: 46,
+    //   scale: 9,
+    //   angle: 0,
+    //   delay: 0,
+    // });
+
+    // this.tweenCannon(1, {
+    //   spread: 63,
+    //   scale: 9,
+    //   angle: 0,
+    //   delay: 0,
+    // });
+    // this.flyTop();
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].updateStyle('discs');
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].updateStyle('discs');
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].addEffect('cloner');
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].addEffect('cloner');
+
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[0]
+    // ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].setVisible(true);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].setVisible(true);
   }
 
   sceneFive() {
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].setVisible(false);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[1]
-    ].setVisible(false);
-    this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[2]
-    ].setVisible(false);
+    this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].toggleVisible();
+
+    this.addEffectToClonesAndLeader(0, 'trails');
+    this.toggleClonesAndLeader(0);
+
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[0]
+    // ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[1]
+    // ].setVisible(false);
+    // this.parent.performers.performers[
+    //   Object.keys(this.parent.performers.performers)[2]
+    // ].setVisible(false);
   }
 
   sceneSix() {

@@ -1,4 +1,4 @@
-import TWEEN from 'tween';
+import TWEEN from 'tween.js';
 
 const AnimateAlongSpline = function (scene, controls, object, sPos, tPos, lookAt, params) {
   this.scene = scene;

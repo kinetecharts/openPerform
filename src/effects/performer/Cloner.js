@@ -4,7 +4,7 @@ import _ from 'lodash';
 import DatGui, { DatNumber, DatBoolean } from 'react-dat-gui';
 import datGuiCss from 'react-dat-gui/build/react-dat-gui.css';
 
-import TWEEN from 'tween';
+import TWEEN from 'tween.js';
 
 import config from './../../config';
 

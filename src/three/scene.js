@@ -371,7 +371,7 @@ class Scene {
   }
 
   updateCommon() {
-    if (TWEEN) { TWEEN.update(); }
+    if (TWEEN) { TWEEN.update(performance.now()); }
     if (this.statsEnabled) { this.stats.update(); }
     if (this.performer) { this.performer.update(this.clock.getDelta()); }
     if (this.environments) { this.environments.update(this.clock.getDelta()); }

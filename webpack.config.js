@@ -119,8 +119,8 @@ module.exports = {
       'window.jQuery': 'jquery',
       THREE: 'three',
       'window.THREE': 'three',
-      TWEEN: 'tween',
-      'window.TWEEN': 'tween',
+      TWEEN: 'tween.js',
+      'window.TWEEN': 'tween.js',
     }),
 
     new webpack.optimize.CommonsChunkPlugin({

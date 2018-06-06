@@ -9,7 +9,7 @@ const sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
 
 require('./../libs/BufferGeometryMerge.js');
 
-import TWEEN from 'tween';
+import TWEEN from 'tween.js';
 
 import Common from './../util/Common';
 
@@ -965,16 +965,36 @@ class Performer {
     return this.scene;
   }
 
+  resetOffset() {
+    this.offset = new THREE.Vector3();
+    
+    const s = this.getScene();
+    s.position.copy(new THREE.Vector3());
+  }
+
   getOffset() {
     return this.offset;
   }
 
   setOffset(val) {
-    this.offset = val;
+    this.offset = val.clone();
     
     const s = this.getScene();
-    s.position.copy(new THREE.Vector3(0,0,0));
-    s.position.copy(this.getOffset().clone());
+    s.position.copy(val.clone());
+  }
+
+  setPosition(val) {
+    this.offset = new THREE.Vector3();
+    
+    const s = this.getScene();
+    s.position.copy(val.clone());
+  }
+
+  resetPosition() {
+    this.offset = new THREE.Vector3();
+    
+    const s = this.getScene();
+    s.position.set(0, 0, 0);
   }
 
   setScale(val) {
@@ -990,7 +1010,15 @@ class Performer {
   setRotation(val) {
     this.rotation = val;
     const s = this.getScene();
-    s.rotation.copy(this.getRotation().clone());
+    s.rotation.copy(this.rotation.clone());
+  }
+
+  resetRotation() {
+    this.offset = new THREE.Vector3(0, 0, 0);
+    this.rotation = new THREE.Vector3(0, 0, 0);
+    const s = this.getScene();
+    s.rotation.set(0, 0, 0);
+    s.position.set(0, 0, 0);
   }
 
   getDelay() {

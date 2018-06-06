@@ -3,7 +3,7 @@ methods and handles response data and
 callbacks to the threejs environment.
 The output list is defined in config/index.js */
 
-import TWEEN from 'tween';
+import TWEEN from 'tween.js';
 
 import config from './../config';
 
