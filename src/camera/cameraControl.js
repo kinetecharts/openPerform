@@ -301,13 +301,13 @@ class CameraControl {
     this.trackingTarget = null;
   }
 
-  track(target, look, offset) {
+  track(target, look, offset, zTrack = false) {
     const vector = new THREE.Vector3();
     vector.setFromMatrixPosition(target.matrixWorld);
     vector.add(offset);
     this.controls.object.position.z = vector.z;
 
-    this.zTrack = false;
+    this.zTrack = zTrack;
     if (this.trackingTarget) {
       this.trackingTarget = null;
     }

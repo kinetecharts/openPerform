@@ -87,6 +87,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css'],
+    alias: {
+      '../osc.js': resolve(__dirname, 'node_modules/osc/src/osc.js'),
+      'osc-browser': resolve(__dirname, 'node_modules/osc/dist/osc-browser.min.js'),
+    },
   },
   plugins: [
     new CopyWebpackPlugin([

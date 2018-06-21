@@ -1,3 +1,9 @@
+* {
+	overflow: hidden !important;
+	overflow-x: hidden !important;
+	overflow-y: hidden !important;
+}
+
 html, body {
 	position: absolute;
 	background: none !important;
@@ -74,11 +80,12 @@ h5 {
 #page {
     height: 100%;
     position: absolute;
-    display: block;
     padding: 10px;
     margin: 0;
-	width: 100%;
-	pointer-events: none;
+		width: 100%;
+		pointer-events: none;
+		display: block;
+		/* display: none; */
 }
 
 #backgrounds {
@@ -128,11 +135,11 @@ h5 {
 	background-color: #000000;
 	position: absolute;
 	z-index: 1000000;
-	/*background-image: url('./../../images/Duality_anim.gif');*/
+	background-image: url('./../images/title.jpg');
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
-	display: none;
+	/* display: none; */
 }
 
 #startOverlay h1 {
@@ -165,7 +172,7 @@ h5 {
 
 
 #endOverlay {
-	display: none;
+	/* display: none; */
 	justify-content:center;
 	align-items:center;
 	width:100%;
@@ -177,6 +184,7 @@ h5 {
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-image: url('./../images/credits.jpg');
 }
 
 #endOverlay h1 {

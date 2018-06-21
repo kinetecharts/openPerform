@@ -54,7 +54,7 @@ class Environments {
       case 'water':
         this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.guiFolder));
         break;
-      case 'grid-white':
+      case 'grid':
         this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, 'dark'));
         break;
       case 'gradient':

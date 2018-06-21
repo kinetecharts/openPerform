@@ -12,8 +12,7 @@ class Performers {
     this.inputManager = inputManager;
     this.outputManager = outputManager;
     
-    this.performers = {};
-    window.performers = this.performers;
+    window.performers = this.performers = {};
     this.dataBuffer = [];
   }
   init(parent) {
@@ -32,19 +31,19 @@ class Performers {
     return _.has(this.performers, inputId);
   }
 
-  add(inputId, type, leader, actions) {
+  add(inputId, type, leader, actions, options) {
     if (this.performers && !this.performers[inputId] && this.colors) {
+      (options.color == null) ? options.color = this.colors[_.size(this.performers) % this.colors.length] : null;
       this.performers[inputId] = new Performer(
         this.parent,
         inputId,
         _.size(this.performers) + 1,
         type,
         leader,
-        this.colors[_.size(this.performers) % this.colors.length],
-        true,
         actions,
         this.inputManager,
         this.outputManager,
+        options,
       );
       // this.performers[inputId+"_-1"] = new Performer(this.parent, inputId+"_-1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], -1, true);
       // this.performers[inputId+"_1"] = new Performer(this.parent, inputId+"_1", _.size(this.performers)+1, type, this.colors[_.size(this.performers)%this.colors.length], 1, true);
@@ -71,8 +70,34 @@ class Performers {
     return this.performers[id];
   }
 
+  togglePerformers() {
+    _.each(this.performers, (performer) => {
+      performer.toggleVisible();
+    });
+  }
+
   togglePerformer(id) {
     this.getPerformer(id).toggleVisible();
+  }
+
+  showPerformers() {
+    _.each(this.performers, (performer) => {
+      performer.setVisible(true);
+    });
+  }
+
+  showPerformer(id) {
+    this.getPerformer(id).setVisible(true);
+  }
+
+  hidePerformers() {
+    _.each(this.performers, (performer) => {
+      performer.setVisible(false);
+    });
+  }
+
+  hidePerformer(id) {
+    this.getPerformer(id).setVisible(true);
   }
 
   addEffects(effects) {
@@ -126,6 +151,18 @@ class Performers {
   toggleClonesById(id) {
     _.each(this.getCloneGroups()[id], (p) => {
       p.toggleVisible();
+    });
+  }
+
+  showClonesById(id) {
+    _.each(this.getCloneGroups()[id], (p) => {
+      p.setVisible(true);
+    });
+  }
+
+  hideClonesById(id) {
+    _.each(this.getCloneGroups()[id], (p) => {
+      p.setVisible(false);
     });
   }
 
@@ -201,6 +238,7 @@ class Performers {
   }
 
   delayClonesById(id, delay) {
+    console.log(id, delay);
     let s = 1;
     _.each(this.getCloneGroups()[id], (performer) => {
       performer.setDelay(delay * s);
@@ -209,6 +247,7 @@ class Performers {
   }
 
   delayAll(delay) {
+    console.log(this.getCloneGroups());
     _.each(this.getCloneGroups(), (performerGroup, idx) => {
       let s = 1;
       _.each(performerGroup, (performer) => {

@@ -18,8 +18,10 @@ import PerformerEffects from './../effects/performer';
 import _ from 'lodash';
 import dat from 'dat-gui';
 
+import config from './../config';
+
 class Performer {
-  constructor(parent, inputId, performerId, type, leader, color, visible, actions, inputManager, outputManager) {
+  constructor(parent, inputId, performerId, type, leader, actions, inputManager, outputManager, options) {
     this.inputManager = inputManager;
     this.outputManager = outputManager;
 
@@ -43,27 +45,29 @@ class Performer {
     this.performer = null;
     this.name = 'Performer ' + performerId;
     
-    this.offset = new THREE.Vector3(0, 0, 0);
+    (options.offset == null) ? this.offset = new THREE.Vector3(0, 0, 0) : this.offset = options.offset;
     this.rotation = new THREE.Euler(0, 0, 0);
-    // console.log('!!!!!!!', this.type);
+    
     if (this.type === 'clone_bvh' || this.type === 'clone_perceptionNeuron') {
-      this.offset = new THREE.Vector3((parseInt(performerId) - 1), 0, 0);
+      if (options.offset == null) {
+        this.offset = new THREE.Vector3((parseInt(performerId) - 1), 0, 0);
+      }
       this.name = 'Clone ' + (parseInt(performerId) - 1);
     }
-    this.color = color;
+    this.color = options.color;
     
     this.prefix = 'robot_';
 
-    this.wireframe = false;
-    this.visible = true;
-    this.tracking = false;
+    this.wireframe = options.wireframe;
+    this.visible = options.visible;
+    this.tracking = options.tracking;
 
     this.styles = ['default', 'boxes', 'spheres', 'planes', 'robot', 'discs', 'hands', 'heads'];
-    this.styleId = 0;
-    this.style = this.styles[this.styleId];
-    this.intensity = 1;
+    this.styleId = this.styles.indexOf(options.style);
+    this.style = options.style;
+    this.intensity = options.intensity;
 
-    this.material = 'Phong';
+    this.material = options.material.toLowerCase();
     this.materials = ['Basic', 'Lambert', 'Phong', 'Standard'];
 
     this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
@@ -227,7 +231,7 @@ class Performer {
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = [/* 'constructor', */'vogue', 'cloner', /* 'datatags', */'trails', /*'particleSystem', 'midiStream'*/];
+    this.effects = ['constructor', 'vogue', 'cloner', 'datatags', 'trails', 'particleSystem', 'midiStream'];
 
     // this.gui = new dat.GUI({ autoPlace: true });
     // this.guiFolder = this.gui.addFolder(this.name + ' Effects');
@@ -508,7 +512,7 @@ class Performer {
     s.position.copy(this.getOffset().clone());
     this.parent.add(s);
     this.addEffects([
-      /*this.effects[2], */
+      this.effects[2],
       // this.effects[6] // Midi Streamer
     ]);// defaults
   }
@@ -723,7 +727,7 @@ class Performer {
 
   updateStyle(style) {
     this.setStyle(style);
-    this.getScene().visible=false;
+    this.getScene().visible = false;
     this.parseBVHGroup('bvh', this.getHiddenParts(), style, this.getIntensity());
   }
 
@@ -759,9 +763,11 @@ class Performer {
           }
           if (object instanceof THREE.Mesh) {
             switch (source) {
+              default:
+                break;
               case 'bvh':
               case 'clone_bvh':
-                object.scale.set(2, 2, 2);
+                object.scale.set(2 * intensity, 2 * intensity, 2 * intensity);
                 break;
             }
 
@@ -776,8 +782,10 @@ class Performer {
             }
             object.rotation.x = 0;
             switch (style) {
+              default:
+                break;
               case 'spheres':
-                var scale = 0.075*6;// Common.mapRange(intensity, 1, 10, 0.01, 3)
+                var scale = (0.075*6) * intensity;// Common.mapRange(intensity, 1, 10, 0.01, 3)
                 object.geometry = new THREE.SphereGeometry(
                   object.srcSphere.radius * scale,
                   10, 10,
@@ -786,7 +794,7 @@ class Performer {
                 break;
 
               case 'planes':
-                var scale = 2;// Common.mapRange(intensity, 1, 10, 0.01, 1)
+                var scale = 2 * intensity;// Common.mapRange(intensity, 1, 10, 0.01, 1)
                 object.geometry = new THREE.BoxGeometry(
                   1,
                   object.srcSphere.radius * scale, object.srcSphere.radius * scale,
@@ -795,7 +803,7 @@ class Performer {
                 break;
 
               case 'boxes':
-                var scale = 0.125*6;// Common.mapRange(intensity, 1, 10, 0.01, 5)
+                var scale = (0.125*6) * intensity;// Common.mapRange(intensity, 1, 10, 0.01, 5)
                 object.geometry = new THREE.BoxGeometry(
                   object.srcSphere.radius * scale,
                   object.srcSphere.radius * scale,
@@ -805,7 +813,7 @@ class Performer {
                 break;
 
               case 'robot':
-                var scale = 0.5*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                var scale = (0.5*2) * intensity;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.BoxGeometry(
                   object.srcBox.max.x * scale,
                   object.srcBox.max.z * scale,
@@ -815,7 +823,7 @@ class Performer {
                 break;
 
               case 'discs':
-                var scale = 0.5*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                var scale = (0.5*2) * intensity;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.CylinderGeometry(
                   object.srcBox.max.x * scale,
                   object.srcBox.max.x * scale,
@@ -826,7 +834,7 @@ class Performer {
                 break;
 
               case 'oct':
-                var scale = 0.1*2;// Common.mapRange(intensity, 1, 10, 0.01, 2)
+                var scale = (0.1*2) * intensity;// Common.mapRange(intensity, 1, 10, 0.01, 2)
                 object.geometry = new THREE.TetrahedronGeometry(object.srcSphere.radius * scale, 1);
                 object.geometry.needsUpdate = true;
                 object.srcScale = 1;
@@ -836,7 +844,7 @@ class Performer {
                 object.geometry = this.getModelGeo('hand');
                 object.geometry.needsUpdate = true;
                 object.srcScale = object.srcSphere.radius * 0.01;
-                object.scale.set(object.srcScale*7, object.srcScale*7, object.srcScale*7);
+                object.scale.set((object.srcScale*7) * intensity, (object.srcScale*7) * intensity, (object.srcScale*7) * intensity);
                 break;
 
               case 'heads':
@@ -844,27 +852,27 @@ class Performer {
                 object.geometry.needsUpdate = true;
                 object.rotation.x = Math.PI;
                 object.srcScale = object.srcSphere.radius * 0.1;
-                object.scale.set(object.srcScale*10, object.srcScale*10, object.srcScale*10);
+                object.scale.set((object.srcScale*10) * intensity, (object.srcScale*10) * intensity, (object.srcScale*10) * intensity);
                 break;
 
               case 'hearts':
                 object.geometry = this.getModelGeo('heart');
                 object.geometry.needsUpdate = true;
                 object.srcScale = object.srcSphere.radius * 0.001;
-                object.scale.set(object.srcScale, object.srcScale, object.srcScale);
+                object.scale.set((object.srcScale) * intensity, (object.srcScale) * intensity, (object.srcScale) * intensity);
                 break;
 
               case 'chairs':
                 object.geometry = this.getModelGeo('chair');
                 object.geometry.needsUpdate = true;
                 object.srcScale = object.srcSphere.radius * 0.001;
-                object.scale.set(object.srcScale, object.srcScale, object.srcScale);
+                object.scale.set((object.srcScale) * intensity, (object.srcScale) * intensity, (object.srcScale) * intensity);
                 break;
 
               case 'oxygen':
                 object = this.getColladaScenes('oxygen');
                 object.srcScale = object.srcSphere.radius * 0.1;
-                object.scale.set(object.srcScale, object.srcScale, object.srcScale);
+                object.scale.set((object.srcScale) * intensity, (object.srcScale) * intensity, (object.srcScale) * intensity);
                 break;
 
               case 'lines':
@@ -901,7 +909,7 @@ class Performer {
       },
       250,
     ));
-  this.getScene().visible=true;
+    this.getScene().visible = true;
     return {
       keys: this.bvhKeys,
       meshes,
@@ -981,6 +989,18 @@ class Performer {
     
     const s = this.getScene();
     s.position.copy(val.clone());
+  }
+
+  animateTo(newPos, animTime) {
+    const s = this.getScene();
+    // s.position.copy(val.clone());
+    new TWEEN.Tween(s.position.clone())
+        .to(newPos.clone(), animTime)
+        .onUpdate(function() {
+          s.position.set(this.x, this.y, this.z);
+        })
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .start();
   }
 
   setPosition(val) {

@@ -159,6 +159,18 @@ class InputManager {
     );
   }
 
+  snorry(distance) {
+    this.scene.unsetRotation();
+    this.scene.cameraControl.changeParent(this.parent.performers.performers[
+      Object.keys(this.parent.performers.performers)[0]
+    ].performer.meshes.robot_spine3);
+
+    this.scene.cameraControl.jump(
+      new THREE.Vector3(0, 15, distance),
+      new THREE.Vector3(0, 15, 0),
+    );
+  }
+
   snorryCam() {
     this.scene.unsetRotation();
     this.scene.cameraControl.changeParent(this.parent.performers.performers[
@@ -183,6 +195,14 @@ class InputManager {
     );
   }
 
+  slowZoom(distance) {
+    this.scene.cameraControl.trackZoom(
+      new THREE.Vector3(0, 0, distance),
+      TWEEN.Easing.Quadratic.InOut,
+      20000,
+    );
+  }
+
   slowZoom1() {
     this.scene.cameraControl.trackZoom(
       new THREE.Vector3(0, 0, 12),
@@ -199,7 +219,7 @@ class InputManager {
     );
   }
 
-  flyOut() {
+  flyOut(animTime) {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene.scene);
     }
@@ -209,7 +229,7 @@ class InputManager {
       new THREE.Vector3(0, 0, 0),
       TWEEN.Easing.Quadratic.InOut,
       'path',
-      7000,
+      animTime,
       1,
       () => { console.log('Camera moved!'); },
     );
@@ -235,13 +255,15 @@ class InputManager {
     this.scene.setRotation();
   }
 
-  cutThreeQ() {
+  cutThreeQ(idx) {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene.scene);
     }
+
+    const p = this.parent.performers.getPerformer(Object.keys(this.parent.performers.performers)[idx]).scene.position.clone();
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 15, 15),
-      new THREE.Vector3(0, 0, 0),
+      p,
     );
     this.scene.setRotationSpeed(4.5);
     this.scene.setRotation();
@@ -252,14 +274,29 @@ class InputManager {
       this.scene.cameraControl.changeParent(this.scene.scene);
     }
     this.scene.cameraControl.fly_to(
-      new THREE.Vector3(0, 22, 0),
+      new THREE.Vector3(0, 11, 0),
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 0, 0),
       TWEEN.Easing.Quadratic.InOut,
       'path',
       3000,
       1,
-      () => { console.log('Camera moved!'); },
+      () => { this.scene.camera.up.set( 0, 0, -1 ); console.log('Camera moved!'); },
+    );
+  }
+
+  cut(idx, distance) {
+    if (this.scene.camera.parent.type !== 'Scene') {
+      this.scene.cameraControl.changeParent(this.scene.scene);
+    }
+
+    const p = this.parent.performers.getPerformer(Object.keys(this.parent.performers.performers)[idx]).scene.position.clone();
+    p.y = 0.55;
+    const p2 = p.clone();
+    p2.z = distance;
+    this.scene.cameraControl.jump(
+      p2,
+      p,
     );
   }
 

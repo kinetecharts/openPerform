@@ -91,7 +91,7 @@ class WaterEnvironment {
       textureHeight: 512,
       waterNormals,
       alpha: 1,
-      sunDirection: this.light.position.clone().normalize(),
+      sunDirection: this.dirLight.position.clone().normalize(),
       sunColor: 0x5177ff,
       waterColor: 0x002d3a,
       distortionScale: 50.0,
@@ -210,19 +210,18 @@ class WaterEnvironment {
 
     this.dirLight.shadow.camera.visible = true;
 
-    this.parent.add(new THREE.AmbientLight(0x444444));
+    this.ambLight = new THREE.AmbientLight(0x444444);
+    this.parent.add(this.ambLight);
 
     //
 
-    this.light = new THREE.DirectionalLight(0xffffff, 1);
-    this.light.position.set(-1, 0.75, 1);
-    this.light.position.multiplyScalar(50);
-    this.light.name = 'dirlight';
+    this.dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    this.dirLight.position.set(-1, 0.75, 1);
+    this.dirLight.position.multiplyScalar(50);
+    this.dirLight.name = 'dirlight';
 
-    // this.parent.add( this.dirLight );
-
-    this.light.castShadow = true;
-    this.parent.add(this.light);
+    this.dirLight.castShadow = true;
+    this.parent.add(this.dirLight);
   }
   
   setColor(color) {
@@ -246,11 +245,12 @@ class WaterEnvironment {
   }
 
   remove() {
-    this.parent.remove(this.light);
+    this.parent.remove(this.ambLight);
+    this.parent.remove(this.dirLight);
     this.parent.remove(this.mirrorMesh);
     this.parent.remove(this.skyBox);
 
-    this.guiFolder.removeFolder('Water');
+    // this.guiFolder.removeFolder('Water');
   }
 
   redrawGrid() {

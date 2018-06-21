@@ -33,6 +33,12 @@ if (config.midiController.enabled) {
   const midiController = new MidiController();
 }
 
+// init osc server
+if (config.OSC.enabled) {
+  const OSCServer = require('./sockets/OSCServer');
+  const osc = new OSCServer();
+}
+
 const express = require('express');
 const fileUpload = require('express-fileupload');
 

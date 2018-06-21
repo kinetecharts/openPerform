@@ -4,15 +4,27 @@ module.exports = {
   isAR: false,
   isVR: false,
   defaults: {
-    inputPreset: 'Default',
+    inputPreset: 'Duality',
     outputPreset: 'Default',
     backgroundColor: '#000000', // will be overridden by environment settings
-    environment: 'water',
+    environment: 'grid',
+    performer: {
+      wireframe: false,
+      color: null, // if null, will use color from performerColors (listed below)
+      material: 'basic',
+      visible: true,
+      tracking: false,
+      intensity: 1,
+      style: 'default',
+      offset: null, // if null, will auto increment x position based on performer id
+    },
+    effect: 'trails',
   },
 
   inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: ['MidiController'],
-  performerColors: ['FFFFFF', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
+  // performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
+  performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   debug: {
     bvh: {
       enabled: true, // load bvh file / create performer from playback

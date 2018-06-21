@@ -54,16 +54,16 @@ class GridEnvironment {
       lDecay: 10,
     };
 
-    // this.setColor(this.color);
+    this.setColor(this.colors[type].background);
     // this.initGUI();
     this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
     this.initShadowFloor(this.floorSize);
     this.initLights();
   }
 
-  // setColor(color) {
-  //   this.renderer.setClearColor( color );
-  // }
+  setColor(color) {
+    this.renderer.setClearColor(color);
+  }
 
   // initGUI() {
   //   this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
@@ -122,15 +122,16 @@ class GridEnvironment {
   }
 
   initLights() {
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
-    directionalLight.position.set( -5, 10, 10 );
-    directionalLight.castShadow = true;
-    this.parent.add( directionalLight );
+    this.dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    this.dirLight.position.set(-5, 10, 10);
+    this.dirLight.castShadow = true;
+    this.parent.add(this.dirLight);
+    this.elements.push(this.dirLight);
 
-    directionalLight.shadow.mapSize.width = 512;  // default
-    directionalLight.shadow.mapSize.height = 512; // default
-    directionalLight.shadow.camera.near = 0.5;    // default
-    directionalLight.shadow.camera.far = 500;     // default
+    this.dirLight.shadow.mapSize.width = 512;  // default
+    this.dirLight.shadow.mapSize.height = 512; // default
+    this.dirLight.shadow.camera.near = 0.5;    // default
+    this.dirLight.shadow.camera.far = 500;     // default
   }
 
   remove() {

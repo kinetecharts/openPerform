@@ -8,6 +8,8 @@ require('imports-loader?THREE=three!./../libs/three.ar.min.js');
 
 import Common from './../util/Common';
 
+var OrbitControls = require('three-orbit-controls')(THREE);
+
 import DepthDisplay from './displayComponents/DepthDisplay';
 import CameraControl from './../camera/cameraControl';
 import Environments from './../environments';
@@ -150,17 +152,32 @@ class Scene {
 
     this.addCreateCommon(); 
 
-    this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement );
-    this.controls.target = new THREE.Vector3(0,1.5,0);
-    window.controls = this.controls;
+    // this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement );
+    // this.controls.target = new THREE.Vector3(0,1.5,0);
+    // window.controls = this.controls;
 
-    this.controls.rotateSpeed = 1.0;
-    this.controls.zoomSpeed = 1.2;
-    this.controls.panSpeed = 0.8;
-    this.controls.noZoom = false;
-    this.controls.noPan = false;
-    this.controls.staticMoving = true;
-    this.controls.dynamicDampingFactor = 0.3;
+    // this.controls.rotateSpeed = 1.0;
+    // this.controls.zoomSpeed = 1.2;
+    // this.controls.panSpeed = 0.8;
+    // this.controls.noZoom = false;
+    // this.controls.noPan = false;
+    // this.controls.staticMoving = true;
+    // this.controls.dynamicDampingFactor = 0.3;
+
+    // this.controls.autoRotate = false;
+    // this.controls.autoRotateSpeed = 3;
+
+    this.controls = new OrbitControls(this.camera)
+
+		this.controls.enableDamping = false;
+		this.controls.enableZoom = true;
+		this.controls.enableRotate = true;
+		this.controls.enablePan = true;
+		
+		this.controls.autoRotate = false;
+		this.controls.autoRotateSpeed = 1.5;
+		
+		this.controls.enableKeys = false;
 
     this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 
@@ -291,6 +308,7 @@ class Scene {
   }
 
   setRotation() {
+    console.log('');
     this.controls.autoRotate = true;
   }
 
