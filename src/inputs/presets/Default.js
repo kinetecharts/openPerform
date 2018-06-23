@@ -34,6 +34,9 @@ class DefaultPreset {
       case 'midicontroller':
         this.initMidiControllerCallbacks();
         break;
+      case 'osccontroller':
+        this.initOSCControllerCallbacks();
+        break;
     }
   }
 
@@ -197,6 +200,105 @@ class DefaultPreset {
         }
         previous.rt = rtButton[0].pressed;
       }
+    });
+  }
+
+  initOSCControllerCallbacks() {
+    this.performerIdx = 0;
+    this.inputManager.registerCallback('oscController', 'message', 'OSC Controller', (data) => {
+      const controlPath = data[0].split('/');
+      // console.log(controlPath);
+      switch(controlPath[1]) { // page
+        default:
+          console.log('OSC Page not found');
+          break;
+        case 'cameraControls':
+          switch(controlPath[2]) { // group
+            default:
+              console.log('OSC Group not found');
+              break;
+            case 'cutTo':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found');
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found');
+                      break;
+                    case 1: // Cut Close
+                      console.log(data[1]);
+                      break;
+                    case 2: // Cut Medium
+                      console.log(data[1]);
+                      break;
+                    case 3: // Cut Wide
+                      console.log(data[1]);
+                      break;
+                    case 4: //
+                      console.log(data[1]);
+                      break;
+                    case 5: // Cut 3/4
+                      console.log(data[1]);
+                      break;
+                    case 6: // Cut Top
+                      console.log(data[1]);
+                      break;
+                  }
+                  break;
+              }
+              break;
+            case 'tracking':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found');
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found');
+                      break;
+                    case 1:
+                      if (parseInt(data[1])) {
+                        this.inputManager.fixedTracking();
+                      }
+                      break;
+                    case 2:
+                      if (parseInt(data[1])) {
+                        this.inputManager.trackClose();
+                      }
+                      break;
+                    case 3:
+                      if (parseInt(data[1])) {
+                        this.inputManager.lowTrack();
+                      }
+                      break;
+                    case 4:
+                      if (parseInt(data[1])) {
+                        this.inputManager.trackPerformer(0, 50);
+                      }
+                      break;
+                    case 5:
+                      if (parseInt(data[1])) {
+                        this.inputManager.firstPerson();
+                      }
+                      break;
+                    case 6:
+                      if (parseInt(data[1])) {
+                        this.inputManager.snorry(100);
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
+          }
+          break;
+      }
+      // const row = controlPath[3];
+      // const col = controlPath[4];
+      // const val = data[0];
     });
   }
 

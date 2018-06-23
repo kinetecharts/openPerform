@@ -34,9 +34,9 @@ if (config.midiController.enabled) {
 }
 
 // init osc server
-if (config.OSC.enabled) {
+if (config.oscController.enabled) {
   const OSCServer = require('./sockets/OSCServer');
-  const osc = new OSCServer();
+  const oscServer = new OSCServer();
 }
 
 const express = require('express');

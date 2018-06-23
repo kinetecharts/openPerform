@@ -33,6 +33,7 @@ class Performers {
 
   add(inputId, type, leader, actions, options) {
     if (this.performers && !this.performers[inputId] && this.colors) {
+      (options == null) ? options = _.cloneDeep(config.defaults.performer) : null;
       (options.color == null) ? options.color = this.colors[_.size(this.performers) % this.colors.length] : null;
       this.performers[inputId] = new Performer(
         this.parent,

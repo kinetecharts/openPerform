@@ -57,8 +57,8 @@ const config = {
       outgoing: 9301, // port the browser connects on
     },
   },
-  OSC: {
-    enabled: false,
+  oscController: {
+    enabled: true,
     ports: {
       incoming: 9400,
       outgoing: 9401,

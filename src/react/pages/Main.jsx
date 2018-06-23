@@ -322,7 +322,7 @@ class Main extends React.Component {
   updatePerformers(id, data, type, leader, actions) {
     if (this.performers) {
       if (!this.performers.exists(id)) {
-        this.performers.add(id, type, leader, actions, config.defaults.performer);
+        this.performers.add(id, type, leader, actions, _.cloneDeep(config.defaults.performer));
         this.setState({
           performers: this.performers,
           performerNames: _.map(this.performers.getPerformers(), 'name'),

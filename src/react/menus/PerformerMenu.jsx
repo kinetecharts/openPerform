@@ -54,7 +54,7 @@ class PerformerMenu extends React.Component {
     this.setState({ forceUpdate: true });
   }
   addClone(performer) {
-    this.props.performers.add('Clone_' + _.size(this.props.performers.getPerformers()) + 1, 'clone_' + performer.type, performer, null);
+    this.props.performers.add('Clone_' + _.size(this.props.performers.getPerformers()) + 1, 'clone_' + performer.type, performer, null, null);
     this.setState({ forceUpdate: true });
   }
   removeClone(performer) {

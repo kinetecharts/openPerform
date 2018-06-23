@@ -4,7 +4,7 @@ module.exports = {
   isAR: false,
   isVR: false,
   defaults: {
-    inputPreset: 'Duality',
+    inputPreset: 'Default',
     outputPreset: 'Default',
     backgroundColor: '#000000', // will be overridden by environment settings
     environment: 'grid',
@@ -21,10 +21,10 @@ module.exports = {
     effect: 'trails',
   },
 
-  inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: ['MidiController'],
-  // performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
-  performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
+  performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
+  // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   debug: {
     bvh: {
       enabled: true, // load bvh file / create performer from playback
@@ -103,6 +103,12 @@ module.exports = {
     ports: {
       incoming: config.midiController.ports.incoming,
       outgoing: config.midiController.ports.outgoing,
+    },
+  },
+  osccontroller: {
+    ports: {
+      incoming: config.oscController.ports.incoming,
+      outgoing: config.oscController.ports.outgoing,
     },
   },
   data: [],

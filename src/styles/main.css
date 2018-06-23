@@ -126,7 +126,7 @@ h5 {
 }
 
 #startOverlay {
-	display: block;
+	display: none;
 	justify-content:center;
 	align-items:center;
 	width:100%;
@@ -139,7 +139,6 @@ h5 {
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
-	/* display: none; */
 }
 
 #startOverlay h1 {
@@ -172,7 +171,7 @@ h5 {
 
 
 #endOverlay {
-	/* display: none; */
+	display: none;
 	justify-content:center;
 	align-items:center;
 	width:100%;
