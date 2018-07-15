@@ -10,34 +10,27 @@ import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButto
 import config from './../config';
 
 class GridEnvironment {
-  constructor(renderer, parent, performers, type) {
+  constructor(renderer, parent, performers, defaults) {
     this.renderer = renderer;
     this.parent = parent;
+    this.performers = performers;
+    this.defaults = defaults;
 
     this.elements = [];
+    this.lights = [];
 
     this.name = "Grid";
     this.modalID = this.name+"_Settings";
     this.visible = true;
 
-    this.color = 0x333333;
+    this.bgColor = this.defaults.backgroundColor;
+    this.floorColor = this.defaults.floorColor;
     this.floorSize = 50;
     this.numLines = 50;
 
     this.gridFloor;
     this.hemiLight;
     this.dirLight;
-
-    this.colors = {
-      light: {
-        floor: 0x000000,
-        background: 0xFFFFFF,
-      },
-      dark: {
-        floor: 0xFFFFFF,
-        background: 0x000000,
-      },
-    };
 
     this.params = {
       shadowBias: 0.001,
@@ -54,14 +47,14 @@ class GridEnvironment {
       lDecay: 10,
     };
 
-    this.setColor(this.colors[type].background);
+    this.setBgColor(new THREE.Color('#' + this.bgColor.toString(16)));
     // this.initGUI();
-    this.initFloor(this.floorSize, this.numLines, this.colors[type].floor);
+    this.initFloor(this.floorSize, this.numLines, this.floorColor);
     this.initShadowFloor(this.floorSize);
     this.initLights();
   }
 
-  setColor(color) {
+  setBgColor(color) {
     this.renderer.setClearColor(color);
   }
 
@@ -85,7 +78,6 @@ class GridEnvironment {
   }
 
   setVisible(val) {
-    console.log(val);
     this.visible = val;
     this.elements.forEach((element) => {
       element.visible = val;
@@ -126,7 +118,7 @@ class GridEnvironment {
     this.dirLight.position.set(-5, 10, 10);
     this.dirLight.castShadow = true;
     this.parent.add(this.dirLight);
-    this.elements.push(this.dirLight);
+    this.lights.push(this.dirLight);
 
     this.dirLight.shadow.mapSize.width = 512;  // default
     this.dirLight.shadow.mapSize.height = 512; // default
@@ -137,6 +129,9 @@ class GridEnvironment {
   remove() {
     this.elements.forEach((element) => {
       this.parent.remove(element);
+    });
+    this.lights.forEach((light) => {
+      this.parent.remove(light);
     });
   }
 
@@ -164,16 +159,18 @@ class GridEnvironment {
   }
 
   updateParameters(data) {
-    	switch (data.parameter) {
-    		case 'size':
-    			this.floorSize = data.value * 100;
-    			this.redrawGrid();
-    			break;
-    		case 'lines':
+    switch (data.parameter) {
+      default:
+        break;
+      case 'size':
+        this.floorSize = data.value * 100;
+        this.redrawGrid();
+        break;
+      case 'lines':
         this.numLines = data.value * 100;
         this.redrawGrid();
-    			break;
-    	}
+        break;
+    }
   }
 
   update(timeDelta) {
@@ -181,14 +178,14 @@ class GridEnvironment {
   }
 
   handleBackgroundColorChange(color, event) {
-    this.color = color.hex;
-    this.renderer.setClearColor(new THREE.Color(color.hex));
+    this.bgColor = color.hex;
+    this.setBgColor(new THREE.Color(this.bgColor));
   }
 
   getStylesGui() {
     return <StylesGUI
       handleBackgroundColorChange={this.handleBackgroundColorChange.bind(this)}
-      backgroundColor={this.color}
+      backgroundColor={this.bgColor}
     />;
   }
 }
@@ -220,7 +217,7 @@ class StylesGUI extends React.Component {
               overlay={cPicker}
             >
               <div id="colorSquare" style={{
-                backgroundColor:this.props.backgroundColor
+                backgroundColor:'#'+this.props.backgroundColor.toString(16)
               }}></div>
             </OverlayTrigger>
           </ListGroupItem>

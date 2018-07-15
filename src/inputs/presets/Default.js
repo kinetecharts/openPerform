@@ -37,7 +37,23 @@ class DefaultPreset {
       case 'osccontroller':
         this.initOSCControllerCallbacks();
         break;
+      case 'posenet':
+        this.initPoseNetCallbacks();
+        break;
+      case 'iphonex':
+        this.initIPhoneXCallbacks();
+        break;
     }
+  }
+
+  initPoseNetCallbacks() {
+    this.inputManager.registerCallback('posenet', 'message', 'PoseNet', (data) => {
+      console.log('PoseNet: ', data);
+    });
+  }
+
+  initIPhoneXCallbacks() {
+    // this.inputManager.registerCallback('iphonex', 'message', 'iPhone X', this.main.updateHead.bind(this.main));
   }
 
   initGamepadCallbacks() {

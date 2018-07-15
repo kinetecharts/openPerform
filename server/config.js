@@ -61,7 +61,21 @@ const config = {
     enabled: true,
     ports: {
       incoming: 9400,
-      outgoing: 9401,
+      outgoing: 9401, // port the browser connects on
+    },
+  },
+  poseNet: {
+    enabled: true,
+    ports: {
+      incoming: 9500,
+      outgoing: 9501, // port the browser connects on
+    },
+  },
+  iPhoneX: {
+    enabled: true,
+    ports: {
+      incoming: 9600,
+      outgoing: 9601, // port the browser connects on
     },
   },
 };

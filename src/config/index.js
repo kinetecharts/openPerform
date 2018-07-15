@@ -6,7 +6,8 @@ module.exports = {
   defaults: {
     inputPreset: 'Default',
     outputPreset: 'Default',
-    backgroundColor: '#000000', // will be overridden by environment settings
+    backgroundColor: '000000', // will be overridden by environment settings
+    floorColor: 'ffffff', // will be overridden by environment settings
     environment: 'grid',
     performer: {
       wireframe: false,
@@ -21,7 +22,7 @@ module.exports = {
     effect: 'trails',
   },
 
-  inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: ['MidiController'],
   performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
@@ -109,6 +110,18 @@ module.exports = {
     ports: {
       incoming: config.oscController.ports.incoming,
       outgoing: config.oscController.ports.outgoing,
+    },
+  },
+  posenet: {
+    ports: {
+      incoming: config.poseNet.ports.incoming,
+      outgoing: config.poseNet.ports.outgoing,
+    },
+  },
+  iphonex: {
+    ports: {
+      incoming: config.iPhoneX.ports.incoming,
+      outgoing: config.iPhoneX.ports.outgoing,
     },
   },
   data: [],

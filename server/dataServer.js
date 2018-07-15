@@ -39,6 +39,18 @@ if (config.oscController.enabled) {
   const oscServer = new OSCServer();
 }
 
+// init poseNet server
+if (config.poseNet.enabled) {
+  const PoseNetServer = require('./sockets/PoseNet');
+  const poseNetServer = new PoseNetServer();
+}
+
+// init iPhoneX server
+if (config.iPhoneX.enabled) {
+  const IPhoneXServer = require('./sockets/iPhoneX');
+  const iPhoneXServer = new IPhoneXServer();
+}
+
 const express = require('express');
 const fileUpload = require('express-fileupload');
 

@@ -231,7 +231,7 @@ class Performer {
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = ['constructor', 'vogue', 'cloner', 'datatags', 'trails', 'particleSystem', 'midiStream'];
+    this.effects = [/*'constructor', 'vogue',*/ 'cloner', /*'datatags',*/ 'trails', /*'particleSystem', 'midiStream'*/];
 
     // this.gui = new dat.GUI({ autoPlace: true });
     // this.guiFolder = this.gui.addFolder(this.name + ' Effects');

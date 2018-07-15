@@ -48,9 +48,10 @@ class Scene {
 
     this.isAR = false;
   }
-  initScene(inputs, statsEnabled, performers, backgroundColor, callback) {
+  initScene(inputs, statsEnabled, performers, defaults, callback) {
     this.statsEnabled = statsEnabled;
     this.performer = performers;
+    this.defaults = defaults;
     this.container = $('#scenes');
 
     this.w = this.container.width();
@@ -60,16 +61,16 @@ class Scene {
       if (display) {
         this.isAR = true;
         this.arDisplay = display;
-        this.initArScene(inputs, backgroundColor, callback);
+        this.initArScene(inputs, this.defaults, callback);
       } else {
         this.isAR = false;
         // THREE.ARUtils.displayUnsupportedMessage();
-        this.initVRScene(inputs, backgroundColor, callback);
+        this.initVRScene(inputs, this.defaults, callback);
       }
     });
   }
 
-  initArScene(inputs, backgroundColor, callback) {
+  initArScene(inputs, defaults, callback) {
     this.renderer = new THREE.WebGLRenderer({ antialias:true, alpha: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -127,12 +128,12 @@ class Scene {
     callback(this.scene);
   }
 
-  initVRScene(inputs, backgroundColor, callback) {
+  initVRScene(inputs, defaults, callback) {
     // / Global : this.renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.w, this.h);
-    this.renderer.setClearColor(new THREE.Color(backgroundColor));
+    this.renderer.setClearColor(new THREE.Color(defaults.ƒundColor));
     this.renderer.autoClear = true;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMapSoft = true;
@@ -295,7 +296,7 @@ class Scene {
     
     this.scene.add(this.sceneGroup);
     
-    this.environments = new Environments(this.renderer, this.sceneGroup, this.performers);
+    this.environments = new Environments(this.renderer, this.sceneGroup, this.performers, this.defaults);
     window.environments = this.environments;
 
     // this.sceneGroup.scale.set(0.2, 0.2, 0.2)

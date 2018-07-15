@@ -1,8 +1,8 @@
-* {
+/* * {
 	overflow: hidden !important;
 	overflow-x: hidden !important;
 	overflow-y: hidden !important;
-}
+} */
 
 html, body {
 	position: absolute;
@@ -135,7 +135,7 @@ h5 {
 	background-color: #000000;
 	position: absolute;
 	z-index: 1000000;
-	background-image: url('./../images/title.jpg');
+	/* background-image: url('./../images/title.jpg'); */
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
@@ -183,7 +183,7 @@ h5 {
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
-	background-image: url('./../images/credits.jpg');
+	/* background-image: url('./../images/credits.jpg'); */
 }
 
 #endOverlay h1 {

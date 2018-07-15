@@ -70,7 +70,7 @@
     "react-fa": "^5.0.0",
     "react-select": "^1.0.0-rc.10",
     "react-simple-select": "^1.2.2",
-    "three": "^0.87.1",
+    "three": "^0.94.0",
     "three-orbit-controls": "^82.1.0",
     "tls": "^0.0.1",
     "tween": "^0.9.0",
