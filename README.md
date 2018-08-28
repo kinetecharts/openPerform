@@ -1,3 +1,5 @@
+![alt text](https://github.com/kinetecharts/openPerform/raw/master/src/images/preview.gif "OpenPerform Preview")
+
 OpenPerform brings real-time motion capture to artists and performers excluded by the high barriers to entry of expensive or "closed" systems. Our open source javascript performance framework enables artists to take direct control of the medium, to quickly collaborate with others, and to easily craft new experiences for all web-based platforms (including AR and VR).
 
 [https://www.openperform.org](https://www.openperform.org)
