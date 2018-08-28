@@ -48,9 +48,3 @@ if (config.iPhoneX.enabled) {
   const IPhoneXServer = require('./sockets/iPhoneX');
   const iPhoneXServer = new IPhoneXServer();
 }
-
-// init perception neuron 2 server
-if (config.perceptionNeuron.enabled) {
-  const PN2Server = require('./sockets/PerceptionNeuron2');
-  const pn2Server = new PN2Server();
-}

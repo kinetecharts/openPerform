@@ -1,10 +1,10 @@
-Requirements
+Built With
 ------------
-Node 8.4
-Yarn 1.3.2
-Webpack 3.5.1
+* Node v10.8.0
+* Yarn 1.9.4
+* Webpack 4.17.1
 
-Note: These versions are the minimum recommendation. New versions may or may not work properly.
+Note: These versions are a recommendation. New versions may or may not work properly.
 
 Install Dependancies
 ------------
