@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:49:39
+ * @modify date 2018-08-26 07:49:39
+ * @desc [Listen for and rebroadcast iPhoneX ARFace data.]
+*/
+
 const WebSocket = require('ws');
 const net = require('net');
 

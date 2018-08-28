@@ -8,9 +8,13 @@ const _ = require('lodash').mixin(require('lodash-keyarrange'));
 import dat from 'dat-gui';
 
 class BVHPlayer {
-  constructor(file, parent, autoplay, callback) {
+  constructor(content, parent, autoplay, callback) {
+    this.content = content;
+
     this.parent = parent;
     this.callback = callback;
+
+    const type = (typeof this.content == 'String') ? 'raw' : 'url';
 
     this.autoplay = autoplay;
     this.playing = false;
@@ -20,12 +24,21 @@ class BVHPlayer {
 
     this.mixer;
     this.clip;
-    this.skeletonHelper;
+    this.skeletonHelper = null;
     this.boneContainer = new THREE.Group();
 
     this.loader = new THREE.BVHLoader();
+    this.loading = false;
 
-    this.loadBVH(file);
+    switch(type) {
+      default:
+      case 'url':
+        this.loadBVH(this.content);
+        break;
+      case 'raw':
+        this.loadRaw(this.content);
+        break;
+    }
 
     this.update();
   }
@@ -69,23 +82,56 @@ class BVHPlayer {
   }
 
   loadBVH(bvhFile) {
-    this.loader.load(bvhFile, (result) => {
-      console.log('BVH File Loaded...');
+    if (!this.loading) {
+      this.loading = true;
+      this.loader.load(bvhFile, this.buildAnimation.bind(this));
+    }
+  }
 
+  switchClip(idx) {
+    if (this.type == 'url') {
+      if (!this.loading) {
+        this.loading = true;
+        this.loader.load(this.files[idx], (result) => {
+          console.log('BVH File Loaded...');
+          this.stop();
+          this.clip = result.clip;
+
+          this.play();
+          if (!this.autoplay) {
+            this.stop();
+          }
+          this.loading = false;
+        });
+      }
+    }
+  }
+
+  loadRaw(rawFile) {
+    this.buildAnimation(this.loader.parse(rawFile));
+  }
+
+  buildAnimation(result) {
+    console.log(result);
+    console.log('BVH File Loaded...');
+
+    // if (this.skeletonHelper == null) {    
       this.skeletonHelper = new THREE.SkeletonHelper(result.skeleton.bones[0]);
       this.skeletonHelper.skeleton = result.skeleton; // allow animation mixer to bind to SkeletonHelper directly
 
+      this.boneContainer = new THREE.Group();
       this.boneContainer.add(result.skeleton.bones[0]);
 
       // play animation
       this.mixer = new THREE.AnimationMixer(this.skeletonHelper);
-      this.clip = result.clip;
+    // }
+    this.clip = result.clip;
 
-      this.play();
-      if (!this.autoplay) {
-        this.stop();
-      }
-    });
+    this.play();
+    if (!this.autoplay) {
+      this.stop();
+    }
+    this.loading = false;
   }
 
   parseFrameData(data, name) {

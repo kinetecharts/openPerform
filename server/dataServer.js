@@ -1,14 +1,12 @@
-// const express = require('express');
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:43:36
+ * @modify date 2018-08-26 07:43:36
+ * @desc [The data server listens to various sockets and rebroadcasts data to each client.]
+*/
 
-// const app = express();
-
-// import config options
 const config = require('./config.js');
-
-// start app server
-// const server = app.listen(config.app.port, () => {
-//   console.log('Web server started on port', server.address().port);
-// });
 
 // init kinect server
 if (config.kinectTransport.enabled) {
@@ -51,22 +49,8 @@ if (config.iPhoneX.enabled) {
   const iPhoneXServer = new IPhoneXServer();
 }
 
-const express = require('express');
-const fileUpload = require('express-fileupload');
-
-const app = express();
-app.use(fileUpload());
-app.post('/upload', (req, res, next) => {
-  let f = req.files.file;
-
-  f.mv(`${__dirname}/../dist/models/upload/${f.name}`, (err) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-
-    res.json({file: `/../dist/models/upload/${f.name}`});
-  });
-});
-app.listen(config.fileUpload.port, () => {
-  console.log('File upload sever running on ' + config.fileUpload.port);
-});
+// init perception neuron 2 server
+if (config.perceptionNeuron.enabled) {
+  const PN2Server = require('./sockets/PerceptionNeuron2');
+  const pn2Server = new PN2Server();
+}

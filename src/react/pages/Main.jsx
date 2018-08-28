@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 08:00:36
+ * @modify date 2018-08-26 08:00:36
+ * @desc [This is where the magic happens. The main React class where all things are initialized.]
+*/
+
 import React from 'react';
 import ConsoleLogHTML from 'console-log-html';
 
@@ -18,6 +26,7 @@ import VRMenu from './../menus/VRMenu';
 import ARMenu from './../menus/ARMenu';
 
 import KeyboardHelpModal from './../modals/KeyboardHelpModal';
+import BVHChooserModal from '../modals/BVHChooserModal';
 
 import Scene from './../../three/scene';
 import InputManager from './../../inputs';
@@ -27,12 +36,12 @@ import Performers from './../../performers/Performers';
 
 import BVHPlayer from './../../performers/BVHPlayer';
 
-import colors from './../../styles/colors.css';
-import fonts from './../../styles/fonts.css';
-import main from './../../styles/main.css';
-import upperDisplay from './../../styles/upperDisplay.css';
-import lowerDisplay from './../../styles/lowerDisplay.css';
-import login from './../../styles/login.css';
+require('./../../styles/colors.css');
+require('./../../styles/fonts.css');
+require('./../../styles/main.css');
+require('./../../styles/upperDisplay.css');
+require('./../../styles/lowerDisplay.css');
+require('./../../styles/login.css');
 
 import config from '../../config';
 
@@ -73,6 +82,13 @@ class Main extends React.Component {
     // this.loadHead();
   }
 
+  setColor(id) {
+    this.setState({
+      colorIdx: id,
+    });
+    this.updateColors(this.state.colorSet[id]);
+  }
+
   sceneInit(scene) {
     this.performers.init(this.state.scene.sceneGroup);
     this.state.environments = this.state.scene.environments;
@@ -80,10 +96,12 @@ class Main extends React.Component {
     this.state.currentEnvironment = this.state.scene.currentEnvironment;
 
     if (this.state.debug.bvh.enabled) {
-      _.each(this.BVHFiles, (file) => {
-        this.addBVHPerformer(file, this.state.debug.bvh.autoplay);
-      });
+      // _.each(this.BVHFiles, (file) => {
+        this.addBVHPerformer(this.BVHFiles, this.state.debug.bvh.autoplay);
+      // });
     }
+
+    
 
     if (this.state.debug.console2html) {
       const con = document.createElement('ul');
@@ -101,7 +119,7 @@ class Main extends React.Component {
         true,
       ); // Redirect log messages
 
-      // once a second
+      // follow end of scroll
       setInterval(() => {
         div.scrollTop = div.scrollHeight;
       }, 1000);
@@ -110,13 +128,6 @@ class Main extends React.Component {
     this.setState({
       isVR: WEBVR.isAvailable()
     });
-  }
-
-  setColor(id) {
-    this.setState({
-      colorIdx: id,
-    });
-    this.updateColors(this.state.colorSet[id]);
   }
 
   clearCycleColors() {
@@ -172,9 +183,9 @@ class Main extends React.Component {
     }
   }
 
-  addBVHPerformer(modelPath, autoplay) {
+  addBVHPerformer(modelPaths, autoplay) {
     const bvhPlayer = new BVHPlayer(
-      modelPath,
+      modelPaths,
       this.state.scene.sceneGroup,
       autoplay,
       this.updatePerformers.bind(this),
@@ -183,12 +194,42 @@ class Main extends React.Component {
     return bvhPlayer;
   }
 
+  rawBvhUpload(result, autoplay) {
+    const bvhPlayer = new BVHPlayer(
+      result,
+      this.state.scene.sceneGroup,
+      autoplay,
+      this.updatePerformers.bind(this),
+    );
+    bvhPlayer.loadRaw(result);
+    this.BVHPlayers.push(bvhPlayer);
+    this.closeBVHChooser();
+  }
+
+  urlBvhUpload(url) {
+    this.addBVHPerformer(url, true);
+    this.closeBVHChooser();
+  }
+
+  openBVHChooser() {
+    this.setState({
+      bvhChooserModal: true,
+    });
+  }
+
+  closeBVHChooser() {
+    this.setState({
+      bvhChooserModal: false,
+    });
+  }
+
   toggleGUI() { // toggle loading overlay visablity
     if ($('#page').css('display') === 'none') {
       $('#page').fadeIn(1000);
     } else {
       $('#page').fadeOut(1000);
     }
+    return this;
   }
 
   toggleStartOverlay() { // toggle start overlay visablity
@@ -199,6 +240,7 @@ class Main extends React.Component {
     } else if (!$('#startOverlay:animated').length) {
       $('#startOverlay').fadeOut(1000);
     }
+    return this;
   }
 
   toggleBlackOverlay() { // toggle black overlay visablity
@@ -209,6 +251,7 @@ class Main extends React.Component {
     } else if (!$('#blackOverlay:animated').length) {
       $('#blackOverlay').fadeOut(1000);
     }
+    return this;
   }
 
   toggleEndOverlay() { // toggle end overlay visablity
@@ -219,6 +262,7 @@ class Main extends React.Component {
     } else if (!$('#endOverlay:animated').length) {
       $('#endOverlay').fadeOut(1000);
     }
+    return this;
   }
 
   toggleFullscreen() { // toggle fullscreen window
@@ -245,6 +289,7 @@ class Main extends React.Component {
     } else if (element.msRequestFullscreen) {
       element.msRequestFullscreen();
     }
+    return this;
   }
 
   exitFullscreen() {
@@ -255,6 +300,7 @@ class Main extends React.Component {
     } else if (document.webkitExitFullscreen) {
       document.webkitExitFullscreen();
     }
+    return this;
   }
 
   openKeyboardModal() {
@@ -269,58 +315,6 @@ class Main extends React.Component {
     if (this.state.keyboardModal === true) {
       this.setState({
         keyboardModal: false,
-      });
-    }
-  }
-
-  openPerformerModal(content) {
-    if (this.state.performerModal === false) {
-      this.setState({
-        performerModal: true,
-        performerContent: content,
-      });
-    }
-  }
-
-  closePerformerModal() {
-    if (this.state.performerModal === true) {
-      this.setState({
-        performerModal: false,
-        performerContent: document.createElement('div'),
-      });
-    }
-  }
-
-  openGroupModal() {
-    if (this.state.groupModal === false) {
-      this.setState({
-        groupModal: true,
-      });
-    }
-  }
-
-  closeGroupModal() {
-    if (this.state.groupModal === true) {
-      this.setState({
-        groupModal: false,
-      });
-    }
-  }
-
-  openEnvironmentModal(content) {
-    if (this.state.environmentModal === false) {
-      this.setState({
-        environmentModal: true,
-        environmentContent: content,
-      });
-    }
-  }
-
-  closeEnvironmentModal() {
-    if (this.state.environmentModal === true) {
-      this.setState({
-        environmentModal: false,
-        environmentContent: document.createElement('div'),
       });
     }
   }
@@ -376,6 +370,7 @@ class Main extends React.Component {
           performers: this.performers,
           performerNames: _.map(this.performers.getPerformers(), 'name'),
         });
+        this.closeBVHChooser();
       } else {
         this.performers.update(id, data);
       }
@@ -470,10 +465,6 @@ class Main extends React.Component {
     this.state.outputManger.outputs.midicontroller.sendTest();
   }
 
-  uploadBVH(url) {
-    this.addBVHPerformer(url.slice(8), true);
-  }
-
   render() {
     return (
       <Grid className="container-no-padding" fluid>
@@ -487,7 +478,7 @@ class Main extends React.Component {
           <Grid fluid id="page">
             <Row className="row-third-height" id="upperDisplay">
               <Col xs={2} md={2}>
-                <DebugMenu fileUpload={this.uploadBVH.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />
+                <DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />
               </Col>
               <Col xs={2} md={2}>
                 <ARMenu active={this.state.isAR} />
@@ -539,9 +530,9 @@ class Main extends React.Component {
             <Row className="row-third-height" id="lowerDisplay">
               <Col className="bottom-column" xs={4} md={4}>
                 <PerformerMenu
+                  openBVHChooser={this.openBVHChooser.bind(this)}
                   togglePerformerTrack={this.togglePerformerTrack.bind(this)}
                   performers={this.state.performers}
-                  openPerformerModal={this.openPerformerModal.bind(this)}
                 />
               </Col>
               <Col className="bottom-column" xs={4} md={4}>
@@ -553,7 +544,6 @@ class Main extends React.Component {
                   environment={this.state.environments.currentEnvironment}
                   environments={this.state.environments}
                   updateEnvironment={this.state.environments.updateEnvironment}
-                  openEnvironmentModal={this.openEnvironmentModal.bind(this)}
                 />
               </Col>
             </Row>
@@ -565,6 +555,14 @@ class Main extends React.Component {
             show={this.state.keyboardModal}
             closeKeyboardModal={this.closeKeyboardModal.bind(this)}
             keyboardList={(this.state.inputManger) ? this.state.inputManger.inputs.keyboard : {}}
+          />
+          <BVHChooserModal
+            performers={this.state.performers}
+            bvhFiles={this.state.bvhFiles}
+            show={this.state.bvhChooserModal}
+            closeBVHChooser={this.closeBVHChooser.bind(this)}
+            rawBvhUpload={this.rawBvhUpload.bind(this)}
+            urlBvhUpload={this.urlBvhUpload.bind(this)}
           />
         </Row>
       </Grid>

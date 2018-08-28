@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:51:12
+ * @modify date 2018-08-26 07:51:12
+ * @desc [Listen for and rebroadcast Perception Neuron data.]
+*/
+
 var WebSocket = require('ws');
 var _ = require('lodash');
 

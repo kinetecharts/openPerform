@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:49:09
+ * @modify date 2018-08-26 07:49:09
+ * @desc [Listen for and rebroadcast gamepad data.]
+*/
+
 const WebSocket = require('ws');
 
 const config = require('./../config.js').gamepads;

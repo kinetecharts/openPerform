@@ -1,22 +1,29 @@
-import _ from 'lodash';
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 05:03:40
+ * @modify date 2018-08-26 05:03:40
+ * @desc [The Data Tags Effect creates text tags for parts of a performers body.]
+*/
 
-const TextSprite = require('./../../libs/THREE.TextSprite.js');
+import React from 'react';
 
-import Trail from './../../libs/trail';
-import Common from './../../util/Common';
+import DataTagsMenu from '../../react/effects/DataTagsMenu';
 
-import config from './../../config';
+import loadFont from 'load-bmfont';
+import createText from './bmFont';
+import MSDFShader from './bmFont/shaders/msdf';
 
 class DataTags {
-  constructor(effectId, parent, color, guiFolder) {
+  constructor(effectId, parent, color) {
     this.id = effectId;
     this.name = 'datatags';
     this.parent = parent;
 
     this.color = color;
-    this.guiFolder = guiFolder;
 
-    this.targets = ['hips',
+    this.targets = ['rightfoot', 'leftfoot', 'head', 'righthand', 'lefthand'];
+    this.possibleTargets = ['hips',
       'rightupleg', 'rightleg', 'rightfoot',
       'leftupleg', 'leftleg', 'leftfoot',
       'spine', 'spine3', 'head',
@@ -26,65 +33,125 @@ class DataTags {
 
     this.tags = [];
 
-    this.options = {};
+    this.options = {
+      padding: [0, 0, 0, 0],
+      showName: true,
+      showPosition: true,
+      showRotation: true,
+    };
+    this.fontsReady = false;
 
+    this.fonts = [
+      {
+        name: 'regular',
+        json: 'bmFonts/lato-regular.json',
+        png: 'bmFonts/lato-regular.png',
+        font: null,
+        texture: null,
+      },
+    ];
 
-    // this.addToDatGui(this.options, this.guiFolder);
+    this.loadFonts(this.fonts);
   }
 
-  // addToDatGui(options, guiFolder) {
-  // 	var f = guiFolder.addFolder("Trails");
-  // 	f.add(options, "trailLength", 1, 300).listen().onChange(() => {
-  // 		_.each(this.trails, (trail) => {
-  // 			trail.refresh = true;
-  // 		});
-  // 	});
-  // }
+  loadFonts(fontList) {
+    _.each(fontList, (fontDef) => {
+      loadFont(fontDef.json, (err, font) => {
+        if (err) throw err;
+        THREE.ImageUtils.loadTexture(fontDef.png, undefined, (texture) => {
+          fontDef.font = font;
+          fontDef.texture = texture;
+          if (_.filter(fontList, 'font').length === fontList.length) {
+            this.fontsReady = true;
+          }
+        });
+      });
+    });
+  }
 
   addTag(parent, part, options) {
-    var options = {
-      textSize: 10,
-      redrawInterval: 1,
-      material: {
-        color: 0xFFFFFF,
-      },
-      texture: {
-        text: part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 '),
-        fontFamily: 'Arial, Helvetica, sans-serif',
-      },
-    };
+    const font = _.filter(this.fonts, { name: 'regular' })[0].font;
+    const texture = _.filter(this.fonts, { name: 'regular' })[0].texture;
 
-    const tag = new THREE.TextSprite(options);
-    tag.name = part.name.slice(6, part.name.length).replace(/([a-z](?=[A-Z]))/g, '$1 ');
+    const textScale = 0.001;
 
-    tag.position.set(25, 0, 0);
+    // draw text first to get dimensions
+    const tag = this.createTextMesh(
+      font,
+      texture,
+      '',
+      'left',
+      0xFFFFFF,
+      font.common.lineHeight,
+      null,
+    );
 
-    // tag.children[0].scale.set(0.01,0.01,0.01);
+    tag.scale.set(textScale, textScale, textScale);
 
-    part.add(tag);
+    tag.children[0].geometry.computeBoundingBox();
+    tag.position.x = 0.016;
+    tag.position.y = (options.padding[0] + options.padding[2]/2)
+      - (options.padding[0] / 2)
+      - ((tag.children[0].totalHeight * textScale) / 2);
 
-    console.log(tag);
+    this.parent.add(tag);
 
     return tag;
   }
 
-  updateParameters(data) {
-    // switch(data.parameter) {
-    // 	case 'life':
-    // 		this.options.lifetime = data.value*100;
-    // 		break;
-    // 	case 'rate':
-    // 		this.spawnerOptions.spawnRate = data.value*3000;
-    // 		break;
-    // 	case 'size':
-    // 		this.options.size = data.value*200;
-    // 		break;
-    // 	case 'color':
-    // 		this.options.colorRandomness = data.value*10;
-    // 		break;
-    // }
+  // draw msdf text
+  createTextMesh(font, texture, text, align, color, lineHeight, width) {
+    const textOptions = {
+      text: text,
+      font: font,
+      align: align,
+      lineHeight: lineHeight,
+    };
+
+    if (width !== undefined || width !== null) {
+      textOptions.width = width;
+    }
+
+    const textMesh = new THREE.Mesh(
+      createText(textOptions),
+      new THREE.RawShaderMaterial(
+        MSDFShader(
+          {
+            map: texture,
+            transparent: true,
+            color: color,
+            side: THREE.DoubleSide,
+            opacity: 1,
+          },
+        ),
+      ),
+    );
+    textMesh.defaults = {
+      opacity: 1,
+    };
+
+    textMesh.geometry.computeBoundingBox();
+    textMesh.totalHeight = textMesh.geometry.layout.height
+      - textMesh.geometry.boundingBox.max.y
+      - (textMesh.geometry.layout.descender * 2);
+    textMesh.totalWidth = textMesh.geometry.boundingBox.max.x;
+    textMesh.geometry.computeBoundingBox();
+    textMesh.position.set(0, textMesh.geometry.layout.descender * 2, 0);
+
+    textMesh.rotation.x = Math.PI;
+    return new THREE.Object3D().add(textMesh);
   }
 
+  // remove effect / clean up objects, timers, etc
+  remove() {
+    console.log('Deleting Data Tags...');
+    _.each(this.tags, (tag) => {
+      this.parent.remove(tag);
+    });
+    this.tags = [];
+  }
+
+  // render call, passes existing performer data
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
@@ -92,20 +159,53 @@ class DataTags {
         if (this.tags[idx]) {
           if (this.tags[idx]) {
             const gPos = new THREE.Vector3().setFromMatrixPosition(d.matrixWorld);
-            this.tags[idx].material.map.text =
-						`${this.tags[idx].name}\n`
-						+ `(${gPos.x.toFixed(2)},${gPos.y.toFixed(2)},${gPos.z.toFixed(2)})`;
+
+            this.tags[idx].position.copy(gPos.clone());
+
+            let tagString = '';
+            if (this.options.showName) {
+              tagString += d.name + '\n';
+            }
+            if (this.options.showPosition) {
+              tagString += 'X: ' + gPos.x.toFixed(3) + ', ' + 'Y: ' + gPos.y.toFixed(3) + ', ' + 'Z: ' + gPos.z.toFixed(3) + '\n';
+            }
+            if (this.options.showRotation) {
+              tagString += 'X: ' + d.rotation.x.toFixed(3) + ', ' + 'Y: ' + d.rotation.y.toFixed(3) + ', ' + 'Z: ' + d.rotation.z.toFixed(3) + '\n';
+            }
+            this.tags[idx].children[0].geometry.update({
+              text: tagString,
+            });
           }
         }
 
-        if (!this.tags[idx]) {
-          this.tags[idx] = this.addTag(this.parent, d, this.options);
+        if (!this.tags[idx] && this.fontsReady) {
+          this.tags[idx] = this.addTag(this.parent, d, this.options, this.font);
         }
 
 
         idx++;
       }
     });
+  }
+
+  // updated target list from gui
+  updateParts(data) {
+    this.targets = data;
+    this.remove();
+  }
+
+  // updated options from gui
+  updateOptions(data) {
+    this.options = data;
+    this.remove();
+  }
+
+  getGUI() {
+    return <DataTagsMenu data={this.options}
+    currentTargets={this.targets}
+    possibleTargets={this.possibleTargets}
+    updateOptions={this.updateOptions.bind(this)}
+    updateParts={this.updateParts.bind(this)}/>;
   }
 }
 

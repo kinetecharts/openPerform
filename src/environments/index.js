@@ -19,7 +19,7 @@ class Environments {
     this.defaultEnvironment = config.defaults.environment.toLowerCase();
 
     this.currentEnvironment = this.defaultEnvironment;
-    console.log(this.currentEnvironment);
+    console.log("Loading default environment: ", this.currentEnvironment);
     this.availEnvironments = [/*'muse', 'island', */'water', 'forest', 'grid', /*'grid-light', 'gradient',*/ 'empty'];
     this.environments = [];
 
@@ -90,6 +90,12 @@ class Environments {
   toggle(variableName) {
     _.each(this.environments, (environment) => {
       environment.toggle(variableName);
+    });
+  }
+
+  updateColors(bg) {
+    _.each(this.environments, (environment) => {
+      environment.updateBackgroundColor(bg);
     });
   }
 

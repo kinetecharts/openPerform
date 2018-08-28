@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:50:57
+ * @modify date 2018-08-26 07:50:57
+ * @desc [Listen for and rebroadcast OSC data.]
+*/
+
 const osc = require('node-osc');
 const WebSocket = require('ws');
 const _ = require('lodash');

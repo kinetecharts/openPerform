@@ -1,27 +1,41 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 03:24:24
+ * @modify date 2018-08-26 03:24:24
+ * @desc [The Particles Effect creates particle generators for parts of a performers body.]
+*/
+
+import React from 'react';
+
+import ParticlesMenu from '../../react/effects/ParticlesMenu';
+
 require('three/examples/js/GPUParticleSystem');
 
 class ParticleSystem {
-  constructor(effectId, parent, color, guiFolder) {
+  constructor(effectId, parent, color) {
     this.id = effectId;
     this.name = 'particleSystem';
     this.parent = parent;
-    this.systems = [];
-    this.color = color;
-    this.guiFolder = guiFolder;
-    this.targets = [/* "hips",
-		"rightupleg", "rightleg", */ 'rightfoot',
-      /* "leftupleg", "leftleg", */ 'leftfoot',
-      /* "spine", "spine3", */ 'head',
-      /* "rightarm", "rightforearm", */ 'righthand',
-      /* "leftarm", "leftforearm", */'lefthand',
+    this.color = new THREE.Color(color);
+
+    this.targets = ['rightfoot', 'leftfoot', 'head', 'righthand', 'lefthand'];
+    this.possibleTargets = ['hips',
+      'rightupleg', 'rightleg', 'rightfoot',
+      'leftupleg', 'leftleg', 'leftfoot',
+      'spine', 'spine3', 'head',
+      'rightarm', 'rightforearm', 'righthand',
+      'leftarm', 'leftforearm', 'lefthand',
     ];
+
+    this.systems = [];
 
     // options passed during each spawned
     this.options = {
       positionRandomness: 0.05,
       velocity: new THREE.Vector3(),
       velocityRandomness: 0.05,
-      color: this.color,
+      color: '#' + this.color.getHexString(),
       colorRandomness: 0.01,
       turbulence: 0,
       lifetime: 1,
@@ -29,55 +43,26 @@ class ParticleSystem {
       sizeRandomness: 15,
       position: new THREE.Vector3(),
     };
+
     this.spawnerOptions = {
       spawnRate: 400,
       horizontalSpeed: 1.0,
       verticalSpeed: 2.0,
       timeScale: 1,
     };
-
-    this.addToDatGui(this.options, this.spawnerOptions, this.guiFolder);
   }
 
-  addToDatGui(options, spawnerOptions, guiFolder) {
-    const f = guiFolder.addFolder('ParticleSystem');
-    f.add(options, 'velocityRandomness', 0, 30).listen();
-    f.add(options, 'positionRandomness', 0, 30).listen();
-    f.add(options, 'size', 1, 200).listen();
-    f.add(options, 'sizeRandomness', 0, 250).listen();
-    f.add(options, 'colorRandomness', 0, 10).listen();
-    f.add(options, 'lifetime', 0.1, 100).listen();
-    f.add(options, 'turbulence', 0, 10).listen();
-    f.add(spawnerOptions, 'spawnRate', 10, 3000).listen();
-    f.add(spawnerOptions, 'timeScale', -2, 2).listen();
-  }
-
+  // remove effect / clean up objects, timers, etc
   remove() {
-    console.log('Deleting particleSystems...');
+    console.log('Deleting Particle...');
     _.each(this.systems, (system) => {
       this.parent.remove(system);
       system = null;
     });
-    this.guiFolder.removeFolder('ParticleSystem');
+    this.systems = [];
   }
 
-  updateParameters(data) {
-    switch (data.parameter) {
-    		case 'life':
-    			this.options.lifetime = data.value * 100;
-    			break;
-    		case 'rate':
-        this.spawnerOptions.spawnRate = data.value * 3000;
-        break;
-      case 'size':
-        this.options.size = data.value * 200;
-        break;
-      case 'color':
-        this.options.colorRandomness = data.value * 10;
-        break;
-    	}
-  }
-
+  // render call, passes existing performer data
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
@@ -94,6 +79,7 @@ class ParticleSystem {
           };
           this.systems[idx].options = this.options;
           this.systems[idx].spawnerOptions = this.spawnerOptions;
+            
 
           this.parent.add(this.systems[idx]);
         }
@@ -129,6 +115,26 @@ class ParticleSystem {
         idx++;
       }
     });
+  }
+
+  // updated target list from gui
+  updateParts(data) {
+    this.targets = data;
+    this.remove();
+  }
+
+  // updated options from gui
+  updateOptions(data) {
+    this.options = data;
+    this.remove();
+  }
+
+  getGUI() {
+    return <ParticlesMenu data={this.options}
+      currentTargets={this.targets}
+      possibleTargets={this.possibleTargets}
+      updateOptions={this.updateOptions.bind(this)}
+      updateParts={this.updateParts.bind(this)}/>;
   }
 }
 

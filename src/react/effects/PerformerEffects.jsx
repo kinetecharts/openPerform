@@ -42,7 +42,7 @@ class PerformerEffects extends React.Component {
             id="performer-effect-dropdown"
             onSelect={this.props.changeEffect}
             >
-            <MenuItem key={0} eventKey={0}>none</MenuItem>
+            <MenuItem key={0} eventKey={0}>No Effect</MenuItem>
             {_.map(this.props.effects, (effect, idx) => {
               return (<MenuItem key={idx+1} eventKey={idx+1}>{effect}</MenuItem>);
             })}

@@ -153,7 +153,7 @@ class Scene {
 
     this.addCreateCommon(); 
 
-    // this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement );
+    // this.controls = new THREE.TrackballControls(this.camera, this.renderer.domElement);
     // this.controls.target = new THREE.Vector3(0,1.5,0);
     // window.controls = this.controls;
 
@@ -168,7 +168,7 @@ class Scene {
     // this.controls.autoRotate = false;
     // this.controls.autoRotateSpeed = 3;
 
-    this.controls = new OrbitControls(this.camera)
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
 		this.controls.enableDamping = false;
 		this.controls.enableZoom = true;
@@ -300,8 +300,8 @@ class Scene {
     window.environments = this.environments;
 
     // this.sceneGroup.scale.set(0.2, 0.2, 0.2)
-    // const axesHelper = new THREE.AxesHelper(5);
-    // this.sceneGroup.add(axesHelper);
+    const axesHelper = new THREE.AxesHelper(5);
+    this.sceneGroup.add(axesHelper);
   }
 
   toggleRotation() {

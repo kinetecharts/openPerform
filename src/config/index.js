@@ -19,23 +19,46 @@ module.exports = {
       style: 'default',
       offset: null, // if null, will auto increment x position based on performer id
     },
-    effect: 'trails',
+    effect: 'ribbons',
   },
 
   inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: ['MidiController'],
   performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
+  colorSet: [
+    { background: 'EDC346', performers: ['2D3E9A', '253380', '1e2866', '161e4d', '0f1433', '070a1a'] },
+    { background: 'BB806C', performers: ['376A9C', '2e5882', '254769', '1c354f', '132436', '0a131c'] },
+    { background: 'BC4936', performers: ['38B8A4', '2f9e8d', '288577', '206b60', '185249', '113832'] },
+    { background: 'D9CD86', performers: ['403BA6', '37328c', '2d2973', '232059', '191740', '0f0e26'] },
+    { background: 'B84C38', performers: ['3ABAA8', '32a192', '2a877b', '226e64', '1a544c', '123b35'] },
+    { background: 'D63727', performers: ['F0A623', 'd69320', 'bd821c', 'a37018', '8a5f15', '704d11'] },
+  ],
   debug: {
     bvh: {
-      enabled: true, // load bvh file / create performer from playback
-      files: ['models/bvh/duality_edit.bvh'],
+      enabled: false, // load bvh file / create performer from playback
+      files: [
+        'animations/bvh/duality_edit.bvh',
+        // 'animations/bvh/dai_cmp_edit.bvh',
+        // 'animations/bvh/sean_edit.bvh',
+        // 'animations/bvh/juliet_edit.bvh',
+        // 'animations/bvh/wei_edit.bvh',
+        // 'animations/bvh/freya_edit.bvh',
+      ],
       autoplay: true,
     },
     stats: true,
     console2html: false,
   },
-
+  bvhFiles: [
+    './animations/bvh/duality_edit.bvh',
+    './animations/bvh/dai_cmp_edit.bvh',
+    './animations/bvh/sean_edit.bvh',
+    './animations/bvh/juliet_edit.bvh',
+    './animations/bvh/wei_edit.bvh',
+    './animations/bvh/freya_edit.bvh',
+    './animations/bvh/movie-1_1.bvh',
+  ],
   camera: {
     closeShot: {
       position: new THREE.Vector3(0, 1.5, 5),
@@ -51,6 +74,8 @@ module.exports = {
     },
   },
 
+  bvhChooserModal: true,
+  
   keyboardModal: false,
   keyboardContent: document.createElement('div'),
 

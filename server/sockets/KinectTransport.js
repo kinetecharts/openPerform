@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:50:04
+ * @modify date 2018-08-26 07:50:04
+ * @desc [Listen for and rebroadcast Kinect v2 data.]
+*/
+
 // KinectTransport Source: https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
 
 const net = require('net');

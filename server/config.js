@@ -25,6 +25,14 @@ const config = {
       src: './src/models',
       dest: './dist/models',
     },
+    animations: {
+      src: './src/animations',
+      dest: './dist/animations',
+    },
+    bmfonts: {
+      src: './src/bmfonts',
+      dest: './dist/bmfonts',
+    },
   },
   fileUpload: {
     port: 8888,
@@ -43,6 +51,14 @@ const config = {
     ports: {
       incoming: 9000, // port the Axis Neuron translation app is broadcasting on
       outgoing: 9100, // port the browser connects on
+    },
+  },
+  perceptionNeuron2: {
+    enabled: false,
+    ip: '127.0.0.1', // ip the Axis Neuron translation app is broadcasting from
+    ports: {
+      incoming: 7001, // port the Axis Neuron translation app is broadcasting on
+      outgoing: 8001, // port the browser connects on
     },
   },
   gamepads: {

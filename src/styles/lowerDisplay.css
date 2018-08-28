@@ -389,6 +389,7 @@
 .react-dat-gui .dg li {
 	height: auto;
 	background: none;
+	border-left: none;
 }
 
 .dg li:not(.folder),
@@ -461,12 +462,53 @@
   font-size: 14px;
 }
 
-#trailParts {
+#performerParts {
 	border-bottom: 1px solid #ddd;
+	background: url('../images/performer_outline.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	min-width: 100%;
+	min-height: 235px;
 }
 
+#performerParts .btn {
+	min-width: 15px;
+	min-height: 15px;
+	position: absolute;
+}
+
+#performerParts .active {
+	background-color: #00ff00;
+  border-color: #00ff00;
+}
+
+#performerParts #hips_button.btn  { left: 116px; bottom: 80px; }
+
+#performerParts #rightupleg_button.btn  { left: 96px; bottom: 80px; }
+#performerParts #rightleg_button.btn  { left: 86px; bottom: 46px; }
+#performerParts #rightfoot_button.btn  { left: 76px; bottom: 19px; }
+
+#performerParts #leftupleg_button.btn  { left: 137px; bottom: 80px; }
+#performerParts #leftleg_button.btn  { left: 142px; bottom: 46px; }
+#performerParts #leftfoot_button.btn  { left: 154px; bottom: 16px; }
+
+#performerParts #spine_button.btn  { left: 117px; bottom: 109px; }
+#performerParts #spine3_button.btn  { left: 117px; bottom: 138px; }
+#performerParts #head_button.btn  { left: 117px; bottom: 177px; }
+
+#performerParts #rightarm_button.btn  { left: 93px; bottom: 142px; }
+#performerParts #rightforearm_button.btn  { left: 59px; bottom: 129px; }
+#performerParts #righthand_button.btn  { left: 30px; bottom: 134px; }
+
+#performerParts #leftarm_button.btn  { left: 142px; bottom: 142px; }
+#performerParts #leftforearm_button.btn  { left: 170px; bottom: 129px; }
+#performerParts #lefthand_button.btn  { left: 200px; bottom: 133px; }
+
 .react-dat-gui {
-	padding-top: 10px;
+	margin-top: 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
 }
 
 .popover-content tbody > tr > td {
@@ -485,4 +527,54 @@
 #environment-dropdown {
 	width: 100%;
 	font-size: 14px;
+}
+
+.react-dat-gui li.folder ul {
+	margin-left: 0;
+}
+
+.react-dat-gui li.folder ul > li:first-child {
+	border-top: 1px solid #ddd;
+}
+
+.react-dat-gui li.folder ul > li:last-child {
+	border-bottom: none;
+}
+
+#performer-effects-popover .react-dat-gui li.folder .title {
+	background-color: #FFF;
+	color: #000;
+	padding-left: 0;
+}
+
+#performer-effects-popover .react-dat-gui li.folder .title:before {
+	content:'';
+  display: inline-block;
+	width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 5px solid #2f2f2f;
+	font-size: 0;
+	line-height: 0;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#performer-effects-popover .react-dat-gui li.closed .title:before {
+	content:'';
+  display: inline-block;
+	width: 0; 
+	height: 0; 
+	border-bottom: 5px solid transparent;  /* left arrow slant */
+	border-top: 5px solid transparent; /* right arrow slant */
+	border-left: 5px solid #2f2f2f; /* bottom, add background color here */
+	font-size: 0;
+	line-height: 0;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.dg .cr.button:hover, .dg .cr.boolean:hover, .dg .cr.function:hover {
+	background-color: #fff;
 }

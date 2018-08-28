@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:50:43
+ * @modify date 2018-08-26 07:50:43
+ * @desc [Listen for and rebroadcast Midi data.]
+*/
+
 const WebSocket = require('ws');
 
 const config = require('./../config.js').midiController;

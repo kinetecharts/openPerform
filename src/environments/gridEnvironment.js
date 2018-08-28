@@ -178,7 +178,13 @@ class GridEnvironment {
   }
 
   handleBackgroundColorChange(color, event) {
+    console.log(color.hex);
     this.bgColor = color.hex;
+    this.setBgColor(new THREE.Color(this.bgColor));
+  }
+
+  updateBackgroundColor(color) {
+    this.bgColor = '#' + color;
     this.setBgColor(new THREE.Color(this.bgColor));
   }
 

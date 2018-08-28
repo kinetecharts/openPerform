@@ -222,87 +222,272 @@ class DefaultPreset {
   initOSCControllerCallbacks() {
     this.performerIdx = 0;
     this.inputManager.registerCallback('oscController', 'message', 'OSC Controller', (data) => {
+      // console.log(data);
       const controlPath = data[0].split('/');
       // console.log(controlPath);
       switch(controlPath[1]) { // page
         default:
-          console.log('OSC Page not found');
+          console.log('OSC Page not found: ', controlPath[1]);
           break;
-        case 'cameraControls':
+        case 'controls':
           switch(controlPath[2]) { // group
             default:
-              console.log('OSC Group not found');
+              console.log('OSC Group not found: ', controlPath[2]);
               break;
-            case 'cutTo':
+            case 'circle':
               switch(parseInt(controlPath[3])) { // row
                 default:
-                  console.log('OSC Row not found');
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
                   break;
                 case 1:
                   switch(parseInt(controlPath[4])) { // col
                     default:
-                      console.log('OSC Col not found');
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
                       break;
-                    case 1: // Cut Close
-                      console.log(data[1]);
+                    case 1:
+                      this.inputManager.resetPosRot(0);
                       break;
-                    case 2: // Cut Medium
-                      console.log(data[1]);
-                      break;
-                    case 3: // Cut Wide
-                      console.log(data[1]);
-                      break;
-                    case 4: //
-                      console.log(data[1]);
-                      break;
-                    case 5: // Cut 3/4
-                      console.log(data[1]);
-                      break;
-                    case 6: // Cut Top
-                      console.log(data[1]);
+                    case 2:
+                      this.inputManager.circleClonesById(0);
                       break;
                   }
                   break;
               }
               break;
-            case 'tracking':
+            case 'effect':
               switch(parseInt(controlPath[3])) { // row
                 default:
-                  console.log('OSC Row not found');
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
                   break;
-                case 1:
+                case 2:
                   switch(parseInt(controlPath[4])) { // col
                     default:
-                      console.log('OSC Col not found');
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
                       break;
                     case 1:
                       if (parseInt(data[1])) {
-                        this.inputManager.fixedTracking();
+                        this.inputManager.removeEffects();
                       }
                       break;
                     case 2:
                       if (parseInt(data[1])) {
-                        this.inputManager.trackClose();
+                        this.inputManager.removeEffects();
+                        this.inputManager.addEffectToClonesAndLeader(0, 'ribbons');
+                      }
+                      break;
+                  }
+                  break;
+              }
+            break;
+            case 'clip':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      if (parseInt(data[1])) {
+                        this.main.BVHPlayers[0].switchClip(0);
+                      }
+                      break;
+                    case 2:
+                      if (parseInt(data[1])) {
+                        this.scene.unsetRotation();
+                        this.main.BVHPlayers[0].switchClip(1);
                       }
                       break;
                     case 3:
                       if (parseInt(data[1])) {
-                        this.inputManager.lowTrack();
+                        this.scene.unsetRotation();
+                        this.main.BVHPlayers[0].switchClip(2);
                       }
                       break;
                     case 4:
                       if (parseInt(data[1])) {
-                        this.inputManager.trackPerformer(0, 50);
+                        this.scene.unsetRotation();
+                        this.main.BVHPlayers[0].switchClip(3);
                       }
                       break;
                     case 5:
                       if (parseInt(data[1])) {
-                        this.inputManager.firstPerson();
+                        this.scene.unsetRotation();
+                        this.main.BVHPlayers[0].switchClip(4);
                       }
                       break;
                     case 6:
                       if (parseInt(data[1])) {
-                        this.inputManager.snorry(100);
+                        this.scene.unsetRotation();
+                        this.main.BVHPlayers[0].switchClip(5);
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
+            case 'camera':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      if (parseInt(data[1])) {
+                        this.inputManager.rotate(7);
+                      }
+                      break;
+                    case 2:
+                      if (parseInt(data[1])) {
+                        this.scene.unsetRotation();
+                        this.inputManager.trackPerformer(0, 7);
+                      }
+                      break;
+                    case 3:
+                      if (parseInt(data[1])) {
+                        this.scene.unsetRotation();
+                        this.inputManager.cutTop(0, 7);
+                      }
+                      break;
+                    case 4:
+                      if (parseInt(data[1])) {
+                        this.scene.unsetRotation();
+                        this.inputManager.snorry(2000);
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
+              case 'visible':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[3]));
+                      break;
+                    case 1:
+                      this.main.performers.hidePerformers();
+                      break;
+                    case 2:
+                      this.main.performers.showPerformers();
+                      break;
+                  }
+                  break;
+              }
+              break;
+            case 'wireframe':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      this.main.performers.hideWireframe();
+                      break;
+                    case 2:
+                      this.main.performers.showWireframe();
+                      break;
+                  }
+                  break;
+              }
+              break;
+            case 'rotSpace':
+              this.inputManager.spreadClonesById(0, data[2] * 127);
+              this.inputManager.rotateClonesById(0, data[1] * 127);
+              break;
+            case 'scale':
+              this.inputManager.scaleClonesById(0, data[1] * 127);
+              break;
+            case 'delay':
+              this.inputManager.delayClonesById(0, data[1] * 127);
+              break;
+            case 'color':
+              // console.log(parseInt(controlPath[3]));
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 2:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      if (parseInt(data[1])) {
+                        this.main.setColor(0);
+                      }
+                      break;
+                    case 2:
+                      if (parseInt(data[1])) {
+                        this.main.setColor(1);
+                      }
+                      break;
+                    case 3:
+                      if (parseInt(data[1])) {
+                        this.main.setColor(2);
+                      }
+                      break;
+                  }
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      if (parseInt(data[1])) {
+                        this.main.setColor(3);
+                      }
+                      break;
+                    case 2:
+                      if (parseInt(data[1])) {
+                        this.main.setColor(4);
+                      }
+                      break;
+                    case 3:
+                      if (parseInt(data[1])) {
+                        this.main.setColor(5);
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
+          }
+          break;
+        case 'admin':
+          switch(controlPath[2]) { // group
+            default:
+              console.log('OSC Group not found: ', controlPath[2]);
+              break;
+            case 'init':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1: // id
+                      console.log('Admin Button 4: ', data[1]);
+                      if (parseInt(data[1])) {
+                        this.resetAll();
                       }
                       break;
                   }
@@ -316,6 +501,27 @@ class DefaultPreset {
       // const col = controlPath[4];
       // const val = data[0];
     });
+  }
+
+  resetAll() {
+    for (let i=0; i< 5; i++) {
+      this.main.performers.add(
+        this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].name + ' Clone ' + i,
+        'clone_' + this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].type,
+        this.main.performers.performers[Object.keys(this.main.performers.performers)[0]],
+        null,
+        {
+          wireframe: false,
+          color: 'ffffff',
+          material: 'basic',
+          visible: true,
+          tracking: false,
+          intensity: 1,
+          style: 'default',
+          offset: new THREE.Vector3(),
+        },
+      );
+    }
   }
 
   initMidiControllerCallbacks() {

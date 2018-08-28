@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:42:28
+ * @modify date 2018-08-26 07:42:28
+ * @desc [The file server serves the static, production version of the app. ]
+*/
+
 const path = require('path');
 const express = require('express')
 const serveStatic = require('serve-static')

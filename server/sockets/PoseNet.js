@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:53:23
+ * @modify date 2018-08-26 07:53:23
+ * @desc [Listen for and rebroadcast PoseNet data.]
+*/
+
 const WebSocket = require('ws');
 
 const config = require('./../config.js').poseNet;

@@ -231,7 +231,7 @@ class Performer {
 
     console.log('New Performer: ', this.inputId);
 
-    this.effects = [/*'constructor', 'vogue',*/ 'cloner', /*'datatags',*/ 'trails', /*'particleSystem', 'midiStream'*/];
+    this.effects = [/*'Vogue',*/ 'Ghosting', 'Ribbons', 'Particles', 'Data Tags', 'Movement Sculpture', /*, 'Midi Stream'*/];
 
     // this.gui = new dat.GUI({ autoPlace: true });
     // this.guiFolder = this.gui.addFolder(this.name + ' Effects');
@@ -1321,7 +1321,7 @@ class Performer {
         let size = 1 / this.modelShrink;
         this.origScale = size;
 
-        console.log(this.type);
+        console.log('Performer data source: ', this.type);
         switch (this.type) {
           case 'bvh':
           case 'clone_bvh':

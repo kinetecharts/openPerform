@@ -214,8 +214,8 @@ class MeshCombustiblePreset {
         case 'track left': // scene 1
           this.scene.switchEnvironment('grid-dark');
           this.main.performers.showWireframe();
-          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(['trails']);
-          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(['cloner']);
+          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(['ribbons']);
+          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(['ghosting']);
 
           this.inputManager.snorryCam();
 
@@ -223,8 +223,8 @@ class MeshCombustiblePreset {
         case 'track right': // scene 2
           this.scene.switchEnvironment('water');
           this.main.performers.hideWireframe();
-          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(['cloner']);
-          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(['trails']);
+          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(['ghosting']);
+          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(['ribbons']);
 
           this.inputManager.firstPerson();
           break;

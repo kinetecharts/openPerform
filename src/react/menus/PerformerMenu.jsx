@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-27 10:07:30
+ * @modify date 2018-08-27 10:07:30
+ * @desc [description]
+*/
+
 import React from 'react';
 import ReactDom from 'react-dom';
 import Select from 'react-select';
@@ -137,9 +145,7 @@ class PerformerMenu extends React.Component {
 
   recenterEffectsPopover(event) {
     $('#performer-effects-popover').css('top', 'auto');
-    // console.log(window.innerHeight / 2);
     const bottom = $('.performerMenu').height() - (this.state.effectTarget.position().top / 2) - 16;
-    console.log(bottom);
     $('#performer-effects-popover').css('left', this.state.effectTarget.position().left - 103);
     $('#performer-effects-popover').css('bottom', bottom);
   }
@@ -152,89 +158,121 @@ class PerformerMenu extends React.Component {
 
   render() {
     if (this.props.performers.length < 1) {
-      return false;
+      return (
+        <Panel className="performerMenu" defaultExpanded>
+          <Panel.Heading>
+            <Panel.Title toggle><h5>Performers</h5></Panel.Title>
+          </Panel.Heading>
+          <Panel.Collapse>
+            <Panel.Body>
+              <Table>
+                <tbody>
+                  <tr>
+                    <td id="loadBVHRow_empty">
+                      <h6 onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Panel.Body>
+          </Panel.Collapse>
+        </Panel>
+      );
     }
     return (
       <Panel className="performerMenu" /* defaultExpanded */>
         <Panel.Heading>
-					<Panel.Title toggle><h5>Performers</h5></Panel.Title>
-				</Panel.Heading>
+          <Panel.Title toggle><h5>Performers</h5></Panel.Title>
+        </Panel.Heading>
         <Panel.Collapse>
-						<Panel.Body>
-              <Table id="performerTable">
-                <thead>
-                  <tr>
-                    <th>Control</th>
-                    <th>Track</th>
-                    <th>Name</th>
-                    <th>Source</th>
-                    <th>Translate</th>
-                    <th>Style</th>
-                    <th>Effect</th>
-                    <th>Clone</th>
+          <Panel.Body>
+            <Table id="performerTable">
+              <thead>
+                <tr>
+                  <th>Control</th>
+                  <th>Track</th>
+                  <th>Name</th>
+                  <th>Source</th>
+                  <th>Translate</th>
+                  <th>Style</th>
+                  <th>Effect</th>
+                  <th>Clone</th>
+                </tr>
+              </thead>
+              <tbody>{
+                _.map(this.props.performers.getPerformers(), (performer, idx) => (
+                  <tr key={idx}>
+                    <td title="Control Performer">
+                      <PerformerControls
+                        type={performer.type}
+                        actions={performer.actions}
+                      />
+                    </td>
+                    <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
+                    <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
+                    <td title="Type"><span>{(performer.leader !== null && performer.leader !== undefined) ? performer.leader.name : performer.type}</span></td>
+                    <td>
+                      <PerformerTranslate
+                        offset={performer.getOffset()}
+                        updateOffsetX={this.updateOffsetX.bind(this, performer)}
+                        updateOffsetY={this.updateOffsetY.bind(this, performer)}
+                        updateOffsetZ={this.updateOffsetZ.bind(this, performer)}
+                        rotation={performer.getRotation()}
+                        updateRotationX={this.updateRotationX.bind(this, performer)}
+                        updateRotationY={this.updateRotationY.bind(this, performer)}
+                        updateRotationZ={this.updateRotationZ.bind(this, performer)}
+                        delay={performer.getDelay()}
+                        updateDelay={this.updateDelay.bind(this, performer)}
+                      />
+                    </td>
+                    <td>
+                      <PerformerStyles
+                        style={performer.getStyle()}
+                        styles={performer.getStyles()}
+                        changeStyle={this.changeStyle.bind(this, performer)}
+                        type={performer.getType()}
+                        types={performer.getTypes()}
+                        changeType={this.changeType.bind(this, performer)}
+                        visible={performer.getVisible()}
+                        toggleVisible={this.toggleVisible.bind(this, performer)}
+                        wireframe={performer.getWireframe()}
+                        toggleWireframe={this.toggleWireframe.bind(this, performer)}
+                        color={performer.getMaterialColor()}
+                        handleColorChange={this.handleColorChange.bind(this, performer)}
+                        material={performer.getMaterial()}
+                        materials={performer.getMaterials()}
+                        handleMaterialChange={this.handleMaterialChange.bind(this, performer)}
+                      />
+                    </td>
+                    <td title="Edit Effects">
+                      <PerformerEffects
+                        clickOverTrigger={this.clickOverTrigger.bind(this)}
+                        effects={performer.effects}
+                        effect={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].id : 'No Effect'}
+                        changeEffect={this.handleChangeEffect.bind(this, performer)}
+                        gui={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].getGUI() : null}
+                      />
+                    </td>
+                    <td>
+                    {(performer.type === 'clone_bvh' || performer.type === 'clone_perceptionNeuron') ?
+                      <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
+                    : <Icon name="plus" title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />}
+                    </td>
                   </tr>
-                </thead><tbody>{
-                _.map(this.props.performers.getPerformers(), (performer, idx) => (<tr key={idx}>
-                  <td title="Control Performer" >
-                    <PerformerControls
-                      type={performer.type}
-                      actions={performer.actions}
-                    />
+                ))
+                }
+                <tr id="loadBVHRow">
+                  <td colSpan="2"></td>
+                  <td colSpan="2"></td>
+                  <td colSpan="2"></td>
+                  <td colSpan="2">
+                    <h6 onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
                   </td>
-                  <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
-                  <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
-                  <td title="Type"><span>{(performer.leader !== null && performer.leader !== undefined) ? performer.leader.name : performer.type}</span></td>
-                  <td>
-                    <PerformerTranslate
-                      offset={performer.getOffset()}
-                      updateOffsetX={this.updateOffsetX.bind(this, performer)}
-                      updateOffsetY={this.updateOffsetY.bind(this, performer)}
-                      updateOffsetZ={this.updateOffsetZ.bind(this, performer)}
-                      rotation={performer.getRotation()}
-                      updateRotationX={this.updateRotationX.bind(this, performer)}
-                      updateRotationY={this.updateRotationY.bind(this, performer)}
-                      updateRotationZ={this.updateRotationZ.bind(this, performer)}
-                      delay={performer.getDelay()}
-                      updateDelay={this.updateDelay.bind(this, performer)}
-                    />
-                  </td>
-                  <td>
-                    <PerformerStyles
-                      style={performer.getStyle()}
-                      styles={performer.getStyles()}
-                      changeStyle={this.changeStyle.bind(this, performer)}
-                      type={performer.getType()}
-                      types={performer.getTypes()}
-                      changeType={this.changeType.bind(this, performer)}
-                      visible={performer.getVisible()}
-                      toggleVisible={this.toggleVisible.bind(this, performer)}
-                      wireframe={performer.getWireframe()}
-                      toggleWireframe={this.toggleWireframe.bind(this, performer)}
-                      color={performer.getMaterialColor()}
-                      handleColorChange={this.handleColorChange.bind(this, performer)}
-                      material={performer.getMaterial()}
-                      materials={performer.getMaterials()}
-                      handleMaterialChange={this.handleMaterialChange.bind(this, performer)}
-                    />
-                  </td>
-                  {/* <td title="Edit Effects"><div className="glyphicon glyphicon-fire" onClick={this.props.openPerformerModal.bind(this, performer.guiDOM)} /></td> */}
-                  <td title="Edit Effects">
-                    <PerformerEffects
-                      clickOverTrigger={this.clickOverTrigger.bind(this)}
-                      effects={performer.effects}
-                      effect={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].id : 'none'}
-                      changeEffect={this.handleChangeEffect.bind(this, performer)}
-                      gui={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].getGUI() : null}
-                    />
-                  </td>
-                  <td>{ (performer.type === 'clone_bvh' || performer.type === 'clone_perceptionNeuron') ?
-                    <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
-                  : <Icon name="plus" title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />
-                  }</td>
-                </tr>))
-              }</tbody></Table>
-						</Panel.Body>
-					</Panel.Collapse>
+                </tr>
+              </tbody>
+            </Table>
+          </Panel.Body>
+        </Panel.Collapse>
       </Panel>
     );
   }

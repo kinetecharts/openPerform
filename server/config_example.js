@@ -17,10 +17,21 @@ const config = {
       src: './src/images',
       dest: './dist/images',
     },
+    textures: {
+      src: './src/textures',
+      dest: './dist/textures',
+    },
     models: {
       src: './src/models',
       dest: './dist/models',
     },
+    animations: {
+      src: './src/animations',
+      dest: './dist/animations',
+    },
+  },
+  fileUpload: {
+    port: 8888,
   },
   // input sockets
   kinectTransport: {
@@ -48,6 +59,27 @@ const config = {
     enabled: true,
     ports: {
       outgoing: 9301, // port the browser connects on
+    },
+  },
+  oscController: {
+    enabled: true,
+    ports: {
+      incoming: 9400,
+      outgoing: 9401, // port the browser connects on
+    },
+  },
+  poseNet: {
+    enabled: true,
+    ports: {
+      incoming: 9500,
+      outgoing: 9501, // port the browser connects on
+    },
+  },
+  iPhoneX: {
+    enabled: true,
+    ports: {
+      incoming: 9600,
+      outgoing: 9601, // port the browser connects on
     },
   },
 };

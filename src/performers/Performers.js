@@ -139,6 +139,12 @@ class Performers {
     });
   }
 
+  removeAllEffects() {
+    _.each(this.performers, (performer) => {
+      performer.removeEffects(performer.effects);
+    });
+  }
+
   addEffectsToClonesById(id, effect) {
     _.each(this.getCloneGroups()[id], (p) => {
       p.addEffect(effect);
@@ -274,6 +280,14 @@ class Performers {
         s++;
       });
     })
+  }
+
+  updateColors(colors) {
+    let idx = 0;
+    _.each(this.performers, (performer) => {
+      performer.setColor(colors[idx]);
+      idx++;
+    });
   }
 
   update(inputId, data) {

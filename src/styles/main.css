@@ -1,9 +1,3 @@
-/* * {
-	overflow: hidden !important;
-	overflow-x: hidden !important;
-	overflow-y: hidden !important;
-} */
-
 html, body {
 	position: absolute;
 	background: none !important;
@@ -193,4 +187,153 @@ h5 {
 
 .debugBody .react-dat-gui {
 	min-width: 460px;
+}
+
+.react-list-select {
+	display: inline-block;
+	position: relative;
+	outline: none;
+}
+
+.react-list-select--item {
+	padding: 0.3em 0.6em;
+	cursor: pointer;
+	position: relative;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+.react-list-select--item.is-selected {
+	-webkit-user-select: inherit;
+	-moz-user-select: inherit;
+	-ms-user-select: inherit;
+	-o-user-select: inherit;
+	user-select: inherit;
+}
+
+.react-list-select--item.is-disabled {
+	cursor: default;
+}
+
+.react-list-select {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+
+/* Add some style to the list */
+
+.react-list-select {
+	background: #fafafa;
+	border: 1px solid #cacaca;
+	margin-right: 0.5em;
+}
+.react-list-select--item.is-selected {
+	background: #d7e7ff;
+}
+.react-list-select:focus .react-list-select--item.is-focused::before,
+.react-list-select:focus .react-list-select--item.is-focused::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: #79b9ff;
+}
+.react-list-select:focus .react-list-select--item.is-focused::before {
+	left: 0;
+}
+.react-list-select:focus .react-list-select--item.is-focused::after {
+	right: 0;
+}
+.react-list-select--item.is-disabled {
+	color: #afafaf;
+}
+
+.dropzone {
+	width: 100%;
+	position: relative;
+	height: 200px;
+	border: 2px dashed #cacaca;
+	border-radius: 5px;
+	background: #fafafa;
+	cursor: pointer;
+}
+
+.dropzoneLoaded {
+	border-color: #79b9ff;
+}
+
+.dropzoneActive {
+	border-color: #00FF00;
+}
+
+.dropzoneReject {
+	border-color: #FF0000;
+}
+
+.chooserTitle h5 {
+	width: 100%;
+	text-align: center;
+	margin-top: 0;
+}
+
+.chooserHeader .modal-title {
+	width: auto;
+	display: flex;
+	align-items: flex-end;
+	padding-left: 158px;
+}
+
+.chooserHeader .modal-image {
+	height: 25px;
+	width: auto;
+	margin-left: 5px;
+}
+
+.dropzone .fa-upload {
+	margin-right: auto;
+	margin-left: auto;
+	display: table;
+	margin-top: 35px;
+	margin-bottom: 10px;
+}
+
+.dropzone p {
+	text-align: center;
+}
+
+.BVHUploadButton {
+	background: #79b9ff;	
+}
+
+#loadBVHRow {
+	border-top: 1px solid #FFF;
+}
+
+#loadBVHRow h6 > span.fa {
+	margin:0;
+	float: right;
+}
+
+#loadBVHRow h6 {
+	cursor: pointer;
+}
+
+#loadBVHRow_empty {
+	border: none;
+	padding-top: 0;
+}
+
+#loadBVHRow_empty span.fa {
+	display: inline-block;
+	margin-left: 5px;
+}
+
+#loadBVHRow_empty h6 {
+	cursor: pointer;
 }

@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
-import Trails from './Trails';
+import Ribbons from './Ribbons';
 import ParticleSystem from './ParticleSystem';
 import Vogue from './Vogue';
-import Constructor from './Constructor';
-import Cloner from './Cloner';
+import MovementSculpture from './MovementSculpture';
+import Ghosting from './Ghosting';
 import Drawing from './Drawing';
 import DataTags from './DataTags';
 import MidiStream from './MidiStream';
@@ -24,28 +24,28 @@ class PerformerEffects {
       return false;
     }
     switch (effect) {
-      case 'cloner':
-        this.effects.push(new Cloner(effect, this.parent, this.color));
+      case 'Ghosting':
+        this.effects.push(new Ghosting(effect, this.parent, this.color));
         break;
-      case 'vogue':
+      case 'Vogue':
         this.effects.push(new Vogue(effect, this.parent, this.color));
         break;
-       case 'constructor':
-        this.effects.push(new Constructor(effect, this.parent, this.color));
+       case 'Movement Sculpture':
+        this.effects.push(new MovementSculpture(effect, this.parent, this.color));
         break;
-      case 'particleSystem':
+      case 'Particles':
         this.effects.push(new ParticleSystem(effect, this.parent, this.color));
         break;
-      case 'trails':
-        this.effects.push(new Trails(effect, this.parent, this.color));
+      case 'Ribbons':
+        this.effects.push(new Ribbons(effect, this.parent, this.color));
         break;
-      case 'drawing':
+      case 'Drawing':
         this.effects.push(new Drawing(effect, this.parent, this.color));
         break;
-      case 'datatags':
+      case 'Data Tags':
         this.effects.push(new DataTags(effect, this.parent, this.color));
         break;
-      case 'midiStream':
+      case 'Midi Stream':
         this.effects.push(new MidiStream(effect, this.parent, this.color));
         break;
     }

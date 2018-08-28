@@ -213,7 +213,7 @@ class DualityPreset {
         case 'track left': // scene 1
           // this.scene.switchEnvironment("grid");
           this.main.performers.hideWireframe();
-          // this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(["cloner"]);
+          // this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(['ghosting']);
 
           this.main.performers.add(
             this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].name + ' Clone 1',
@@ -281,8 +281,8 @@ class DualityPreset {
             Object.keys(this.main.performers.performers)[1]
           ].showWireframe();
 
-          // this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(["cloner"]);
-          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(["trails"]);
+          // this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(['ghosting']);
+          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(["ribbons"]);
 
           this.inputManager.firstPerson();
 
@@ -349,7 +349,7 @@ class DualityPreset {
           break;
 
         case 'solo 3':
-          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(["trails"]);
+          this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(["ribbons"]);
           this.scene.camera.up.set(0, 1, 0);
           this.scene.unsetRotation();
           this.inputManager.cut(0, 10);

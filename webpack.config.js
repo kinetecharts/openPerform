@@ -110,6 +110,14 @@ module.exports = {
         from: resolve(__dirname, config.copy.models.src),
         to: resolve(__dirname, config.copy.models.dest),
       },
+      {
+        from: resolve(__dirname, config.copy.animations.src),
+        to: resolve(__dirname, config.copy.animations.dest),
+      },
+      {
+        from: resolve(__dirname, config.copy.bmfonts.src),
+        to: resolve(__dirname, config.copy.bmfonts.dest),
+      },
     ]),
 
     new webpack.HotModuleReplacementPlugin(),

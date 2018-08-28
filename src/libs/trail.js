@@ -193,8 +193,8 @@ THREE.TrailRenderer.createMaterial = function( vertexShader, fragmentShader, cus
             blendDst : THREE.OneMinusSrcAlphaFactor,
             blendEquation : THREE.AddEquation,
 
-            depthTest: true,
-            depthWrite: false,
+            depthTest: false,
+            depthWrite: true,
 
             side: THREE.DoubleSide
         } );

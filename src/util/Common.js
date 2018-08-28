@@ -86,6 +86,10 @@ function Common() {
 	        return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
 	    }
 	    throw new Error('Bad Hex');
+	};
+	
+	this.capitalizeFirstLetter = function (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   };
 }
 

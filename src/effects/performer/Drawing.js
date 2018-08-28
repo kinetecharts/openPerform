@@ -8,13 +8,12 @@ import config from './../../config';
 class Drawing {
   constructor(effectId, parent, color, guiFolder) {
     this.id = effectId;
-    this.name = 'trails';
+    this.name = 'drawings';
     this.parent = parent;
 
     this.active = false;
 
     this.color = color;
-    this.guiFolder = guiFolder;
 
     this.targets = [/* "hips",
 			"rightupleg", "rightleg", */ 'rightfoot',
@@ -24,9 +23,9 @@ class Drawing {
       /* "leftarm", "leftforearm", */'lefthand',
     ];
 
-    this.trails = [];
+    this.drawings = [];
 
-    // specify points to create planar trail-head geometry
+    // specify points to create planar drawing-head geometry
     this.circlePoints = [];
     this.twoPI = Math.PI * 2;
     this.index = 10;
@@ -39,7 +38,7 @@ class Drawing {
       this.circlePoints[this.index] = this.vector;
       this.index++;
     }
-    this.trailHeadGeometry = this.circlePoints;
+    this.drawingHeadGeometry = this.circlePoints;
 
     this.headColor = '#352f9d';
     this.tailColor = '#432066';
@@ -47,9 +46,9 @@ class Drawing {
     const head = Common.hexToRgb(this.headColor);
     const tail = Common.hexToRgb(this.tailColor);
 
-    // initialize the trail
+    // initialize the drawing
     this.options = {
-      trailLength: 20,
+      drawingLength: 20,
       headRed: Common.mapRange(head[0], 0, 255, 0, 1),
       headGreen: Common.mapRange(head[1], 0, 255, 0, 1),
       headBlue: Common.mapRange(head[2], 0, 255, 0, 1),
@@ -60,46 +59,34 @@ class Drawing {
       tailBlue: Common.mapRange(tail[2], 0, 255, 0, 1),
       tailAlpha: 0.35,
     };
-
-    this.addToDatGui(this.options, this.guiFolder);
-  }
-
-  addToDatGui(options, guiFolder) {
-    const f = guiFolder.addFolder('Drawing');
-    f.add(options, 'trailLength', 1, 300).listen().onChange();
-    // f.addColor(this.headColor).name("Head Color");
-    // f.addColor(this.tailColor).name("Tail Color").listen();
-
-    // f.add(this, active).name(this.active).listen();
   }
 
   toggle() {
     return this.active = !this.active;
   }
 
-  addTrail(parent, part, options) {
-    // create the trail renderer object
-    const trail = new THREE.TrailRenderer(parent, false);
+  addDrawing(parent, part, options) {
+    // create the drawing renderer object
+    const drawing = new THREE.TrailRenderer(parent, false);
 
-    // create material for the trail renderer
-    const trailMaterial = THREE.TrailRenderer.createBaseMaterial();
+    // create material for the drawing renderer
+    const drawingMaterial = THREE.TrailRenderer.createBaseMaterial();
 
-    trailMaterial.uniforms.headColor.value.set(options.headRed, options.headGreen, options.headBlue, options.headAlpha);
-    trailMaterial.uniforms.tailColor.value.set(options.tailRed, options.tailGreen, options.tailBlue, options.tailAlpha);
+    drawingMaterial.uniforms.headColor.value.set(options.headRed, options.headGreen, options.headBlue, options.headAlpha);
+    drawingMaterial.uniforms.tailColor.value.set(options.tailRed, options.tailGreen, options.tailBlue, options.tailAlpha);
 
 
-    trail.initialize(trailMaterial, options.trailLength, false, 0, this.trailHeadGeometry, part);
-    trail.activate();
+    drawing.initialize(drawingMaterial, options.drawingLength, false, 0, this.drawingHeadGeometry, part);
+    drawing.activate();
 
-    return trail;
+    return drawing;
   }
 
   remove() {
-    console.log('Deleting trails...');
-    _.each(this.trails, (trail) => {
-      trail.deactivate();
+    console.log('Deleting drawings...');
+    _.each(this.drawings, (drawing) => {
+      drawing.deactivate();
     });
-    this.guiFolder.removeFolder('Trails');
   }
 
   updateParameters(data) {
@@ -123,19 +110,19 @@ class Drawing {
     let idx = 0;
     data.traverse((d) => {
       if (_.filter(this.targets, t => `robot_${t}` == d.name.toLowerCase()).length > 0) {
-        if (this.trails[idx]) {
+        if (this.drawings[idx]) {
           const time = performance.now();
-          if (time - this.trails[idx].lastTrailUpdateTime > 50) {
-            this.trails[idx].advance();
-            this.trails[idx].lastTrailUpdateTime = time;
+          if (time - this.drawings[idx].lastTrailUpdateTime > 50) {
+            this.drawings[idx].advance();
+            this.drawings[idx].lastTrailUpdateTime = time;
           } else {
-            this.trails[idx].updateHead();
+            this.drawings[idx].updateHead();
           }
         }
 
-        if (!this.trails[idx]) {
-          this.trails[idx] = this.addTrail(this.parent, d, this.options);
-          this.trails[idx].lastTrailUpdateTime = performance.now();
+        if (!this.drawings[idx]) {
+          this.drawings[idx] = this.addTrail(this.parent, d, this.options);
+          this.drawings[idx].lastTrailUpdateTime = performance.now();
         }
 
 

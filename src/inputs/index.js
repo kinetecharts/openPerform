@@ -138,6 +138,10 @@ class InputManager {
   }
 
   trackPerformer(id, distance) {
+    if (this.scene.camera.parent.type !== 'Scene') {
+      this.scene.cameraControl.changeParent(this.scene.scene);
+    }
+    this.scene.camera.up.set( 0, 1, 0 );
     this.scene.cameraControl.track(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[id]
@@ -250,6 +254,8 @@ class InputManager {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene);
     }
+    this.scene.cameraControl.clearTrack();
+    this.scene.camera.up.set( 0, 1, 0 );
     this.scene.cameraControl.trackingObj = null;
     this.scene.setRotationSpeed(4.5);
     this.scene.setRotation();
@@ -273,6 +279,7 @@ class InputManager {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene.scene);
     }
+    this.scene.cameraControl.clearTrack();
     this.scene.cameraControl.fly_to(
       new THREE.Vector3(0, 11, 0),
       new THREE.Vector3(0, 0, 0),
@@ -282,6 +289,21 @@ class InputManager {
       3000,
       1,
       () => { this.scene.camera.up.set( 0, 0, -1 ); console.log('Camera moved!'); },
+    );
+  }
+
+  cutTop(idx, distance) {
+    if (this.scene.camera.parent.type !== 'Scene') {
+      this.scene.cameraControl.changeParent(this.scene.scene);
+    }
+
+    const p = this.parent.performers.getPerformer(Object.keys(this.parent.performers.performers)[idx]).scene.position.clone();
+    p.y = 0.55;
+    const p2 = p.clone();
+    p2.y = distance;
+    this.scene.cameraControl.jump(
+      p2,
+      p,
     );
   }
 
@@ -319,6 +341,15 @@ class InputManager {
     this.parent.performers.circleClonesById(Object.keys(this.parent.performers.performers)[idx]);
   }
 
+  resetPosRot(idx) {
+    this.parent.performers.resetClonesPositionById(Object.keys(this.parent.performers.performers)[idx]);
+    this.parent.performers.resetClonesRotationById(Object.keys(this.parent.performers.performers)[idx]);
+  }
+
+  removeEffects() {
+    this.parent.performers.removeAllEffects();
+  }
+
   addEffectToClones(idx, effect) {
     this.parent.performers.addEffectsToClonesById(Object.keys(this.parent.performers.performers)[idx], effect);
   }
@@ -327,6 +358,7 @@ class InputManager {
     this.parent.performers.addEffectsToPerformer(Object.keys(this.parent.performers.performers)[idx], effect);
     this.parent.performers.addEffectsToClonesById(Object.keys(this.parent.performers.performers)[idx], effect);
   }
+  
 
   toggleClones(idx) {
     this.parent.performers.toggleClonesById(Object.keys(this.parent.performers.performers)[idx]);
@@ -667,7 +699,7 @@ class InputManager {
 
   sceneThree() {
     this.toggleClonesAndLeader(0);
-    this.addEffectToClonesAndLeader(0, 'trails');
+    this.addEffectToClonesAndLeader(0, 'ribbons');
     this.trackPerformer(1, 7.7);
     // this.tweenCannon(0, {
     //   spread: 63,
@@ -735,10 +767,10 @@ class InputManager {
     // ].updateStyle('discs');
     // this.parent.performers.performers[
     //   Object.keys(this.parent.performers.performers)[1]
-    // ].addEffect('cloner');
+    // ].addEffect('ghosting');
     // this.parent.performers.performers[
     //   Object.keys(this.parent.performers.performers)[2]
-    // ].addEffect('cloner');
+    // ].addEffect('ghosting');
 
     // this.parent.performers.performers[
     //   Object.keys(this.parent.performers.performers)[0]
@@ -754,7 +786,7 @@ class InputManager {
   sceneFive() {
     this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].toggleVisible();
 
-    this.addEffectToClonesAndLeader(0, 'trails');
+    this.addEffectToClonesAndLeader(0, 'ribbons');
     this.toggleClonesAndLeader(0);
 
     // this.parent.performers.performers[
@@ -771,10 +803,10 @@ class InputManager {
   sceneSix() {
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[1]
-    ].removeEffect('cloner');
+    ].removeEffect('ghosting');
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[2]
-    ].removeEffect('cloner');
+    ].removeEffect('ghosting');
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[0]
     ].setVisible(false);
@@ -819,7 +851,7 @@ class InputManager {
     this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[0]
-    ].addEffect('cloner');
+    ].addEffect('ghosting');
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[0]
     ].setVisible(false);
@@ -835,7 +867,7 @@ class InputManager {
     console.log('scene ten!');
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[0]
-    ].removeEffect('cloner');
+    ].removeEffect('ghosting');
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[0]
     ].setVisible(true);

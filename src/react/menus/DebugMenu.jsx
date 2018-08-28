@@ -23,21 +23,6 @@ class DebugMenu extends React.Component {
     }
     return false;
   }
-  handleUploadImage(ev) {
-    ev.preventDefault();
-
-    const data = new FormData();
-    data.append('file', ev.currentTarget.files[0]);
-
-    fetch(window.location.protocol + '//' + window.location.hostname + ':8888/upload', {
-      method: 'POST',
-      body: data,
-    }).then((response) => {
-      response.json().then((body) => {
-        this.props.fileUpload(body.file);
-      });
-    });
-  }
   render() {
     return (
       <Panel className="debugMenu" /* defaultExpanded */>
@@ -47,12 +32,6 @@ class DebugMenu extends React.Component {
         <Panel.Collapse>
           <Panel.Body className="debugBody">
             <div id="statsBox"></div>
-            <FormGroup controlId={'formControlsFile'}>
-              <FormControl id="formControlsFile"
-                type="file"
-                label="File"
-                onChange={this.handleUploadImage.bind(this)}/>
-            </FormGroup>
             {this.props.arGui}
           </Panel.Body>
         </Panel.Collapse>

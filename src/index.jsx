@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-26 07:54:30
+ * @modify date 2018-08-26 07:54:30
+ * @desc [Init React app. Attach to DOM.]
+*/
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
