@@ -2,3 +2,4 @@ node_modules
 dist
 config.js
 yarn-error.log
+package-lock.json
