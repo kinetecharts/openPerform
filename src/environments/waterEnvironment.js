@@ -7,10 +7,11 @@ import { ChromePicker } from 'react-color';
 
 import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
 
-
 import WaterShader from '../shaders/WaterShader';
 import OceanShader from '../shaders/OceanShader';
 import Ocean from 'three/examples/js/Ocean.js';
+
+import FileLoader from '../loaders';
 
 import config from './../config';
 
@@ -25,6 +26,8 @@ class WaterEnvironment {
     this.distortionScale = 10.0;
     this.waves = 0.25;
     this.lastTime = 0;
+
+    this.loader = new FileLoader();
 
     this.gridFloor;
     this.hemiLight;
@@ -62,11 +65,7 @@ class WaterEnvironment {
       filterparam: 1,
     };
 
-
-    const grass = new THREE.TextureLoader().load('textures/grasslight-big.jpg');
-    grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
-
-    this.floorMat = new THREE.MeshPhongMaterial({ color: 0x111111 });// new THREE.MeshPhongMaterial( { color: 0xffffff, map: grass } );// new THREE.MeshLambertMaterial( { color: 0x666666, emissive: 0xff0000, shading: THREE.SmoothShading } );//
+    this.floorMat = new THREE.MeshPhongMaterial({ color: 0x111111 });
 
     const geometry = new THREE.SphereGeometry(500, 50, 50, 0, Math.PI * 2, 0, Math.PI / 4);
     // geometry.scale.y = -2;
@@ -83,33 +82,35 @@ class WaterEnvironment {
 
     // this.parent.add(this.floor);
 
-    const waterNormals = new THREE.TextureLoader().load('textures/waternormals.jpg');
-    waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+    // load water normals
+    this.loader.loadTexture('textures/waternormals.jpg', {}, (waterNormals) => {
+      waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
-    this.water = new WaterShader(this.renderer, window.camera, this.parent, {
-      textureWidth: 512,
-      textureHeight: 512,
-      waterNormals,
-      alpha: 1,
-      sunDirection: this.dirLight.position.clone().normalize(),
-      sunColor: 0x5177ff,
-      waterColor: 0x002d3a,
-      distortionScale: 50.0,
-      fog: this.parent.fog != undefined,
+      this.water = new WaterShader(this.renderer, window.camera, this.parent, {
+        textureWidth: 512,
+        textureHeight: 512,
+        waterNormals,
+        alpha: 1,
+        sunDirection: this.dirLight.position.clone().normalize(),
+        sunColor: 0x5177ff,
+        waterColor: 0x002d3a,
+        distortionScale: 50.0,
+        fog: this.parent.fog != undefined,
+      });
+
+      this.water.scale.y = 1;
+      this.water.scale.z = 1;
+
+      this.mirrorMesh = new THREE.Mesh(
+        new THREE.PlaneBufferGeometry(parameters.width * 10, parameters.height * 10),
+        this.water.material,
+      );
+
+      this.mirrorMesh.add(this.water);
+      this.mirrorMesh.rotation.x = -Math.PI * 0.5;
+      this.mirrorMesh.position.setY(0.05);
+      this.parent.add(this.mirrorMesh);
     });
-
-    this.water.scale.y = 1;
-    this.water.scale.z = 1;
-
-    this.mirrorMesh = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(parameters.width * 10, parameters.height * 10),
-      this.water.material,
-    );
-
-    this.mirrorMesh.add(this.water);
-    this.mirrorMesh.rotation.x = -Math.PI * 0.5;
-    this.mirrorMesh.position.setY(0.05);
-    this.parent.add(this.mirrorMesh);
 
 
     const gsize = 1024;
@@ -135,8 +136,7 @@ class WaterEnvironment {
     const cubeMap = new THREE.CubeTexture([]);
     cubeMap.format = THREE.RGBFormat;
 
-    const loader = new THREE.ImageLoader();
-    loader.load('textures/newmoon.png', (image) => {
+    this.loader.loadImage('textures/newmoon.png', (image) => {
       const getSide = function (x, y) {
         const size = 1024;
 
@@ -157,7 +157,7 @@ class WaterEnvironment {
       cubeMap.images[4] = getSide(1, 1); // pz
       cubeMap.images[5] = getSide(3, 1); // nz
       cubeMap.needsUpdate = true;
-    });
+    }) 
 
     const cubeShader = THREE.ShaderLib.cube;
     cubeShader.uniforms.tCube.value = cubeMap;

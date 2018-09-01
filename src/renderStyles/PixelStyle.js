@@ -26,7 +26,7 @@ class PixelStyle {
     this.firstPass = new THREE.ShaderPass(THREE.PixelShader);
     this.firstPass.uniforms.resolution.value = new THREE.Vector2(this.w, this.h);
     this.firstPass.uniforms.resolution.value.multiplyScalar(window.devicePixelRatio);
-    this.firstPass.uniforms.pixelSize.value = 16;
+    this.firstPass.uniforms.pixelSize.value = 8;
     this.firstPass.renderToScreen = true;
     this.composer.addPass(this.firstPass);
   }

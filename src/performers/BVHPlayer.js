@@ -1,11 +1,11 @@
+const _ = require('lodash').mixin(require('lodash-keyarrange'));
+import dat from 'dat-gui';
 
-const bvhLoader = require('three/examples/js/loaders/BVHLoader.js');
+require('three/examples/js/loaders/BVHLoader.js');
+
+import FileLoader from '../loaders';
 
 import Common from './../util/Common';
-
-const _ = require('lodash').mixin(require('lodash-keyarrange'));
-
-import dat from 'dat-gui';
 
 class BVHPlayer {
   constructor(content, parent, autoplay, callback) {
@@ -27,7 +27,7 @@ class BVHPlayer {
     this.skeletonHelper = null;
     this.boneContainer = new THREE.Group();
 
-    this.loader = new THREE.BVHLoader();
+    this.loader = new FileLoader();
     this.loading = false;
 
     switch(type) {
@@ -84,7 +84,7 @@ class BVHPlayer {
   loadBVH(bvhFile) {
     if (!this.loading) {
       this.loading = true;
-      this.loader.load(bvhFile, this.buildAnimation.bind(this));
+      this.loader.loadBVH(bvhFile, this.buildAnimation.bind(this));
     }
   }
 
@@ -92,7 +92,7 @@ class BVHPlayer {
     if (this.type == 'url') {
       if (!this.loading) {
         this.loading = true;
-        this.loader.load(this.files[idx], (result) => {
+        this.loader.loadBVH(this.files[idx], (result) => {
           console.log('BVH File Loaded...');
           this.stop();
           this.clip = result.clip;
@@ -108,7 +108,7 @@ class BVHPlayer {
   }
 
   loadRaw(rawFile) {
-    this.buildAnimation(this.loader.parse(rawFile));
+    this.buildAnimation(new THREE.BVHLoader().parse(rawFile));
   }
 
   buildAnimation(result) {

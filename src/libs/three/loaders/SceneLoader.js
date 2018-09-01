@@ -46,7 +46,7 @@ THREE.SceneLoader.prototype = {
   parse(json, callbackFinished, url) {
     const scope = this;
 
-    const urlBase = THREE.Loader.prototype.extractUrlBase(url);
+    const urlBase = THREE.LoaderUtils.extractUrlBase(url);
 
     var geometry,
       material,

@@ -165,15 +165,15 @@ class PerformerMenu extends React.Component {
           </Panel.Heading>
           <Panel.Collapse>
             <Panel.Body>
-              <Table>
+              <Table id="performerTable">
                 <tbody>
                   <tr>
                     <td id="loadBVHRow_empty">
-                      <h6 onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
                     </td>
                   </tr>
                 </tbody>
               </Table>
+              <h6 class="loadBVHLink" onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
             </Panel.Body>
           </Panel.Collapse>
         </Panel>
@@ -261,16 +261,9 @@ class PerformerMenu extends React.Component {
                   </tr>
                 ))
                 }
-                <tr id="loadBVHRow">
-                  <td colSpan="2"></td>
-                  <td colSpan="2"></td>
-                  <td colSpan="2"></td>
-                  <td colSpan="2">
-                    <h6 onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
-                  </td>
-                </tr>
               </tbody>
             </Table>
+            <h6 class="loadBVHLink" onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
           </Panel.Body>
         </Panel.Collapse>
       </Panel>

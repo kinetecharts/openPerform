@@ -1,5 +1,3 @@
-
-
 import _ from 'lodash';
 
 import $ from 'jquery';
@@ -10,6 +8,8 @@ import VRControls from './VRControls';
 
 import Paint from './tools/paint';
 import Sculpt from './tools/sculpt';
+
+import FileLoader from '../../loaders';
 
 class VR {
   constructor(renderer, camera, parent, controls) {
@@ -47,6 +47,8 @@ class VR {
     this.lazerLine = new THREE.Line(lazerGeo);
     this.lazerLine.name = 'line';
     this.lazerLine.scale.z = 5;
+
+    this.loader = new FileLoader();
 
     // this.group = new THREE.Group();
     // this.parent.add( this.group );
@@ -219,42 +221,41 @@ class VR {
   loadControllerModel() {
     const scope = this;
 
-    const loader = new THREE.OBJLoader();
-    loader.setPath('models/obj/vive-controller/');
-    loader.load('vr_controller_vive_1_5.obj', (object) => {
-      const loader = new THREE.TextureLoader();
-      loader.setPath('models/obj/vive-controller/');
+    this.loader.loadTexture('models/obj/vive-controller/onepointfive_texture.png', {}, (map) => {
+      this.loader.loadTexture('models/obj/vive-controller/onepointfive_spec.png', {}, (specularMap) => {
+        this.loader.loadOBJ('models/obj/vive-controller/vr_controller_vive_1_5.obj', {}, (object) => {
+          const controller = object.children[0];
+          controller.material.map = map;
+          controller.material.specularMap = specularMap;
 
-      const controller = object.children[0];
-      controller.material.map = loader.load('onepointfive_texture.png');
-      controller.material.specularMap = loader.load('onepointfive_spec.png');
+          controller.castShadow = true;
+          controller.receiveShadow = true;
 
-      controller.castShadow = true;
-      controller.receiveShadow = true;
+          const pivot = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(0.002, 2),
+            new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }),
+          );
 
-      const pivot = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(0.002, 2),
-        new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }),
-      );
+          pivot.name = 'pivot';
+          pivot.position.y = -0.016;
+          pivot.position.z = -0.043;
+          pivot.rotation.x = Math.PI / 5.5;
 
-      pivot.name = 'pivot';
-      pivot.position.y = -0.016;
-      pivot.position.z = -0.043;
-      pivot.rotation.x = Math.PI / 5.5;
+          const range = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(0.03, 3),
+            new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }),
+          );
 
-      const range = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(0.03, 3),
-        new THREE.MeshBasicMaterial({ opacity: 0, transparent: true }),
-      );
+          pivot.add(range);
 
-      pivot.add(range);
+          for (let i = 0; i < scope.controllers.length; i++) {
+            scope.controllers[i].add(pivot.clone());
+            scope.controllers[i].add(controller.clone());
+          }
 
-      for (let i = 0; i < scope.controllers.length; i++) {
-        scope.controllers[i].add(pivot.clone());
-        scope.controllers[i].add(controller.clone());
-      }
-
-      pivot.material = pivot.material.clone();
+          pivot.material = pivot.material.clone();
+        });
+      });
     });
   }
 

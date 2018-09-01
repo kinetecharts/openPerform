@@ -9,13 +9,14 @@
 import _ from 'lodash';
 import dat from 'dat-gui';
 
-import MuseEnvironment from './museEnvironment';
-import IslandEnvironment from './islandEnvironment';
-import GridEnvironment from './gridEnvironment';
-import GradientEnvironment from './gradientEnvironment';
-import WaterEnvironment from './waterEnvironment';
-import EmptyEnvironment from './emptyEnvironment';
-import ForestEnvironment from './forestEnvironment';
+import MuseEnvironment from './MuseEnvironment';
+import IslandEnvironment from './IslandEnvironment';
+import GridEnvironment from './GridEnvironment';
+import GradientEnvironment from './GradientEnvironment';
+import WaterEnvironment from './WaterEnvironment';
+import EmptyEnvironment from './EmptyEnvironment';
+import ForestEnvironment from './ForestEnvironment';
+import SpaceEnvironment from './SpaceEnvironment';
 
 import config from './../config';
 
@@ -70,6 +71,9 @@ class Environments {
         break;
       case 'empty':
         this.environments.push(new EmptyEnvironment(this.renderer, this.parent, this.performers, defaults));
+        break;
+      case 'empty':
+        this.environments.push(new SpaceEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
     }
     this.currentEnvironment = type;

@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import dat from 'dat-gui';
 
-require('three/examples/js/loaders/OBJLoader.js');
-require('three/examples/js/loaders/DDSLoader.js');
-require('three/examples/js/loaders/MTLLoader.js');
+import FileLoader from '../loaders';
 
 import config from './../config';
 
@@ -18,6 +16,8 @@ class ForestEnvironment {
     this.name = "Forest";
     this.modalID = this.name+"_Settings";
     this.visible = true;
+
+    this.loader = new FileLoader();
 
     this.spotLight = null;
 
@@ -40,9 +40,9 @@ class ForestEnvironment {
     this.initFloor(200);
     this.initLights(200);
 
-    this.loadMtl('models/mtl/forest.mtl', (materials) => {
+    this.loader.loadMtl('models/mtl/forest.mtl', (materials) => {
       materials.preload();
-      this.loadObj('models/obj/forest.obj', materials, (obj) => {
+      this.loader.loadOBJ('models/obj/forest.obj', { materials: materials }, (obj) => {
         this.parent.add(obj);
         this.elements.push(obj);
       });
@@ -82,34 +82,6 @@ class ForestEnvironment {
       transparent: options.transparent || false,
       side: THREE.DoubleSide,
       depthTest: options.depthTest || false,
-    });
-  }
-
-  loadMtl(url, cb) {
-    let onProgress = (xhr) => {
-      if ( xhr.lengthComputable ) {
-        var percentComplete = xhr.loaded / xhr.total * 100;
-        console.log(Math.round(percentComplete, 2) + '% downloaded');
-      }
-    };
-    let onError = (xhr) => {};
-    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.load(url, cb);
-  }
-
-  loadObj(url, materials, cb) {
-    let objLoader = new THREE.OBJLoader(new THREE.LoadingManager());
-    objLoader.setMaterials(materials);
-    objLoader.load(url, (object) => {
-      cb(object);
-    }, (xhr) => {
-      if (xhr.lengthComputable) {
-        const percentComplete = (xhr.loaded / xhr.total) * 100;
-        console.log(Math.round(percentComplete, 2) + '% downloaded');
-      }
-    }, (xhr) => {
-      console.log('OBJLoader Error: ', xhr);
     });
   }
 

@@ -14,9 +14,6 @@ import WEBVR from './../../three/vr/WebVR';
 import { Grid, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
-// require('three/examples/js/libs/inflate.min.js');
-// require('three/examples/js/loaders/FBXLoader.js');
-
 import IOMenu from './../menus/IOMenu';
 import PerformerMenu from './../menus/PerformerMenu';
 import EnvironmentMenu from './../menus/EnvironmentMenu';
@@ -433,7 +430,7 @@ class Main extends React.Component {
           </Grid>
           <Grid fluid><Row><Col id="consoleOutput" xs={12} md={12} /></Row></Grid>
           <Grid fluid id="page">
-            <Row className="row-third-height" id="upperDisplay">
+            <Row className="row-half-height" id="upperDisplay">
               <Col xs={2} md={2}>
                 <DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />
               </Col>
@@ -483,16 +480,15 @@ class Main extends React.Component {
                   />
               </Col>
             </Row>
-            <Row className="row-third-height" />
-            <Row className="row-third-height" id="lowerDisplay">
-              <Col className="bottom-column" xs={4} md={4}>
+            <Row className="row-half-height" id="lowerDisplay">
+              <Col className="bottom-column" xs={6} md={6}>
                 <PerformerMenu
                   openBVHChooser={this.openBVHChooser.bind(this)}
                   togglePerformerTrack={this.togglePerformerTrack.bind(this)}
                   performers={this.state.performers}
                 />
               </Col>
-              <Col className="bottom-column" xs={4} md={4}>
+              <Col className="bottom-column" xs={2} md={2}>
                 <VRMenu active={this.state.isVR}/>
               </Col>
               <Col className="bottom-column" xs={4} md={4}>

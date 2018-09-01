@@ -1,22 +1,15 @@
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
-
-
-require('three/examples/js/loaders/FBXLoader.js');
-require('three/examples/js/loaders/OBJLoader.js');
-require('three/examples/js/loaders/ColladaLoader.js');
-
-const sceneLoader = require('./../libs/three/loaders/SceneLoader.js');
+import TWEEN from 'tween.js';
+import _ from 'lodash';
+import dat from 'dat-gui';
 
 require('./../libs/BufferGeometryMerge.js');
 
-import TWEEN from 'tween.js';
-
-import Common from './../util/Common';
-
 import PerformerEffects from './../effects/performer';
 
-import _ from 'lodash';
-import dat from 'dat-gui';
+import FileLoader from '../loaders';
+
+import Common from './../util/Common';
 
 import config from './../config';
 
@@ -44,6 +37,8 @@ class Performer {
 
     this.performer = null;
     this.name = 'Performer ' + performerId;
+
+    this.loader = new FileLoader();
     
     (options.offset == null) ? this.offset = new THREE.Vector3(0, 0, 0) : this.offset = options.offset;
     this.rotation = new THREE.Euler(0, 0, 0);
@@ -247,110 +242,44 @@ class Performer {
 
   loadColladaModels(models) {
     _.each(models, (m) => {
-      this.loadColladaModel(m.id, m.url, (model) => {
-        // object.geometry = model.geometry;
+      this.loader.loadCollada(m.url, { id: m.id }, (result, props) => {
+        this.setColladaScenes(props.id, result.scene);
       });
-    });
-  }
-
-  loadColladaModel(id, url, callback) {
-    const loader = new THREE.ColladaLoader();
-    // console.log(loader);
-    loader.callbackProgress = function (progress, result) {
-      // console.log(progress);
-    };
-    loader.load(url, (result) => {
-      const colladaScene = result.scene;
-      // colladaScene.traverse( function ( object ) {
-      this.setColladaScenes(id, colladaScene);
-      callback(this.getColladaScenes(id));
-      // }.bind(this) );
     });
   }
 
   loadFBXModels(models) {
     _.each(models, (m) => {
-      this.loadFBXModel(m.id, m.url, (model) => {
-        // object.geometry = model.geometry;
+      this.loader.loadFBX(m.url, { id: m.id }, (object) => {
+        object.mixer = new THREE.AnimationMixer(object);
+
+        this.animationMixers.push(object.mixer);
+        const action = object.mixer.clipAction(object.animations[0]);
+        action.play();
+
+        this.setColladaScenes(id, object);
       });
     });
-  }
-
-  loadFBXModel(id, url, callback) {
-    if (this.getModelGeo(id) !== undefined) { console.log('Geometry already exists.'); return this.getModelGeo(id); }
-
-    const manager = new THREE.LoadingManager();
-    manager.onProgress = (item, loaded, total) => {
-      // console.log( item, loaded, total );
-    };
-    const onProgress = (xhr) => {
-      if (xhr.lengthComputable) {
-        const percentComplete = xhr.loaded / xhr.total * 100;
-        // console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
-      }
-    };
-    const onError = (xhr) => {
-      console.error(xhr);
-    };
-    const loader = new THREE.FBXLoader(manager);
-    // console.log(loader);
-    loader.load(url, (object) => {
-      object.mixer = new THREE.AnimationMixer(object);
-
-      this.animationMixers.push(object.mixer);
-      const action = object.mixer.clipAction(object.animations[0]);
-      action.play();
-
-      this.setColladaScenes(id, object);
-      callback(this.getColladaScenes(id));
-    }, onProgress, onError);
   }
 
   loadObjModels(models) {
     _.each(models, (m) => {
-      this.loadObjModel(m.id, m.url, (model) => {
-        // object.geometry = model.geometry;
+      this.loader.loadOBJ(m.url, { id: m.id }, (object, props) => {
+        let singleGeo = null;
+        object.traverse((child) => {
+          // console.log(child.name, child.type);
+          if (child instanceof THREE.Mesh) {
+            if (!singleGeo) {
+              singleGeo = child.geometry;
+            } else {
+              child.updateMatrix();
+              singleGeo.merge(child.geometry, child.matrix);
+            }
+          }
+        });
+        this.setModelGeo(props.id, singleGeo);
       });
     });
-  }
-
-  loadObjModel(id, url, callback) {
-    if (this.getModelGeo(id) !== undefined) { console.log('Geometry already exists.'); return this.getModelGeo(id); }
-
-    // console.log("Loading...", typeof this.getModelGeo(id));
-
-    const manager = new THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
-      // console.log( item, loaded, total );
-    };
-
-    const onProgress = function (xhr) {
-      if (xhr.lengthComputable) {
-        const percentComplete = xhr.loaded / xhr.total * 100;
-        // console.log( Math.round(percentComplete, 2) + '% downloaded' );
-      }
-    };
-
-    const onError = function (xhr) {};
-
-    const loader = new THREE.OBJLoader(manager);
-    // console.log(loader);
-    loader.load(url, (object) => {
-      let singleGeo = null;
-      object.traverse((child) => {
-        // console.log(child.name, child.type);
-        if (child instanceof THREE.Mesh) {
-          if (!singleGeo) {
-            singleGeo = child.geometry;
-          } else {
-            child.updateMatrix();
-            singleGeo.merge(child.geometry, child.matrix);
-          }
-        }
-      });
-      this.setModelGeo(id, singleGeo);
-      callback(this.getModelGeo(id));
-    }, onProgress, onError);
   }
 
   loadPerformer(source, type, hide, size, style, intensity) {
@@ -381,17 +310,7 @@ class Performer {
     });
 
 
-    const loadingManager = new THREE.LoadingManager(() => {
-      this.parent.add(this.getScene());
-    });
-
-    const loader = new THREE.ColladaLoader(loadingManager);
-
-    loader.callbackProgress = function (progress, result) {
-      // console.log(progress);
-    };
-
-    loader.load(filename, (result) => {
+    this.loader.loadCollada(filename, {}, (result) => {
       const meshes = {};
       const newMeshes = {};
       const keys = {};
@@ -437,13 +356,8 @@ class Performer {
 
   loadSceneBody(source, filename, hide, size, style, intensity) {
     this.prefix = 'robot_';
-    const loader = new THREE.SceneLoader();
-
-    loader.callbackProgress = (progress, result) => {
-      // console.log(progress);
-    };
     
-    loader.load(filename, (result) => {
+    this.loader.loadScene(filename, {}, (result) => {
       result.scene.visible = false;
       console.log(result.scene);
       this.setScene(result.scene);
@@ -674,17 +588,7 @@ class Performer {
   generateMaterial() {
     let material = new THREE.MeshBasicMaterial(); 
     switch (this.getMaterial().toLowerCase()) {
-      case 'shader': 
-        // material = new THREE.ShaderMaterial({
-        //   // transparent: true,
-        //   // depthTest: false,
-        //   // uniforms: {
-        //   //   color:   { value: new THREE.Color(0xFFFFFF) },
-        //   //   texture: { value: textureLoader.load('textures/sprites/disc.png') }
-        //   // },
-        //   vertexShader: require('../shaders/performerVertex.glsl'),
-        //   fragmentShader: require('../shaders/performerFragment.glsl')
-        // });    
+      case 'shader':    
         break;
       case 'lambert':
         material = new THREE.MeshLambertMaterial();

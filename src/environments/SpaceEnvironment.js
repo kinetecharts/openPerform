@@ -9,28 +9,21 @@ import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButto
 
 import config from './../config';
 
-class GridEnvironment {
-  constructor(renderer, parent, performers, defaults) {
+class SpaceEnvironment {
+  constructor(renderer, parent, performers, type) {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
-    this.defaults = defaults;
 
     this.elements = [];
-    this.lights = [];
 
-    this.name = "Grid";
+    this.name = "Empty";
     this.modalID = this.name+"_Settings";
     this.visible = true;
 
-    this.bgColor = this.defaults.backgroundColor;
-    this.floorColor = this.defaults.floorColor;
-    this.floorSize = 50;
-    this.numLines = 50;
+    this.spotLight = null;
 
-    this.gridFloor;
-    this.hemiLight;
-    this.dirLight;
+    this.color = config.defaults.backgroundColor;
 
     this.params = {
       shadowBias: 0.001,
@@ -47,15 +40,14 @@ class GridEnvironment {
       lDecay: 10,
     };
 
-    this.setBgColor(new THREE.Color('#' + this.bgColor.toString(16)));
+    // this.setColor(this.color);
     // this.initGUI();
-    this.initFloor(this.floorSize, this.numLines, this.floorColor);
-    this.initShadowFloor(this.floorSize);
+    this.initFloor(200);
     this.initLights();
   }
 
-  setBgColor(color) {
-    this.renderer.setClearColor(color);
+  setColor(color) {
+    this.renderer.setClearColor( color );
   }
 
   // initGUI() {
@@ -78,30 +70,11 @@ class GridEnvironment {
   }
 
   setVisible(val) {
+    console.log(val);
     this.visible = val;
     this.elements.forEach((element) => {
       element.visible = val;
     });
-  }
-
-  initFloor(floorSize, numLines, color) {
-    this.gridFloor = new THREE.GridHelper(floorSize / 2, numLines, new THREE.Color('#' + color), new THREE.Color('#' + color));
-    this.gridFloor.castShadow = true;
-    this.gridFloor.receiveShadow = true;
-    this.gridFloor.visible = true;
-    this.elements.push(this.gridFloor);
-    this.parent.add(this.gridFloor);
-  }
-
-  initShadowFloor(size) {
-    var geoFloor = new THREE.PlaneBufferGeometry( size, size, 1 );
-    var matStdFloor = new THREE.ShadowMaterial();
-    matStdFloor.opacity = 0.9;
-    this.shadowFloor = new THREE.Mesh(geoFloor, matStdFloor);
-    this.shadowFloor.rotation.x = -Math.PI/2;
-    this.shadowFloor.receiveShadow = true;
-    this.parent.add(this.shadowFloor);
-    this.elements.push(this.shadowFloor);
   }
 
   setSpotlightPos(t, y, r) {
@@ -113,43 +86,50 @@ class GridEnvironment {
     this.spotLight.lookAt(new THREE.Vector3());
   }
 
-  initLights() {
-    this.dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    this.dirLight.position.set(-5, 10, 10);
-    this.dirLight.castShadow = true;
-    this.parent.add(this.dirLight);
-    this.lights.push(this.dirLight);
+  initFloor(size) {
+    var geoFloor = new THREE.PlaneBufferGeometry( size, size, 1 );
+    var matStdFloor = new THREE.ShadowMaterial();
+    matStdFloor.opacity = 0.9;
+    this.floor = new THREE.Mesh(geoFloor, matStdFloor);
+    this.floor.rotation.x = -Math.PI/2;
+    this.floor.receiveShadow = true;
+    this.parent.add(this.floor);
+    this.elements.push(this.floor);
+  }
 
-    this.dirLight.shadow.mapSize.width = 512;  // default
-    this.dirLight.shadow.mapSize.height = 512; // default
-    this.dirLight.shadow.camera.near = 0.5;    // default
-    this.dirLight.shadow.camera.far = 500;     // default
+  initLights() {
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
+    directionalLight.position.set( -5, 10, 10 );
+    directionalLight.castShadow = true;
+    this.parent.add( directionalLight );
+
+    directionalLight.shadow.mapSize.width = 512;  // default
+    directionalLight.shadow.mapSize.height = 512; // default
+    directionalLight.shadow.camera.near = 0.5;    // default
+    directionalLight.shadow.camera.far = 500;     // default
   }
 
   remove() {
     this.elements.forEach((element) => {
       this.parent.remove(element);
     });
-    this.lights.forEach((light) => {
-      this.parent.remove(light);
-    });
   }
 
   redrawGrid() {
-    this.parent.remove(this.gridFloor);
+    this.parent.remove(this.floor);
     this.initFloor(this.floorSize, this.numLines);
   }
 
   toggleGrid() {
-    this.gridFloor.visible = !this.gridFloor.visible;
+    this.floor.visible = !this.floor.visible;
   }
 
   hide() {
-    this.gridFloor.visible = true;
+    this.floor.visible = true;
   }
 
   show() {
-    this.gridFloor.visible = false;
+    this.floor.visible = false;
   }
 
   toggle(variableName) {
@@ -159,18 +139,16 @@ class GridEnvironment {
   }
 
   updateParameters(data) {
-    switch (data.parameter) {
-      default:
-        break;
-      case 'size':
-        this.floorSize = data.value * 100;
-        this.redrawGrid();
-        break;
-      case 'lines':
+    	switch (data.parameter) {
+    		case 'size':
+    			this.floorSize = data.value * 100;
+    			this.redrawGrid();
+    			break;
+    		case 'lines':
         this.numLines = data.value * 100;
         this.redrawGrid();
-        break;
-    }
+    			break;
+    	}
   }
 
   update(timeDelta) {
@@ -178,25 +156,19 @@ class GridEnvironment {
   }
 
   handleBackgroundColorChange(color, event) {
-    console.log(color.hex);
-    this.bgColor = color.hex;
-    this.setBgColor(new THREE.Color(this.bgColor));
+    this.color = color.hex;
+    this.renderer.setClearColor(new THREE.Color(color.hex));
   }
-
-  updateBackgroundColor(color) {
-    this.bgColor = '#' + color;
-    this.setBgColor(new THREE.Color(this.bgColor));
-  }
-
   getStylesGui() {
     return <StylesGUI
       handleBackgroundColorChange={this.handleBackgroundColorChange.bind(this)}
-      backgroundColor={this.bgColor}
+      backgroundColor={this.color}
     />;
   }
 }
 
-module.exports = GridEnvironment;
+module.exports = SpaceEnvironment;
+
 
 class StylesGUI extends React.Component {
   constructor(props) {
@@ -223,7 +195,7 @@ class StylesGUI extends React.Component {
               overlay={cPicker}
             >
               <div id="colorSquare" style={{
-                backgroundColor:'#'+this.props.backgroundColor.toString(16)
+                backgroundColor:this.props.backgroundColor
               }}></div>
             </OverlayTrigger>
           </ListGroupItem>

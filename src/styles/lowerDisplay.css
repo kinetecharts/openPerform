@@ -52,6 +52,7 @@
 	float: left;
 	background: rgba(0, 0, 0, 0.125);
 	pointer-events: all;
+	width: 550px;
 }
 
 .performerMenu .panel-heading {
@@ -124,6 +125,33 @@
 
 #performerTable td {
 	padding: 3px;
+}
+
+#performerTable tbody {
+  display: block;
+  max-height: 95px;
+  overflow-y: scroll;
+}
+
+#performerTable thead,
+#performerTable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#performerTable th {
+	text-align: center;
+}
+
+.performerMenu .loadBVHLink {
+	display: inline-flex;
+	float: right;
+	cursor: pointer;
+}
+
+.performerMenu .loadBVHLink span {
+	margin-left: 10px;
 }
 
 .performerMenu ul {
