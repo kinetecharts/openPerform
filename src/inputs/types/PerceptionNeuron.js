@@ -161,7 +161,7 @@ class PerceptionNeuron {
         idx++;
       }
 
-      this.callbacks.message(`PN_User_${key}`, bones, 'perceptionNeuron');
+      this.callbacks.message('Neuron_User_' + key, bones, 'perceptionNeuron');
     });
   }
 

@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-27 11:07:07
+ * @modify date 2018-08-27 11:07:07
+ * @desc [Receive for posenet data.]
+*/
+
 import _ from 'lodash';
 
 class PoseNet {
@@ -41,6 +49,7 @@ class PoseNet {
 
   onMessage(msg) {
     this.callbacks.message(JSON.parse(msg.data));
+    this.callbacks.message('PoseNet_User_0', JSON.parse(msg.data), 'poseNet');
   }
 
   onError(evt) {

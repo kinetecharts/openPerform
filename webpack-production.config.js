@@ -61,7 +61,11 @@ module.exports = {
 				use: [
 					'base64-image-loader',
 				]
-			}
+			},
+			{
+				test: /\.glsl$/,
+				loader: 'webpack-glsl-loader'
+			},
 		],
 	},
 	resolve: {

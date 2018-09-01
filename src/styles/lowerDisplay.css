@@ -578,3 +578,99 @@
 .dg .cr.button:hover, .dg .cr.boolean:hover, .dg .cr.function:hover {
 	background-color: #fff;
 }
+
+.renderStyleMenu {
+	position: relative;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	border: none;
+	border-radius: 10px;
+	display: inline-block;
+	float: right;
+	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
+}
+
+.renderStyleMenu .panel-heading {
+	background: none;
+	color: #FFFFFF;
+	border: none;
+}
+
+.renderStyleMenu h5 {
+	margin: 0;
+	padding: 0;
+	text-shadow: none;
+	display: inline-block;
+	text-align: right;
+	width: 100%;
+}
+
+.renderStyleMenu .panel-collapse {
+	border-top: 1px solid #FFFFFF;
+}
+
+.renderStyleMenu #renderStyleTable td {
+	padding: 5px 10px;
+}
+
+.renderStyleMenu #controlsTable td {
+	padding: 5px 5px;
+}
+
+.renderStyleMenu .glyphicon {
+	cursor: pointer; cursor: hand;
+}
+
+.renderStyleMenu input {
+	background: none;
+	border:none;
+	border-bottom: 1px solid #ffffff;
+	width: 50px;
+}
+
+.renderStyleMenu .Select {
+	width: 130px;
+}
+
+.renderStyleMenu .Select .Select-control {
+	background:none !important;
+	border:none !important;
+	box-shadow:none !important;
+	border-bottom:1px solid #ffffff !important;
+	border-radius: 0;
+}
+
+#renderStyleTable .Select-value-label {
+	color: #ffffff !important;
+}
+
+#renderStyleTable .Select-arrow {
+	border-color: #ffffff transparent transparent !important;
+}
+
+.renderStyleMenu ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.renderStyleMenu li {
+	text-transform: capitalize;
+	padding: 0;
+	margin: 0;
+	text-shadow: 1px 1px 2px #000000;
+}
+
+.renderStyleColor {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	margin-left: 10px;
+	pointer-events: all;
+}
+
+#renderStyleModalBody > div > div.close-button {
+	display: none;
+}

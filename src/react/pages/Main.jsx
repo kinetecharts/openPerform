@@ -24,6 +24,7 @@ import CameraMenu from './../menus/CameraMenu';
 import DebugMenu from './../menus/DebugMenu';
 import VRMenu from './../menus/VRMenu';
 import ARMenu from './../menus/ARMenu';
+import RenderStyleMenu from './../menus/RenderStyleMenu';
 
 import KeyboardHelpModal from './../modals/KeyboardHelpModal';
 import BVHChooserModal from '../modals/BVHChooserModal';
@@ -72,7 +73,7 @@ class Main extends React.Component {
     // once the dom has mounted, initialize threejs
     this.state.scene.initScene(
       this.state.inputs,
-      this.state.debug.stats,
+      this.state.debug,
       this.performers,
       this.state.defaults,
       this.sceneInit.bind(this),
@@ -91,6 +92,8 @@ class Main extends React.Component {
     this.state.environments = this.state.scene.environments;
     this.state.availEnvironments = this.state.scene.availEnvironments;
     this.state.currentEnvironment = this.state.scene.currentEnvironment;
+    this.state.renderStyles = this.state.scene.renderStyles;
+    this.state.currentRenderStyle = this.state.scene.currentRenderStyle;
 
     if (this.state.debug.bvh.enabled) {
       // _.each(this.BVHFiles, (file) => {
@@ -450,7 +453,7 @@ class Main extends React.Component {
                   snorryCam={(this.state.inputManger) ? this.state.inputManger.snorryCam.bind(this.state.inputManger) : null}
                   
                   cutClose={(this.state.inputManger) ? this.state.inputManger.cutClose.bind(this.state.inputManger) : null}
-                  cutThreeQ={(this.state.inputManger) ? this.state.inputManger.cutThreeQ.bind(this.state.inputManger) : null}
+                  cutThreeQ={(this.state.inputManger) ? this.state.inputManger.cutThreeQ.bind(this.state.inputManger, 0) : null}
                   cutMedium={(this.state.inputManger) ? this.state.inputManger.cutMedium.bind(this.state.inputManger) : null}
                 />
               </Col>
@@ -493,6 +496,12 @@ class Main extends React.Component {
                 <VRMenu active={this.state.isVR}/>
               </Col>
               <Col className="bottom-column" xs={4} md={4}>
+                <RenderStyleMenu
+                  availRenderStyles={this.state.renderStyles.availRenderStyles}
+                  renderStyle={this.state.renderStyles.currentRenderStyle}
+                  renderStyles={this.state.renderStyles}
+                  updateRenderStyle={this.state.renderStyles.updateRenderStyle}
+                />
                 <EnvironmentMenu
                   availEnvironments={this.state.environments.availEnvironments}
                   environment={this.state.environments.currentEnvironment}

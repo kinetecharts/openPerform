@@ -76,12 +76,13 @@
     "react-list-select": "^0.4.0",
     "react-select": "^1.0.0-rc.10",
     "react-simple-select": "^1.2.2",
-    "three": "^0.94.0",
+    "three": "^0.96.0",
     "three-buffer-vertex-data": "^1.1.0",
     "three-orbit-controls": "^82.1.0",
     "tls": "^0.0.1",
     "tween": "^0.9.0",
     "tween.js": "^16.6.0",
+    "webpack-glsl-loader": "^1.0.1",
     "ws": "^3.2.0"
   }
 }

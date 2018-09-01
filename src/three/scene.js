@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-31 08:32:12
+ * @modify date 2018-08-31 08:32:12
+ * @desc [Main threejs scene]
+*/
+
 import React from 'react';
 import DatGui, { DatFolder, DatBoolean, DatNumber } from 'react-dat-gui';
 
@@ -6,16 +14,17 @@ const Stats = require('imports-loader?THREE=three!three/examples/js/libs/stats.m
 const dat = require('imports-loader?THREE=three!three/examples/js/libs/dat.gui.min.js');
 require('imports-loader?THREE=three!./../libs/three.ar.min.js');
 
-import Common from './../util/Common';
-
 var OrbitControls = require('three-orbit-controls')(THREE);
 
 import DepthDisplay from './displayComponents/DepthDisplay';
 import CameraControl from './../camera/cameraControl';
 import Environments from './../environments';
+import RenderStyles from './../renderStyles';
 
 import VR from './vr/vr.js';
 import ARPlanes from './ar/ARPlanes';
+
+import Common from './../util/Common';
 
 class Scene {
   constructor() {
@@ -37,8 +46,8 @@ class Scene {
     this.arDisplay = null;
 
     this.environments = null;
+    this.renderStyles = null;
 
-    this.statsEnabled = false;
     this.performer = null;
 
     this.guiOptions = {
@@ -48,8 +57,8 @@ class Scene {
 
     this.isAR = false;
   }
-  initScene(inputs, statsEnabled, performers, defaults, callback) {
-    this.statsEnabled = statsEnabled;
+  initScene(inputs, debug, performers, defaults, callback) {
+    this.debug = debug;
     this.performer = performers;
     this.defaults = defaults;
     this.container = $('#scenes');
@@ -96,7 +105,7 @@ class Scene {
 
     this.arControls = new THREE.VRControls(this.camera);
 
-    if (this.showArDebug) {
+    if (this.debug.ar) {
       this.arDebug = new THREE.ARDebug(this.arDisplay, this.scene, {
         showLastHit: false,
         showPoseStatus: false,
@@ -119,6 +128,7 @@ class Scene {
     this.scene.add(this.planes);
 
     this.addCreateCommon();
+
     // this.initARGui();
     // initiating renderer
     this.renderAR();
@@ -140,6 +150,7 @@ class Scene {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.renderer.domElement.id = "threeCanvas";
+    
 
     // / Global : this.scene
     this.scene = new THREE.Scene();
@@ -282,10 +293,13 @@ class Scene {
   }
 
   addCreateCommon() {
+    this.composer = new THREE.EffectComposer(this.renderer);
+
     this.clock = new THREE.Clock();
 
-    this.stats = new Stats();
-    if (this.statsEnabled) {
+    
+    if (this.debug.stats) {
+      this.stats = new Stats();
       this.stats.dom.id = 'stats';
       $('#statsBox').append(this.stats.dom);
     }
@@ -297,11 +311,15 @@ class Scene {
     this.scene.add(this.sceneGroup);
     
     this.environments = new Environments(this.renderer, this.sceneGroup, this.performers, this.defaults);
-    window.environments = this.environments;
+    // window.environments = this.environments;
+
+    this.renderStyles = new RenderStyles(this.composer, this.scene, this.camera, this.defaults);
 
     // this.sceneGroup.scale.set(0.2, 0.2, 0.2)
-    const axesHelper = new THREE.AxesHelper(5);
-    this.sceneGroup.add(axesHelper);
+    if (this.debug.axis) {
+      const axesHelper = new THREE.AxesHelper(5);
+      this.sceneGroup.add(axesHelper);
+    }
   }
 
   toggleRotation() {
@@ -367,7 +385,6 @@ class Scene {
     this.cameraControl.update();
 
     if (this.vr) { this.vr.update(); }
-    if (this.scene) { this.renderer.render(this.scene, this.camera); }
 
     window.requestAnimationFrame(this.render.bind(this));
   }
@@ -384,28 +401,41 @@ class Scene {
     this.arControls.update();
 
     this.renderer.clearDepth();
-    this.renderer.render(this.scene, this.camera);
 
     this.arDisplay.requestAnimationFrame(this.renderAR.bind(this));
   }
 
   updateCommon() {
     if (TWEEN) { TWEEN.update(performance.now()); }
-    if (this.statsEnabled) { this.stats.update(); }
+    if (this.stats) { this.stats.update(); }
     if (this.performer) { this.performer.update(this.clock.getDelta()); }
     if (this.environments) { this.environments.update(this.clock.getDelta()); }
+    if (this.renderStyles) {
+      this.renderStyles.update(this.clock.getDelta());
+      if (this.renderStyles.currentRenderStyle === 'normal') {
+        this.renderer.render(this.scene, this.camera); 
+      } else {
+        if (this.composer) { this.composer.render(); }
+      }
+    }
   }
 
   onWindowResize() {
-    this.controls.update();
+    if (this.controls) { this.controls.update(); }
 
-    this.w = this.container.width();
-    this.h = this.container.height();
+    if (this.container) {
+      this.w = this.container.width();
+      this.h = this.container.height();
+    }
 
-    this.camera.aspect = this.w / this.h;
-    this.camera.updateProjectionMatrix();
+    if (this.camera) { 
+      this.camera.aspect = this.w / this.h;
+      this.camera.updateProjectionMatrix();
+    }
 
-    this.renderer.setSize(this.w, this.h);
+    if (this.composer) { this.composer.setSize(this.w, this.h); }
+
+    if (this.renderer) { this.renderer.setSize(this.w, this.h); }
   }
 
   onTouch (e) {
@@ -424,8 +454,8 @@ class Scene {
         hit,
         1,
         true,
-     );
-     this.sceneGroup.visible = true;
+      );
+      this.sceneGroup.visible = true;
     }
   }
   updateGuiOptions(data) {

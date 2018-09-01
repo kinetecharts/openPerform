@@ -48,7 +48,7 @@ class Performer {
     (options.offset == null) ? this.offset = new THREE.Vector3(0, 0, 0) : this.offset = options.offset;
     this.rotation = new THREE.Euler(0, 0, 0);
     
-    if (this.type === 'clone_bvh' || this.type === 'clone_perceptionNeuron') {
+    if (this.type === 'clone_bvh' || this.type === 'clone_perceptionNeuron' || this.type === 'clone_poseNet') {
       if (options.offset == null) {
         this.offset = new THREE.Vector3((parseInt(performerId) - 1), 0, 0);
       }
@@ -68,7 +68,7 @@ class Performer {
     this.intensity = options.intensity;
 
     this.material = options.material.toLowerCase();
-    this.materials = ['Basic', 'Lambert', 'Phong', 'Standard'];
+    this.materials = ['Shader', 'Basic', 'Lambert', 'Phong', 'Standard'];
 
     this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
@@ -674,6 +674,18 @@ class Performer {
   generateMaterial() {
     let material = new THREE.MeshBasicMaterial(); 
     switch (this.getMaterial().toLowerCase()) {
+      case 'shader': 
+        // material = new THREE.ShaderMaterial({
+        //   // transparent: true,
+        //   // depthTest: false,
+        //   // uniforms: {
+        //   //   color:   { value: new THREE.Color(0xFFFFFF) },
+        //   //   texture: { value: textureLoader.load('textures/sprites/disc.png') }
+        //   // },
+        //   vertexShader: require('../shaders/performerVertex.glsl'),
+        //   fragmentShader: require('../shaders/performerFragment.glsl')
+        // });    
+        break;
       case 'lambert':
         material = new THREE.MeshLambertMaterial();
         break;
@@ -686,7 +698,7 @@ class Performer {
         break;
     }
     material.wireframe = this.getWireframe();
-    material.color.set(parseInt(this.getMaterialColor(), 16));
+    // material.color.set(parseInt(this.getMaterialColor(), 16));
     return material;
   }
 
@@ -1309,12 +1321,56 @@ class Performer {
     const d = _.cloneDeep(data);
     this.dataBuffer.push(d);
     if (this.dataBuffer.length > (this.delay * 60)) { // Number of seconds * 60 fps
-      this.updateFromPN(this.dataBuffer.shift());
+      switch (this.type) {
+        default:
+        case 'percetionNeuron':
+          this.updateFromPerceptionNeuron(this.dataBuffer.shift());
+          break;
+        case 'poseNet':
+          this.updateFromPoseNet(this.dataBuffer.shift());
+          break;
+      }
     }
     this.performerEffects.update(this.getScene(), d, this.calculateDistances(d));
   }
 
-  updateFromPN(data) {
+  updateFromPerceptionNeuron(data) {
+    for (let i = 0; i < data.length; i++) {
+      const jointName = this.prefix + data[i].name.toLowerCase();
+      if (this.getPerformer() == null) {
+        let size = 1 / this.modelShrink;
+        this.origScale = size;
+
+        console.log('Performer data source: ', this.type);
+        switch (this.type) {
+          case 'bvh':
+          case 'clone_bvh':
+            size = (1 / this.modelShrink) / 2;
+            this.origScale = size;
+            break;
+        }
+        this.loadPerformer(
+          this.type,
+          this.getType().value,
+          this.hiddenParts,
+          size,
+          this.style,
+          this.intensity,
+        );
+      } else if (this.getPerformer().meshes[jointName]) {
+        // console.log(this.getPerformer().meshes[jointName]);
+        this.getPerformer().meshes[jointName].position.set(
+          data[i].position.x,
+          data[i].position.y,
+          data[i].position.z,
+        );
+
+        this.getPerformer().meshes[jointName].quaternion.copy(data[i].quaternion);
+      }
+    }
+  }
+
+  updateFromPoseNet(data) {
     for (let i = 0; i < data.length; i++) {
       const jointName = this.prefix + data[i].name.toLowerCase();
       if (this.getPerformer() == null) {

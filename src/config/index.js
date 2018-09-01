@@ -20,6 +20,7 @@ module.exports = {
       offset: null, // if null, will auto increment x position based on performer id
     },
     effect: 'ribbons',
+    renderStyle: 'normal',
   },
 
   inputs: ['Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
@@ -49,6 +50,8 @@ module.exports = {
     },
     stats: true,
     console2html: false,
+    axis: false,
+    ar: false,
   },
   bvhFiles: [
     './animations/bvh/duality_edit.bvh',
@@ -75,7 +78,7 @@ module.exports = {
   },
 
   bvhChooserModal: true,
-  
+
   keyboardModal: false,
   keyboardContent: document.createElement('div'),
 
@@ -106,8 +109,12 @@ module.exports = {
   trackedPerformer: null,
 
   environments: [],
-  availEnvironments: [],
+  availEnvironments: [/*'muse', 'island', */'water', 'forest', 'grid', /*'grid-light', 'gradient',*/ 'empty'],
   currentEnvironment: '',
+
+  renderStyles: [],
+  availRenderStyles: ['normal', 'sketch', 'dotShift', 'afterImage', 'halftone', 'pixel', 'edges', 'bloom'],
+  currentRenderStyles: '',
 
   kinecttransport: {
     ports: {

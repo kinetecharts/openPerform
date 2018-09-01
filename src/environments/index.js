@@ -1,3 +1,11 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-08-31 04:56:31
+ * @modify date 2018-08-31 04:56:31
+ * @desc [Environment switcher.]
+*/
+
 import _ from 'lodash';
 import dat from 'dat-gui';
 
@@ -20,7 +28,7 @@ class Environments {
 
     this.currentEnvironment = this.defaultEnvironment;
     console.log("Loading default environment: ", this.currentEnvironment);
-    this.availEnvironments = [/*'muse', 'island', */'water', 'forest', 'grid', /*'grid-light', 'gradient',*/ 'empty'];
+    this.availEnvironments = config.availEnvironments;
     this.environments = [];
 
     this.gui = new dat.GUI({ autoPlace: false, width: "100%" });

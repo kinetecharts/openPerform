@@ -271,8 +271,8 @@ class InputManager {
       new THREE.Vector3(0, 15, 15),
       p,
     );
-    this.scene.setRotationSpeed(4.5);
-    this.scene.setRotation();
+    // this.scene.setRotationSpeed(4.5);
+    // this.scene.setRotation();
   }
 
   flyTop() {

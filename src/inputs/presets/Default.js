@@ -47,9 +47,7 @@ class DefaultPreset {
   }
 
   initPoseNetCallbacks() {
-    this.inputManager.registerCallback('posenet', 'message', 'PoseNet', (data) => {
-      console.log('PoseNet: ', data);
-    });
+    this.inputManager.registerCallback('posenet', 'message', 'PoseNet', this.main.updatePerformers.bind(this.main));
   }
 
   initIPhoneXCallbacks() {
