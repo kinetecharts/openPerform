@@ -1,13 +1,18 @@
 // Creates websocket, this.callbacks["message"](bones); should call the updateFromPN in Performer.js
 const _ = require('lodash').mixin(require('lodash-keyarrange'));
 
+import SkeletalTranslator from '../../performers/SkeletalTranslator';
 import Common from './../../util/Common';
+import Logger from './../../util/Logger';
 
 class PerceptionNeuron {
   constructor(url) {
     this.callbacks = {};
     this.events = [];
     this.labels = [];
+
+    this.skeletalTranslator = new SkeletalTranslator();
+    this.logger = new Logger();
 
     this.websocket = null;
     this.initializeWebSocket(url);
@@ -17,23 +22,10 @@ class PerceptionNeuron {
     console.log('Perception Neuron connecting to: ', url);
 
     this.websocket = new WebSocket(url);
-    this.websocket.onopen = this.onOpen.bind(this);
-    this.websocket.onclose = this.onClose.bind(this);
+    this.websocket.onopen = this.logger.onOpen.bind(this, this.constructor.name);
+    this.websocket.onclose = this.logger.onClose.bind(this, this.constructor.name);
     this.websocket.onmessage = this.onMessage.bind(this);
-    this.websocket.onerror = this.onError.bind(this);
-
-    // stop Chrome from ruining things and crashing the socket server
-    window.addEventListener('beforeunload', () => {
-      this.websocket.close();
-    });
-  }
-
-  onOpen(evt) {
-    console.log('Perception Neuron connected:', evt);
-  }
-
-  onClose(evt) {
-    console.log('Perception Neuron  disconnected:', evt);
+    this.websocket.onerror = this.logger.onError.bind(this, this.constructor.name);
   }
 
   onMessage(msg) {
@@ -153,20 +145,16 @@ class PerceptionNeuron {
       var data = data.split(' '); // list of float values, total of 59. Each position x, y, x followed by euler x, y, x
       const bones = [];
 
-      bones.push(this.parseFrameData(data.slice(0, 6), this.boneNames[0])); // hips position
+      bones.push(this.parsePNFrameData(data.slice(0, 6), this.boneNames[0])); // hips position
 
       let idx = 1;
       for (let i = idx * 6; i < data.length; i += 6) { // loop the rest of the bones
-        bones.push(this.parseFrameData(data.slice(i, i + 6), this.boneNames[idx]));
+        bones.push(this.parsePNFrameData(data.slice(i, i + 6), this.boneNames[idx]));
         idx++;
       }
 
       this.callbacks.message('Neuron_User_' + key, bones, 'perceptionNeuron');
     });
-  }
-
-  onError(evt) {
-    console.log('Perception Neuron  error:', evt);
   }
 
   on(name, cb, event, label) {
@@ -184,38 +172,6 @@ class PerceptionNeuron {
 
   initCallbacks() {
     // _.forEach(this.callbacks, this.initCallback.bind(this));
-  }
-
-  parseFrameData(data, name) {
-    const keyframe = { // setup default data obj
-      name, // bone name from bvhStructure
-      position: { x: 0, y: 1, z: 2 }, //default
-      quaternion: new THREE.Quaternion(), //default
-      rotation: new THREE.Euler(data[3], data[4], data[5], 'XYZ'), //default
-    };
-
-    // parse values for each channel in node
-
-    keyframe.position.x = parseFloat(data[0]); //set position values from data stream
-    keyframe.position.y = parseFloat(data[1]);
-    keyframe.position.z = parseFloat(data[2]);
-
-    const quat = new THREE.Quaternion();
-
-    const vx = new THREE.Vector3(1, 0, 0);
-    const vy = new THREE.Vector3(0, 1, 0);
-    const vz = new THREE.Vector3(0, 0, 1);
-
-    quat.setFromAxisAngle(vy, parseFloat(data[3]) * Math.PI / 180);
-    keyframe.quaternion.multiply(quat);
-
-    quat.setFromAxisAngle(vx, parseFloat(data[4]) * Math.PI / 180);
-    keyframe.quaternion.multiply(quat);
-
-    quat.setFromAxisAngle(vz, parseFloat(data[5]) * Math.PI / 180);
-    keyframe.quaternion.multiply(quat);
-
-    return keyframe;
   }
 }
 

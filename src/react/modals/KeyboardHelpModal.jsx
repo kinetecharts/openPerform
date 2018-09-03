@@ -1,5 +1,5 @@
-import React from 'react';
-import _ from 'lodash';
+
+
 import { Modal, OverlayTrigger, Button, Row, Col } from 'react-bootstrap';
 
 class KeyboardHelpModal extends React.Component {

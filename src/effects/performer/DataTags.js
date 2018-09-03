@@ -6,13 +6,11 @@
  * @desc [The Data Tags Effect creates text tags for parts of a performers body.]
 */
 
-import React from 'react';
-
-import DataTagsMenu from '../../react/effects/DataTagsMenu';
-
 import loadFont from 'load-bmfont';
 import createText from './bmFont';
 import MSDFShader from './bmFont/shaders/msdf';
+
+import DataTagsMenu from '../../react/menus/effects/DataTagsMenu';
 
 class DataTags {
   constructor(effectId, parent, color) {

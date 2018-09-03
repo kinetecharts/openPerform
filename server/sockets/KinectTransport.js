@@ -19,7 +19,7 @@ const outgoingServer = new WebSocketServer({ port: config.ports.outgoing });
 
 // maximum size of frame is 247815 bytes (512x424 + 7)
 let parseCommandId = -1;
-const parseBuffer = new Buffer(247815);
+const parseBuffer = new Buffer.alloc(247815);
 let parseDataOffset = 0;
 let parseDataLength = 0;
 
@@ -127,25 +127,25 @@ function parseBodies(data) {
 }
 
 function parseDepth(data) {
-  kinectData = {};
-  kinectData.depthBuffer = new Buffer(217088);
+  let depthData = {};
+  depthData.depthBuffer = new Buffer.alloc(217088);
 
   let offset = 0;
 
-  kinectData.depthWidth = data.readUInt16LE(offset); offset += 2;
-  kinectData.depthHeight = data.readUInt16LE(offset); offset += 2;
+  depthData.depthWidth = data.readUInt16LE(offset); offset += 2;
+  depthData.depthHeight = data.readUInt16LE(offset); offset += 2;
 
-  // copy buffer data to kinectData
-  // console.log("parsing depth: " + kinectData.depthWidth + ", " + kinectData.depthHeight);
+  // copy buffer data to depthData
+  // console.log("parsing depth: " + depthData.depthWidth + ", " + depthData.depthHeight);
   data.copy(
-    kinectData.depthBuffer,
+    depthData.depthBuffer,
     0,
     offset,
-    (kinectData.depthWidth * kinectData.depthHeight) + offset,
+    (depthData.depthWidth * depthData.depthHeight) + offset,
   );
-  offset += kinectData.depthWidth * kinectData.depthHeight;
+  offset += depthData.depthWidth * depthData.depthHeight;
 
-  return { type: 'depth', depth: { buffer: kinectData.depthBuffer } };
+  return { type: 'depth', depth: { width: depthData.depthWidth, height: depthData.depthHeight, buffer: depthData.depthBuffer } };
 }
 
 function parseCommand(data, dataOffset) {

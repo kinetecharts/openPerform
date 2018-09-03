@@ -6,7 +6,7 @@
  * @desc [Menu to control The Ghosting Effect.]
 */
 
-import React from 'react';
+
 
 import DatGui, { DatNumber, DatBoolean, DatFolder } from 'react-dat-gui';
 require('react-dat-gui/build/react-dat-gui.css');

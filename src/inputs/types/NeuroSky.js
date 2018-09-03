@@ -1,6 +1,6 @@
 const neurosky = require('node-neurosky');
 
-import _ from 'lodash';
+
 
 // Myo devloper docs: https://github.com/thalmiclabs/myo.js/blob/master/docs.md
 

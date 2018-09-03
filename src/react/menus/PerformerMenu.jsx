@@ -6,7 +6,7 @@
  * @desc [description]
 */
 
-import React from 'react';
+
 import ReactDom from 'react-dom';
 import Select from 'react-select';
 
@@ -16,11 +16,12 @@ import { Panel, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem, Dropdo
 
 import 'react-select/dist/react-select.css';
 
-import PerformerTranslate from './../options/PerformerTranslate';
-import PerformerControls from './../controls/PerformerControls';
-import PerformerStyles from './../styles/PerformerStyles';
-import NumberInput from './../inputs/NumberInput';
-import PerformerEffects from './../effects/PerformerEffects';
+import PerformerTranslateMenu from './options/PerformerTranslateMenu';
+import PerformerControlsMenu from './controls/PerformerControlsMenu';
+import PerformerStylesMenu from './styles/PerformerStylesMenu';
+import PerformerEffectsMenu from './effects/PerformerEffectsMenu';
+import NumberInput from '../inputs/NumberInput';
+
 
 class PerformerMenu extends React.Component {
   constructor(props) {
@@ -173,7 +174,7 @@ class PerformerMenu extends React.Component {
                   </tr>
                 </tbody>
               </Table>
-              <h6 class="loadBVHLink" onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
+              <h6 className="loadBVHLink" onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
             </Panel.Body>
           </Panel.Collapse>
         </Panel>
@@ -203,7 +204,7 @@ class PerformerMenu extends React.Component {
                 _.map(this.props.performers.getPerformers(), (performer, idx) => (
                   <tr key={idx}>
                     <td title="Control Performer">
-                      <PerformerControls
+                      <PerformerControlsMenu
                         type={performer.type}
                         actions={performer.actions}
                       />
@@ -212,7 +213,7 @@ class PerformerMenu extends React.Component {
                     <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
                     <td title="Type"><span>{(performer.leader !== null && performer.leader !== undefined) ? performer.leader.name : performer.type}</span></td>
                     <td>
-                      <PerformerTranslate
+                      <PerformerTranslateMenu
                         offset={performer.getOffset()}
                         updateOffsetX={this.updateOffsetX.bind(this, performer)}
                         updateOffsetY={this.updateOffsetY.bind(this, performer)}
@@ -226,7 +227,7 @@ class PerformerMenu extends React.Component {
                       />
                     </td>
                     <td>
-                      <PerformerStyles
+                      <PerformerStylesMenu
                         style={performer.getStyle()}
                         styles={performer.getStyles()}
                         changeStyle={this.changeStyle.bind(this, performer)}
@@ -245,7 +246,7 @@ class PerformerMenu extends React.Component {
                       />
                     </td>
                     <td title="Edit Effects">
-                      <PerformerEffects
+                      <PerformerEffectsMenu
                         clickOverTrigger={this.clickOverTrigger.bind(this)}
                         effects={performer.effects}
                         effect={(performer.performerEffects.effects.length > 0) ? performer.performerEffects.effects[0].id : 'No Effect'}
@@ -263,7 +264,7 @@ class PerformerMenu extends React.Component {
                 }
               </tbody>
             </Table>
-            <h6 class="loadBVHLink" onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
+            <h6 className="loadBVHLink" onClick={this.props.openBVHChooser}>Load BVH File <Icon name="user-plus" /></h6>
           </Panel.Body>
         </Panel.Collapse>
       </Panel>

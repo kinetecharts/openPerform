@@ -1,13 +1,12 @@
-import React from 'react';
-import _ from 'lodash';
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-09-02 03:40:11
+ * @modify date 2018-09-02 03:40:11
+ * @desc [description]
+*/
 
-import dat from 'dat-gui';
-
-import { ChromePicker } from 'react-color';
-
-import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
-
-import config from './../config';
+import GridMenu from '../react/menus/environment/GridMenu';
 
 class GridEnvironment {
   constructor(renderer, parent, performers, defaults) {
@@ -16,58 +15,33 @@ class GridEnvironment {
     this.performers = performers;
     this.defaults = defaults;
 
+    this.name = "Grid";
+
     this.elements = [];
     this.lights = [];
 
-    this.name = "Grid";
-    this.modalID = this.name+"_Settings";
     this.visible = true;
 
-    this.bgColor = this.defaults.backgroundColor;
-    this.floorColor = this.defaults.floorColor;
-    this.floorSize = 50;
-    this.numLines = 50;
-
-    this.gridFloor;
-    this.hemiLight;
-    this.dirLight;
-
-    this.params = {
-      shadowBias: 0.001,
-      lRotate: false,
-      lFollow: true,
-      lHeight: 4,
-      lRot: 1.55,
-      lRadius: 5,
-      lColor: 0xFFFFFF,
-      lIntense: 1,
-      lDist: 200,
-      lAngle: 1,//Math.PI / 4,
-      lPen: 1,
-      lDecay: 10,
+    this.options = {
+      bgColor: '#' + this.defaults.backgroundColor,
+      floorColor: '#' + this.defaults.floorColor,
+      floorSize: 50,
+      numLines: 25,
     };
 
-    this.setBgColor(new THREE.Color('#' + this.bgColor.toString(16)));
-    // this.initGUI();
-    this.initFloor(this.floorSize, this.numLines, this.floorColor);
-    this.initShadowFloor(this.floorSize);
+    this.gridFloor = null;
+    this.hemiLight = null;
+    this.dirLight = null;
+
+    this.setBgColor(new THREE.Color(this.options.bgColor));
+    this.initFloor(this.options.floorsize, this.options.numLines, new THREE.Color(this.options.floorColor));
+    this.initShadowFloor(this.options.floorsize);
     this.initLights();
   }
 
   setBgColor(color) {
     this.renderer.setClearColor(color);
   }
-
-  // initGUI() {
-  //   this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
-  //   this.guiDOM = this.gui.domElement;
-  //   this.guiFolder = this.gui.addFolder("Grid Environment");
-  //   this.guiFolder.open();
-  //   this.guiFolder.add(this, 'floorSize', 1, 100).step(1).name('Size').listen()
-  //     .onChange(this.redrawGrid.bind(this));
-  //   this.guiFolder.add(this, 'numLines', 1, 100).step(1).name('# Lines').listen()
-  //     .onChange(this.redrawGrid.bind(this));
-  // }
 
   toggleVisible(val) {
     this.setVisible(!this.getVisible());
@@ -85,7 +59,9 @@ class GridEnvironment {
   }
 
   initFloor(floorSize, numLines, color) {
-    this.gridFloor = new THREE.GridHelper(floorSize / 2, numLines, new THREE.Color('#' + color), new THREE.Color('#' + color));
+    this.removeElements();
+
+    this.gridFloor = new THREE.GridHelper(floorSize / 2, numLines, color, color);
     this.gridFloor.castShadow = true;
     this.gridFloor.receiveShadow = true;
     this.gridFloor.visible = true;
@@ -94,23 +70,14 @@ class GridEnvironment {
   }
 
   initShadowFloor(size) {
-    var geoFloor = new THREE.PlaneBufferGeometry( size, size, 1 );
-    var matStdFloor = new THREE.ShadowMaterial();
-    matStdFloor.opacity = 0.9;
-    this.shadowFloor = new THREE.Mesh(geoFloor, matStdFloor);
+    this.shadowFloor = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry( size, size, 1 ),
+      new THREE.ShadowMaterial({ opacity: 0.9 })
+    );
     this.shadowFloor.rotation.x = -Math.PI/2;
     this.shadowFloor.receiveShadow = true;
     this.parent.add(this.shadowFloor);
     this.elements.push(this.shadowFloor);
-  }
-
-  setSpotlightPos(t, y, r) {
-    var lx = r * Math.cos( t );
-    var lz = r * Math.sin( t );
-    // var ly = 5.0 + 5.0 * Math.sin( t / 3.0 );
-    let spotOffset = new THREE.Vector3( lx, y, lz );
-    this.spotLight.position.copy(spotOffset);
-    this.spotLight.lookAt(new THREE.Vector3());
   }
 
   initLights() {
@@ -126,108 +93,38 @@ class GridEnvironment {
     this.dirLight.shadow.camera.far = 500;     // default
   }
 
-  remove() {
+  removeElements() {
     this.elements.forEach((element) => {
       this.parent.remove(element);
     });
+  }
+
+  removeLights() {
     this.lights.forEach((light) => {
       this.parent.remove(light);
     });
   }
 
-  redrawGrid() {
-    this.parent.remove(this.gridFloor);
-    this.initFloor(this.floorSize, this.numLines);
-  }
-
-  toggleGrid() {
-    this.gridFloor.visible = !this.gridFloor.visible;
-  }
-
-  hide() {
-    this.gridFloor.visible = true;
-  }
-
-  show() {
-    this.gridFloor.visible = false;
-  }
-
-  toggle(variableName) {
-    if (this.toggles[variableName]) {
-      this.toggles[variableName] = !this.toggles[variableName];
-    }
-  }
-
-  updateParameters(data) {
-    switch (data.parameter) {
-      default:
-        break;
-      case 'size':
-        this.floorSize = data.value * 100;
-        this.redrawGrid();
-        break;
-      case 'lines':
-        this.numLines = data.value * 100;
-        this.redrawGrid();
-        break;
-    }
+  remove() {
+    this.removeElements();
+    this.removeLights();
   }
 
   update(timeDelta) {
     // put frame updates here.
   }
 
-  handleBackgroundColorChange(color, event) {
-    console.log(color.hex);
-    this.bgColor = color.hex;
-    this.setBgColor(new THREE.Color(this.bgColor));
+  // updated options from gui
+  updateOptions(data) {
+    this.options = data;
+    this.setBgColor(new THREE.Color(this.options.bgColor));
+    this.initFloor(this.options.floorsize, this.options.numLines, new THREE.Color(this.options.floorColor));
   }
 
-  updateBackgroundColor(color) {
-    this.bgColor = '#' + color;
-    this.setBgColor(new THREE.Color(this.bgColor));
-  }
-
-  getStylesGui() {
-    return <StylesGUI
-      handleBackgroundColorChange={this.handleBackgroundColorChange.bind(this)}
-      backgroundColor={this.bgColor}
-    />;
+  getGUI() {
+    return <GridMenu data={this.options}
+      updateOptions={this.updateOptions.bind(this)} />;
   }
 }
 
 module.exports = GridEnvironment;
-
-class StylesGUI extends React.Component {
-  constructor(props) {
-    super(props);
-    this.props = props;
-    this.state = {};
-  }
-  render() {
-    const cPicker = (
-      <Popover id="popover-positioned-top" title="Background Color">
-        <ChromePicker 
-          color={this.props.backgroundColor}
-          onChange={this.props.handleBackgroundColorChange}
-        />
-      </Popover>
-    );
-    return (
-      <ListGroup>
-          <ListGroupItem>
-            <OverlayTrigger
-              trigger="click"
-              rootClose
-              placement="top"
-              overlay={cPicker}
-            >
-              <div id="colorSquare" style={{
-                backgroundColor:'#'+this.props.backgroundColor.toString(16)
-              }}></div>
-            </OverlayTrigger>
-          </ListGroupItem>
-      </ListGroup>
-    );
-  }
-}

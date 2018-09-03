@@ -1,10 +1,10 @@
-require('three/examples/js/loaders/OBJLoader.js');
 require('three/examples/js/loaders/DDSLoader.js');
 require('three/examples/js/loaders/MTLLoader.js');
 require('three/examples/js/loaders/BVHLoader.js');
 require('three/examples/js/loaders/FBXLoader.js');
 require('three/examples/js/loaders/OBJLoader.js');
 require('three/examples/js/loaders/ColladaLoader.js');
+require('three/examples/js/loaders/GLTFLoader.js');
 
 const sceneLoader = require('../libs/three/loaders/SceneLoader');
 
@@ -13,25 +13,16 @@ class Loader {
     this.debug = false;
   }
 
-  loadMTL(url, cb) {
-    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
-    new THREE.MTLLoader().load(url, cb, this.onProgress, this.onError);
+  loadGLTF(url, props, cb) {
+    new THREE.GLTFLoader().load(url, (result) => { cb(result, props); }, this.onError);
   }
 
   loadOBJ(url, props, cb) {
     let objLoader = new THREE.OBJLoader(new THREE.LoadingManager());
     if (props.materials) {
-      objLoader.setMaterials(materials);
+      objLoader.setMaterials(props.materials);
     }
     objLoader.load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
-  }
-
-  loadImage(url, cb) {
-    new THREE.ImageLoader().load(url, cb, this.onProgress, this.onError);
-  }
-
-  loadTexture(url, props, cb) {
-    new THREE.TextureLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
   loadBVH(url, cb) {
@@ -48,6 +39,19 @@ class Loader {
 
   loadScene(url, props, cb) {
     new THREE.SceneLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
+  }
+
+  loadImage(url, cb) {
+    new THREE.ImageLoader().load(url, cb, this.onProgress, this.onError);
+  }
+
+  loadTexture(url, props, cb) {
+    new THREE.TextureLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
+  }
+
+  loadMTL(url, cb) {
+    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+    new THREE.MTLLoader().load(url, cb, this.onProgress, this.onError);
   }
 
   onProgress(xhr) {

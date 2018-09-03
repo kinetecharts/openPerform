@@ -1,10 +1,10 @@
-import React from 'react';
+
 import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import Icon from 'react-fa';
 
 
-class EnvironmentStyles extends React.Component {
+class EnvironmentStylesMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -46,4 +46,4 @@ class EnvironmentStyles extends React.Component {
   }
 }
 
-module.exports = EnvironmentStyles;
+module.exports = EnvironmentStylesMenu;

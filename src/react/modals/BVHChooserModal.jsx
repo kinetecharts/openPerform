@@ -6,7 +6,7 @@
  * @desc [Modal overlay to select or upload bvh files to client.]
 */
 
-import React from 'react';
+
 
 import { Modal, Grid, Row, Col, Button } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';

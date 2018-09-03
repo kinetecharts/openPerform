@@ -1,11 +1,11 @@
-import React from 'react';
+
 import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table } from 'react-bootstrap';
 
 import Icon from 'react-fa';
 
-import NumberInput from './../inputs/NumberInput';
+import NumberInput from '../../inputs/NumberInput';
 
-class PerformerOptions extends React.Component {
+class PerformerOptionsMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -89,4 +89,4 @@ class PerformerOptions extends React.Component {
   }
 }
 
-module.exports = PerformerOptions;
+module.exports = PerformerOptionsMenu;

@@ -1,10 +1,12 @@
-import _ from 'lodash';
+import Logger from '../../util/Logger';
 
 class Gamepads {
   constructor(url) {
     this.callbacks = {};
     this.events = [];
     this.labels = [];
+
+    this.logger = new Logger();
 
     this.connected = false;
     this.websocket = null;
@@ -23,26 +25,10 @@ class Gamepads {
     console.log('Gamepad Server connecting to: ', url);
 
     this.websocket = new WebSocket(url);
-    this.websocket.onopen = this.onOpen.bind(this);
-    this.websocket.onclose = this.onClose.bind(this);
+    this.websocket.onopen = this.logger.onOpen.bind(this, this.constructor.name);
+    this.websocket.onclose = this.logger.onClose.bind(this, this.constructor.name);
     this.websocket.onmessage = this.onMessage.bind(this);
-    this.websocket.onerror = this.onError.bind(this);
-
-    // stop Chrome from ruining things and crashing the socket server
-    window.addEventListener('beforeunload', () => {
-      this.websocket.close();
-    });
-  }
-
-
-  onOpen(evt) {
-    console.log('Gamepad Server connected:', evt);
-    this.connected = true;
-  }
-
-  onClose(evt) {
-    console.log('Gamepad Server disconnected:', evt);
-    this.connected = false;
+    this.websocket.onerror = this.logger.onError.bind(this, this.constructor.name);
   }
 
   onMessage(msg) {
@@ -59,10 +45,6 @@ class Gamepads {
         this.updateDebugger(this.debugEls[key], i, key);
       }
     });
-  }
-
-  onError(evt) {
-    console.log('Gamepad Server error:', evt);
   }
 
   on(name, cb, event, label) {

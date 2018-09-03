@@ -6,9 +6,9 @@
  * @desc [The Particles Effect creates particle generators for parts of a performers body.]
 */
 
-import React from 'react';
 
-import ParticlesMenu from '../../react/effects/ParticlesMenu';
+
+import ParticlesMenu from '../../react/menus/effects/ParticlesMenu';
 
 require('three/examples/js/GPUParticleSystem');
 

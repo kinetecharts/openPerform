@@ -737,7 +737,7 @@ class DefaultPreset {
     /* https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
     Returns either depth or bodies object. */
     this.inputManager.registerCallback('kinecttransport', 'depth', 'Kinect Depth', this.scene.viewKinectTransportDepth.bind(this.scene));
-    this.inputManager.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.scene.viewKinectTransportBodies.bind(this.scene));
+    this.inputManager.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.main.updatePerformers.bind(this.main));
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap

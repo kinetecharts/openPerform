@@ -8,7 +8,6 @@
 
 const osc = require('node-osc');
 const WebSocket = require('ws');
-const _ = require('lodash');
 
 const config = require('./../config.js').oscController;
 

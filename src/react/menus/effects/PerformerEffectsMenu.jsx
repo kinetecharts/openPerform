@@ -1,10 +1,10 @@
-import React from 'react';
+
 import ReactDOM from 'react-dom';
 import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import Icon from 'react-fa';
 
-class PerformerEffects extends React.Component {
+class PerformerEffectsMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -69,4 +69,4 @@ class PerformerEffects extends React.Component {
   }
 }
 
-module.exports = PerformerEffects;
+module.exports = PerformerEffectsMenu;

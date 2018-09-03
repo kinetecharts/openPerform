@@ -6,7 +6,7 @@
  * @desc [This is where the magic happens. The main React class where all things are initialized.]
 */
 
-import React from 'react';
+
 import ConsoleLogHTML from 'console-log-html';
 
 import WEBVR from './../../three/vr/WebVR';
@@ -14,14 +14,14 @@ import WEBVR from './../../three/vr/WebVR';
 import { Grid, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import IOMenu from './../menus/IOMenu';
-import PerformerMenu from './../menus/PerformerMenu';
-import EnvironmentMenu from './../menus/EnvironmentMenu';
-import CameraMenu from './../menus/CameraMenu';
-import DebugMenu from './../menus/DebugMenu';
-import VRMenu from './../menus/VRMenu';
-import ARMenu from './../menus/ARMenu';
-import RenderStyleMenu from './../menus/RenderStyleMenu';
+import IOMenu from '../menus/IOMenu';
+import PerformerMenu from '../menus/PerformerMenu';
+import EnvironmentMenu from '../menus/EnvironmentMenu';
+import CameraMenu from '../menus/CameraMenu';
+import DebugMenu from '../menus/DebugMenu';
+import VRMenu from '../menus/VRMenu';
+import ARMenu from '../menus/ARMenu';
+import RenderStyleMenu from '../menus/RenderStyleMenu';
 
 import KeyboardHelpModal from './../modals/KeyboardHelpModal';
 import BVHChooserModal from '../modals/BVHChooserModal';
@@ -492,18 +492,22 @@ class Main extends React.Component {
                 <VRMenu active={this.state.isVR}/>
               </Col>
               <Col className="bottom-column" xs={4} md={4}>
-                <RenderStyleMenu
-                  availRenderStyles={this.state.renderStyles.availRenderStyles}
-                  renderStyle={this.state.renderStyles.currentRenderStyle}
-                  renderStyles={this.state.renderStyles}
-                  updateRenderStyle={this.state.renderStyles.updateRenderStyle}
-                />
-                <EnvironmentMenu
-                  availEnvironments={this.state.environments.availEnvironments}
-                  environment={this.state.environments.currentEnvironment}
-                  environments={this.state.environments}
-                  updateEnvironment={this.state.environments.updateEnvironment}
-                />
+                <Row>
+                  <EnvironmentMenu
+                    availEnvironments={this.state.environments.availEnvironments}
+                    environment={this.state.environments.currentEnvironment}
+                    environments={this.state.environments}
+                    updateEnvironment={this.state.environments.updateEnvironment}
+                  />
+                </Row>
+                <Row>
+                  <RenderStyleMenu
+                    availRenderStyles={this.state.renderStyles.availRenderStyles}
+                    renderStyle={this.state.renderStyles.currentRenderStyle}
+                    renderStyles={this.state.renderStyles}
+                    updateRenderStyle={this.state.renderStyles.updateRenderStyle}
+                  />
+                </Row>
               </Col>
             </Row>
           </Grid>

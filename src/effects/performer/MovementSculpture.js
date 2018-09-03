@@ -6,9 +6,9 @@
  * @desc [The Movement Sculpture Effect creates a series of clones, merges their meshes and turns them into a downloable file.]
 */
 
-import React from 'react';
 
-import MovementSculptureMenu from '../../react/effects/MovementSculptureMenu'
+
+import MovementSculptureMenu from '../../react/menus/effects/MovementSculptureMenu'
 
 require('three/examples/js/exporters/GLTFExporter');
 require('three/examples/js/exporters/OBJExporter');

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+
 import TWEEN from 'tween.js';
 
 import config from './../../config';

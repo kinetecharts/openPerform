@@ -125,6 +125,7 @@
 
 #performerTable td {
 	padding: 3px;
+	border: none;
 }
 
 #performerTable tbody {
@@ -142,6 +143,7 @@
 
 #performerTable th {
 	text-align: center;
+	border-width: 1px;
 }
 
 .performerMenu .loadBVHLink {
@@ -183,10 +185,11 @@
 	margin: 0;
 	border: none;
 	border-radius: 10px;
-	display: inline-block;
-	float: right;
+	display: block;
 	background: rgba(0, 0, 0, 0.125);
 	pointer-events: all;
+	width: 200px;
+	float: right;
 }
 
 .environmentMenu .panel-heading {
@@ -208,8 +211,13 @@
 	border-top: 1px solid #FFFFFF;
 }
 
+.environmentMenu #environmentTable {
+	width: 100%;
+}
+
 .environmentMenu #environmentTable td {
 	padding: 5px 10px;
+	text-align: center;
 }
 
 #controlsTable {
@@ -557,6 +565,10 @@
 	font-size: 14px;
 }
 
+#lowerDisplay ul.dropdown-menu > li > a {
+	text-shadow: none;
+}
+
 .react-dat-gui li.folder ul {
 	margin-left: 0;
 }
@@ -614,10 +626,11 @@
 	margin: 0;
 	border: none;
 	border-radius: 10px;
-	display: inline-block;
-	float: right;
+	display: block;
 	background: rgba(0, 0, 0, 0.125);
 	pointer-events: all;
+	width: 200px;
+	float: right;
 }
 
 .renderStyleMenu .panel-heading {
@@ -639,8 +652,21 @@
 	border-top: 1px solid #FFFFFF;
 }
 
+.renderStyleMenu #renderStyleTable {
+	width: 100%;
+}
+
+.renderStyleMenu #renderStyleTable th {
+	border-bottom: 1px solid #ffffff;
+	text-align: center;
+	padding-bottom: 5px;
+	text-shadow: none;
+}
+
 .renderStyleMenu #renderStyleTable td {
 	padding: 5px 10px;
+	text-align: center;
+	text-shadow: none;
 }
 
 .renderStyleMenu #controlsTable td {
@@ -689,6 +715,12 @@
 	padding: 0;
 	margin: 0;
 	text-shadow: 1px 1px 2px #000000;
+	background: none;
+	border: none;
+}
+
+#render-style-dropdown > div > ul > li > a {
+	text-shadow: none;
 }
 
 .renderStyleColor {
@@ -701,4 +733,25 @@
 
 #renderStyleModalBody > div > div.close-button {
 	display: none;
+}
+
+.renderStyleMenu .panel-body > div:first-child {
+	width: 100%;
+}
+
+#renderStyle-dropdown {
+	width: 100%;
+	font-size: 14px;
+}
+
+#render-style-dropdown {
+	padding: 10px 0;
+}
+
+#render-style-dropdown .btn-group {
+	width: 100%;
+}
+
+.disabled-icon {
+	opacity: 0.25;
 }

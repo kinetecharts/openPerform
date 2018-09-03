@@ -1,6 +1,6 @@
 import 'rc-input-number/assets/index.css';
 import InputNumber from 'rc-input-number';
-import React from 'react';
+
 import ReactDOM from 'react-dom';
 
 class NumberInput extends React.Component {

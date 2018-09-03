@@ -1,14 +1,14 @@
-import React from 'react';
+
 import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import { ChromePicker } from 'react-color';
 
 import Icon from 'react-fa';
 
-import NumberInput from './../inputs/NumberInput';
+import NumberInput from '../../inputs/NumberInput';
 
 
-class PerformerStyles extends React.Component {
+class PerformerStylesMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -137,4 +137,4 @@ class PerformerStyles extends React.Component {
   }
 }
 
-module.exports = PerformerStyles;
+module.exports = PerformerStylesMenu;

@@ -6,9 +6,9 @@
  * @desc [The Ghosting Effect creates a full body clone of a performer and fades it out over time.]
 */
 
-import React from 'react';
 
-import GhostingMenu from '../../react/effects/GhostingMenu';
+
+import GhostingMenu from '../../react/menus/effects/GhostingMenu';
 
 class Ghosting {
   constructor(effectId, parent, color) {

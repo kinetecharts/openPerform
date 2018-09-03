@@ -1,9 +1,11 @@
+import SkeletalTranslator from './SkeletalTranslator';
+import FileLoader from '../util/Loader';
+
 const _ = require('lodash').mixin(require('lodash-keyarrange'));
-import dat from 'dat-gui';
+
 
 require('three/examples/js/loaders/BVHLoader.js');
 
-import FileLoader from '../loaders';
 
 import Common from './../util/Common';
 
@@ -13,6 +15,8 @@ class BVHPlayer {
 
     this.parent = parent;
     this.callback = callback;
+
+    this.skeletalTranslator = new SkeletalTranslator();
 
     const type = (typeof this.content == 'String') ? 'raw' : 'url';
 
@@ -84,7 +88,9 @@ class BVHPlayer {
   loadBVH(bvhFile) {
     if (!this.loading) {
       this.loading = true;
-      this.loader.loadBVH(bvhFile, this.buildAnimation.bind(this));
+      this.loader.loadBVH(bvhFile, (result) => {
+        this.skeletalTranslator.buildBVHAnimation(result, this.animate.bind(this));
+      });
     }
   }
 
@@ -108,24 +114,12 @@ class BVHPlayer {
   }
 
   loadRaw(rawFile) {
-    this.buildAnimation(new THREE.BVHLoader().parse(rawFile));
+    this.skeletalTranslator.buildBVHAnimation(new THREE.BVHLoader().parse(rawFile), this.animate.bind(this));
   }
 
-  buildAnimation(result) {
-    console.log(result);
-    console.log('BVH File Loaded...');
-
-    // if (this.skeletonHelper == null) {    
-      this.skeletonHelper = new THREE.SkeletonHelper(result.skeleton.bones[0]);
-      this.skeletonHelper.skeleton = result.skeleton; // allow animation mixer to bind to SkeletonHelper directly
-
-      this.boneContainer = new THREE.Group();
-      this.boneContainer.add(result.skeleton.bones[0]);
-
-      // play animation
-      this.mixer = new THREE.AnimationMixer(this.skeletonHelper);
-    // }
-    this.clip = result.clip;
+  animate(mixer, clip) {
+    this.mixer = mixer;
+    this.clip = clip;
 
     this.play();
     if (!this.autoplay) {
@@ -134,20 +128,12 @@ class BVHPlayer {
     this.loading = false;
   }
 
-  parseFrameData(data, name) {
-    return {
-      name: name.toLowerCase(),
-      position: data.position,
-      quaternion: data.quaternion,
-    };
-  }
-
   update() {
     requestAnimationFrame(this.update.bind(this));
     if (this.mixer) {
       this.mixer.update(this.clock.getDelta());
 
-      const bones = _.map(_.uniqBy(_.map(this.mixer._bindingsByRootAndName[Object.keys(this.mixer._bindingsByRootAndName)[0]], (part, key) => part.binding.targetObject), 'name'), part => this.parseFrameData(part, part.name));
+      const bones = _.map(_.uniqBy(_.map(this.mixer._bindingsByRootAndName[Object.keys(this.mixer._bindingsByRootAndName)[0]], (part, key) => part.binding.targetObject), 'name'), part => this.skeletalTranslator.parseBVHFrameData(part, part.name));
 
       if (bones.length > 0) {
         this.callback(`BVH_User_${Object.keys(this.mixer._bindingsByRootAndName)[0]}`, bones, 'bvh', null, {

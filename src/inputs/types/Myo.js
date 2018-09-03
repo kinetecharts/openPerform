@@ -1,5 +1,5 @@
 import Myo from 'myo';
-import _ from 'lodash';
+
 
 // Myo devloper docs: https://github.com/thalmiclabs/myo.js/blob/master/docs.md
 

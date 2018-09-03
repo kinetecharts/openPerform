@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Panel, MenuItem, DropdownButton } from 'react-bootstrap';
 
 class ARMenu extends React.Component {

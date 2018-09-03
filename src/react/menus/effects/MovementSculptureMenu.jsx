@@ -6,7 +6,7 @@
  * @desc [Menu to control The Movement Sculpture Effect.]
 */
 
-import React from 'react';
+
 
 import DatGui, { DatNumber, DatButton, DatFolder, DatSelect } from 'react-dat-gui';
 require('react-dat-gui/build/react-dat-gui.css');

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Panel, FormGroup, FormControl } from 'react-bootstrap';
 
 class DebugMenu extends React.Component {

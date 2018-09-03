@@ -1,11 +1,13 @@
-import React from 'react';
+
 import Select from 'react-select';
 
 import { Panel, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import 'react-select/dist/react-select.css';
 
-import EnvironmentStyles from './../styles/EnvironmentStyles';
+import EnvironmentStylesMenu from './../menus/styles/EnvironmentStylesMenu';
+
+import Common from '../../util/Common';
 
 class EnvironmentMenu extends React.Component {
   constructor(props) {
@@ -35,62 +37,19 @@ class EnvironmentMenu extends React.Component {
     return false;
   }
 
-  playPause(actions) {
-    if (this.state.playing) {
-      actions.pause();
-      this.setState({ playing: false });
-    } else {
-      actions.play();
-      this.setState({ playing: true });
-    }
-  }
-
-  loopNoLoop(actions) {
-    if (this.state.looping) {
-      actions.noLoop();
-      this.setState({ looping: false });
-    } else {
-      actions.loop();
-      this.setState({ looping: true });
-    }
-  }
-
-  stop(actions) {
-    actions.stop();
-    this.setState({ playing: false });
-  }
-
-  changeType(environment, val) {
-    environment.setType(val.value);
-    this.setState({ forceUpdate: true });
-  }
-
   changeStyle(environment, val) {
     environment.updateStyle(val.value);
     this.setState({ forceUpdate: true });
   }
 
-  editEffects(environment) {}
-
-  addClone(environment) {
-    this.props.environments.add(`Clone_${_.size(this.props.environments.getEnvironments()) + 1}`, 'clone', null);
-    this.setState({ forceUpdate: true });
-  }
-  removeClone(environment) {
-    this.props.environments.remove(environment.inputId);
-    this.setState({ forceUpdate: true });
-  }
   toggleVisible(environment) {
     environment.toggleVisible();
     this.setState({ forceUpdate: true });
   }
-  updateDelay(environment, event) {
-    environment.setDelay(parseFloat(event.target.value));
+
+  updateEnvironment(val) {
     this.setState({ forceUpdate: true });
-  }
-  updateOffset(environment, event) {
-    environment.setOffset(parseFloat(event.target.value));
-    this.setState({ forceUpdate: true });
+    this.props.updateEnvironment(val);
   }
 
   render() {
@@ -109,10 +68,10 @@ class EnvironmentMenu extends React.Component {
                 dropup
                 bsStyle="default"
                 bsSize="xsmall"
-                title={this.props.environment?this.props.environment:''}
+                title={'Change Environment'}
                 name="environmentSelect"
                 id="environment-dropdown"
-                onSelect={this.props.updateEnvironment.bind(this.props.environments)}
+                onSelect={this.updateEnvironment.bind(this)}
                 >
                 {_.map(this.props.availEnvironments, (environment, idx) => {
                   return (<MenuItem key={idx} eventKey={idx}>{environment}</MenuItem>);
@@ -124,7 +83,7 @@ class EnvironmentMenu extends React.Component {
                     <td title="Hide / Show"><div className={`glyphicon ${(environment.getVisible()) ? ' glyphicon-eye-open' : ' glyphicon-eye-close'}`} onClick={this.toggleVisible.bind(this, environment)} /></td>
                     <td title="Name"><span style={{ color: environment.color }}>{environment.name}</span></td>
                     <td title="Edit Settings">
-                      <EnvironmentStyles stylesGUI={environment.getStylesGui()} />
+                      <EnvironmentStylesMenu stylesGUI={environment.getGUI()} />
                     </td>
                 </tr>))
               }</tbody></table>

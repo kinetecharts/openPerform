@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Panel, MenuItem, DropdownButton, Table, Button } from 'react-bootstrap';
 
 class IOMenu extends React.Component {

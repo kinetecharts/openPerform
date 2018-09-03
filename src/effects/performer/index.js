@@ -1,4 +1,4 @@
-import _ from 'lodash';
+
 
 import Ribbons from './Ribbons';
 import ParticleSystem from './ParticleSystem';

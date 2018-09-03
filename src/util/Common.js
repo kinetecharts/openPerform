@@ -1,7 +1,7 @@
 // Common utility functions
 
 
-import dat from 'dat-gui';
+
 
 function Common() {
   const self = this;
@@ -62,17 +62,6 @@ function Common() {
 
   this.getTZ = function (lat, lon) {
     return CoordinateTZ.calculate(lat, lon).timezone;
-  };
-
-  dat.GUI.prototype.removeFolder = function (name) {
-	  const folder = this.__folders[name];
-	  if (!folder) {
-	    return;
-	  }
-	  folder.close();
-	  this.__ul.removeChild(folder.domElement.parentNode);
-	  delete this.__folders[name];
-	  this.onResize();
   };
 
   this.hexToRgb = function (hex) {

@@ -1,6 +1,6 @@
 // Mousetrap Source: https://github.com/ccampbell/mousetrap
 
-import _ from 'lodash';
+
 import Mousetrap from 'mousetrap';
 
 class Keyboard {

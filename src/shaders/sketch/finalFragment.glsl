@@ -2,11 +2,11 @@ uniform sampler2D tDiffuse;
 uniform sampler2D tNoise;
 uniform float iTime;
 varying vec2 vUv;
-#define EdgeColor vec4(0.2, 0.2, 0.15, 1.0)
-#define BackgroundColor vec4(1,0.95,0.85,1)
-#define NoiseAmount 0.01
-#define ErrorPeriod 30.0
-#define ErrorRange 0.003
+uniform vec4 EdgeColor;
+uniform vec4 BackgroundColor;
+uniform float NoiseAmount;
+uniform float ErrorPeriod;
+uniform float ErrorRange;
 // Reference: https://www.shadertoy.com/view/MsSGD1
 float triangle(float x)
 {

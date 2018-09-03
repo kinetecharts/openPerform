@@ -6,7 +6,7 @@
  * @desc [Main threejs scene]
 */
 
-import React from 'react';
+
 import DatGui, { DatFolder, DatBoolean, DatNumber } from 'react-dat-gui';
 
 require('imports-loader?THREE=three!three/examples/js/controls/TrackballControls.js');

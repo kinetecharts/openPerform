@@ -1,4 +1,4 @@
-import FileLoader from '../loaders';
+import FileLoader from '../util/Loader.js';
 
 class Head extends React.Component {
   constructor(props) {

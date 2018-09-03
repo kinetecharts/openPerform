@@ -1,6 +1,6 @@
 // KinectTransport Source: https://github.com/stimulant/MS-Cube-SDK/tree/research/KinectTransport
 
-import _ from 'lodash';
+
 
 import config from './../../config';
 
@@ -37,9 +37,25 @@ class KinectTransport {
 
   onMessage(data) {
     const dataObj = JSON.parse(data.data);
-    _.forEach(dataObj, (obj) => {
-      if (typeof this.callbacks[obj.type] === 'function') {
-        this.callbacks[obj.type](obj);
+    _.forEach(dataObj, (obj, key) => {
+      switch (obj.type) {
+        default:
+          break;
+        case 'bodies':
+          let idx = 1;
+          console.log(obj.bodies.bodies);
+          _.forEach(obj.bodies.bodies, (body) => {
+            if (typeof this.callbacks[obj.type] === 'function') {
+              this.callbacks['bodies']('Kinect_User_' + idx, body, 'kinect');
+            }
+            idx++;
+          });
+          break;
+        case 'depth':
+          if (typeof this.callbacks[obj.type] === 'function') {
+            this.callbacks['depth']('Kinect_User_' + idx, obj, 'kinect');
+          }
+          break;
       }
     });
   }

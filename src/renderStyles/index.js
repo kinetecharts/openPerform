@@ -39,12 +39,14 @@ class RenderStyles {
     // // this.guiFolder = this.gui.addFolder('Environments');
     // // this.guiFolder.open();
 
+    this.updateRenderStyle = this.updateRenderStyle.bind(this);
+
     this.add(this.defaultRenderStyle, defaults); // default
   }
 
-  // getEnvironments() {
-  //   return this.environments;
-  // }
+  getRenderStyles() {
+    return this.renderStyles;
+  }
 
   updateRenderStyle(val) {
     this.add(this.availRenderStyles[val]);
@@ -91,35 +93,6 @@ class RenderStyles {
     });
     this.renderStyles = [];
   }
-
-  // remove(inputId) {
-  //   if (this.environments[inputId]) {
-  //     this.environments[inputId].remove();
-  //     delete this.environments[inputId];
-  //   }
-  // }
-
-  // exists(inputId) {
-  //   return _.has(this.environments, inputId);
-  // }
-
-  // toggle(variableName) {
-  //   _.each(this.environments, (environment) => {
-  //     environment.toggle(variableName);
-  //   });
-  // }
-
-  // updateColors(bg) {
-  //   _.each(this.environments, (environment) => {
-  //     environment.updateBackgroundColor(bg);
-  //   });
-  // }
-
-  // updateParameters(data) {
-  //   _.each(this.environments, (environment) => {
-  //     environment.updateParameters(data);
-  //   });
-  // }
 
   update(data) {
     _.each(this.renderStyles, (renderStyle) => {

@@ -1,65 +1,35 @@
-import React from 'react';
-import _ from 'lodash';
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-09-02 03:46:15
+ * @modify date 2018-09-02 03:46:15
+ * @desc [description]
+*/
 
-import dat from 'dat-gui';
-
-import { ChromePicker } from 'react-color';
-
-import { Popover, ListGroup, ListGroupItem, OverlayTrigger, Table, DropdownButton, MenuItem } from 'react-bootstrap';
-
-import config from './../config';
+import FileLoader from '../util/Loader.js';
+import SpaceMenu from '../react/menus/environment/SpaceMenu';
 
 class SpaceEnvironment {
-  constructor(renderer, parent, performers, type) {
+  constructor(renderer, parent, performers, defaults) {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
+    this.defaults = defaults;
+
+    this.name = "Space";
 
     this.elements = [];
+    this.lights = [];
 
-    this.name = "Empty";
-    this.modalID = this.name+"_Settings";
     this.visible = true;
 
-    this.spotLight = null;
+    this.options = {};
 
-    this.color = config.defaults.backgroundColor;
+    this.loader = new FileLoader();
 
-    this.params = {
-      shadowBias: 0.001,
-      lRotate: false,
-      lFollow: true,
-      lHeight: 4,
-      lRot: 1.55,
-      lRadius: 5,
-      lColor: 0xFFFFFF,
-      lIntense: 1,
-      lDist: 200,
-      lAngle: 1,//Math.PI / 4,
-      lPen: 1,
-      lDecay: 10,
-    };
-
-    // this.setColor(this.color);
-    // this.initGUI();
-    this.initFloor(200);
+    this.initSpace();
     this.initLights();
   }
-
-  setColor(color) {
-    this.renderer.setClearColor( color );
-  }
-
-  // initGUI() {
-  //   this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
-  //   this.guiDOM = this.gui.domElement;
-  //   this.guiFolder = this.gui.addFolder("Grid Environment");
-  //   this.guiFolder.open();
-  //   this.guiFolder.add(this, 'floorSize', 1, 100).step(1).name('Size').listen()
-  //     .onChange(this.redrawGrid.bind(this));
-  //   this.guiFolder.add(this, 'numLines', 1, 100).step(1).name('# Lines').listen()
-  //     .onChange(this.redrawGrid.bind(this));
-  // }
 
   toggleVisible(val) {
     this.setVisible(!this.getVisible());
@@ -77,129 +47,77 @@ class SpaceEnvironment {
     });
   }
 
-  setSpotlightPos(t, y, r) {
-    var lx = r * Math.cos( t );
-    var lz = r * Math.sin( t );
-    // var ly = 5.0 + 5.0 * Math.sin( t / 3.0 );
-    let spotOffset = new THREE.Vector3( lx, y, lz );
-    this.spotLight.position.copy(spotOffset);
-    this.spotLight.lookAt(new THREE.Vector3());
+  initSpace() {
+    this.loader.loadGLTF('../models/gltf/mars/scene.gltf', {}, (gltf) => {
+      // const s = 0.1;
+      // gltf.scene.scale.set(s, s, s);
+      window.gltf = gltf.scene;
+      gltf.scene.position.y = -50;
+      
+      this.elements.push(gltf.scene);
+      this.parent.add(gltf.scene);
+    });
   }
 
   initFloor(size) {
-    var geoFloor = new THREE.PlaneBufferGeometry( size, size, 1 );
-    var matStdFloor = new THREE.ShadowMaterial();
-    matStdFloor.opacity = 0.9;
-    this.floor = new THREE.Mesh(geoFloor, matStdFloor);
+    this.floor = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry( size, size, 1 ),
+      new THREE.ShadowMaterial({ opacity: 0.9 })
+    );
     this.floor.rotation.x = -Math.PI/2;
     this.floor.receiveShadow = true;
-    this.parent.add(this.floor);
+
     this.elements.push(this.floor);
+    this.parent.add(this.floor);
   }
 
   initLights() {
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.75);
+
     directionalLight.position.set( -5, 10, 10 );
     directionalLight.castShadow = true;
-    this.parent.add( directionalLight );
 
     directionalLight.shadow.mapSize.width = 512;  // default
     directionalLight.shadow.mapSize.height = 512; // default
     directionalLight.shadow.camera.near = 0.5;    // default
     directionalLight.shadow.camera.far = 500;     // default
+
+    this.lights.push(directionalLight);
+    this.parent.add(directionalLight);
   }
 
-  remove() {
+  removeElements() {
     this.elements.forEach((element) => {
       this.parent.remove(element);
     });
   }
 
-  redrawGrid() {
-    this.parent.remove(this.floor);
-    this.initFloor(this.floorSize, this.numLines);
+  removeLights() {
+    this.lights.forEach((light) => {
+      this.parent.remove(light);
+    });
   }
 
-  toggleGrid() {
-    this.floor.visible = !this.floor.visible;
-  }
-
-  hide() {
-    this.floor.visible = true;
-  }
-
-  show() {
-    this.floor.visible = false;
-  }
-
-  toggle(variableName) {
-    if (this.toggles[variableName]) {
-      this.toggles[variableName] = !this.toggles[variableName];
-    }
-  }
-
-  updateParameters(data) {
-    	switch (data.parameter) {
-    		case 'size':
-    			this.floorSize = data.value * 100;
-    			this.redrawGrid();
-    			break;
-    		case 'lines':
-        this.numLines = data.value * 100;
-        this.redrawGrid();
-    			break;
-    	}
+  remove() {
+    this.removeLights();
+    this.removeElements();
   }
 
   update(timeDelta) {
     // put frame updates here.
   }
-
-  handleBackgroundColorChange(color, event) {
-    this.color = color.hex;
-    this.renderer.setClearColor(new THREE.Color(color.hex));
+  
+  // updated options from gui
+  updateOptions(data) {
+    this.options = data;
+    this.remove();
   }
-  getStylesGui() {
-    return <StylesGUI
-      handleBackgroundColorChange={this.handleBackgroundColorChange.bind(this)}
-      backgroundColor={this.color}
-    />;
+
+  // returns react gui object when effect is selected
+  getGUI() {
+    return <SpaceMenu data={this.options}
+      updateOptions={this.updateOptions.bind(this)}/>;
   }
 }
 
 module.exports = SpaceEnvironment;
-
-
-class StylesGUI extends React.Component {
-  constructor(props) {
-    super(props);
-    this.props = props;
-    this.state = {};
-  }
-  render() {
-    const cPicker = (
-      <Popover id="popover-positioned-top" title="Background Color">
-        <ChromePicker 
-          color={this.props.backgroundColor}
-          onChange={this.props.handleBackgroundColorChange}
-        />
-      </Popover>
-    );
-    return (
-      <ListGroup>
-          <ListGroupItem>
-            <OverlayTrigger
-              trigger="click"
-              rootClose
-              placement="top"
-              overlay={cPicker}
-            >
-              <div id="colorSquare" style={{
-                backgroundColor:this.props.backgroundColor
-              }}></div>
-            </OverlayTrigger>
-          </ListGroupItem>
-      </ListGroup>
-    );
-  }
-}

@@ -6,13 +6,7 @@
  * @desc [Environment switcher.]
 */
 
-import _ from 'lodash';
-import dat from 'dat-gui';
-
-import MuseEnvironment from './MuseEnvironment';
-import IslandEnvironment from './IslandEnvironment';
 import GridEnvironment from './GridEnvironment';
-import GradientEnvironment from './GradientEnvironment';
 import WaterEnvironment from './WaterEnvironment';
 import EmptyEnvironment from './EmptyEnvironment';
 import ForestEnvironment from './ForestEnvironment';
@@ -25,6 +19,8 @@ class Environments {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
+    this.defaults = defaults;
+
     this.defaultEnvironment = config.defaults.environment.toLowerCase();
 
     this.currentEnvironment = this.defaultEnvironment;
@@ -32,12 +28,9 @@ class Environments {
     this.availEnvironments = config.availEnvironments;
     this.environments = [];
 
-    this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
-    this.guiDOM = this.gui.domElement;
-    // this.guiFolder = this.gui.addFolder('Environments');
-    // this.guiFolder.open();
+    this.updateEnvironment = this.updateEnvironment.bind(this);
 
-    this.add(this.defaultEnvironment, defaults); // default
+    this.add(this.defaultEnvironment, this.defaults); // default
   }
 
   getEnvironments() {
@@ -45,7 +38,7 @@ class Environments {
   }
 
   updateEnvironment(val) {
-    this.add(this.availEnvironments[val]);
+    this.add(this.availEnvironments[val], this.defaults);
   }
 
   add(type, defaults) {
@@ -54,25 +47,16 @@ class Environments {
       case 'forest':
         this.environments.push(new ForestEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
-      case 'muse':
-        this.environments.push(new MuseEnvironment(this.renderer, this.parent, this.performers, defaults, 'dark'));
-        break;
-      case 'island':
-        this.environments.push(new IslandEnvironment(this.renderer, this.parent, this.performers, defaults));
-        break;
       case 'water':
-        this.environments.push(new WaterEnvironment(this.renderer, this.parent, defaults));
+        this.environments.push(new WaterEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
       case 'grid':
         this.environments.push(new GridEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
-      case 'gradient':
-        this.environments.push(new GradientEnvironment(this.renderer, this.parent, this.performers, defaults));
-        break;
       case 'empty':
         this.environments.push(new EmptyEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
-      case 'empty':
+      case 'space':
         this.environments.push(new SpaceEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
     }

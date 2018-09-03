@@ -6,9 +6,9 @@
  * @desc [The Ribbons effect creates colored trails for parts of a performers body.]
 */
 
-import React from 'react';
 
-import RibbonsMenu from '../../react/effects/RibbonsMenu';
+
+import RibbonsMenu from '../../react/menus/effects/RibbonsMenu';
 
 require ('./../../libs/trail');
 import Common from './../../util/Common';

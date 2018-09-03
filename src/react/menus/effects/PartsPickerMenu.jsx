@@ -6,10 +6,10 @@
  * @desc [Menu to select on which performer part effects are attached.]
 */
 
-import React from 'react';
+
 import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
 
-class RibbonsMenu extends React.Component {
+class PartsPickerMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -26,4 +26,4 @@ class RibbonsMenu extends React.Component {
   }
 }
 
-module.exports = RibbonsMenu;
+module.exports = PartsPickerMenu;

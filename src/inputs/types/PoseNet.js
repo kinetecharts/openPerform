@@ -6,7 +6,7 @@
  * @desc [Receive for posenet data.]
 */
 
-import _ from 'lodash';
+
 
 class PoseNet {
   constructor(url) {

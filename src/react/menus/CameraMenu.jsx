@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Grid, Row, Col, Panel, MenuItem, DropdownButton, Button } from 'react-bootstrap';
 
 class CameraMenu extends React.Component {

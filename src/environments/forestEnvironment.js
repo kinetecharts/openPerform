@@ -1,27 +1,35 @@
-import _ from 'lodash';
-import dat from 'dat-gui';
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-09-02 03:33:32
+ * @modify date 2018-09-02 03:34:25
+ * @desc [description]
+*/
 
-import FileLoader from '../loaders';
-
-import config from './../config';
+import FileLoader from '../util/Loader.js';
+import ForestMenu from '../react/menus/environment/ForestMenu';
 
 class ForestEnvironment {
-  constructor(renderer, parent, performers, type) {
+  constructor(renderer, parent, performers, defaults) {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
-
-    this.elements = [];
+    this.defaults = defaults;
 
     this.name = "Forest";
-    this.modalID = this.name+"_Settings";
+
+    this.elements = [];
+    this.lights = [];
+
     this.visible = true;
+
+    this.options = {};
 
     this.loader = new FileLoader();
 
     this.spotLight = null;
 
-    this.params = {
+    this.spotlightParams = {
       shadowBias: 0.001,
       lRotate: false,
       lFollow: true,
@@ -36,11 +44,12 @@ class ForestEnvironment {
       lDecay: 10,
     };
 
-    // this.initGUI();
-    this.initFloor(200);
+    this.initForest();
     this.initLights(200);
+  }
 
-    this.loader.loadMtl('models/mtl/forest.mtl', (materials) => {
+  initForest() {
+    this.loader.loadMTL('models/mtl/forest.mtl', (materials) => {
       materials.preload();
       this.loader.loadOBJ('models/obj/forest.obj', { materials: materials }, (obj) => {
         this.parent.add(obj);
@@ -58,7 +67,6 @@ class ForestEnvironment {
   }
 
   setVisible(val) {
-    console.log(val);
     this.visible = val;
     this.elements.forEach((element) => {
       element.visible = val;
@@ -85,17 +93,6 @@ class ForestEnvironment {
     });
   }
 
-  initFloor(size) {
-    var geoFloor = new THREE.PlaneBufferGeometry( size, size, 1 );
-    var matStdFloor = new THREE.ShadowMaterial();
-    matStdFloor.opacity = 0.9;
-    this.gridFloor = new THREE.Mesh(geoFloor, matStdFloor);
-    this.gridFloor.rotation.x = -Math.PI/2;
-    this.gridFloor.receiveShadow = true;
-    this.parent.add(this.gridFloor);
-    this.elements.push(this.gridFloor);
-  }
-
   initLights(floorSize) {
     this.spotLight = new THREE.SpotLight(0xffffff);
     this.spotLight.castShadow = true;
@@ -110,71 +107,54 @@ class ForestEnvironment {
     this.spotLight.shadow.camera.top = floorSize;
     this.spotLight.shadow.camera.bottom = -floorSize;
 
-    this.spotLight.color.setHex(this.params.lColor);
-    this.spotLight.intensity = this.params.lIntense;
-    this.spotLight.distance = this.params.lDist;
-    this.spotLight.angle = this.params.lAngle;
-    this.spotLight.penumbra = this.params.lPen;
-    this.spotLight.decay = this.params.lDecay;
-    this.spotLight.shadow.bias = this.params.shadowBias;
+    this.spotLight.color.setHex(this.spotlightParams.lColor);
+    this.spotLight.intensity = this.spotlightParams.lIntense;
+    this.spotLight.distance = this.spotlightParams.lDist;
+    this.spotLight.angle = this.spotlightParams.lAngle;
+    this.spotLight.penumbra = this.spotlightParams.lPen;
+    this.spotLight.decay = this.spotlightParams.lDecay;
+    this.spotLight.shadow.bias = this.spotlightParams.shadowBias;
 
     this.parent.add(this.spotLight);
-    this.elements.push(this.spotLight);
+    this.lights.push(this.spotLight);
 
-    // this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
-    // this.parent.add(this.spotLightHelper);
-
-    this.setSpotlightPos(this.params.lRot, this.params.lHeight, this.params.lRadius);
+    this.setSpotlightPos(this.spotlightParams.lRot, this.spotlightParams.lHeight, this.spotlightParams.lRadius);
 
     var light = new THREE.AmbientLight(0x404040); // soft white light
     this.parent.add(light);
-    this.elements.push(light);
+    this.lights.push(light);
   }
 
-  remove() {
+  removeElements() {
     this.elements.forEach((element) => {
       this.parent.remove(element);
     });
   }
 
-  redrawGrid() {
-    this.parent.remove(this.gridFloor);
-    this.initFloor(this.floorSize, this.numLines);
+  removeLights() {
+    this.lights.forEach((light) => {
+      this.parent.remove(light);
+    });
   }
 
-  toggleGrid() {
-    this.gridFloor.visible = !this.gridFloor.visible;
-  }
-
-  hide() {
-    this.gridFloor.visible = true;
-  }
-
-  show() {
-    this.gridFloor.visible = false;
-  }
-
-  toggle(variableName) {
-    if (this.toggles[variableName]) {
-      this.toggles[variableName] = !this.toggles[variableName];
-    }
-  }
-
-  updateParameters(data) {
-    	switch (data.parameter) {
-    		case 'size':
-    			this.floorSize = data.value * 100;
-    			this.redrawGrid();
-    			break;
-    		case 'lines':
-        this.numLines = data.value * 100;
-        this.redrawGrid();
-    			break;
-    	}
+  remove() {
+    this.removeElements();
+    this.removeLights();
   }
 
   update(timeDelta) {
     // put frame updates here.
+  }
+
+  // updated options from gui
+  updateOptions(data) {
+    this.options = data;
+  }
+
+  // returns react gui object when effect is selected
+  getGUI() {
+    return <ForestMenu data={this.options}
+      updateOptions={this.updateOptions.bind(this)}/>;
   }
 }
 

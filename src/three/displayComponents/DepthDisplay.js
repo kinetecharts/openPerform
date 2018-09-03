@@ -3,7 +3,7 @@ Builds pointcloud depth object to view Kinect Depth data.
 */
 
 
-import _ from 'lodash';
+
 
 class DepthDisplay {
   constructor(parent, dimensions, depthScale, mirror) {

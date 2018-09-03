@@ -6,12 +6,12 @@
  * @desc [Menu to control The Ribbons Effect.]
 */
 
-import React from 'react';
+
 
 import DatGui, { DatNumber, DatColor, DatFolder } from 'react-dat-gui';
 require('react-dat-gui/build/react-dat-gui.css');
 
-import PartsPicker from './PartsPicker';
+import PartsPickerMenu from './PartsPickerMenu';
 
 // react gui returned to effects menu
 class RibbonsMenu extends React.Component {
@@ -39,7 +39,7 @@ class RibbonsMenu extends React.Component {
   render() {
     return (
       <div>
-        <PartsPicker updateParts={this.updateParts.bind(this)} currentTargets={this.state.currentTargets} possibleTargets={this.state.possibleTargets} />
+        <PartsPickerMenu updateParts={this.updateParts.bind(this)} currentTargets={this.state.currentTargets} possibleTargets={this.state.possibleTargets} />
         <DatGui data={this.state.data} onUpdate={this.updateOptions.bind(this)}>
           {/* <DatFolder title="Settings"> */}
             <DatNumber min={0.5} max={10} step={0.5} path="thickness" label="Thickness" />

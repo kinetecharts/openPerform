@@ -1,4 +1,4 @@
-import _ from 'lodash';
+
 
 import $ from 'jquery';
 
@@ -9,7 +9,7 @@ import VRControls from './VRControls';
 import Paint from './tools/paint';
 import Sculpt from './tools/sculpt';
 
-import FileLoader from '../../loaders';
+import FileLoader from '../../util/Loader.js';
 
 class VR {
   constructor(renderer, camera, parent, controls) {

@@ -1,13 +1,14 @@
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 import TWEEN from 'tween.js';
-import _ from 'lodash';
-import dat from 'dat-gui';
+
+
 
 require('./../libs/BufferGeometryMerge.js');
 
 import PerformerEffects from './../effects/performer';
 
-import FileLoader from '../loaders';
+import SkeletalTranslator from './SkeletalTranslator';
+import FileLoader from '../util/Loader.js';
 
 import Common from './../util/Common';
 
@@ -17,6 +18,8 @@ class Performer {
   constructor(parent, inputId, performerId, type, leader, actions, inputManager, outputManager, options) {
     this.inputManager = inputManager;
     this.outputManager = outputManager;
+
+    this.skeletalTranslator = new SkeletalTranslator();
 
     this.actions = actions;
 
@@ -109,116 +112,6 @@ class Performer {
 
     this.scene = null;
     this.modelShrink = 100;
-
-    this.bvhStructure = {
-      hips: {
-        rightupleg: {
-          rightleg: {
-            rightfoot: {},
-          },
-        },
-        leftupleg: {
-          leftleg: {
-            leftfoot: {},
-          },
-        },
-        spine: {
-          spine1: {
-            spine2: {
-              spine3: {
-                neck: {
-                  head: {},
-                },
-                rightshoulder: {
-                  rightarm: {
-                    rightforearm: {
-                      righthand: {
-                        righthandthumb1: {
-                          righthandthumb2: {
-                            righthandthumb3: {},
-                          },
-                        },
-                        rightinhandindex: {
-                          righthandindex1: {
-                            righthandindex2: {
-                              righthandindex3: {},
-                            },
-                          },
-                        },
-                        rightinhandmiddle: {
-                          righthandmiddle1: {
-                            righthandmiddle2: {
-                              righthandmiddle3: {},
-                            },
-                          },
-                        },
-                        rightinhandring: {
-                          righthandring1: {
-                            righthandring2: {
-                              righthandring3: {},
-                            },
-                          },
-                        },
-                        rightinhandpinky: {
-                          righthandpinky1: {
-                            righthandpinky2: {
-                              righthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                leftshoulder: {
-                  leftarm: {
-                    leftforearm: {
-                      lefthand: {
-                        lefthandthumb1: {
-                          lefthandthumb2: {
-                            lefthandthumb3: {},
-                          },
-                        },
-                        leftinhandindex: {
-                          lefthandindex1: {
-                            lefthandindex2: {
-                              lefthandindex3: {},
-                            },
-                          },
-                        },
-                        leftinhandmiddle: {
-                          lefthandmiddle1: {
-                            lefthandmiddle2: {
-                              lefthandmiddle3: {},
-                            },
-                          },
-                        },
-                        leftinhandring: {
-                          lefthandring1: {
-                            lefthandring2: {
-                              lefthandring3: {},
-                            },
-                          },
-                        },
-                        leftinhandpinky: {
-                          lefthandpinky1: {
-                            lefthandpinky2: {
-                              lefthandpinky3: {},
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-
-    this.bvhKeys = Common.getKeys(this.bvhStructure, '');
 
     this.hiddenParts = [
       // "hips"
@@ -417,7 +310,7 @@ class Performer {
     }
 
     this.setPerformer({
-      keys: this.bvhKeys,
+      keys: this.skeletalTranslator.bvhKeys,
       meshes: {},
       newMeshes: {},
       scene: scene,
@@ -827,7 +720,7 @@ class Performer {
     ));
     this.getScene().visible = true;
     return {
-      keys: this.bvhKeys,
+      keys: this.skeletalTranslator.bvhKeys,
       meshes,
       newMeshes,
       scene,
@@ -911,12 +804,12 @@ class Performer {
     const s = this.getScene();
     // s.position.copy(val.clone());
     new TWEEN.Tween(s.position.clone())
-        .to(newPos.clone(), animTime)
-        .onUpdate(function() {
-          s.position.set(this.x, this.y, this.z);
-        })
-        .easing(TWEEN.Easing.Quadratic.InOut)
-        .start();
+      .to(newPos.clone(), animTime)
+      .onUpdate(function() {
+        s.position.set(this.x, this.y, this.z);
+      })
+      .easing(TWEEN.Easing.Quadratic.InOut)
+      .start();
   }
 
   setPosition(val) {
@@ -981,7 +874,7 @@ class Performer {
   randomizeAll(switchTime) {
     // var parts = ['head', 'leftshoulder', 'rightshoulder', 'leftupleg',  'rightupleg'];
     
-    _.each(this.bvhKeys, (part) => {
+    _.each(this.skeletalTranslator.bvhKeys, (part) => {
       this.scalePart(part, Common.mapRange(Math.random(), 0, 1, 0.25, 3), switchTime);
     });
     if (this.scaleInterval) {
@@ -1049,7 +942,7 @@ class Performer {
       clearInterval(this.scaleInterval);
     }
 
-    _.each(this.bvhKeys, (partname) => {
+    _.each(this.skeletalTranslator.bvhKeys, (partname) => {
       const part = this.getPerformer().meshes[`robot_${partname}`];
       part.scale.set(1, 1, 1);
     });
@@ -1230,6 +1123,9 @@ class Performer {
         case 'percetionNeuron':
           this.updateFromPerceptionNeuron(this.dataBuffer.shift());
           break;
+        case 'kinect':
+          this.updateFromKinect(this.dataBuffer.shift());
+          break;
         case 'poseNet':
           this.updateFromPoseNet(this.dataBuffer.shift());
           break;
@@ -1274,7 +1170,63 @@ class Performer {
     }
   }
 
+  updateFromKinect(data) {
+    console.log(data.joints);
+    for (let i = 0; i < data.joints.length; i++) {
+      // const jointName = this.prefix + data[i].name.toLowerCase();
+      // if (this.getPerformer() == null) {
+      //   let size = 1 / this.modelShrink;
+      //   this.origScale = size;
+
+      //   console.log('Performer data source: ', this.type);
+      //   switch (this.type) {
+      //     case 'bvh':
+      //     case 'clone_bvh':
+      //       size = (1 / this.modelShrink) / 2;
+      //       this.origScale = size;
+      //       break;
+      //   }
+      //   this.loadPerformer(
+      //     this.type,
+      //     this.getType().value,
+      //     this.hiddenParts,
+      //     size,
+      //     this.style,
+      //     this.intensity,
+      //   );
+      // } else if (this.getPerformer().meshes[jointName]) {
+      //   // console.log(this.getPerformer().meshes[jointName]);
+      //   this.getPerformer().meshes[jointName].position.set(
+      //     data[i].position.x,
+      //     data[i].position.y,
+      //     data[i].position.z,
+      //   );
+
+      //   this.getPerformer().meshes[jointName].quaternion.copy(data[i].quaternion);
+      // }
+    }
+  }
+
   updateFromPoseNet(data) {
+    // {
+    //   'nose': '',
+    //   'leftEye': '',
+    //   'rightEye': '',
+    //   'leftEar': '',
+    //   'rightEar': '',
+    //   'leftShoulder': 'leftarm',
+    //   'rightShoulder': 'rightarm',
+    //   'leftElbow': 'leftforearm'
+    //   'rightElbow': 'rightforearm',
+    //   'leftWrist': 'lefthand',
+    //   'rightWrist': 'righthand',
+    //   'leftHip': 'leftupleg',
+    //   'rightHip': 'rightupleg',
+    //   'leftKnee': ''leftleg,
+    //   'rightKnee': 'rightleg',
+    //   'leftAnkle': 'leftfoot',
+    //   'rightAnkle': 'rightfoot',
+    // }
     for (let i = 0; i < data.length; i++) {
       const jointName = this.prefix + data[i].name.toLowerCase();
       if (this.getPerformer() == null) {

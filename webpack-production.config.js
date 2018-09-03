@@ -120,7 +120,9 @@ module.exports = {
       THREE: 'three',
       'window.THREE': 'three',
       TWEEN: 'tween.js',
-      'window.TWEEN': 'tween.js',
+			'window.TWEEN': 'tween.js',
+			React: 'react',
+			_: 'lodash',
     }),
 
 		new webpack.optimize.CommonsChunkPlugin({
