@@ -249,3 +249,14 @@
     display: block;
     width: 100%;
 }
+
+#cameraMenuTrackingRow > div {
+	margin: 0;
+	padding: 0 5px;
+	text-align: center;
+}
+
+#cameraMenuTrackingRow > div > div.dropdown,
+#cameraMenuTrackingRow > div > div.dropdown > button {
+	width: 100%;
+}

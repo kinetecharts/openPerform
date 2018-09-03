@@ -40,6 +40,10 @@ class InputManager {
     ];
     // initialize all presets
     this.initPresets();
+
+    this.follow = this.follow.bind(this);
+    this.snorry = this.snorry.bind(this);
+    this.firstPerson = this.firstPerson.bind(this);
   }
 
   initInputTypes() {
@@ -100,10 +104,10 @@ class InputManager {
     }
   }
 
-  /* ******** Start Tracking Camera Animations ********* */
+  /* ******** Start Following Camera Animations ********* */
 
-  fixedTracking() {
-    this.scene.cameraControl.trackZ(
+  fixedFollowing() {
+    this.scene.cameraControl.followZ(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[0]
       ].performer.meshes.robot_hips,
@@ -112,13 +116,13 @@ class InputManager {
     );
   }
 
-  trackClose() {
+  followClose() {
     this.scene.unsetRotation();
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene);
     }
     this.cutClose();
-    this.scene.cameraControl.track(
+    this.scene.cameraControl.follow(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[0]
       ].performer.meshes.robot_hips,
@@ -127,8 +131,8 @@ class InputManager {
     );
   }
 
-  lowTrack() {
-    this.scene.cameraControl.track(
+  lowFollow() {
+    this.scene.cameraControl.follow(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[0]
       ].performer.meshes.robot_hips,
@@ -137,12 +141,24 @@ class InputManager {
     );
   }
 
-  trackPerformer(id, distance) {
+  follow(performer, distance) {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene.scene);
     }
     this.scene.camera.up.set( 0, 1, 0 );
-    this.scene.cameraControl.track(
+    this.scene.cameraControl.follow(
+      performer.performer.meshes.robot_hips,
+      new THREE.Vector3(0, 0.5, 0),
+      new THREE.Vector3(0, -0.25, distance),
+    );
+  }
+
+  followPerformer(id, distance) {
+    if (this.scene.camera.parent.type !== 'Scene') {
+      this.scene.cameraControl.changeParent(this.scene.scene);
+    }
+    this.scene.camera.up.set( 0, 1, 0 );
+    this.scene.cameraControl.follow(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[id]
       ].performer.meshes.robot_hips,
@@ -151,11 +167,11 @@ class InputManager {
     );
   }
 
-  firstPerson() {
+  firstPerson(performer) {
+    this.scene.cameraControl.clearFollow();
+
     this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].performer.meshes.robot_head);
+    this.scene.cameraControl.changeParent(performer.performer.meshes.robot_head);
 
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 0, 1),
@@ -163,11 +179,11 @@ class InputManager {
     );
   }
 
-  snorry(distance) {
+  snorry(distance, performer) {
+    this.scene.cameraControl.clearFollow();
+
     this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(this.parent.performers.performers[
-      Object.keys(this.parent.performers.performers)[0]
-    ].performer.meshes.robot_spine3);
+    this.scene.cameraControl.changeParent(performer.performer.meshes.robot_spine3);
 
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 15, distance),
@@ -187,12 +203,12 @@ class InputManager {
     );
   }
 
-  /* ******** End Tracking Camera Animations ********* */
+  /* ******** End Following Camera Animations ********* */
 
   /* ******** Start Static Camera Animations ********* */
 
-  farTracking() {
-    this.scene.cameraControl.trackZoom(
+  farFollowing() {
+    this.scene.cameraControl.followZoom(
       new THREE.Vector3(0, 0, 24),
       TWEEN.Easing.Quadratic.InOut,
       1000,
@@ -200,7 +216,7 @@ class InputManager {
   }
 
   slowZoom(distance) {
-    this.scene.cameraControl.trackZoom(
+    this.scene.cameraControl.followZoom(
       new THREE.Vector3(0, 0, distance),
       TWEEN.Easing.Quadratic.InOut,
       20000,
@@ -208,7 +224,7 @@ class InputManager {
   }
 
   slowZoom1() {
-    this.scene.cameraControl.trackZoom(
+    this.scene.cameraControl.followZoom(
       new THREE.Vector3(0, 0, 12),
       TWEEN.Easing.Quadratic.InOut,
       20000,
@@ -216,7 +232,7 @@ class InputManager {
   }
 
   slowZoom2() {
-    this.scene.cameraControl.trackZoom(
+    this.scene.cameraControl.followZoom(
       new THREE.Vector3(0, 0, 7),
       TWEEN.Easing.Quadratic.InOut,
       20000,
@@ -254,9 +270,9 @@ class InputManager {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene);
     }
-    this.scene.cameraControl.clearTrack();
+    this.scene.cameraControl.clearFollow();
     this.scene.camera.up.set( 0, 1, 0 );
-    this.scene.cameraControl.trackingObj = null;
+    this.scene.cameraControl.followingObj = null;
     this.scene.setRotationSpeed(4.5);
     this.scene.setRotation();
   }
@@ -279,7 +295,7 @@ class InputManager {
     if (this.scene.camera.parent.type !== 'Scene') {
       this.scene.cameraControl.changeParent(this.scene.scene);
     }
-    this.scene.cameraControl.clearTrack();
+    this.scene.cameraControl.clearFollow();
     this.scene.cameraControl.fly_to(
       new THREE.Vector3(0, 11, 0),
       new THREE.Vector3(0, 0, 0),
@@ -449,7 +465,7 @@ class InputManager {
   }
 
   shrink() {
-    this.scene.cameraControl.trackZoom(
+    this.scene.cameraControl.followZoom(
       new THREE.Vector3(0, 0, 15),
       TWEEN.Easing.Quadratic.InOut,
       6400,
@@ -457,7 +473,7 @@ class InputManager {
   }
 
   grow() {
-    this.scene.cameraControl.trackZoom(
+    this.scene.cameraControl.followZoom(
       new THREE.Vector3(0, 0, 5),
       TWEEN.Easing.Quadratic.InOut,
       5700,
@@ -625,7 +641,7 @@ class InputManager {
     });
     this.toggleClones(0);
     // this.toggleClonesAndLeader(1);
-    this.trackPerformer(0, 7.7);
+    this.followPerformer(0, 7.7);
     // this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].updateStyle('planes');
     // this.parent.performers.performers[Object.keys(this.parent.performers.performers)[2]].updateStyle('planes');
 
@@ -644,10 +660,10 @@ class InputManager {
   }
 
   sceneOne() {
-    this.trackPerformer(1, 7.7);
+    this.followPerformer(1, 7.7);
     this.toggleClones(0);
     // this.parent.performers.performers[Object.keys(this.parent.performers.performers)[1]].toggleVisible();
-    // this.scene.cameraControl.clearTrack();
+    // this.scene.cameraControl.clearFollow();
     // this.shrink();
     // this.parent.updateColors(this.parent.switchColorSet('darkColors')[0]);
   }
@@ -684,7 +700,7 @@ class InputManager {
     // ].updateStyle('planes');
 
     // this.parent.updateColors(this.parent.switchColorSet('dark')[0]);
-    // this.trackPerformer(0, 7.7);
+    // this.followPerformer(0, 7.7);
 
     // this.parent.performers.performers[
     //   Object.keys(this.parent.performers.performers)[0]
@@ -700,7 +716,7 @@ class InputManager {
   sceneThree() {
     this.toggleClonesAndLeader(0);
     this.addEffectToClonesAndLeader(0, 'ribbons');
-    this.trackPerformer(1, 7.7);
+    this.followPerformer(1, 7.7);
     // this.tweenCannon(0, {
     //   spread: 63,
     //   scale: 9,
@@ -734,7 +750,7 @@ class InputManager {
 
   sceneFour() {
     this.toggleClonesAndLeader(1);
-    this.trackPerformer(0, 9);
+    this.followPerformer(0, 9);
     this.setCannonById(0, {
       spread: 63,
       scale: 9,
@@ -877,7 +893,7 @@ class InputManager {
     this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[2]
     ].setVisible(false);
-    this.scene.cameraControl.clearTrack();
+    this.scene.cameraControl.clearFollow();
   }
 }
 

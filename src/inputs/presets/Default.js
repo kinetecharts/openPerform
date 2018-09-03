@@ -344,7 +344,7 @@ class DefaultPreset {
                     case 2:
                       if (parseInt(data[1])) {
                         this.scene.unsetRotation();
-                        this.inputManager.trackPerformer(0, 7);
+                        this.inputManager.followPerformer(0, 7);
                       }
                       break;
                     case 3:
@@ -356,7 +356,10 @@ class DefaultPreset {
                     case 4:
                       if (parseInt(data[1])) {
                         this.scene.unsetRotation();
-                        this.inputManager.snorry(2000);
+                        this.inputManager.snorry(2000,
+                          this.main.performers.performers[
+                            Object.keys(this.parent.performers.performers)[0]
+                          ]);
                       }
                       break;
                   }
@@ -513,7 +516,7 @@ class DefaultPreset {
           color: 'ffffff',
           material: 'basic',
           visible: true,
-          tracking: false,
+          following: false,
           intensity: 1,
           style: 'default',
           offset: new THREE.Vector3(),
@@ -534,7 +537,7 @@ class DefaultPreset {
           break;
 
         case 'marker set': // start overlay
-          this.inputManager.fixedTracking();
+          this.inputManager.fixedFollowing();
           break;
         case 'marker left': // black overlay
           this.inputManager.shrink();
@@ -575,7 +578,7 @@ class DefaultPreset {
 
 
         case 'solo 1':
-          this.inputManager.trackPerformer(0, 14);
+          this.inputManager.followPerformer(0, 14);
           break;
         case 'mute 1':
           this.inputManager.prevStyle(0);
@@ -593,7 +596,7 @@ class DefaultPreset {
           /** ************************************** */
 
         case 'solo 2':
-          this.inputManager.trackPerformer(1, 14);
+          this.inputManager.followPerformer(1, 14);
           break;
         case 'mute 2':
           this.inputManager.prevStyle(1);
@@ -611,7 +614,7 @@ class DefaultPreset {
           /** ************************************** */
 
         case 'solo 3':
-          this.inputManager.trackPerformer(2, 14);
+          this.inputManager.followPerformer(2, 14);
           break;
         case 'mute 3':
           this.inputManager.prevStyle(2);
@@ -629,7 +632,7 @@ class DefaultPreset {
           /** ************************************** */
 
         case 'solo 4':
-          this.inputManager.trackPerformer(3, 14);
+          this.inputManager.followPerformer(3, 14);
           break;
         case 'mute 4':
           this.inputManager.prevStyle(3);
@@ -647,7 +650,7 @@ class DefaultPreset {
           /** ************************************** */
 
         case 'solo 5':
-          this.inputManager.trackPerformer(4, 14);
+          this.inputManager.followPerformer(4, 14);
           break;
         case 'mute 5':
           this.inputManager.prevStyle(4);
@@ -665,7 +668,7 @@ class DefaultPreset {
           /** ************************************** */
 
         case 'solo 6':
-          this.inputManager.trackPerformer(5, 14);
+          this.inputManager.followPerformer(5, 14);
           break;
         case 'mute 6':
           this.inputManager.prevStyle(5);
@@ -683,7 +686,7 @@ class DefaultPreset {
           /** ************************************** */
 
         case 'solo 7':
-          this.inputManager.trackPerformer(6, 14);
+          this.inputManager.followPerformer(6, 14);
           break;
         case 'mute 7':
           this.inputManager.prevStyle(6);
@@ -701,7 +704,7 @@ class DefaultPreset {
           /** ************************************** */
 
         case 'solo 8':
-          this.inputManager.trackPerformer(7, 14);
+          this.inputManager.followPerformer(7, 14);
           break;
         case 'mute 8':
           this.inputManager.prevStyle(7);
@@ -746,9 +749,9 @@ class DefaultPreset {
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
     this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
 
-    this.inputManager.registerCallback('keyboard', 'l', 'Tracking Camera - Low Angle', () => {
-      if (!this.scene.cameraControl.trackingObj) {
-        this.scene.cameraControl.track(
+    this.inputManager.registerCallback('keyboard', 'l', 'Following Camera - Low Angle', () => {
+      if (!this.scene.cameraControl.followingObj) {
+        this.scene.cameraControl.follow(
           this.main.performers.performers[
             Object.keys(this.main.performers.performers)[0]
           ].performer.meshes.robot_hips,
@@ -756,7 +759,7 @@ class DefaultPreset {
           new THREE.Vector3(0, 0, 7),
         );
       } else {
-        this.scene.cameraControl.clearTrack();
+        this.scene.cameraControl.clearFollow();
       }
     });
 
@@ -856,7 +859,7 @@ class DefaultPreset {
 
     this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this.inputManager)); // first person view
 
-    this.inputManager.registerCallback('keyboard', 't', 'Track Performer', this.inputManager.trackPerformer.bind(this.inputManager)); // follow x position of performer
+    this.inputManager.registerCallback('keyboard', 't', 'Follow Performer', this.inputManager.followPerformer.bind(this.inputManager)); // follow x position of performer
 
     this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this.inputManager)); // follow x position of performer
 

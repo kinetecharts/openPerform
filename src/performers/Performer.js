@@ -1,7 +1,13 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-09-02 10:45:28
+ * @modify date 2018-09-02 10:45:28
+ * @desc [description]
+*/
+
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 import TWEEN from 'tween.js';
-
-
 
 require('./../libs/BufferGeometryMerge.js');
 
@@ -53,12 +59,14 @@ class Performer {
       this.name = 'Clone ' + (parseInt(performerId) - 1);
     }
     this.color = options.color;
-    
+
     this.prefix = 'robot_';
 
     this.wireframe = options.wireframe;
     this.visible = options.visible;
-    this.tracking = options.tracking;
+    this.following = options.following;
+    this.snorried = options.snorry;
+    this.firstPersoned = options.firstPerson;
 
     this.styles = ['default', 'boxes', 'spheres', 'planes', 'robot', 'discs', 'hands', 'heads'];
     this.styleId = this.styles.indexOf(options.style);
@@ -495,7 +503,7 @@ class Performer {
         break;
     }
     material.wireframe = this.getWireframe();
-    // material.color.set(parseInt(this.getMaterialColor(), 16));
+    material.color.set(parseInt(this.getMaterialColor(), 16));
     return material;
   }
 
@@ -510,21 +518,20 @@ class Performer {
     });
   }
 
-  toggleTracking(val) {
-    this.setTracking(!this.getTracking());
-  }
+  toggleSnorried() { this.setSnorried(!this.getSnorried()); }
+  getSnorried() { return this.snorried; }
+  setSnorried(val) { this.snorried = val; }
+  clearSnorried() { this.snorried = false; }
 
-  getTracking() {
-    return this.tracking;
-  }
+  toggleFirstPersoedn() { this.setFirstPersoned(!this.getFirstPersoned()); }
+  getFirstPersoned() { return this.firstPersoned; }
+  setFirstPersoned(val) { this.firstPersoned = val; }
+  clearFirstPersoned() { this.firstPersoned = false; }
 
-  setTracking(val) {
-    this.tracking = val;
-  }
-
-  clearTracking(val) {
-    this.tracking = false;
-  }
+  toggleFollowing() { this.setFollowing(!this.getFollowing()); }
+  getFollowing() { return this.following; }
+  setFollowing(val) { this.following = val; }
+  clearFollowing() { this.following = false; }
 
   updateIntensity(intensity) {
     this.setIntensity(intensity);

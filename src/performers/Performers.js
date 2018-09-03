@@ -1,6 +1,12 @@
+/**
+ * @author Travis Bennett
+ * @email 
+ * @create date 2018-09-02 10:45:52
+ * @modify date 2018-09-02 10:45:52
+ * @desc [description]
+*/
+
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
-
-
 
 import Performer from './Performer';
 import GroupEffects from './../effects/group';
@@ -54,6 +60,12 @@ class Performers {
       this.performers[inputId].clearScene();
       delete this.performers[inputId];
     }
+  }
+
+  getAllPerformers() {
+    _.map(this.getCloneGroups(), (performerGroup, idx) => {
+      _.map(performerGroup);
+    })
   }
 
   getPerformers() {
@@ -120,9 +132,21 @@ class Performers {
     });
   }
 
-  clearTracking() {
+  clearSnorried() {
   	_.each(this.performers, (performer) => {
-      performer.clearTracking();
+      performer.clearSnorried();
+    });
+  }
+
+  clearFirstPersoned() {
+  	_.each(this.performers, (performer) => {
+      performer.clearFirstPersoned();
+    });
+  }
+
+  clearFollowing() {
+  	_.each(this.performers, (performer) => {
+      performer.clearFollowing();
     });
   }
 

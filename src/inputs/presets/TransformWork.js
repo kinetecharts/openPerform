@@ -220,7 +220,7 @@ class TransformWorkPreset {
           this.inputManager.resetScale();
           break;
         case 'marker set': // start overlay
-          this.inputManager.fixedTracking();
+          this.inputManager.fixedFollowing();
           break;
         case 'marker left': // black overlay
           this.inputManager.shrink();
@@ -263,7 +263,7 @@ class TransformWorkPreset {
 
 
         case 'solo 1':
-          this.inputManager.trackPerformer(0, 14);
+          this.inputManager.followPerformer(0, 14);
           break;
         case 'mute 1':
           this.inputManager.prevStyle(0);
@@ -281,7 +281,7 @@ class TransformWorkPreset {
           /** ************************************** */
 
         case 'solo 2':
-          this.inputManager.trackPerformer(1, 14);
+          this.inputManager.followPerformer(1, 14);
           break;
         case 'mute 2':
           this.inputManager.prevStyle(1);
@@ -299,7 +299,7 @@ class TransformWorkPreset {
           /** ************************************** */
 
         case 'solo 3':
-          this.inputManager.trackPerformer(2, 14);
+          this.inputManager.followPerformer(2, 14);
           break;
         case 'mute 3':
           this.inputManager.prevStyle(2);
@@ -317,7 +317,7 @@ class TransformWorkPreset {
           /** ************************************** */
 
         case 'solo 4':
-          this.inputManager.trackPerformer(3, 14);
+          this.inputManager.followPerformer(3, 14);
           break;
         case 'mute 4':
           this.inputManager.prevStyle(3);
@@ -335,7 +335,7 @@ class TransformWorkPreset {
           /** ************************************** */
 
         case 'solo 5':
-          this.inputManager.trackPerformer(4, 14);
+          this.inputManager.followPerformer(4, 14);
           break;
         case 'mute 5':
           this.inputManager.prevStyle(4);
@@ -353,7 +353,7 @@ class TransformWorkPreset {
           /** ************************************** */
 
         case 'solo 6':
-          this.inputManager.trackPerformer(5, 14);
+          this.inputManager.followPerformer(5, 14);
           break;
         case 'mute 6':
           this.inputManager.prevStyle(5);
@@ -371,7 +371,7 @@ class TransformWorkPreset {
           /** ************************************** */
 
         case 'solo 7':
-          this.inputManager.trackPerformer(6, 14);
+          this.inputManager.followPerformer(6, 14);
           break;
         case 'mute 7':
           this.inputManager.prevStyle(6);
@@ -389,7 +389,7 @@ class TransformWorkPreset {
           /** ************************************** */
 
         case 'solo 8':
-          this.inputManager.trackPerformer(7, 14);
+          this.inputManager.followPerformer(7, 14);
           break;
         case 'mute 8':
           this.inputManager.prevStyle(7);
@@ -446,9 +446,9 @@ class TransformWorkPreset {
     this.inputManager.registerCallback('keyboard', '9', 'Switch to 9th scene.', this.inputManager.switchScene.bind(this.inputManager, 9));
     this.inputManager.registerCallback('keyboard', '0', 'Switch to 10th scene.', this.inputManager.switchScene.bind(this.inputManager, 0));
 
-    this.inputManager.registerCallback('keyboard', 'l', 'Tracking Camera - Low Angle', () => {
-      if (!this.scene.cameraControl.trackingObj) {
-        this.scene.cameraControl.track(
+    this.inputManager.registerCallback('keyboard', 'l', 'Following Camera - Low Angle', () => {
+      if (!this.scene.cameraControl.followingObj) {
+        this.scene.cameraControl.follow(
           this.main.performers.performers[
             Object.keys(this.main.performers.performers)[0]
           ].performer.meshes.robot_hips,
@@ -456,7 +456,7 @@ class TransformWorkPreset {
           new THREE.Vector3(0, 0, 7),
         );
       } else {
-        this.scene.cameraControl.clearTrack();
+        this.scene.cameraControl.clearFollow();
       }
     });
 
@@ -564,7 +564,7 @@ class TransformWorkPreset {
 
     this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this.inputManager)); // first person view
 
-    this.inputManager.registerCallback('keyboard', 't', 'Track Performer', this.inputManager.trackPerformer.bind(this.inputManager)); // follow x position of performer
+    this.inputManager.registerCallback('keyboard', 't', 'Follow Performer', this.inputManager.followPerformer.bind(this.inputManager)); // follow x position of performer
 
     this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this.inputManager)); // follow x position of performer
 

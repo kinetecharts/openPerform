@@ -226,11 +226,13 @@ class MeshCombustiblePreset {
           this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(['ghosting']);
           this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(['ribbons']);
 
-          this.inputManager.firstPerson();
+          this.inputManager.firstPerson(this.main.performers.performers[
+            Object.keys(this.parent.performers.performers)[0]
+          ]);
           break;
 
         case 'marker set': // start overlay
-          this.scene.cameraControl.trackZ(
+          this.scene.cameraControl.followZ(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
             ].performer.robot_hips,
@@ -239,14 +241,14 @@ class MeshCombustiblePreset {
           );
           break;
         case 'marker left': // black overlay
-          this.scene.cameraControl.trackZoom(
+          this.scene.cameraControl.followZoom(
             new THREE.Vector3(0, 0, 105),
             TWEEN.Easing.Quadratic.InOut,
             6400,
           );
           break;
         case 'marker right': // end overlay
-          this.scene.cameraControl.trackZoom(
+          this.scene.cameraControl.followZoom(
             new THREE.Vector3(0, 0, 5),
             TWEEN.Easing.Quadratic.InOut,
             5700,
@@ -270,7 +272,7 @@ class MeshCombustiblePreset {
 
         case 'solo 3':
           this.inputManager.cutMedium();
-          this.inputManager.trackPerformer();
+          this.inputManager.followPerformer();
           break;
 
         case 'solo 4':
@@ -282,12 +284,14 @@ class MeshCombustiblePreset {
           break;
 
         case 'solo 6':
-          this.inputManager.firstPerson();
+          this.inputManager.firstPerson(this.main.performers.performers[
+            Object.keys(this.parent.performers.performers)[0]
+          ]);
           break;
 
         case 'solo 7':
           this.inputManager.cutMedium();
-          this.scene.cameraControl.track(
+          this.scene.cameraControl.follow(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
             ].performer.robot_hips,
@@ -301,7 +305,7 @@ class MeshCombustiblePreset {
           break;
 
         case 'record 1':
-          this.inputManager.trackClose();
+          this.inputManager.followClose();
           break;
 
         case 'record 2':
@@ -368,7 +372,7 @@ class MeshCombustiblePreset {
           break;
 
         case 'mute 1':
-          this.scene.cameraControl.trackZoom(
+          this.scene.cameraControl.followZoom(
             new THREE.Vector3(0, 0, 24),
             TWEEN.Easing.Quadratic.InOut,
             1000,
@@ -382,7 +386,7 @@ class MeshCombustiblePreset {
           break;
 
         case 'mute 3':
-          this.scene.cameraControl.trackZoom(
+          this.scene.cameraControl.followZoom(
             new THREE.Vector3(0, 0, 7),
             TWEEN.Easing.Quadratic.InOut,
             20000,
@@ -390,7 +394,7 @@ class MeshCombustiblePreset {
           break;
 
         case 'mute 4':
-          this.scene.cameraControl.trackZoom(
+          this.scene.cameraControl.followZoom(
             new THREE.Vector3(0, 0, 3),
             TWEEN.Easing.Quadratic.InOut,
             20000,
@@ -437,8 +441,8 @@ class MeshCombustiblePreset {
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
     this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
 
-    this.inputManager.registerCallback('keyboard', 'l', 'low track', () => {
-      this.scene.cameraControl.track(
+    this.inputManager.registerCallback('keyboard', 'l', 'low follow', () => {
+      this.scene.cameraControl.follow(
         this.main.performers.performers[
           Object.keys(this.main.performers.performers)[0]
         ].performer.robot_hips,
@@ -448,7 +452,7 @@ class MeshCombustiblePreset {
     });
 
     this.inputManager.registerCallback('keyboard', ';', 'zoom out', () => {
-      this.scene.cameraControl.trackZoom(
+      this.scene.cameraControl.followZoom(
         new THREE.Vector3(0, 0, 100),
         TWEEN.Easing.Quadratic.InOut,
         5000,
@@ -456,7 +460,7 @@ class MeshCombustiblePreset {
     });
 
     this.inputManager.registerCallback('keyboard', "'", 'zoom in', () => {
-      this.scene.cameraControl.trackZoom(
+      this.scene.cameraControl.followZoom(
         new THREE.Vector3(0, 0, 3),
         TWEEN.Easing.Quadratic.InOut,
         5000,

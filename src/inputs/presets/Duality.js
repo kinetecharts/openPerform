@@ -225,7 +225,7 @@ class DualityPreset {
               color: '91bad0',
               material: 'basic',
               visible: true,
-              tracking: false,
+              folowing: false,
               intensity: 1,
               style: 'default',
               offset: new THREE.Vector3(),
@@ -241,7 +241,7 @@ class DualityPreset {
               color: '5eacd7',
               material: 'basic',
               visible: true,
-              tracking: false,
+              folowing: false,
               intensity: 1,
               style: 'default',
               offset: new THREE.Vector3(),
@@ -258,14 +258,17 @@ class DualityPreset {
               color: '91bad0',
               material: 'basic',
               visible: true,
-              tracking: false,
+              following: false,
               intensity: 1,
               style: 'default',
               offset: new THREE.Vector3(),
             },
           );
 
-          this.inputManager.snorry(170);
+          this.inputManager.snorry(170,
+            this.main.performers.performers[
+              Object.keys(this.parent.performers.performers)[0]
+            ]);
 
           break;
         case 'track right': // scene 2
@@ -284,7 +287,9 @@ class DualityPreset {
           // this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].addEffects(['ghosting']);
           this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].removeEffects(["ribbons"]);
 
-          this.inputManager.firstPerson();
+          this.inputManager.firstPerson(this.main.performers.performers[
+            Object.keys(this.parent.performers.performers)[0]
+          ]);
 
           
           break;
@@ -306,7 +311,7 @@ class DualityPreset {
             Object.keys(this.main.performers.performers)[1]
           ].setScale(0.0000222);
           
-          this.scene.cameraControl.trackZ(
+          this.scene.cameraControl.followZ(
             this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].performer['robot_hips'],
             new THREE.Vector3(0, 0.5, 0),
             new THREE.Vector3(0, 0, 8),
@@ -314,7 +319,7 @@ class DualityPreset {
           break;
         case 'marker left': // black overlay
           this.main.toggleBlackOverlay();
-          this.scene.cameraControl.trackZoom(
+          this.scene.cameraControl.followZoom(
             new THREE.Vector3(0,0,105),
             TWEEN.Easing.Quadratic.InOut,
             6400
@@ -322,7 +327,7 @@ class DualityPreset {
           break;
         case 'marker right': // end overlay
           this.main.toggleEndOverlay();
-          this.scene.cameraControl.trackZoom(
+          this.scene.cameraControl.followZoom(
             new THREE.Vector3(0,0,5),
             TWEEN.Easing.Quadratic.InOut,
             5700
@@ -339,7 +344,10 @@ class DualityPreset {
         case 'solo 1':
           this.scene.camera.up.set(0, 1, 0);
           this.scene.unsetRotation();
-          this.inputManager.snorry(450);
+          this.inputManager.snorry(450,
+            this.main.performers.performers[
+              Object.keys(this.parent.performers.performers)[0]
+            ]);
           break;
 
         case 'solo 2':
@@ -353,7 +361,7 @@ class DualityPreset {
           this.scene.camera.up.set(0, 1, 0);
           this.scene.unsetRotation();
           this.inputManager.cut(0, 10);
-          this.inputManager.trackPerformer(0, 10);
+          this.inputManager.followPerformer(0, 10);
           break;
 
         case 'solo 4':
@@ -370,12 +378,14 @@ class DualityPreset {
         case 'solo 6':
           this.scene.camera.up.set(0, 1, 0);
           this.scene.unsetRotation();
-          this.inputManager.firstPerson();
+          this.inputManager.firstPerson(this.main.performers.performers[
+            Object.keys(this.parent.performers.performers)[0]
+          ]);
           break;
 
         case 'solo 7':
           this.inputManager.cut(0, 10);
-          this.scene.cameraControl.track(
+          this.scene.cameraControl.follow(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
             ].performer.meshes.robot_hips,
@@ -408,14 +418,14 @@ class DualityPreset {
           break;
           
         case 'record 1':
-          this.scene.cameraControl.clearTrack();
+          this.scene.cameraControl.clearFollow();
           this.scene.setRotation();
           break;
 
         case 'record 2':
           this.scene.unsetRotation();
           this.inputManager.cut(0, 10);
-          this.scene.cameraControl.track(
+          this.scene.cameraControl.follow(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
             ].performer.meshes.robot_hips,
@@ -468,7 +478,7 @@ class DualityPreset {
 
     // this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this.inputManager)); // first person view
 
-    // this.inputManager.registerCallback('keyboard', 't', 'Track Performer', this.inputManager.trackPerformer.bind(this.inputManager)); // follow x position of performer
+    // this.inputManager.registerCallback('keyboard', 't', 'Follow Performer', this.inputManager.followPerformer.bind(this.inputManager)); // follow x position of performer
 
     // this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this.inputManager)); // follow x position of performer
 
@@ -476,9 +486,9 @@ class DualityPreset {
 
     // this.inputManager.registerCallback('keyboard', 'i', 'Fly Out', this.inputManager.flyOut.bind(this.inputManager)); // follow x position of performer 
 
-    // this.inputManager.registerCallback('keyboard', 'l', 'Tracking Camera - Low Angle', () => {
-    //   if (!this.scene.cameraControl.trackingObj) {
-    //     this.scene.cameraControl.track(
+    // this.inputManager.registerCallback('keyboard', 'l', 'Following Camera - Low Angle', () => {
+    //   if (!this.scene.cameraControl.followingObj) {
+    //     this.scene.cameraControl.follow(
     //       this.main.performers.performers[
     //         Object.keys(this.main.performers.performers)[0]
     //       ].performer.meshes.robot_hips,
@@ -486,7 +496,7 @@ class DualityPreset {
     //       new THREE.Vector3(0, 0, 7),
     //     );
     //   } else {
-    //     this.scene.cameraControl.clearTrack();
+    //     this.scene.cameraControl.clearFollow();
     //   }
     // });
 
@@ -586,7 +596,7 @@ class DualityPreset {
 
     // this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this.inputManager)); // first person view
 
-    // this.inputManager.registerCallback('keyboard', 't', 'Track Performer', this.inputManager.trackPerformer.bind(this.inputManager)); // follow x position of performer
+    // this.inputManager.registerCallback('keyboard', 't', 'Follow Performer', this.inputManager.followPerformer.bind(this.inputManager)); // follow x position of performer
 
     // this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this.inputManager)); // follow x position of performer
 

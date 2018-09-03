@@ -58,7 +58,7 @@ class RenderStyleMenu extends React.Component {
     return (
       <Panel className="renderStyleMenu" /* defaultExpanded */>
         <Panel.Heading>
-					<Panel.Title toggle><h5>RenderStyle</h5></Panel.Title>
+					<Panel.Title toggle><h5>Render Style</h5></Panel.Title>
 				</Panel.Heading>
         <Panel.Collapse>
 						<Panel.Body>

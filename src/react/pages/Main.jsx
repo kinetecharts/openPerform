@@ -93,12 +93,10 @@ class Main extends React.Component {
     this.state.currentRenderStyle = this.state.scene.currentRenderStyle;
 
     if (this.state.debug.bvh.enabled) {
-      // _.each(this.BVHFiles, (file) => {
-        this.addBVHPerformer(this.BVHFiles, this.state.debug.bvh.autoplay);
-      // });
+      _.each(this.BVHFiles, (file) => {
+        this.addBVHPerformer(file, this.state.debug.bvh.autoplay);
+      });
     }
-
-    
 
     if (this.state.debug.console2html) {
       const con = document.createElement('ul');
@@ -331,48 +329,125 @@ class Main extends React.Component {
     }
   }
 
-  togglePerformerTrack(performer) {
-    if (
-      !this.state.scene.cameraControl.trackingTarget ||
-      this.state.trackedPerformer.inputId !== performer.inputId
-    ) {
-      this.trackPerformer(performer, 20);
+  addClone(performer) {
+    this.performers.add('Clone_' + _.size(this.performers.getPerformers()) + 1, 'clone_' + performer.type, performer, null, null);
+    this.setState({
+      performers: this.performers,
+      performerNames: _.map(this.performers.getPerformers(), 'name'),
+    });
+  }
+
+  removeClone(performer) {
+    this.performers.remove(performer.inputId);
+    this.setState({ forceUpdate: true });
+  }
+
+  togglePerformerSnorry(performer) {
+    if (this.state.snorriedPerformer == null ||
+      this.state.snorriedPerformer.inputId !== performer.inputId) {
+      this.snorryPerformer(performer, 150);
     } else {
-      this.clearTrackedPeformer();
+      this.clearSnorriedPeformer();
     }
   }
 
-  trackPerformer(performer, distance) {
-    const target = performer.performer.meshes.robot_spine1;
-
-    const pos = target.position;
-    pos.y = 1;
-
-    this.state.scene.cameraControl.track(// track(target, look, offset) {
-      target,
-      pos,
-      new THREE.Vector3(0, 0, distance),
-    );
-    this.state.performers.clearTracking();
-    performer.setTracking(true);
-    this.setState({
-      trackedPerformer: performer,
-    });
-  }
-
-  clearTrackedPeformer() {
-    this.state.performers.clearTracking();
-    this.state.scene.cameraControl.clearTrack();
-    this.setState({
-      trackedPerformer: null,
-    });
-  }
-
-  selectTrackedPerformer(key) {
-    if (key == 1) {
-      this.clearTrackedPeformer();
+  togglePerformerFirstPerson(performer) {
+    if (this.state.firstPersonedPerformer == null ||
+      this.state.firstPersonedPerformer.inputId !== performer.inputId) {
+      this.firstPersonPerformer(performer);
     } else {
-      this.trackPerformer(this.state.performers.getPerformers()[key - 2], 20);
+      this.clearFirstPersonedPeformer();
+    }
+  }
+
+  togglePerformerFollow(performer) {
+    if (this.state.followedPerformer == null ||
+      this.state.followedPerformer.inputId !== performer.inputId) {
+      this.followPerformer(performer, 20);
+    } else {
+      this.clearFollowedPeformer();
+    }
+  }
+
+  snorryPerformer(performer, distance) {
+    performer.setSnorried(true);
+    this.clearFirstPersonedPeformer();
+    this.clearFollowedPeformer();
+
+    this.state.inputManger.snorry(distance, performer);
+
+    this.setState({
+      snorriedPerformer: performer,
+    });
+  }
+
+  firstPersonPerformer(performer) {
+    performer.setFirstPersoned(true);
+    this.clearFollowedPeformer();
+    this.clearSnorriedPeformer();
+    
+    this.state.inputManger.firstPerson(performer);
+
+    this.setState({
+      firstPersonedPerformer: performer,
+    });
+  }
+
+  followPerformer(performer, distance) {
+    performer.setFollowing(true);
+    this.clearSnorriedPeformer();
+    this.clearFirstPersonedPeformer();
+
+    this.state.inputManger.follow(performer, distance);
+
+    this.setState({
+      followedPerformer: performer,
+    });
+  }
+
+  clearSnorriedPeformer() {
+    this.state.performers.clearSnorried();
+    this.setState({
+      snorriedPerformer: null,
+    });
+  }
+
+  clearFirstPersonedPeformer() {
+    this.state.performers.clearFirstPersoned();
+    this.setState({
+      firstPersonedPerformer: null,
+    });
+  }
+
+  clearFollowedPeformer() {
+    this.state.performers.clearFollowing();
+    this.state.scene.cameraControl.clearFollow();
+    this.setState({
+      followedPerformer: null,
+    });
+  }
+
+  selectSnorriedPerformer(key) {
+    if (key == 1) {
+      this.clearSnorriedPeformer();
+    } else {
+      this.snorryPerformer(this.state.performers.getPerformers()[key - 2], 20);
+    }
+  }
+
+  selectFirstPersonedPerformer(key) {
+    if (key == 1) {
+      this.clearFirstPersonedPeformer();
+    } else {
+      this.firstPersonPerformer(this.state.performers.getPerformers()[key - 2], 20);
+    }
+  }
+
+  selectFollowedPerformer(key) {
+    if (key == 1) {
+      this.clearFollowedPeformer();
+    } else {
+      this.followPerformer(this.state.performers.getPerformers()[key - 2], 20);
     }
   }
 
@@ -439,10 +514,19 @@ class Main extends React.Component {
               </Col>
               <Col xs={4} md={4}>
                 <CameraMenu
-                  selectTrackedPerformer={this.selectTrackedPerformer.bind(this)}
-                  trackPerformer={this.trackPerformer.bind(this)}
                   performers={this.state.performerNames}
-                  trackedPerformer={this.state.trackedPerformer}
+
+                  selectFollowedPerformer={this.selectFollowedPerformer.bind(this)}
+                  followPerformer={this.followPerformer.bind(this)}
+                  followedPerformer={this.state.followedPerformer}
+
+                  selectSnorriedPerformer={this.selectSnorriedPerformer.bind(this)}
+                  snorryPerformer={this.snorryPerformer.bind(this)}
+                  snorriedPerformer={this.state.snorriedPerformer}
+
+                  selectFirstPersonedPerformer={this.selectFirstPersonedPerformer.bind(this)}
+                  firstPersonPerformer={this.firstPersonPerformer.bind(this)}
+                  firstPersonedPerformer={this.state.firstPersonedPerformer}
                   
                   flyTop={(this.state.inputManger) ? this.state.inputManger.flyTop.bind(this.state.inputManger) : null}
                   
@@ -483,8 +567,12 @@ class Main extends React.Component {
             <Row className="row-half-height" id="lowerDisplay">
               <Col className="bottom-column" xs={6} md={6}>
                 <PerformerMenu
+                  addClone={this.addClone.bind(this)}
+                  removeClone={this.removeClone.bind(this)}
                   openBVHChooser={this.openBVHChooser.bind(this)}
-                  togglePerformerTrack={this.togglePerformerTrack.bind(this)}
+                  togglePerformerFollow={this.togglePerformerFollow.bind(this)}
+                  togglePerformerSnorry={this.togglePerformerSnorry.bind(this)}
+                  togglePerformerFirstPerson={this.togglePerformerFirstPerson.bind(this)}
                   performers={this.state.performers}
                 />
               </Col>

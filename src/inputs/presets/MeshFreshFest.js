@@ -208,7 +208,7 @@ class MeshFreshFestPreset {
           this.inputManager.resetScale();
           break;
         case 'marker set': // start overlay
-          this.inputManager.fixedTracking();
+          this.inputManager.fixedFollowing();
           break;
         case 'marker left': // black overlay
           this.inputManager.shrink();
@@ -271,8 +271,8 @@ class MeshFreshFestPreset {
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
     this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
     
-    this.inputManager.registerCallback('keyboard', 'l', 'Tracking - Low Angle', () => {
-      this.scene.cameraControl.track(
+    this.inputManager.registerCallback('keyboard', 'l', 'Following - Low Angle', () => {
+      this.scene.cameraControl.follow(
         this.main.performers.performers[
           Object.keys(this.main.performers.performers)[0]
         ].performer.meshes.robot_hips,
@@ -281,16 +281,16 @@ class MeshFreshFestPreset {
       );
     });
 
-    this.inputManager.registerCallback('keyboard', ';', 'Tracking - Zoom Out', () => {
-      this.scene.cameraControl.trackZoom(
+    this.inputManager.registerCallback('keyboard', ';', 'Following - Zoom Out', () => {
+      this.scene.cameraControl.followZoom(
         new THREE.Vector3(0, 0, 100),
         TWEEN.Easing.Quadratic.InOut,
         5000,
       );
     });
 
-    this.inputManager.registerCallback('keyboard', '', 'Tracking - Zoom In', () => {
-      this.scene.cameraControl.trackZoom(
+    this.inputManager.registerCallback('keyboard', '', 'Following - Zoom In', () => {
+      this.scene.cameraControl.followZoom(
         new THREE.Vector3(0, 0, 3),
         TWEEN.Easing.Quadratic.InOut,
         5000,

@@ -14,7 +14,9 @@ module.exports = {
       color: null, // if null, will use color from performerColors (listed below)
       material: 'basic',
       visible: true,
-      tracking: false,
+      following: false,
+      snorry: false,
+      firstPerson: false,
       intensity: 1,
       style: 'default',
       offset: null, // if null, will auto increment x position based on performer id
@@ -37,7 +39,7 @@ module.exports = {
   ],
   debug: {
     bvh: {
-      enabled: false, // load bvh file / create performer from playback
+      enabled: true, // load bvh file / create performer from playback
       files: [
         'animations/bvh/duality_edit.bvh',
         // 'animations/bvh/dai_cmp_edit.bvh',
@@ -106,7 +108,9 @@ module.exports = {
 
   performers: [],
   performerName: null,
-  trackedPerformer: null,
+  followedPerformer: null,
+  snorriedPerformer: null,
+  firstPersonedPerformer: null,
 
   environments: [],
   availEnvironments: [/*'muse', 'island', */'water', 'forest', 'grid', /*'grid-light', 'gradient',*/ 'empty', 'space'],

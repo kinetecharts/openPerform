@@ -18,6 +18,7 @@ import 'react-select/dist/react-select.css';
 
 import PerformerTranslateMenu from './options/PerformerTranslateMenu';
 import PerformerControlsMenu from './controls/PerformerControlsMenu';
+import PerformerCameraMenu from './camera/PerformerCameraMenu';
 import PerformerStylesMenu from './styles/PerformerStylesMenu';
 import PerformerEffectsMenu from './effects/PerformerEffectsMenu';
 import NumberInput from '../inputs/NumberInput';
@@ -60,14 +61,6 @@ class PerformerMenu extends React.Component {
     } else {
       performer.updateStyle(performer.getStyles()[val]);
     }
-    this.setState({ forceUpdate: true });
-  }
-  addClone(performer) {
-    this.props.performers.add('Clone_' + _.size(this.props.performers.getPerformers()) + 1, 'clone_' + performer.type, performer, null, null);
-    this.setState({ forceUpdate: true });
-  }
-  removeClone(performer) {
-    this.props.performers.remove(performer.inputId);
     this.setState({ forceUpdate: true });
   }
   toggleVisible(performer) {
@@ -147,7 +140,6 @@ class PerformerMenu extends React.Component {
   recenterEffectsPopover(event) {
     $('#performer-effects-popover').css('top', 'auto');
     const bottom = $('.performerMenu').height() - (this.state.effectTarget.position().top / 2) - 16;
-    $('#performer-effects-popover').css('left', this.state.effectTarget.position().left - 103);
     $('#performer-effects-popover').css('bottom', bottom);
   }
 
@@ -190,8 +182,8 @@ class PerformerMenu extends React.Component {
             <Table id="performerTable">
               <thead>
                 <tr>
-                  <th>Control</th>
-                  <th>Track</th>
+                  <th>Playback</th>
+                  <th>Camera</th>
                   <th>Name</th>
                   <th>Source</th>
                   <th>Translate</th>
@@ -209,7 +201,17 @@ class PerformerMenu extends React.Component {
                         actions={performer.actions}
                       />
                     </td>
-                    <td title="Track Performer" onClick={this.props.togglePerformerTrack.bind(this, performer)}>{(performer.getTracking()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td>
+                    {/* <td title="Follow Performer" onClick={this.props.togglePerformerFollow.bind(this, performer)}>{(performer.getFollowing()) ? <Icon name="ban" /> : <Icon name="video-camera" />}</td> */}
+                    <td>
+                      <PerformerCameraMenu
+                        following={performer.getFollowing()}
+                        toggleFollow={this.props.togglePerformerFollow.bind(this, performer)}
+                        snorry={performer.getSnorried()}
+                        toggleSnorry={this.props.togglePerformerSnorry.bind(this, performer)}
+                        firstPerson={performer.getFirstPersoned()}
+                        toggleFirstPerson={this.props.togglePerformerFirstPerson.bind(this, performer)}
+                      />
+                    </td>
                     <td title="Name"><span style={{ color: performer.color }}>{performer.name}</span></td>
                     <td title="Type"><span>{(performer.leader !== null && performer.leader !== undefined) ? performer.leader.name : performer.type}</span></td>
                     <td>
@@ -256,8 +258,8 @@ class PerformerMenu extends React.Component {
                     </td>
                     <td>
                     {(performer.type === 'clone_bvh' || performer.type === 'clone_perceptionNeuron') ?
-                      <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.removeClone.bind(this, performer)} />
-                    : <Icon name="plus" title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.addClone.bind(this, performer)} />}
+                      <Icon name="trash" title="Delete Clone" className="glyphicon glyphicon-trash" onClick={this.props.removeClone.bind(this, performer)} />
+                    : <Icon name="plus" title="Create Clone" className="glyphicon glyphicon-plus" onClick={this.props.addClone.bind(this, performer)} />}
                     </td>
                   </tr>
                 ))
