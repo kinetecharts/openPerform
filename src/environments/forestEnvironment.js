@@ -49,7 +49,7 @@ class ForestEnvironment {
   }
 
   initForest() {
-    this.loader.loadMTL('models/mtl/forest.mtl', (materials) => {
+    this.loader.loadMTL('models/mtl/forest.mtl', {}, (materials) => {
       materials.preload();
       this.loader.loadOBJ('models/obj/forest.obj', { materials: materials }, (obj) => {
         this.parent.add(obj);

@@ -88,7 +88,7 @@ class BVHPlayer {
   loadBVH(bvhFile) {
     if (!this.loading) {
       this.loading = true;
-      this.loader.loadBVH(bvhFile, (result) => {
+      this.loader.loadBVH(bvhFile, {}, (result) => {
         this.skeletalTranslator.buildBVHAnimation(result, this.animate.bind(this));
       });
     }
@@ -98,7 +98,7 @@ class BVHPlayer {
     if (this.type == 'url') {
       if (!this.loading) {
         this.loading = true;
-        this.loader.loadBVH(this.files[idx], (result) => {
+        this.loader.loadBVH(this.files[idx], {}, (result) => {
           console.log('BVH File Loaded...');
           this.stop();
           this.clip = result.clip;

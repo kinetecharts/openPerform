@@ -73,7 +73,7 @@ class Line {
 
       const points = [];
       performer.getScene().traverse((part) => {
-        if (_.filter(performer.targets, t => `robot_${t}` == part.name.toLowerCase()).length > 0) {
+        if (_.filter(performer.targets, t => `mixamorig${t}` == part.name.toLowerCase()).length > 0) {
           points[performer.targets.indexOf(part.name.toLowerCase().slice(6, part.name.length))] = new THREE.Vector3().setFromMatrixPosition(part.matrixWorld);
         }
       });

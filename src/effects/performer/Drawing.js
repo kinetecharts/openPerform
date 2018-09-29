@@ -109,7 +109,7 @@ class Drawing {
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
-      if (_.filter(this.targets, t => `robot_${t}` == d.name.toLowerCase()).length > 0) {
+      if (_.filter(this.targets, t => `mixamorig${t}` == d.name.toLowerCase()).length > 0) {
         if (this.drawings[idx]) {
           const time = performance.now();
           if (time - this.drawings[idx].lastTrailUpdateTime > 50) {

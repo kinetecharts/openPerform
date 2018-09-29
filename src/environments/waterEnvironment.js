@@ -32,10 +32,10 @@ class WaterEnvironment {
     this.initLights();
 
     this.options = {
-    sunColor: '#5177FF',
-    waterColor: '#002D3A',
-    distortionScale: 10.0,
-    waves: 0.25,
+        sunColor: '#5177FF',
+        waterColor: '#002D3A',
+        distortionScale: 10.0,
+        waves: 0.25,
     };
 
     this.initFloor(this.options);
@@ -84,7 +84,7 @@ class WaterEnvironment {
         const cubeMap = new THREE.CubeTexture([]);
         cubeMap.format = THREE.RGBFormat;
 
-        this.loader.loadImage('textures/newmoon.png', (image) => {
+        this.loader.loadImage('textures/newmoon.png', {}, (image) => {
             const getSide = (x, y) => {
                 const size = 1024;
 

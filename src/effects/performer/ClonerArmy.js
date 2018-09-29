@@ -62,7 +62,7 @@ class ClonerArmy {
 			var clone = this.performer.clone();
 			clone.scale.set(clone.scale.x*this.cloneSize,clone.scale.y*this.cloneSize,clone.scale.z*this.cloneSize);
 			clone.traverse( function ( part ) {
-				if ( object.name.toLowerCase().match(/robot_/g)) {
+				if ( object.name.toLowerCase().match(/mixamorig/g)) {
 					this.meshes[object.name.toLowerCase()] = part;
 				}
 				if ( part instanceof THREE.Mesh ) {

@@ -451,7 +451,7 @@ class TransformWorkPreset {
         this.scene.cameraControl.follow(
           this.main.performers.performers[
             Object.keys(this.main.performers.performers)[0]
-          ].performer.meshes.robot_hips,
+          ].performer.meshes.mixamorighips,
           new THREE.Vector3(0, 0.5, 0),
           new THREE.Vector3(0, 0, 7),
         );

@@ -34,7 +34,7 @@ class Ribbons {
 
     // initialize the ribbon options
     this.options = {
-      thickness: 10,
+      thickness: 0.125,
       length: 25,
       headColor: '#' + this.color.getHexString(),
       tailColor: '#' + this.lightColor.getHexString(),
@@ -100,7 +100,7 @@ class Ribbons {
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
-      if (_.filter(this.targets, t => 'robot_' + t === d.name.toLowerCase()).length > 0) {
+      if (_.filter(this.targets, t => 'mixamorig' + t === d.name.toLowerCase()).length > 0) {
         if (this.ribbons[idx]) {
           const time = performance.now();
           if (time - this.ribbons[idx].lastRibbonUpdateTime > 50) {

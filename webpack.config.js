@@ -50,7 +50,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules|bower_components|dist|docker)/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -60,11 +60,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader',
-      },
-      {
-        test: /\.css$/,
-        loader: 'css-loader',
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(eot|ttf|woff|woff2)$/,

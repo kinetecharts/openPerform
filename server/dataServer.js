@@ -13,6 +13,11 @@ if (config.kinectTransport.enabled) {
   const KTServer = require('./sockets/KinectTransport');
 }
 
+// init kinect server
+if (config.kinectron.enabled) {
+  const kinectronServer = require('./sockets/Kinectron');
+}
+
 // init perception neuron server
 if (config.perceptionNeuron.enabled) {
   const PNServer = require('./sockets/PerceptionNeuron');

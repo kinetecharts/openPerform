@@ -16,6 +16,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import IOMenu from '../menus/IOMenu';
 import PerformerMenu from '../menus/PerformerMenu';
+import GroupMenu from '../menus/GroupMenu';
 import EnvironmentMenu from '../menus/EnvironmentMenu';
 import CameraMenu from '../menus/CameraMenu';
 import DebugMenu from '../menus/DebugMenu';
@@ -315,6 +316,7 @@ class Main extends React.Component {
   }
 
   updatePerformers(id, data, type, leader, actions) {
+    // console.log(id, data, type, leader, actions);
     if (this.performers) {
       if (!this.performers.exists(id)) {
         this.performers.add(id, type, leader, actions, _.cloneDeep(config.defaults.performer));
@@ -345,7 +347,7 @@ class Main extends React.Component {
   togglePerformerSnorry(performer) {
     if (this.state.snorriedPerformer == null ||
       this.state.snorriedPerformer.inputId !== performer.inputId) {
-      this.snorryPerformer(performer, 150);
+      this.snorryPerformer(performer, 500);
     } else {
       this.clearSnorriedPeformer();
     }
@@ -363,7 +365,7 @@ class Main extends React.Component {
   togglePerformerFollow(performer) {
     if (this.state.followedPerformer == null ||
       this.state.followedPerformer.inputId !== performer.inputId) {
-      this.followPerformer(performer, 20);
+      this.followPerformer(performer, 6.5);
     } else {
       this.clearFollowedPeformer();
     }
@@ -566,15 +568,34 @@ class Main extends React.Component {
             </Row>
             <Row className="row-half-height" id="lowerDisplay">
               <Col className="bottom-column" xs={6} md={6}>
-                <PerformerMenu
-                  addClone={this.addClone.bind(this)}
-                  removeClone={this.removeClone.bind(this)}
-                  openBVHChooser={this.openBVHChooser.bind(this)}
-                  togglePerformerFollow={this.togglePerformerFollow.bind(this)}
-                  togglePerformerSnorry={this.togglePerformerSnorry.bind(this)}
-                  togglePerformerFirstPerson={this.togglePerformerFirstPerson.bind(this)}
-                  performers={this.state.performers}
-                />
+                <Row>
+                  <Col xs={12} md={12}>
+                    <GroupMenu
+                      performers={this.state.performers}
+                      cannonizeById={(this.state.inputManger) ? this.state.inputManger.cannonizeById : null}
+                      setCannonById={(this.state.inputManger) ? this.state.inputManger.setCannonById : null}
+                      delayClonesById={(this.state.inputManger) ? this.state.inputManger.delayClonesById : null}
+                      scaleClonesById={(this.state.inputManger) ? this.state.inputManger.scaleClonesById : null}
+                      rotateClonesById={(this.state.inputManger) ? this.state.inputManger.rotateClonesById : null}
+                      spreadClonesById={(this.state.inputManger) ? this.state.inputManger.spreadClonesById : null}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12} md={12}>
+                    <PerformerMenu
+                      addClone={this.addClone.bind(this)}
+                      removeClone={this.removeClone.bind(this)}
+                      openBVHChooser={this.openBVHChooser.bind(this)}
+                      togglePerformerFollow={this.togglePerformerFollow.bind(this)}
+                      togglePerformerSnorry={this.togglePerformerSnorry.bind(this)}
+                      togglePerformerFirstPerson={this.togglePerformerFirstPerson.bind(this)}
+                      performers={this.state.performers}
+                      selectPerformer={this.state.scene.selectPerformer}
+                      deselectPerformer={this.state.scene.deselectPerformer}
+                    />
+                  </Col>
+                </Row>
               </Col>
               <Col className="bottom-column" xs={2} md={2}>
                 <VRMenu active={this.state.isVR}/>

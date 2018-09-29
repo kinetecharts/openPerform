@@ -17,6 +17,12 @@ class Performers {
   constructor(inputManager, outputManager) {
     this.inputManager = inputManager;
     this.outputManager = outputManager;
+
+    this.characters = [
+      {name: 'astronaut', scale: 0.4},
+      {name: 'alien', scale: 0.1},
+      {name: 'robot', scale: 0.7},
+    ];
     
     window.performers = this.performers = {};
     this.dataBuffer = [];
@@ -51,6 +57,7 @@ class Performers {
         this.inputManager,
         this.outputManager,
         options,
+        this.characters.pop(),
       );
     }
   }
@@ -309,6 +316,10 @@ class Performers {
 
   update(inputId, data) {
     if (this.performers[inputId]) {
+      
+      if (this.performers[inputId].activeTimeout !== null) { clearTimeout(this.performers[inputId].activeTimeout); }
+      this.performers[inputId].activeTimeout = setTimeout(this.remove.bind(this, inputId), 5000);
+
       this.performers[inputId].update(data);
       _.each(_.filter(this.performers, (p) => {
         if (p.leader === null || p.leader === undefined) {

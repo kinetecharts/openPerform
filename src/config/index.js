@@ -8,7 +8,7 @@ module.exports = {
     outputPreset: 'Default',
     backgroundColor: '000000', // will be overridden by environment settings
     floorColor: 'ffffff', // will be overridden by environment settings
-    environment: 'grid',
+    environment: 'space',
     performer: {
       wireframe: false,
       color: null, // if null, will use color from performerColors (listed below)
@@ -20,26 +20,14 @@ module.exports = {
       intensity: 1,
       style: 'default',
       offset: null, // if null, will auto increment x position based on performer id
+      effect: 'None',
     },
-    effect: 'ribbons',
     renderStyle: 'normal',
+    performerOutline: false, // show glow around performer when mouse over them in the list
   },
-
-  inputs: ['KinectTransport', 'Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
-  outputs: ['MidiController'],
-  performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
-  // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
-  colorSet: [
-    { background: 'EDC346', performers: ['2D3E9A', '253380', '1e2866', '161e4d', '0f1433', '070a1a'] },
-    { background: 'BB806C', performers: ['376A9C', '2e5882', '254769', '1c354f', '132436', '0a131c'] },
-    { background: 'BC4936', performers: ['38B8A4', '2f9e8d', '288577', '206b60', '185249', '113832'] },
-    { background: 'D9CD86', performers: ['403BA6', '37328c', '2d2973', '232059', '191740', '0f0e26'] },
-    { background: 'B84C38', performers: ['3ABAA8', '32a192', '2a877b', '226e64', '1a544c', '123b35'] },
-    { background: 'D63727', performers: ['F0A623', 'd69320', 'bd821c', 'a37018', '8a5f15', '704d11'] },
-  ],
   debug: {
     bvh: {
-      enabled: true, // load bvh file / create performer from playback
+      enabled: false, // load bvh file / create performer from playback
       files: [
         'animations/bvh/duality_edit.bvh',
         // 'animations/bvh/dai_cmp_edit.bvh',
@@ -50,11 +38,31 @@ module.exports = {
       ],
       autoplay: true,
     },
-    stats: true,
+    stats: false,
     console2html: false,
     axis: false,
     ar: false,
   },
+  inputs: ['Kinectron', 'KinectTransport', 'Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  outputs: ['MidiController'],
+  effects: [/*'Vogue',*/ 'Ghosting', 'Ribbons', 'Particles', 'Data Tags', 'Movement Sculpture', /*, 'Midi Stream'*/],
+  performerColors: [
+    'DA1619',
+    'F36A1C',
+    'F4BB13',
+    '6E8E2A',
+    '0C4E4F',
+    'DDD99D',
+  ],
+  // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
+  colorSet: [
+    { background: 'EDC346', performers: ['2D3E9A', '253380', '1e2866', '161e4d', '0f1433', '070a1a'] },
+    { background: 'BB806C', performers: ['376A9C', '2e5882', '254769', '1c354f', '132436', '0a131c'] },
+    { background: 'BC4936', performers: ['38B8A4', '2f9e8d', '288577', '206b60', '185249', '113832'] },
+    { background: 'D9CD86', performers: ['403BA6', '37328c', '2d2973', '232059', '191740', '0f0e26'] },
+    { background: 'B84C38', performers: ['3ABAA8', '32a192', '2a877b', '226e64', '1a544c', '123b35'] },
+    { background: 'D63727', performers: ['F0A623', 'd69320', 'bd821c', 'a37018', '8a5f15', '704d11'] },
+  ],
   bvhFiles: [
     './animations/bvh/duality_edit.bvh',
     './animations/bvh/dai_cmp_edit.bvh',
@@ -123,6 +131,12 @@ module.exports = {
   kinecttransport: {
     ports: {
       outgoing: config.kinectTransport.ports.outgoing,
+    },
+  },
+  kinectron: {
+    ip: '192.168.1.250',
+    ports: {
+      incoming: config.kinectron.ports.incoming,
     },
   },
   perceptionneuron: {

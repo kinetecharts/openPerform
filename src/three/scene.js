@@ -24,6 +24,9 @@ import RenderStyles from './../renderStyles';
 import VR from './vr/vr.js';
 import ARPlanes from './ar/ARPlanes';
 
+import FileLoader from '../util/Loader';
+import SkeletalTranslator from '../performers/SkeletalTranslator';
+
 import Common from './../util/Common';
 
 class Scene {
@@ -143,7 +146,7 @@ class Scene {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.w, this.h);
-    this.renderer.setClearColor(new THREE.Color(defaults.ƒundColor));
+    this.renderer.setClearColor(new THREE.Color('#' + defaults.backgroundColor), 0);
     this.renderer.autoClear = true;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMapSoft = true;
@@ -159,7 +162,7 @@ class Scene {
     // / Global : this.camera
     this.camera = new THREE.PerspectiveCamera(20, this.w / this.h, 0.01, 10000);
     window.camera = this.camera;
-    this.camera.position.set(0, 1.5000000041026476, 19.999990045581438);
+    this.camera.position.set(0, 0.6, 6.5);
     this.scene.add(this.camera);
 
     this.addCreateCommon(); 
@@ -180,7 +183,7 @@ class Scene {
     // this.controls.autoRotateSpeed = 3;
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
+    this.controls.target = new THREE.Vector3(0, 1, 0);
 		this.controls.enableDamping = false;
 		this.controls.enableZoom = true;
 		this.controls.enableRotate = true;
@@ -297,7 +300,6 @@ class Scene {
 
     this.clock = new THREE.Clock();
 
-    
     if (this.debug.stats) {
       this.stats = new Stats();
       this.stats.dom.id = 'stats';
@@ -314,12 +316,52 @@ class Scene {
     // window.environments = this.environments;
 
     this.renderStyles = new RenderStyles(this.composer, this.scene, this.camera, this.defaults);
+    this.selectPerformer = this.renderStyles.selectPerformer;
+    this.deselectPerformer = this.renderStyles.deselectPerformer;
 
     // this.sceneGroup.scale.set(0.2, 0.2, 0.2)
     if (this.debug.axis) {
       const axesHelper = new THREE.AxesHelper(5);
       this.sceneGroup.add(axesHelper);
     }
+
+    // this.group = null;
+    // this.bone = null;
+    // this.skeletalTranslator = new SkeletalTranslator();;
+    // this.addCharacter();
+  }
+
+  addCharacter() {
+    this.loader = new FileLoader();
+    this.loader.loadFBX('models/characters/skeleton/model.fbx', {}, (group) => {
+      this.group = group;
+      this.loader.loadTGA('models/characters/skeleton/texture.tga', {}, (texture) => {
+        this.loader.loadTGA('models/characters/skeleton/normal.tga', {}, (normal) => {
+          let material = new THREE.MeshPhongMaterial( {
+            color: 0xFFFFFF,
+            specular: 0xFFFFFF,
+            shininess: 35,
+            map: texture,
+            normalMap: normal,
+            transparent: true,
+          });
+          this.group.traverse((child) => {
+            if (child instanceof THREE.SkinnedMesh && child.hasOwnProperty('skeleton')) {
+              child.material = material;
+            }
+          });
+          this.group.scale.set(0.005, 0.005, 0.005);
+          this.bones = [];
+          this.group.children[1].traverse((child) => {
+            if (child instanceof THREE.Bone) {
+              this.bones.push(child);
+            }
+          });
+          console.log(this.bones);
+          this.scene.add(this.group);
+        });
+      });
+    });
   }
 
   toggleRotation() {
@@ -412,7 +454,7 @@ class Scene {
     if (this.environments) { this.environments.update(this.clock.getDelta()); }
     if (this.renderStyles) {
       this.renderStyles.update(this.clock.getDelta());
-      if (this.renderStyles.currentRenderStyle === 'normal') {
+      if (this.renderStyles.currentRenderStyle === 'normal' && this.defaults.performerOutline === false) {
         this.renderer.render(this.scene, this.camera); 
       } else {
         if (this.composer) { this.composer.render(); }
@@ -434,8 +476,8 @@ class Scene {
     }
 
     if (this.composer) { this.composer.setSize(this.w, this.h); }
-
     if (this.renderer) { this.renderer.setSize(this.w, this.h); }
+    if (this.effectFXAA) { this.effectFXAA.uniforms['resolution'].value.set(1 / this.w, 1 / this.h); }
   }
 
   onTouch (e) {

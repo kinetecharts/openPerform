@@ -44,6 +44,13 @@ class InputManager {
     this.follow = this.follow.bind(this);
     this.snorry = this.snorry.bind(this);
     this.firstPerson = this.firstPerson.bind(this);
+
+    this.cannonizeById = this.cannonizeById.bind(this);
+    this.setCannonById = this.setCannonById.bind(this);
+    this.delayClonesById = this.delayClonesById.bind(this);
+    this.scaleClonesById = this.scaleClonesById.bind(this);
+    this.rotateClonesById = this.rotateClonesById.bind(this);
+    this.spreadClonesById = this.spreadClonesById.bind(this);
   }
 
   initInputTypes() {
@@ -110,7 +117,7 @@ class InputManager {
     this.scene.cameraControl.followZ(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[0]
-      ].performer.meshes.robot_hips,
+      ].performer.meshes.mixamorighips,
       new THREE.Vector3(0, 0.5, 0),
       new THREE.Vector3(0, 0, 8),
     );
@@ -125,7 +132,7 @@ class InputManager {
     this.scene.cameraControl.follow(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[0]
-      ].performer.meshes.robot_hips,
+      ].performer.meshes.mixamorighips,
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 0, 0),
     );
@@ -135,7 +142,7 @@ class InputManager {
     this.scene.cameraControl.follow(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[0]
-      ].performer.meshes.robot_hips,
+      ].performer.meshes.mixamorighips,
       new THREE.Vector3(0, 0.5, 0),
       new THREE.Vector3(0, -0.25, 0),
     );
@@ -147,9 +154,9 @@ class InputManager {
     }
     this.scene.camera.up.set( 0, 1, 0 );
     this.scene.cameraControl.follow(
-      performer.performer.meshes.robot_hips,
-      new THREE.Vector3(0, 0.5, 0),
-      new THREE.Vector3(0, -0.25, distance),
+      performer.performer.meshes.mixamorighips,
+      new THREE.Vector3(0, 0.6, 0),
+      new THREE.Vector3(0, 0, distance),
     );
   }
 
@@ -161,7 +168,7 @@ class InputManager {
     this.scene.cameraControl.follow(
       this.parent.performers.performers[
         Object.keys(this.parent.performers.performers)[id]
-      ].performer.meshes.robot_hips,
+      ].performer.meshes.mixamorighips,
       new THREE.Vector3(0, 0.5, 0),
       new THREE.Vector3(0, -0.25, distance),
     );
@@ -171,7 +178,7 @@ class InputManager {
     this.scene.cameraControl.clearFollow();
 
     this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(performer.performer.meshes.robot_head);
+    this.scene.cameraControl.changeParent(performer.performer.meshes.mixamorighead);
 
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 0, 1),
@@ -183,7 +190,7 @@ class InputManager {
     this.scene.cameraControl.clearFollow();
 
     this.scene.unsetRotation();
-    this.scene.cameraControl.changeParent(performer.performer.meshes.robot_spine3);
+    this.scene.cameraControl.changeParent(performer.performer.meshes.mixamorigspine3);
 
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 15, distance),
@@ -195,7 +202,7 @@ class InputManager {
     this.scene.unsetRotation();
     this.scene.cameraControl.changeParent(this.parent.performers.performers[
       Object.keys(this.parent.performers.performers)[0]
-    ].performer.meshes.robot_spine3);
+    ].performer.meshes.mixamorigspine3);
 
     this.scene.cameraControl.jump(
       new THREE.Vector3(0, 15, 150),

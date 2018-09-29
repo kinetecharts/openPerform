@@ -194,7 +194,10 @@ class PerformerMenu extends React.Component {
               </thead>
               <tbody>{
                 _.map(this.props.performers.getPerformers(), (performer, idx) => (
-                  <tr key={idx}>
+                  <tr key={idx}
+                    onMouseOver={this.props.selectPerformer.bind(this, performer)}
+                    onMouseOut={this.props.deselectPerformer}
+                  >
                     <td title="Control Performer">
                       <PerformerControlsMenu
                         type={performer.type}

@@ -43,7 +43,14 @@ class DefaultPreset {
       case 'iphonex':
         this.initIPhoneXCallbacks();
         break;
+      case 'kinectron':
+        this.initKinectronCallbacks();
+        break;
     }
+  }
+
+  initKinectronCallbacks() {
+    this.inputManager.registerCallback('kinectron', 'body', 'Kinect Body', this.main.updatePerformers.bind(this.main));
   }
 
   initPoseNetCallbacks() {
@@ -754,7 +761,7 @@ class DefaultPreset {
         this.scene.cameraControl.follow(
           this.main.performers.performers[
             Object.keys(this.main.performers.performers)[0]
-          ].performer.meshes.robot_hips,
+          ].performer.meshes.mixamorighips,
           new THREE.Vector3(0, 0.5, 0),
           new THREE.Vector3(0, 0, 7),
         );

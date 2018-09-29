@@ -27,7 +27,8 @@ class SpaceEnvironment {
 
     this.loader = new FileLoader();
 
-    this.initSpace();
+    this.initSkybox();
+    // this.initSpace();
     this.initLights();
   }
 
@@ -48,15 +49,60 @@ class SpaceEnvironment {
   }
 
   initSpace() {
-    this.loader.loadGLTF('../models/gltf/mars/scene.gltf', {}, (gltf) => {
-      // const s = 0.1;
-      // gltf.scene.scale.set(s, s, s);
+    this.loader.loadGLTF('../models/environments/moon/moon.gltf', {}, (gltf) => {
+      const s = 0.2;
+      gltf.scene.scale.set(s, s, s);
       window.gltf = gltf.scene;
-      gltf.scene.position.y = -50;
+      gltf.scene.position.y = -14.75;
       
       this.elements.push(gltf.scene);
       this.parent.add(gltf.scene);
     });
+  }
+
+  initSkybox() {
+    const cubeMap = new THREE.CubeTexture([]);
+    cubeMap.format = THREE.RGBFormat;
+
+    this.loader.loadImage('textures/newmoon.png', {}, (image) => {
+        const getSide = (x, y) => {
+            const size = 1024;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+
+            const context = canvas.getContext('2d');
+            context.drawImage(image, -x * size, -y * size);
+
+            return canvas;
+        };
+
+        cubeMap.images[0] = getSide(2, 1); // px
+        cubeMap.images[1] = getSide(0, 1); // nx
+        cubeMap.images[2] = getSide(1, 0); // py
+        cubeMap.images[3] = getSide(1, 2); // ny
+        cubeMap.images[4] = getSide(1, 1); // pz
+        cubeMap.images[5] = getSide(3, 1); // nz
+        cubeMap.needsUpdate = true;
+    });
+
+    const cubeShader = THREE.ShaderLib.cube;
+    cubeShader.uniforms.tCube.value = cubeMap;
+
+    this.skyBox = new THREE.Mesh(
+        new THREE.CubeGeometry(10000, 10000, 10000, 1, 1, 1, null, true),
+        new THREE.ShaderMaterial({
+            fragmentShader: cubeShader.fragmentShader,
+            vertexShader: cubeShader.vertexShader,
+            uniforms: cubeShader.uniforms,
+            depthWrite: false,
+            side: THREE.BackSide,
+        }),
+    );
+
+    this.parent.add(this.skyBox);
+    this.elements.push(this.skyBox);
   }
 
   initFloor(size) {

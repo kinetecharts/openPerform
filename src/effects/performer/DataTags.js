@@ -153,7 +153,7 @@ class DataTags {
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
-      if (_.filter(this.targets, t => `robot_${t}` == d.name.toLowerCase()).length > 0) {
+      if (_.filter(this.targets, t => `mixamorig${t}` == d.name.toLowerCase()).length > 0) {
         if (this.tags[idx]) {
           if (this.tags[idx]) {
             const gPos = new THREE.Vector3().setFromMatrixPosition(d.matrixWorld);

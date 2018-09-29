@@ -22,11 +22,11 @@ class Ghosting {
     this.trailInterval = null;
 
     this.options = {
-      rate: 0.25,
+      rate: 0.5,
       life: 1.25,
       size: 1,
       isPlaying: true,
-      opacity: 0.15,
+      opacity: 0.75,
     };
 
     // start with cloner enabled
@@ -51,9 +51,9 @@ class Ghosting {
   }
 
   clonePerformer(options) {
-    // console.lo g('----clonePerformer----', options);
+    // console.log('----clonePerformer----', options);
     if (this.performer) {
-      var clone = this.performer.clone(); // copy existing peformer model / object
+      var clone = THREE.AnimationUtils.clone(this.performer); // copy existing peformer model / object
       clone.scale.set(clone.scale.x * options.size, clone.scale.y * options.size, clone.scale.z * options.size);
       clone.traverse((part) => { // prepare material for fade out
         if (part instanceof THREE.Mesh) {

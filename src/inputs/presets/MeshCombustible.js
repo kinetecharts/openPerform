@@ -235,7 +235,7 @@ class MeshCombustiblePreset {
           this.scene.cameraControl.followZ(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
-            ].performer.robot_hips,
+            ].performer.mixamorighips,
             new THREE.Vector3(0, 0.5, 0),
             new THREE.Vector3(0, 0, 8),
           );
@@ -294,7 +294,7 @@ class MeshCombustiblePreset {
           this.scene.cameraControl.follow(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
-            ].performer.robot_hips,
+            ].performer.mixamorighips,
             new THREE.Vector3(0, 0.5, 0),
             new THREE.Vector3(0, 0, 7),
           );
@@ -445,7 +445,7 @@ class MeshCombustiblePreset {
       this.scene.cameraControl.follow(
         this.main.performers.performers[
           Object.keys(this.main.performers.performers)[0]
-        ].performer.robot_hips,
+        ].performer.mixamorighips,
         new THREE.Vector3(0, 0.5, 0),
         new THREE.Vector3(0, 0, 7),
       );

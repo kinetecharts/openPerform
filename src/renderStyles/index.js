@@ -6,6 +6,11 @@
  * @desc [Switcher to handle different render / postprocessing effects.]
 */
 
+require('three/examples/js/shaders/CopyShader.js');
+require('three/examples/js/shaders/FXAAShader.js');
+require('three/examples/js/postprocessing/ShaderPass.js');
+require('three/examples/js/postprocessing/OutlinePass.js');
+
 import SketchStyle from './SketchStyle';
 import DotShiftStyle from './DotShiftStyle';
 import AfterImageStyle from './AfterImageStyle';
@@ -13,6 +18,7 @@ import HalftoneStyle from './HalftoneStyle';
 import PixelStyle from './PixelStyle';
 import EdgesStyle from './EdgesStyle';
 import BloomStyle from './BloomStyle';
+import OutlineStyle from './OutlineStyle';
 
 import config from './../config';
 
@@ -29,17 +35,27 @@ class RenderStyles {
     this.availRenderStyles = config.availRenderStyles;
     this.renderStyles = [];
 
-    // this.currentEnvironment = this.defaultEnvironment;
-    // console.log("Loading default environment: ", this.currentEnvironment);
-    // this.availEnvironments = config.availEnvironments;
-    // this.environments = [];
-
-    // this.gui = new dat.GUI({ autoPlace: false, width: "100%" });
-    // this.guiDOM = this.gui.domElement;
-    // // this.guiFolder = this.gui.addFolder('Environments');
-    // // this.guiFolder.open();
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+    this.selectedObjects = [];
 
     this.updateRenderStyle = this.updateRenderStyle.bind(this);
+
+    this.selectPerformer = () => {};
+    this.deselectPerformer = () => {};
+
+    if (config.defaults.performerOutline) {
+      this.add('outline', {
+        edgeStrength: 6.0,
+        edgeGlow: 1.0,
+        edgeThickness: 2.0,
+        pulsePeriod: 1,
+        rotate: false,
+        usePatternTexture: true,
+        visibleEdgeColor: '#ffffff',
+        hiddenEdgeColor: '#190a05',
+      });
+    }
 
     this.add(this.defaultRenderStyle, defaults); // default
   }
@@ -59,6 +75,12 @@ class RenderStyles {
     switch (type.toLowerCase()) {
       default:
       case 'normal':
+        break;
+      case 'outline':
+        let outline = new OutlineStyle(this.composer, this.scene, this.camera, defaults);
+        this.selectPerformer = outline.selectPerformer;
+        this.deselectPerformer = outline.deselectPerformer;
+        this.renderStyles.push(outline);
         break;
       case 'sketch':
         this.renderStyles.push(new SketchStyle(this.composer, defaults));

@@ -66,7 +66,7 @@ class ParticleSystem {
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
-      if (_.filter(this.targets, t => `robot_${t}` == d.name.toLowerCase()).length > 0) {
+      if (_.filter(this.targets, t => `mixamorig${t}` == d.name.toLowerCase()).length > 0) {
         if (!this.systems[idx]) {
           this.systems[idx] = new THREE.GPUParticleSystem({
             maxParticles: 3000,

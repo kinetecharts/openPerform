@@ -312,7 +312,7 @@ class DualityPreset {
           ].setScale(0.0000222);
           
           this.scene.cameraControl.followZ(
-            this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].performer['robot_hips'],
+            this.main.performers.performers[Object.keys(this.main.performers.performers)[0]].performer['mixamorighips'],
             new THREE.Vector3(0, 0.5, 0),
             new THREE.Vector3(0, 0, 8),
           );
@@ -388,7 +388,7 @@ class DualityPreset {
           this.scene.cameraControl.follow(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
-            ].performer.meshes.robot_hips,
+            ].performer.meshes.mixamorighips,
             new THREE.Vector3(0, 0.5, 0),
             new THREE.Vector3(0,0,7)
           );
@@ -428,7 +428,7 @@ class DualityPreset {
           this.scene.cameraControl.follow(
             this.main.performers.performers[
               Object.keys(this.main.performers.performers)[0]
-            ].performer.meshes.robot_hips,
+            ].performer.meshes.mixamorighips,
             new THREE.Vector3(0, 0.5, 0),
             new THREE.Vector3(0,0,7)
           );
@@ -491,7 +491,7 @@ class DualityPreset {
     //     this.scene.cameraControl.follow(
     //       this.main.performers.performers[
     //         Object.keys(this.main.performers.performers)[0]
-    //       ].performer.meshes.robot_hips,
+    //       ].performer.meshes.mixamorighips,
     //       new THREE.Vector3(0, 0.5, 0),
     //       new THREE.Vector3(0, 0, 7),
     //     );

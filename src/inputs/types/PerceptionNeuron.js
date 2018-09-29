@@ -145,11 +145,11 @@ class PerceptionNeuron {
       var data = data.split(' '); // list of float values, total of 59. Each position x, y, x followed by euler x, y, x
       const bones = [];
 
-      bones.push(this.parsePNFrameData(data.slice(0, 6), this.boneNames[0])); // hips position
+      bones.push(this.skeletalTranslator.parsePNFrameData(data.slice(0, 6), this.boneNames[0])); // hips position
 
       let idx = 1;
       for (let i = idx * 6; i < data.length; i += 6) { // loop the rest of the bones
-        bones.push(this.parsePNFrameData(data.slice(i, i + 6), this.boneNames[idx]));
+        bones.push(this.skeletalTranslator.parsePNFrameData(data.slice(i, i + 6), this.boneNames[idx]));
         idx++;
       }
 

@@ -2913,19 +2913,19 @@
 		"type": "scene"
 	},
 	"objects": {
-		"Robot_References": {
+		"mixamorigReferences": {
 			"children": {
-				"Robot_Reference": {
+				"mixamorigReference": {
 					"children": {
-						"Robot_Hips": {
+						"mixamorigHips": {
 							"children": {
-								"Robot_LeftUpLeg": {
+								"mixamorigLeftUpLeg": {
 									"children": {
-										"Robot_LeftLeg": {
+										"mixamorigLeftLeg": {
 											"children": {
-												"Robot_LeftFoot": {
+												"mixamorigLeftFoot": {
 													"children": {
-														"Robot_LeftToeBase": {
+														"mixamorigLeftToeBase": {
 															"children": {
 																"shou_4:toe_left": {
 																	"geometry": "Geometry_298_shou_4:toe_left",
@@ -3011,13 +3011,13 @@
 									"scale": [1.0, 1.0, 1.0],
 									"visible": true
 								},
-								"Robot_RightUpLeg": {
+								"mixamorigRightUpLeg": {
 									"children": {
-										"Robot_RightLeg": {
+										"mixamorigRightLeg": {
 											"children": {
-												"Robot_RightFoot": {
+												"mixamorigRightFoot": {
 													"children": {
-														"Robot_RightToeBase": {
+														"mixamorigRightToeBase": {
 															"children": {
 																"shou_4:toe_right": {
 																	"geometry": "Geometry_309_shou_4:toe_right",
@@ -3103,29 +3103,29 @@
 									"scale": [1.0, 1.0, 1.0],
 									"visible": true
 								},
-								"Robot_Spine": {
+								"mixamorigSpine": {
 									"children": {
-										"Robot_Spine1": {
+										"mixamorigSpine1": {
 											"children": {
-												"Robot_Spine2": {
+												"mixamorigSpine2": {
 													"children": {
-														"Robot_Spine3": {
+														"mixamorigSpine3": {
 															"children": {
-																"Robot_LeftShoulder": {
+																"mixamorigLeftShoulder": {
 																	"children": {
-																		"Robot_LeftArm": {
+																		"mixamorigLeftArm": {
 																			"children": {
-																				"Robot_LeftForeArm": {
+																				"mixamorigLeftForeArm": {
 																					"children": {
-																						"Robot_LeftHand": {
+																						"mixamorigLeftHand": {
 																							"children": {
-																								"Robot_LeftHandThumb1": {
+																								"mixamorigLeftHandThumb1": {
 																									"children": {
-																										"Robot_LeftHandThumb2": {
+																										"mixamorigLeftHandThumb2": {
 																											"children": {
-																												"Robot_LeftHandThumb3": {
+																												"mixamorigLeftHandThumb3": {
 																													"children": {
-																														"Robot_LeftHandThumb4": {
+																														"mixamorigLeftHandThumb4": {
 																															"fbx_type": "Skeleton",
 																															"position": [2.977814410876462, 0.0015678544563115793, 0.02400920965366371],
 																															"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -3201,15 +3201,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_LeftInHandIndex": {
+																								"mixamorigLeftInHandIndex": {
 																									"children": {
-																										"Robot_LeftHandIndex1": {
+																										"mixamorigLeftHandIndex1": {
 																											"children": {
-																												"Robot_LeftHandIndex2": {
+																												"mixamorigLeftHandIndex2": {
 																													"children": {
-																														"Robot_LeftHandIndex3": {
+																														"mixamorigLeftHandIndex3": {
 																															"children": {
-																																"Robot_LeftHandIndex4": {
+																																"mixamorigLeftHandIndex4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [2.4411534310282264, -0.26381567415251084, 0.0064141249529861],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -3308,15 +3308,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_LeftInHandMiddle": {
+																								"mixamorigLeftInHandMiddle": {
 																									"children": {
-																										"Robot_LeftHandMiddle1": {
+																										"mixamorigLeftHandMiddle1": {
 																											"children": {
-																												"Robot_LeftHandMiddle2": {
+																												"mixamorigLeftHandMiddle2": {
 																													"children": {
-																														"Robot_LeftHandMiddle3": {
+																														"mixamorigLeftHandMiddle3": {
 																															"children": {
-																																"Robot_LeftHandMiddle4": {
+																																"mixamorigLeftHandMiddle4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [2.6661957245259913, -0.2745711006974716, 0.0001848575287830001],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -3415,15 +3415,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_LeftInHandPinky": {
+																								"mixamorigLeftInHandPinky": {
 																									"children": {
-																										"Robot_LeftHandPinky1": {
+																										"mixamorigLeftHandPinky1": {
 																											"children": {
-																												"Robot_LeftHandPinky2": {
+																												"mixamorigLeftHandPinky2": {
 																													"children": {
-																														"Robot_LeftHandPinky3": {
+																														"mixamorigLeftHandPinky3": {
 																															"children": {
-																																"Robot_LeftHandPinky4": {
+																																"mixamorigLeftHandPinky4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [2.2208067505200404, -0.23221109905347248, 0.001255623239184267],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -3522,15 +3522,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_LeftInHandRing": {
+																								"mixamorigLeftInHandRing": {
 																									"children": {
-																										"Robot_LeftHandRing1": {
+																										"mixamorigLeftHandRing1": {
 																											"children": {
-																												"Robot_LeftHandRing2": {
+																												"mixamorigLeftHandRing2": {
 																													"children": {
-																														"Robot_LeftHandRing3": {
+																														"mixamorigLeftHandRing3": {
 																															"children": {
-																																"Robot_LeftHandRing4": {
+																																"mixamorigLeftHandRing4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [2.5037448203698887, -0.25801435930108596, -0.006345156363320559],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -3761,11 +3761,11 @@
 																	"scale": [1.0, 1.0, 1.0],
 																	"visible": true
 																},
-																"Robot_Neck": {
+																"mixamorigNeck": {
 																	"children": {
-																		"Robot_Head": {
+																		"mixamorigHead": {
 																			"children": {
-																				"Robot_Head_End": {
+																				"mixamorigHead_End": {
 																					"fbx_type": "Skeleton",
 																					"position": [-1.52543955972547e-14, 16.325936243127273, 0.0],
 																					"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -3810,21 +3810,21 @@
 																	"scale": [1.0, 1.0, 1.0],
 																	"visible": true
 																},
-																"Robot_RightShoulder": {
+																"mixamorigRightShoulder": {
 																	"children": {
-																		"Robot_RightArm": {
+																		"mixamorigRightArm": {
 																			"children": {
-																				"Robot_RightForeArm": {
+																				"mixamorigRightForeArm": {
 																					"children": {
-																						"Robot_RightHand": {
+																						"mixamorigRightHand": {
 																							"children": {
-																								"Robot_RightHandThumb1": {
+																								"mixamorigRightHandThumb1": {
 																									"children": {
-																										"Robot_RightHandThumb2": {
+																										"mixamorigRightHandThumb2": {
 																											"children": {
-																												"Robot_RightHandThumb3": {
+																												"mixamorigRightHandThumb3": {
 																													"children": {
-																														"Robot_RightHandThumb4": {
+																														"mixamorigRightHandThumb4": {
 																															"fbx_type": "Skeleton",
 																															"position": [-2.977713696016096, 0.011597867706399256, 0.026114978895378727],
 																															"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -3900,15 +3900,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_RightInHandIndex": {
+																								"mixamorigRightInHandIndex": {
 																									"children": {
-																										"Robot_RightHandIndex1": {
+																										"mixamorigRightHandIndex1": {
 																											"children": {
-																												"Robot_RightHandIndex2": {
+																												"mixamorigRightHandIndex2": {
 																													"children": {
-																														"Robot_RightHandIndex3": {
+																														"mixamorigRightHandIndex3": {
 																															"children": {
-																																"Robot_RightHandIndex4": {
+																																"mixamorigRightHandIndex4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [-2.441093032083657, -0.26399999999992474, -0.018211378665728084],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -4007,15 +4007,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_RightInHandMiddle": {
+																								"mixamorigRightInHandMiddle": {
 																									"children": {
-																										"Robot_RightHandMiddle1": {
+																										"mixamorigRightHandMiddle1": {
 																											"children": {
-																												"Robot_RightHandMiddle2": {
+																												"mixamorigRightHandMiddle2": {
 																													"children": {
-																														"Robot_RightHandMiddle3": {
+																														"mixamorigRightHandMiddle3": {
 																															"children": {
-																																"Robot_RightHandMiddle4": {
+																																"mixamorigRightHandMiddle4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [-2.6656859180837245, -0.2739999999999725, -0.05033259312832672],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -4114,15 +4114,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_RightInHandPinky": {
+																								"mixamorigRightInHandPinky": {
 																									"children": {
-																										"Robot_RightHandPinky1": {
+																										"mixamorigRightHandPinky1": {
 																											"children": {
-																												"Robot_RightHandPinky2": {
+																												"mixamorigRightHandPinky2": {
 																													"children": {
-																														"Robot_RightHandPinky3": {
+																														"mixamorigRightHandPinky3": {
 																															"children": {
-																																"Robot_RightHandPinky4": {
+																																"mixamorigRightHandPinky4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [-2.221262397510543, -0.22803220261275214, 0.006594268529892311],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],
@@ -4221,15 +4221,15 @@
 																									"scale": [1.0, 1.0, 1.0],
 																									"visible": true
 																								},
-																								"Robot_RightInHandRing": {
+																								"mixamorigRightInHandRing": {
 																									"children": {
-																										"Robot_RightHandRing1": {
+																										"mixamorigRightHandRing1": {
 																											"children": {
-																												"Robot_RightHandRing2": {
+																												"mixamorigRightHandRing2": {
 																													"children": {
-																														"Robot_RightHandRing3": {
+																														"mixamorigRightHandRing3": {
 																															"children": {
-																																"Robot_RightHandRing4": {
+																																"mixamorigRightHandRing4": {
 																																	"fbx_type": "Skeleton",
 																																	"position": [-2.498965428082059, -0.29919201372490534, -0.024335995433867996],
 																																	"quaternion": [0.0, 0.0, 0.0, 1.0],

@@ -5,12 +5,24 @@ require('three/examples/js/loaders/FBXLoader.js');
 require('three/examples/js/loaders/OBJLoader.js');
 require('three/examples/js/loaders/ColladaLoader.js');
 require('three/examples/js/loaders/GLTFLoader.js');
+require('three/examples/js/loaders/STLLoader.js');
+require('three/examples/js/loaders/TGALoader.js');
+
+import FBXLoader from 'three-fbxloader-offical';
 
 const sceneLoader = require('../libs/three/loaders/SceneLoader');
 
 class Loader {
   constructor() {
     this.debug = false;
+  }
+
+  loadTGA(url, props, cb) {
+    new THREE.TGALoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
+  }
+
+  loadJSON(url, props, cb) {
+    new THREE.JSONLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
   loadGLTF(url, props, cb) {
@@ -25,12 +37,16 @@ class Loader {
     objLoader.load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
-  loadBVH(url, cb) {
-    new THREE.BVHLoader().load(url, cb, this.onProgress, this.onError);
+  loadBVH(url, props, cb) {
+    new THREE.BVHLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
-  loadFBX(url, props, callback) {
-    new THREE.FBXLoader(new THREE.LoadingManager()).load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
+  loadFBX(url, props, cb) {
+    new FBXLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
+  }
+
+  loadFBX2(url, props, cb) {
+    new THREE.FBXLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
   loadCollada(url, props, cb) {
@@ -41,17 +57,21 @@ class Loader {
     new THREE.SceneLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
-  loadImage(url, cb) {
-    new THREE.ImageLoader().load(url, cb, this.onProgress, this.onError);
+  loadImage(url, props, cb) {
+    new THREE.ImageLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
   loadTexture(url, props, cb) {
     new THREE.TextureLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
-  loadMTL(url, cb) {
+  loadMTL(url, props, cb) {
     THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
-    new THREE.MTLLoader().load(url, cb, this.onProgress, this.onError);
+    new THREE.MTLLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
+  }
+
+  loadSTL(url, props, cb) {
+    new THREE.STLLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
   onProgress(xhr) {
@@ -62,9 +82,9 @@ class Loader {
   }
 
   onError(err) {
-    if (this.debug) {
-      console.error('An error happened.');
-    }
+    // if (this.debug) {
+      console.error('An error happened.', err);
+    // }
   }
 }
 

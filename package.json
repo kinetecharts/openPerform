@@ -8,8 +8,8 @@
     "data": "node server/dataServer.js",
     "build": "webpack --config webpack-production.config.js --progress --profile --colors",
     "file": "node ./server/fileServer.js",
-    "start": "npm run file | npm run data",
-    "dev": "npm run webpack | npm run data"
+    "start": "(npm run file & npm run data) | cat",
+    "dev": "(npm run webpack & npm run data) | cat"
   },
   "repository": {
     "type": "git",
@@ -64,6 +64,7 @@
     "node-neurosky": "0.0.1",
     "node-osc": "^2.1.0",
     "os": "^0.1.1",
+    "peer": "^0.2.10",
     "quad-indices": "^2.0.1",
     "rc-input-number": "^4.0.2",
     "react": "^16.0.0",
@@ -78,6 +79,7 @@
     "react-simple-select": "^1.2.2",
     "three": "^0.96.0",
     "three-buffer-vertex-data": "^1.1.0",
+    "three-fbxloader-offical": "^1.0.0",
     "three-orbit-controls": "^82.1.0",
     "tls": "^0.0.1",
     "tween": "^0.9.0",
