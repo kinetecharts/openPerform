@@ -166,7 +166,7 @@ class SkeletalTranslator {
       HipLeft: this.mixamoKeys[33], KneeLeft: this.mixamoKeys[34], AnkleLeft: this.mixamoKeys[35], FootLeft: this.mixamoKeys[36],
       HipRight: this.mixamoKeys[37], KneeRight: this.mixamoKeys[38], AnkleRight: this.mixamoKeys[39], FootRight: this.mixamoKeys[40],
       SpineShoulder: this.mixamoKeys[3],
-      HandTipLeft: this.mixamoKeys[13], ThumbLeft: this.mixamoKeys[10],
+      HandTipLeft: this.mixamoKeys[13], ThumbLeft: this.mixamoKeys[19],
       HandTipRight: this.mixamoKeys[26], ThumbRight: this.mixamoKeys[32],
     };
 
@@ -277,6 +277,30 @@ class SkeletalTranslator {
     return line;
   }
 
+  createAxisIndicator(d) {
+    // let geometry = new THREE.CylinderGeometry(0.01, 0.01, 0.1, 32);
+    // let material = new THREE.MeshBasicMaterial({color: 0xffff00});
+    // let cylinder = new THREE.Mesh(geometry, material);
+    let axesHelper = new THREE.AxesHelper(0.05);
+    axesHelper.name = d.name;
+    axesHelper.position.copy(
+      new THREE.Vector3(
+        d.cameraX,
+        d.cameraY,
+        d.cameraZ,
+      )
+    );
+    axesHelper.quaternion.copy(
+      new THREE.Quaternion(
+        d.orientationX,
+        d.orientationY,
+        d.orientationZ,
+        d.orientationW,
+      )
+    );
+    return axesHelper;
+  }
+
   createBonesFromLines(lines) {
     return _.map(lines, (line) => {
       let bone = new THREE.Bone();
@@ -288,6 +312,8 @@ class SkeletalTranslator {
 
   createLineSkeleton(data, cb) {
     let lineGroup = new THREE.Object3D();
+    let axesGroup = new THREE.Object3D();
+
     lineGroup.children = _.map(this.kinectPairs, (pair) => {
       return this.createLine(
         new THREE.Vector3(
@@ -304,27 +330,58 @@ class SkeletalTranslator {
       )
     });
 
+    _.each(data, (d) => {
+      axesGroup.add(this.createAxisIndicator(d));
+    });
+    
     //  = lines;
     // let skeleton = this.createBonesFromLines(lines);
     cb(
       lineGroup,
+      axesGroup,
       // skeleton,
     );
   }
 
-  updateLineSkeleton(lineGroup, data) {
+  updateLineSkeleton(lineGroup, axesGroup, data) {
     _.each(data, (d, idx) => {
-      _.each(_.filter(lineGroup.children, (c) => {
-          return c.vertexNames.indexOf(d.name) !== -1;
-        }), (c) => {
-          console.log(c);
-          c.geometry.vertices[c.vertexNames.indexOf(d.name)] = new THREE.Vector3(
-            d.cameraX,
-            d.cameraY,
-            d.cameraZ,
-          );
-          c.geometry.verticesNeedUpdate = true;
+      let lines = _.filter(lineGroup.children, (c) => {
+        return (c.vertexNames.indexOf(this.kinectronMixamoLookup(d.name)) > -1);
       });
+      if (lines.length > 0) {
+        _.each(lines, (l) => {
+          l.geometry.vertices[l.vertexNames.indexOf(this.kinectronMixamoLookup(d.name))].copy(
+            new THREE.Vector3(
+              d.cameraX,
+              d.cameraY,
+              d.cameraZ,
+            )
+          );
+          l.geometry.verticesNeedUpdate = true;
+        });
+      }
+      let axis = _.filter(axesGroup.children, (c) => {
+        return c.name == d.name;
+      });
+      if (axis.length > 0) {
+        _.each(axis, (c) => {
+          c.position.copy(
+            new THREE.Vector3(
+              d.cameraX,
+              d.cameraY,
+              d.cameraZ,
+            )
+          );
+          c.quaternion.copy(
+            new THREE.Quaternion(
+              d.orientationX,
+              d.orientationY,
+              d.orientationZ,
+              d.orientationW,
+            ),
+          );
+        });
+      }
     });
   }
 
@@ -378,7 +435,7 @@ class SkeletalTranslator {
     );
   }
 
-  fectKinectVertex(data, name) {
+  fetchKinectVertex(data, name) {
     return new THREE.Vector3(
       data[this.kinectKeys.indexOf(name)].cameraX,
       data[this.kinectKeys.indexOf(name)].cameraY,

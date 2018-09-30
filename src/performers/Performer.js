@@ -490,6 +490,8 @@ class Performer {
 
   clearScene() {
     this.parent.remove(this.getScene());
+    if (this.lineGroup) { this.parent.remove(this.lineGroup); }
+    if (this.axesGroup) { this.parent.remove(this.axesGroup); }
     this.scene = null;
   }
 
@@ -1547,412 +1549,102 @@ class Performer {
     // ["SpineBase","SpineMid","Neck","Head","ShoulderLeft","ElbowLeft","WristLeft","HandLeft","ShoulderRight","ElbowRight","WristRight","HandRight","HipLeft","KneeLeft","AnkleLeft","FootLeft","HipRight","KneeRight","AnkleRight","FootRight","SpineShoulder","HandTipLeft","ThumbLeft","HandTipRight","ThumbRight"]
 
     this.prefix = 'mixamorig';
-    if (this.lineGroup) { this.parent.remove(this.lineGroup); }
     if (data !== null) {
       if (this.getPerformer() === null) {
         console.log(data);
-        this.setPerformer({ loading: true });
-        // this.skeletalTranslator.buildKinectronSkeleton(data, (skeleton) => {
-        //   let mesh = new THREE.SkinnedMesh(
-        //     new THREE.CylinderGeometry(5, 5, 5, 5, skeleton.bones.length*3, 5, 30),
-        //     new THREE.MeshBasicMaterial({ wireframe: true}),
-        //   );
-        //   mesh.add(skeleton.bones[0]);
-        //   mesh.bind(skeleton);
-
-        //   console.log(skeleton);
-
-        //   let skeletonHelper = new THREE.SkeletonHelper(mesh.skeleton.bones[0]);
-        //   skeletonHelper.skeleton = mesh.skeleton;
-        //   let boneContainer = new THREE.Group();
-        //   boneContainer.add(mesh.skeleton.bones[0]);
-        //   this.parent.add(skeletonHelper);
-        //   this.parent.add(boneContainer);
-        //   this.parent.add(mesh);
-        // });
-
+        this.setPerformer({ loading: false });
+        
         const sceneGroup = new THREE.Object3D();
         let bones = [];
-        // this.skeletalTranslator.createLineSkeleton(data, (lineGroup) => {
-        //   this.lineGroup = lineGroup;
-        //   this.parent.add(lineGroup);
-        //   // bones = bones;
-        //   // console.log(_.map(bones, 'name'));
-        // });
-
-        this.loader.loadFBX('models/characters/flash/model.fbx', {}, (group) => {
-          sceneGroup.add(group);
-          this.setScene(sceneGroup);
-          group.traverse((child) => {
-            if (child instanceof THREE.SkinnedMesh && child.hasOwnProperty('skeleton')) {
-              console.log(_.map(child.skeleton.bones, 'name'));
-              // _.each(bones, (b) => {
-              //   b.quaternion.copy(_.filter(child.skeleton.bones, ['name', b.name])[0].quaternion.clone());
-              // });
-              
-              let meshes = {};
-              let newMeshes = {};
-              let keys = {};
-
-              
-              _.each(child.skeleton.bones, (b) => {
-                meshes[b.name] = b;
-                b.srcScale = 0.1;
-                newMeshes[b.name] = b;
-                keys[b.name] = b.name;
-                b.srcQuat = new THREE.Quaternion();
-                b.srcQuat.setFromRotationMatrix(b.matrixWorld);
-                b.srcQuat.conjugate();
-                b.srcPos = b.position.clone();
-              });
-
-              this.setPerformer({
-                loading: false,
-                mesh: child,
-                skeleton: group.children[0].skeleton,
-                scene: this.getScene(),
-                meshes: meshes,
-                newMeshes: newMeshes,
-                keys: keys,
-              });
-            }
-          });
-
-          group.scale.set(0.005, 0.005, 0.005);
-          group.rotation.y = Math.PI;
-          this.parent.add(this.getScene());
-
-          sceneGroup.clock = new THREE.Clock();
-          sceneGroup.mixer = new THREE.AnimationMixer(group);
-          sceneGroup.mixer.clipAction(group.animations[0]); // .stop();
-
-          this.lineMesh = new THREE.Object3D();
-          this.initLineSkeleton(this.lineMesh);
-          sceneGroup.add(this.lineMesh);
-
-        //   console.log(this.getScene());
+        this.skeletalTranslator.createLineSkeleton(data, (lineGroup, axesGroup) => {
+          this.lineGroup = lineGroup;
+          this.parent.add(lineGroup);
+          
+          this.axesGroup = axesGroup;
+          this.parent.add(axesGroup);
         });
-      } else if (this.getPerformer() !== null && this.getPerformer().loading === false) {
-        // this.skeletalTranslator.updateLineSkeleton(this.lineGroup, data);
-        if (this.lineMesh) {
-          this.updateLineSkeleton(data);
-          this.lineMesh.position.y = -_.map(_.sortBy(data, 'cameraY'), 'cameraY')[0];
-        }
-        for (let i = 0; i < data.length; i++) {
-          const jointName = this.skeletalTranslator.kinectronMixamoLookup(data[i].name);
-          if (this.getPerformer().meshes[jointName]) {
-            // this.getPerformer().meshes[jointName].position.copy(
-            //   new THREE.Vector3(
-            //     data[i].cameraX,
-            //     data[i].cameraY,
-            //     data[i].cameraZ,
-            //   ).multiplyScalar(50)
-            // );
-            
-            var quaternion = new THREE.Quaternion(
-              data[i].orientationX,
-              data[i].orientationY,
-              data[i].orientationZ,
-              data[i].orientationW,
-            );
-            // quaternion.setFromRotationMatrix(this.getPerformer().meshes[jointName]);
-            quaternion.multiply(this.getPerformer().meshes[jointName].srcQuat);
-            
-            var basicQuaternion = new THREE.Quaternion();
-            quaternion.slerp(basicQuaternion,0.5);
 
-            this.getPerformer().meshes[jointName].quaternion.copy(
-              quaternion.clone()
-            );
-            this.getPerformer().meshes[jointName].rotation.order = 'XYZ';
-          }
-        }
+        // this.loader.loadFBX('models/characters/flash/model.fbx', {}, (group) => {
+        //   sceneGroup.add(group);
+        //   this.setScene(sceneGroup);
+        //   group.traverse((child) => {
+        //     if (child instanceof THREE.SkinnedMesh && child.hasOwnProperty('skeleton')) {
+        //       console.log(_.map(child.skeleton.bones, 'name'));
+        //       // _.each(bones, (b) => {
+        //       //   b.quaternion.copy(_.filter(child.skeleton.bones, ['name', b.name])[0].quaternion.clone());
+        //       // });
+              
+        //       let meshes = {};
+        //       let newMeshes = {};
+        //       let keys = {};
+
+              
+        //       _.each(child.skeleton.bones, (b) => {
+        //         meshes[b.name] = b;
+        //         b.srcScale = 0.1;
+        //         newMeshes[b.name] = b;
+        //         keys[b.name] = b.name;
+        //         b.srcQuat = new THREE.Quaternion();
+        //         b.srcQuat.setFromRotationMatrix(b.matrixWorld);
+        //         b.srcQuat.conjugate();
+        //         b.srcPos = b.position.clone();
+        //       });
+
+        //       this.setPerformer({
+        //         loading: false,
+        //         mesh: child,
+        //         skeleton: group.children[0].skeleton,
+        //         scene: this.getScene(),
+        //         meshes: meshes,
+        //         newMeshes: newMeshes,
+        //         keys: keys,
+        //       });
+        //     }
+        //   });
+
+        //   group.scale.set(0.005, 0.005, 0.005);
+        //   group.rotation.y = Math.PI;
+        //   this.parent.add(this.getScene());
+
+        //   sceneGroup.clock = new THREE.Clock();
+        //   sceneGroup.mixer = new THREE.AnimationMixer(group);
+        //   sceneGroup.mixer.clipAction(group.animations[0]); // .stop();
+
+        // //   console.log(this.getScene());
+        // });
+      } else if (this.getPerformer() !== null && this.getPerformer().loading === false) {
+        this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, data);
+        // for (let i = 0; i < data.length; i++) {
+        //   const jointName = this.skeletalTranslator.kinectronMixamoLookup(data[i].name);
+        //   if (this.getPerformer().meshes[jointName]) {
+        //     // this.getPerformer().meshes[jointName].position.copy(
+        //     //   new THREE.Vector3(
+        //     //     data[i].cameraX,
+        //     //     data[i].cameraY,
+        //     //     data[i].cameraZ,
+        //     //   ).multiplyScalar(50)
+        //     // );
+            
+        //     var quaternion = new THREE.Quaternion(
+        //       data[i].orientationX,
+        //       data[i].orientationY,
+        //       data[i].orientationZ,
+        //       data[i].orientationW,
+        //     );
+        //     // quaternion.setFromRotationMatrix(this.getPerformer().meshes[jointName]);
+        //     quaternion.multiply(this.getPerformer().meshes[jointName].srcQuat);
+            
+        //     var basicQuaternion = new THREE.Quaternion();
+        //     quaternion.slerp(basicQuaternion,0.5);
+
+        //     this.getPerformer().meshes[jointName].quaternion.copy(
+        //       quaternion.clone()
+        //     );
+        //     this.getPerformer().meshes[jointName].rotation.order = 'XYZ';
+        //   }
+        // }
       }
     }
-  }
-
-  updateLineSkeleton(data) {
-    // ["SpineBase","SpineMid","Neck","Head","ShoulderLeft","ElbowLeft","WristLeft","HandLeft","ShoulderRight","ElbowRight","WristRight","HandRight","HipLeft","KneeLeft","AnkleLeft","FootLeft","HipRight","KneeRight","AnkleRight","FootRight","SpineShoulder","HandTipLeft","ThumbLeft","HandTipRight","ThumbRight"] 
-    // update line skeleton with incoming joint data
-  
-    // spine
-    this.line.geometry.vertices[0].x = data[3].cameraX;
-    this.line.geometry.vertices[0].y = data[3].cameraY;
-    this.line.geometry.vertices[0].z = data[3].cameraZ;
-  
-    this.line.geometry.vertices[1].x = data[2].cameraX;
-    this.line.geometry.vertices[1].y = data[2].cameraY;
-    this.line.geometry.vertices[1].z = data[2].cameraZ;
-  
-    this.line.geometry.vertices[2].x = data[20].cameraX;
-    this.line.geometry.vertices[2].y = data[20].cameraY;
-    this.line.geometry.vertices[2].z = data[20].cameraZ;
-  
-    this.line.geometry.vertices[3].x = data[1].cameraX;
-    this.line.geometry.vertices[3].y = data[1].cameraY;
-    this.line.geometry.vertices[3].z = data[1].cameraZ;
-  
-    this.line.geometry.vertices[4].x = data[0].cameraX;
-    this.line.geometry.vertices[4].y = data[0].cameraY;
-    this.line.geometry.vertices[4].z = data[0].cameraZ;
-
-    // // left arm 
-  
-    this.line1.geometry.vertices[0].x = data[20].cameraX;
-    this.line1.geometry.vertices[0].y = data[20].cameraY;
-    this.line1.geometry.vertices[0].z = data[20].cameraZ;
-  
-    this.line1.geometry.vertices[1].x = data[4].cameraX;
-    this.line1.geometry.vertices[1].y = data[4].cameraY;
-    this.line1.geometry.vertices[1].z = data[4].cameraZ;
-  
-    this.line1.geometry.vertices[2].x = data[5].cameraX;
-    this.line1.geometry.vertices[2].y = data[5].cameraY;
-    this.line1.geometry.vertices[2].z = data[5].cameraZ;
-  
-    this.line1.geometry.vertices[3].x = data[6].cameraX;
-    this.line1.geometry.vertices[3].y = data[6].cameraY;
-    this.line1.geometry.vertices[3].z = data[6].cameraZ;
-  
-    this.line1.geometry.vertices[4].x = data[7].cameraX;
-    this.line1.geometry.vertices[4].y = data[7].cameraY;
-    this.line1.geometry.vertices[4].z = data[7].cameraZ;
-
-    this.line1.geometry.vertices[5].x = data[21].cameraX;
-    this.line1.geometry.vertices[5].y = data[21].cameraY;
-    this.line1.geometry.vertices[5].z = data[21].cameraZ;
-  
-    // left thumb
-    this.line2.geometry.vertices[0].x = data[7].cameraX;
-    this.line2.geometry.vertices[0].y = data[7].cameraY;
-    this.line2.geometry.vertices[0].z = data[7].cameraZ;
-
-    this.line2.geometry.vertices[1].x = data[22].cameraX;
-    this.line2.geometry.vertices[1].y = data[22].cameraY;
-    this.line2.geometry.vertices[1].z = data[22].cameraZ;
-  
-    // right arm 
-  
-    this.line3.geometry.vertices[0].x = data[20].cameraX;
-    this.line3.geometry.vertices[0].y = data[20].cameraY;
-    this.line3.geometry.vertices[0].z = data[20].cameraZ;
-  
-    this.line3.geometry.vertices[1].x = data[8].cameraX;
-    this.line3.geometry.vertices[1].y = data[8].cameraY;
-    this.line3.geometry.vertices[1].z = data[8].cameraZ;
-  
-    this.line3.geometry.vertices[2].x = data[9].cameraX;
-    this.line3.geometry.vertices[2].y = data[9].cameraY;
-    this.line3.geometry.vertices[2].z = data[9].cameraZ;
-  
-    this.line3.geometry.vertices[3].x = data[10].cameraX;
-    this.line3.geometry.vertices[3].y = data[10].cameraY;
-    this.line3.geometry.vertices[3].z = data[10].cameraZ;
-  
-    this.line3.geometry.vertices[4].x = data[11].cameraX;
-    this.line3.geometry.vertices[4].y = data[11].cameraY;
-    this.line3.geometry.vertices[4].z = data[11].cameraZ;
-
-    this.line3.geometry.vertices[5].x = data[23].cameraX;
-    this.line3.geometry.vertices[5].y = data[23].cameraY;
-    this.line3.geometry.vertices[5].z = data[23].cameraZ;
-
-    // right thumb
-    this.line4.geometry.vertices[0].x = data[11].cameraX;
-    this.line4.geometry.vertices[0].y = data[11].cameraY;
-    this.line4.geometry.vertices[0].z = data[11].cameraZ;
-
-    this.line4.geometry.vertices[1].x = data[24].cameraX;
-    this.line4.geometry.vertices[1].y = data[24].cameraY;
-    this.line4.geometry.vertices[1].z = data[24].cameraZ;
-  
-    // left leg
-    this.line5.geometry.vertices[0].x = data[0].cameraX;
-    this.line5.geometry.vertices[0].y = data[0].cameraY;
-    this.line5.geometry.vertices[0].z = data[0].cameraZ;
-
-    this.line5.geometry.vertices[1].x = data[12].cameraX;
-    this.line5.geometry.vertices[1].y = data[12].cameraY;
-    this.line5.geometry.vertices[1].z = data[12].cameraZ;
-  
-    this.line5.geometry.vertices[2].x = data[13].cameraX;
-    this.line5.geometry.vertices[2].y = data[13].cameraY;
-    this.line5.geometry.vertices[2].z = data[13].cameraZ;
-  
-    this.line5.geometry.vertices[3].x = data[14].cameraX;
-    this.line5.geometry.vertices[3].y = data[14].cameraY;
-    this.line5.geometry.vertices[3].z = data[14].cameraZ;
-  
-    this.line5.geometry.vertices[4].x = data[15].cameraX;
-    this.line5.geometry.vertices[4].y = data[15].cameraY;
-    this.line5.geometry.vertices[4].z = data[15].cameraZ;
-
-    // // right leg 
-  
-    this.line6.geometry.vertices[0].x = data[0].cameraX;
-    this.line6.geometry.vertices[0].y = data[0].cameraY;
-    this.line6.geometry.vertices[0].z = data[0].cameraZ;
-  
-    this.line6.geometry.vertices[1].x = data[16].cameraX;
-    this.line6.geometry.vertices[1].y = data[16].cameraY;
-    this.line6.geometry.vertices[1].z = data[16].cameraZ;
-  
-    this.line6.geometry.vertices[2].x = data[17].cameraX;
-    this.line6.geometry.vertices[2].y = data[17].cameraY;
-    this.line6.geometry.vertices[2].z = data[17].cameraZ;
-  
-    this.line6.geometry.vertices[3].x = data[18].cameraX;
-    this.line6.geometry.vertices[3].y = data[18].cameraY;
-    this.line6.geometry.vertices[3].z = data[18].cameraZ;
-  
-    this.line6.geometry.vertices[4].x = data[19].cameraX;
-    this.line6.geometry.vertices[4].y = data[19].cameraY;
-    this.line6.geometry.vertices[4].z = data[19].cameraZ;
-
-    // // left side
-
-    this.line7.geometry.vertices[0].x = data[4].cameraX;
-    this.line7.geometry.vertices[0].y = data[4].cameraY;
-    this.line7.geometry.vertices[0].z = data[4].cameraZ;
-  
-    this.line7.geometry.vertices[1].x = data[1].cameraX;
-    this.line7.geometry.vertices[1].y = data[1].cameraY;
-    this.line7.geometry.vertices[1].z = data[1].cameraZ;
-  
-    this.line7.geometry.vertices[2].x = data[12].cameraX;
-    this.line7.geometry.vertices[2].y = data[12].cameraY;
-    this.line7.geometry.vertices[2].z = data[12].cameraZ;
-
-    // // right side
-
-    this.line8.geometry.vertices[0].x = data[8].cameraX;
-    this.line8.geometry.vertices[0].y = data[8].cameraY;
-    this.line8.geometry.vertices[0].z = data[8].cameraZ;
-  
-    this.line8.geometry.vertices[1].x = data[1].cameraX;
-    this.line8.geometry.vertices[1].y = data[1].cameraY;
-    this.line8.geometry.vertices[1].z = data[1].cameraZ;
-  
-    this.line8.geometry.vertices[2].x = data[16].cameraX;
-    this.line8.geometry.vertices[2].y = data[16].cameraY;
-    this.line8.geometry.vertices[2].z = data[16].cameraZ;
-
-    this.line.geometry.verticesNeedUpdate = true;
-    this.line1.geometry.verticesNeedUpdate = true;
-    this.line2.geometry.verticesNeedUpdate = true;
-    this.line3.geometry.verticesNeedUpdate = true;
-    this.line4.geometry.verticesNeedUpdate = true;
-    this.line5.geometry.verticesNeedUpdate = true;
-    this.line6.geometry.verticesNeedUpdate = true;
-    this.line7.geometry.verticesNeedUpdate = true;
-    this.line8.geometry.verticesNeedUpdate = true;
-  }
-
-  initLineSkeleton(group) {
-    // ["SpineBase","SpineMid","Neck","Head","ShoulderLeft","ElbowLeft","WristLeft","HandLeft","ShoulderRight","ElbowRight","WristRight","HandRight","HipLeft","KneeLeft","AnkleLeft","FootLeft","HipRight","KneeRight","AnkleRight","FootRight","SpineShoulder","HandTipLeft","ThumbLeft","HandTipRight","ThumbRight"]
-    const materialLine = new THREE.LineBasicMaterial({
-      color: new THREE.Color('#'+this.color),
-    });
-    
-    // one line for head and spine
-  
-    let geometryLine = new THREE.Geometry();
-    geometryLine.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine.vertices.push(new THREE.Vector3(0, 1, 0));
-    geometryLine.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine.vertices.push(new THREE.Vector3(1, 0, 0));
-  
-    this.line = new THREE.Line(geometryLine, materialLine);
-    group.add(this.line);
-  
-    // one line for left arm
-  
-    let geometryLine1 = new THREE.Geometry();
-    geometryLine1.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine1.vertices.push(new THREE.Vector3(0, 1, 0));
-    geometryLine1.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine1.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine1.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine1.vertices.push(new THREE.Vector3(1, 0, 0));
-    
-    this.line1 = new THREE.Line(geometryLine1, materialLine);
-    group.add(this.line1);
-
-    // one line for left thumb
-  
-    let geometryLine2 = new THREE.Geometry();
-    geometryLine2.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine2.vertices.push(new THREE.Vector3(0, 1, 0));
-    
-    this.line2 = new THREE.Line(geometryLine2, materialLine);
-    group.add(this.line2);
-  
-    // // one line for right arm
-  
-    let geometryLine3 = new THREE.Geometry();
-    geometryLine3.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine3.vertices.push(new THREE.Vector3(0, 1, 0));
-    geometryLine3.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine3.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine3.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine3.vertices.push(new THREE.Vector3(1, 0, 0));
-    
-    this.line3 = new THREE.Line(geometryLine3, materialLine);
-    group.add(this.line3);
-
-    // one line for right thumb
-  
-    let geometryLine4 = new THREE.Geometry();
-    geometryLine4.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine4.vertices.push(new THREE.Vector3(0, 1, 0));
-    
-    this.line4 = new THREE.Line(geometryLine4, materialLine);
-    group.add(this.line4);
-  
-     // // one line for left leg
-  
-    let geometryLine5 = new THREE.Geometry();
-    geometryLine5.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine5.vertices.push(new THREE.Vector3(0, 1, 0));
-    geometryLine5.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine5.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine5.vertices.push(new THREE.Vector3(1, 0, 0));
-    
-    this.line5 = new THREE.Line(geometryLine5, materialLine);
-    group.add(this.line5);
-
-    // // one line for right leg
-  
-    let geometryLine6 = new THREE.Geometry();
-    geometryLine6.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine6.vertices.push(new THREE.Vector3(0, 1, 0));
-    geometryLine6.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine6.vertices.push(new THREE.Vector3(1, 0, 0));
-    geometryLine6.vertices.push(new THREE.Vector3(1, 0, 0));
-    
-    this.line6 = new THREE.Line(geometryLine6, materialLine);
-    group.add(this.line6);
-
-    // // one line for left side
-  
-    let geometryLine7 = new THREE.Geometry();
-    geometryLine7.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine7.vertices.push(new THREE.Vector3(0, 1, 0));
-    geometryLine7.vertices.push(new THREE.Vector3(1, 0, 0));
-    
-    this.line7 = new THREE.Line(geometryLine7, materialLine);
-    group.add(this.line7);
-
-    // // one line for right side
-  
-    let geometryLine8 = new THREE.Geometry();
-    geometryLine8.vertices.push(new THREE.Vector3(-1, 0, 0));
-    geometryLine8.vertices.push(new THREE.Vector3(0, 1, 0));
-    geometryLine8.vertices.push(new THREE.Vector3(1, 0, 0));
-    
-    this.line8 = new THREE.Line(geometryLine8, materialLine);
-    group.add(this.line8);
   }
 
   getRanges(x, y, z) {
