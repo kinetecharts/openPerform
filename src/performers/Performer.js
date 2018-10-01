@@ -492,6 +492,7 @@ class Performer {
     this.parent.remove(this.getScene());
     if (this.lineGroup) { this.parent.remove(this.lineGroup); }
     if (this.axesGroup) { this.parent.remove(this.axesGroup); }
+    if (this.cubeBoneGroup) { this.parent.remove(this.cubeBoneGroup); }
     this.scene = null;
   }
 
@@ -1556,12 +1557,15 @@ class Performer {
         
         const sceneGroup = new THREE.Object3D();
         let bones = [];
-        this.skeletalTranslator.createLineSkeleton(data, (lineGroup, axesGroup) => {
+        this.skeletalTranslator.createLineSkeleton(data, (lineGroup, axesGroup, cubeBoneGroup) => {
           this.lineGroup = lineGroup;
           this.parent.add(lineGroup);
           
           this.axesGroup = axesGroup;
           this.parent.add(axesGroup);
+
+          this.cubeBoneGroup = cubeBoneGroup;
+          this.parent.add(cubeBoneGroup);
         });
 
         // this.loader.loadFBX('models/characters/flash/model.fbx', {}, (group) => {
@@ -1613,7 +1617,7 @@ class Performer {
         // //   console.log(this.getScene());
         // });
       } else if (this.getPerformer() !== null && this.getPerformer().loading === false) {
-        this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, data);
+        this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data);
         // for (let i = 0; i < data.length; i++) {
         //   const jointName = this.skeletalTranslator.kinectronMixamoLookup(data[i].name);
         //   if (this.getPerformer().meshes[jointName]) {

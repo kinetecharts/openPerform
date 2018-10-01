@@ -79,7 +79,14 @@ function Common() {
 	
 	this.capitalizeFirstLetter = function (string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+	};
+	
+	this.getPointBetween = function(pointA, pointB, percentage) {
+    var dir = pointB.clone().sub(pointA);
+    var len = dir.length();
+    dir = dir.normalize().multiplyScalar(len*percentage);
+    return pointA.clone().add(dir);
+	};
 }
 
 
