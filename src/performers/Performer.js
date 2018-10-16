@@ -1649,24 +1649,24 @@ class Performer {
     if (this.getPerformer() == null) {
       this.setPerformer({ loading: true });
       
-      this.loader.loadMTL('./models/characters/alien/head.mtl', {}, (materials) => {
+      this.loader.loadMTL('./models/characters/' + this.character.name + '/head.mtl', {}, (materials) => {
         materials.preload();
-        this.loader.loadOBJ('./models/characters/alien/head.obj', { materials: materials }, (head, props) => {
+        this.loader.loadOBJ('./models/characters/' + this.character.name + '/head.obj', { materials: materials }, (head, props) => {
           const zOffset = 20;
           const yOffset = 0.5;
 
           this.headGroup = new THREE.Object3D();
           window.headGroup = this.headGroup;
           // this.head = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({color:this.character.color}));
-          head.scale.set(0.15,0.15,0.15);
+          head.scale.set(this.character.headScale, this.character.headScale, this.character.headScale);
           this.headGroup.add(head);
-          this.headGroup.position.z = 12;
-          this.headGroup.position.y = 0.899;
-          this.headGroup.scale.set(2,2,2);
+          this.headGroup.position.z = this.character.headOffset.z;
+          this.headGroup.position.y = this.character.headOffset.y;
+          this.headGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
           this.parent.add(this.headGroup);
         
 
-          this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.sizes, window.lineVisible, (lineGroup, axesGroup, cubeBoneGroup) => {
+          this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.bones, this.character.boneType, window.lineVisible, (lineGroup, axesGroup, cubeBoneGroup) => {
 
             this.lineGroup = lineGroup;
             // this.lineGroup.position.z = zOffset;
@@ -1684,9 +1684,9 @@ class Performer {
             window.cubeBoneGroup = this.cubeBoneGroup;
             this.parent.add(cubeBoneGroup);
 
-            this.lineGroup.scale.set(2, 2, 2);
+            this.lineGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
             // this.axesGroup.scale.set(2, 2, 2);
-            this.cubeBoneGroup.scale.set(2, 2, 2);
+            this.cubeBoneGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
           });
         });
       });
@@ -1718,7 +1718,9 @@ class Performer {
         //   keys: keys,
         // });
     } else {
-      this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data, window.lineVisible, this.headGroup);
+      if (this.cubeBoneGroup !== undefined && this.cubeBoneGroup.children.length > 0) {
+        this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data, window.lineVisible, this.headGroup);
+      }
       // this.skeletalTranslator.updateMixamoModel(this.getPerformer().bones, data, this.prefix, this.cubeBoneGroup);
       // this.skeletalTranslator.updateMeshGroup(this.getPerformer().meshes, data, this.prefix, this.getPerformer().boxes);
     }

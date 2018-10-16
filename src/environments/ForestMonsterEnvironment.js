@@ -31,6 +31,7 @@ class ForestMonsterEnvironment {
     this.initSpace();
     // this.initFloor(25);
     this.initLights();
+    this.initMirror();
   }
 
   toggleVisible(val) {
@@ -47,6 +48,63 @@ class ForestMonsterEnvironment {
     this.elements.forEach((element) => {
       element.visible = val;
     });
+  }
+
+  initLights() {
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
+
+    window.directionalLight = directionalLight;
+    directionalLight.position.set(0, 2, 0);
+    let lightTarget = new THREE.Object3D();
+    this.parent.add(lightTarget);
+    lightTarget.position.set(0, 0, 20);
+    directionalLight.target = lightTarget
+    directionalLight.castShadow = true;
+
+    // let targetObj = new THREE.Object3D();
+    // targetObj.position.set(0, 1.75, 0);
+    // directionalLight.target = targetObj;
+    // this.parent.add(directionalLight.target);
+
+    directionalLight.shadow.mapSize.width = 512;  // default
+    directionalLight.shadow.mapSize.height = 512; // default
+    directionalLight.shadow.camera.near = 0.5;    // default
+    directionalLight.shadow.camera.far = 500;     // default
+
+    // var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+    // this.parent.add(helper);
+
+    this.lights.push(directionalLight);
+    this.parent.add(directionalLight);
+
+    let hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0x797979, 0.75);
+
+    this.lights.push(hemiLight);
+    this.parent.add(hemiLight);
+  }
+
+  initMirror() {
+    const w = 1920/250;
+    const h = 1080/250;
+    var geo = new THREE.PlaneBufferGeometry( w * 2, h * 2 );
+    let overflow = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:0xFFFFFF}));
+    overflow.position.z = -0.1;
+    this.parent.add(overflow);
+    this.elements.push(overflow);
+
+    var geometry = new THREE.PlaneBufferGeometry( w, h );
+    var verticalMirror = new THREE.Reflector( geometry, {
+      // clipBias: 0.003,
+      textureWidth: $('#scenes').width() * window.devicePixelRatio,
+      textureHeight: $('#scenes').height() * window.devicePixelRatio,
+      color: 0x889999,
+      recursion: 1
+    } );
+    window.verticalMirror = verticalMirror;
+    verticalMirror.position.y = 1.25;
+    verticalMirror.position.z = 5;
+    this.parent.add(verticalMirror);
+    this.elements.push(verticalMirror);
   }
 
   initSpace() {
@@ -69,8 +127,8 @@ class ForestMonsterEnvironment {
       });
 
       gltf.scene.scale.set(0.0065, 0.0065, 0.0065);
-      gltf.scene.position.set(-12.699999999999992, -11.099999999999987, 3.2000000000000046);
-      gltf.scene.rotation.set(0, 3.2707963267948976, 0);
+      gltf.scene.position.set(-12.699999999999992, -12.099999999999987, 25.200000000000003);
+      gltf.scene.rotation.set(0, 27.270796326794898, 0);
 
       if (this.gltf.animations.length > 0) {
         this.gltf.clock = new THREE.Clock();
@@ -140,36 +198,6 @@ class ForestMonsterEnvironment {
 
     this.elements.push(this.floor);
     this.parent.add(this.floor);
-  }
-
-  initLights() {
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
-
-    window.directionalLight = directionalLight;
-    directionalLight.position.set(0, 2, 2);
-    directionalLight.castShadow = true;
-
-    // let targetObj = new THREE.Object3D();
-    // targetObj.position.set(0, 1.75, 0);
-    // directionalLight.target = targetObj;
-    // this.parent.add(directionalLight.target);
-
-    directionalLight.shadow.mapSize.width = 512;  // default
-    directionalLight.shadow.mapSize.height = 512; // default
-    directionalLight.shadow.camera.near = 0.5;    // default
-    directionalLight.shadow.camera.far = 500;     // default
-
-    // var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-
-    // this.parent.add(helper);
-
-    this.lights.push(directionalLight);
-    this.parent.add(directionalLight);
-
-    let hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0x797979, 0.75);
-
-    this.lights.push(hemiLight);
-    this.parent.add(hemiLight);
   }
 
   removeElements() {

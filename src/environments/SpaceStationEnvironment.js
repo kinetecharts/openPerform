@@ -31,6 +31,7 @@ class SpaceStationEnvironment {
     this.initSpace();
     this.initFloor(50);
     this.initLights();
+    this.initMirror();  
   }
 
   toggleVisible(val) {
@@ -60,7 +61,7 @@ class SpaceStationEnvironment {
           default:
             break;
           case 'Mesh':
-            // child.material = new THREE.MeshPhongMaterial();
+            child.material.flatShading = true;
             child.castShadow = true;
             child.receiveShadow = true;
             break;
@@ -69,8 +70,8 @@ class SpaceStationEnvironment {
 
       gltf.scene.scale.set(0.25, 0.25, 0.25);
 
-      gltf.scene.position.y = -0.025;
-      gltf.scene.position.z = -6;
+      gltf.scene.position.y = -1.125;
+      gltf.scene.position.z = 24;
       if (this.gltf.animations.length > 0) {
         this.gltf.clock = new THREE.Clock();
         this.gltf.mixer = new THREE.AnimationMixer(this.gltf.scene);
@@ -127,12 +128,38 @@ class SpaceStationEnvironment {
     this.elements.push(this.skyBox);
   }
 
+  initMirror() {
+    const w = 1920/250;
+    const h = 1080/250;
+    var geo = new THREE.PlaneBufferGeometry( w * 2, h * 2 );
+    let overflow = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:0xFFFFFF}));
+    overflow.position.z = -0.1;
+    this.parent.add(overflow);
+    this.elements.push(overflow);
+
+    var geometry = new THREE.PlaneBufferGeometry( w, h );
+    var verticalMirror = new THREE.Reflector( geometry, {
+      // clipBias: 0.003,
+      textureWidth: $('#scenes').width() * window.devicePixelRatio,
+      textureHeight: $('#scenes').height() * window.devicePixelRatio,
+      color: 0x889999,
+      recursion: 1
+    } );
+    window.verticalMirror = verticalMirror;
+    verticalMirror.position.y = 1.25;
+    verticalMirror.position.z = 5;
+    this.parent.add(verticalMirror);
+    this.elements.push(verticalMirror);
+  }
+
   initFloor(size) {
     this.floor = new THREE.Mesh(
       new THREE.PlaneBufferGeometry( size, size, 1 ),
       new THREE.MeshPhongMaterial({ color:0x797979, opacity: 0.9 })
     );
-    this.floor.position.y = 0.0125;
+    window.floor = this.floor;
+    this.floor.position.y = -1.0875;
+    this.floor.position.z = 15;
     this.floor.rotation.x = -Math.PI/2;
     this.floor.receiveShadow = true;
 
@@ -144,7 +171,11 @@ class SpaceStationEnvironment {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
     window.directionalLight = directionalLight;
-    directionalLight.position.set(0, 2, 2);
+    directionalLight.position.set(0, 2, 0);
+    let lightTarget = new THREE.Object3D();
+    this.parent.add(lightTarget);
+    lightTarget.position.set(0, 0, 20);
+    directionalLight.target = lightTarget
     directionalLight.castShadow = true;
 
     // let targetObj = new THREE.Object3D();
@@ -158,7 +189,6 @@ class SpaceStationEnvironment {
     directionalLight.shadow.camera.far = 500;     // default
 
     // var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-
     // this.parent.add(helper);
 
     this.lights.push(directionalLight);

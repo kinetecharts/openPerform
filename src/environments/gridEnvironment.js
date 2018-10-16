@@ -91,6 +91,7 @@ class GridEnvironment {
     this.gridFloor.castShadow = true;
     this.gridFloor.receiveShadow = true;
     this.gridFloor.visible = true;
+    this.gridFloor.position.z = 10;
     this.elements.push(this.gridFloor);
     this.parent.add(this.gridFloor);
   }
@@ -101,6 +102,7 @@ class GridEnvironment {
       new THREE.ShadowMaterial({ opacity: 0.9 })
     );
     this.shadowFloor.rotation.x = -Math.PI/2;
+    this.shadowFloor.position.z = 10;
     this.shadowFloor.receiveShadow = true;
     this.parent.add(this.shadowFloor);
     this.elements.push(this.shadowFloor);
@@ -110,7 +112,11 @@ class GridEnvironment {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
     window.directionalLight = directionalLight;
-    directionalLight.position.set(0, 2, 2);
+    directionalLight.position.set(0, 2, 0);
+    let lightTarget = new THREE.Object3D();
+    this.parent.add(lightTarget);
+    lightTarget.position.set(0, 0, 20);
+    directionalLight.target = lightTarget
     directionalLight.castShadow = true;
 
     // let targetObj = new THREE.Object3D();
@@ -124,7 +130,6 @@ class GridEnvironment {
     directionalLight.shadow.camera.far = 500;     // default
 
     // var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-
     // this.parent.add(helper);
 
     this.lights.push(directionalLight);

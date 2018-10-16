@@ -176,7 +176,6 @@ class SolarSystemEnvironment {
           default:
             break;
           case 'Mesh':
-            // child.material = new THREE.MeshPhongMaterial();
             child.castShadow = true;
             child.receiveShadow = true;
             break;
@@ -196,7 +195,11 @@ class SolarSystemEnvironment {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
     window.directionalLight = directionalLight;
-    directionalLight.position.set(0, 2, 2);
+    directionalLight.position.set(0, 2, 0);
+    let lightTarget = new THREE.Object3D();
+    this.parent.add(lightTarget);
+    lightTarget.position.set(0, 0, 20);
+    directionalLight.target = lightTarget
     directionalLight.castShadow = true;
 
     // let targetObj = new THREE.Object3D();
@@ -210,7 +213,6 @@ class SolarSystemEnvironment {
     directionalLight.shadow.camera.far = 500;     // default
 
     // var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-
     // this.parent.add(helper);
 
     this.lights.push(directionalLight);

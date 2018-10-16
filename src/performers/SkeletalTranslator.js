@@ -338,26 +338,26 @@ class SkeletalTranslator {
       ['SpineShoulder', 'SpineMid'],
       ['SpineMid', 'SpineBase'],
 
-      ['SpineShoulder', 'ShoulderLeft'],
+      // ['SpineShoulder', 'ShoulderLeft'],
       ['ShoulderLeft', 'ElbowLeft'],
       ['ElbowLeft', 'WristLeft'],
       ['WristLeft', 'HandLeft'],
       // ['HandLeft', 'HandTipLeft'],
       // ['WristLeft', 'ThumbLeft'],
 
-      ['SpineShoulder', 'ShoulderRight'],
+      // ['SpineShoulder', 'ShoulderRight'],
       ['ShoulderRight', 'ElbowRight'],
       ['ElbowRight', 'WristRight'],
       ['WristRight', 'HandRight'],
       // ['HandRight', 'HandTipRight'],
       // ['WristRight', 'ThumbRight'],
       
-      ['SpineBase', 'HipLeft'],
+      // ['SpineBase', 'HipLeft'],
       ['HipLeft', 'KneeLeft'],
       ['KneeLeft', 'AnkleLeft'],
       // ['AnkleLeft', 'FootLeft'],
 
-      ['SpineBase', 'HipRight'],
+      // ['SpineBase', 'HipRight'],
       ['HipRight', 'KneeRight'],
       ['KneeRight', 'AnkleRight'],
       // ['AnkleRight', 'FootRight'],
@@ -426,7 +426,7 @@ class SkeletalTranslator {
     return axesHelper;
   }
 
-  createCubeBone(name, length, pos, quat, names, color, size) {
+  createCubeBone(name, length, pos, quat, names, color, bone, type) {
     let materials = [
       // new THREE.MeshPhongMaterial({ color: color }),
       // new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
@@ -437,10 +437,17 @@ class SkeletalTranslator {
     ];
 
     // console.log(names);
-    let geometry = this.updateCubeBoneLength(names[1], length, size);
-    let cube = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ color: color }));
-    cube.size = size;
+    let geometry = this.updateCubeBoneLength(names[1], length, bone, type);
+    let cube = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+      color: bone.color,
+      flatShading: true,
+      shininess: 100,
+    }));
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    cube.bone = bone;
     cube.name = name;
+    cube.type = type;
     cube.position.copy(pos.clone());
     cube.quaternion.copy(quat.clone());
     cube.jointNames = names;
@@ -448,8 +455,21 @@ class SkeletalTranslator {
     return cube;
   }
 
-  updateCubeBoneLength(name, length, size) {
-    let geometry = new THREE.BoxGeometry(size.x, length, size.z);
+  updateCubeBoneLength(name, length, bone, type) {
+    let geometry;
+    switch(type) {
+      default:
+        // geometry = new THREE.BoxGeometry(size.x, length, size.z);
+        geometry = new THREE.CylinderGeometry(bone.x, bone.z, length, 4);
+        break;
+      case 'poly':
+        // geometry = new THREE.BoxGeometry(size.x, length, size.z);
+        geometry = new THREE.CylinderGeometry(bone.x, bone.z, length, 6);
+        break;
+      case 'cylinder':
+        geometry = new THREE.CylinderGeometry(bone.x, bone.z, length, 8);
+        break;
+    }
     // console.log(name);
     switch(name) {
       default:
@@ -493,7 +513,7 @@ class SkeletalTranslator {
     });
   }
 
-  createLineSkeleton(data, color, sizes, visible, cb) {
+  createLineSkeleton(data, color, bones, type, visible, cb) {
     let lineGroup = new THREE.Object3D();
     let axesGroup = new THREE.Object3D();
     let cubeBoneGroup = new THREE.Object3D();
@@ -537,7 +557,8 @@ class SkeletalTranslator {
         startQuat,
         [this.kinectronMixamoLookup(pair[0]), this.kinectronMixamoLookup(pair[1])],
         color,
-        sizes[pair[0]]
+        bones[pair[0]],
+        type,
       ));
     });
 
@@ -567,6 +588,8 @@ class SkeletalTranslator {
     ]);
     headGroup.children[0].position.copy(translatedData.position.clone());
     headGroup.children[0].quaternion.copy(translatedData.quaternion.clone());
+    headGroup.children[0].castShadow = true;
+    headGroup.children[0].receiveShadow = true;
 
     // _.each(data, (d, idx) => {
       // update lines
@@ -638,7 +661,7 @@ class SkeletalTranslator {
           jointData[1].cameraX,
           jointData[1].cameraY,
           jointData[1].cameraZ,
-        )), c.size);
+        )), c.bone, c.type);
         let translatedData = this.translateKinectron(jointData);
         
         c.position.copy(translatedData.position.clone());
