@@ -19,17 +19,66 @@ class Performers {
     this.outputManager = outputManager;
 
     this.characters = [
-      {name: 'astronaut', scale: 0.4},
-      {name: 'alien', scale: 0.1},
-      {name: 'robot', scale: 0.7},
+      // {name: 'flash', scale: 0.5},
+      // {name: 'hoodie', scale: 0.5},
+      // {name: 'test', scale: 0.5},
+      // {name: 'robot', scale: 0.9},
+
+      // {name: 'wonderWoman', scale: 0.5},
+      // {name: 'bun', scale: 0.5},
+      // {name: 'skeleton', scale: 0.125},
+      // {name: 'batman', scale: 0.5},
+
+      // {name: 'nanako', scale: 0.5},
+      // {name: 'flinger', scale: 0.5},
+
+      // {name: 'foster', scale: 0.5},
+
+      // {name: 'astronaut', scale: 0.5, effect: 'Data Tags'},
+      {name: 'alien', scale: 0.125, effect: 'Ribbons', color: 0x3d4034, sizes: {
+        'SpineBase': {x: 0.11, z: 0.11},
+        'SpineMid': {x: 0.1, z: 0.1},
+        'Neck': {x: 0.02, z: 0.02},
+        'Head': {x: 0.04, z: 0.04},
+
+        'ShoulderLeft': {x: 0.04, z: 0.04},
+        'ElbowLeft': {x: 0.02, z: 0.02},
+        'WristLeft': {x: 0.02, z: 0.02},
+        'HandLeft': {x: 0.02, z: 0.02},
+        
+        'ShoulderRight': {x: 0.04, z: 0.04},
+        'ElbowRight': {x: 0.02, z: 0.02},
+        'WristRight': {x: 0.02, z: 0.02},
+        'HandRight': {x: 0.02, z: 0.02},
+        
+        'HipLeft': {x: 0.06, z: 0.06},
+        'KneeLeft': {x: 0.04, z: 0.04},
+        'AnkleLeft': {x: 0.02, z: 0.02},
+        'FootLeft': {x: 0.02, z: 0.02},
+        
+        'HipRight': {x: 0.06, z: 0.06},
+        'KneeRight': {x: 0.04, z: 0.04},
+        'AnkleRight': {x: 0.02, z: 0.02},
+        'FootRight': {x: 0.02, z: 0.02},
+        
+        'SpineShoulder': {x: 0.2, z: 0.2},
+        
+        'HandTipLeft': {x: 0.02, z: 0.02},
+        'ThumbLeft': {x: 0.02, z: 0.02},
+        'HandTipRight': {x: 0.02, z: 0.02},
+        'ThumbRight': {x: 0.02, z: 0.02},
+      }},
+      // {name: 'shopkeeper', scale: 0.02, effect: 'Ghosting'},
     ];
     
     window.performers = this.performers = {};
     this.dataBuffer = [];
   }
-  init(parent) {
+  init(parent, scene) {
     this.parent = parent;
     this.colors = config.performerColors;
+
+    this.scene = scene;
 
     // this.gui = new dat.GUI();
     // this.guiDOM = this.gui.domElement;
@@ -57,7 +106,8 @@ class Performers {
         this.inputManager,
         this.outputManager,
         options,
-        this.characters.pop(),
+        this.characters[Math.floor(Math.random()*this.characters.length)],
+        this.scene,
       );
     }
   }

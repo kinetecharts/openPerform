@@ -21,8 +21,21 @@ class Loader {
     new THREE.TGALoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
+  loadJSONs(urls, props, cb) {
+    let jsons = [];
+    _.each(urls, (url) => {
+      let name = url.split('/')[4].split('.')[0];
+      this.loadJSON(url, name, (geo, mat, name) => {
+        jsons.push({geo:geo, mat:mat, name:name});
+        if (jsons.length == urls.length) {
+          cb(jsons, props);
+        }
+      });
+    });
+  }
+
   loadJSON(url, props, cb) {
-    new THREE.JSONLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
+    new THREE.JSONLoader().load(url, (geo, mat) => { cb(geo, mat, props); }, this.onProgress, this.onError);
   }
 
   loadGLTF(url, props, cb) {

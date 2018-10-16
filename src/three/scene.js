@@ -162,37 +162,37 @@ class Scene {
     // / Global : this.camera
     this.camera = new THREE.PerspectiveCamera(20, this.w / this.h, 0.01, 10000);
     window.camera = this.camera;
-    this.camera.position.set(0, 0.6, 6.5);
+    this.camera.position.copy(defaults.camera.home.clone())
     this.scene.add(this.camera);
 
     this.addCreateCommon(); 
 
-    // this.controls = new THREE.TrackballControls(this.camera, this.renderer.domElement);
-    // this.controls.target = new THREE.Vector3(0,1.5,0);
-    // window.controls = this.controls;
+    this.controls = new THREE.TrackballControls(this.camera, this.renderer.domElement);
+    this.controls.target = new THREE.Vector3(0, 1.25, 0);
+    window.controls = this.controls;
 
-    // this.controls.rotateSpeed = 1.0;
-    // this.controls.zoomSpeed = 1.2;
-    // this.controls.panSpeed = 0.8;
-    // this.controls.noZoom = false;
-    // this.controls.noPan = false;
-    // this.controls.staticMoving = true;
-    // this.controls.dynamicDampingFactor = 0.3;
+    this.controls.rotateSpeed = 1.0;
+    this.controls.zoomSpeed = 1.2;
+    this.controls.panSpeed = 0.8;
+    this.controls.noZoom = false;
+    this.controls.noPan = false;
+    this.controls.staticMoving = true;
+    this.controls.dynamicDampingFactor = 0.3;
 
     // this.controls.autoRotate = false;
     // this.controls.autoRotateSpeed = 3;
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target = new THREE.Vector3(0, 1, 0);
-		this.controls.enableDamping = false;
-		this.controls.enableZoom = true;
-		this.controls.enableRotate = true;
-		this.controls.enablePan = true;
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls.target = new THREE.Vector3(0, 2, 0);
+		// this.controls.enableDamping = false;
+		// this.controls.enableZoom = true;
+		// this.controls.enableRotate = true;
+		// this.controls.enablePan = true;
 		
-		this.controls.autoRotate = false;
-		this.controls.autoRotateSpeed = 1.5;
+		// this.controls.autoRotate = false;
+		// this.controls.autoRotateSpeed = 1.5;
 		
-		this.controls.enableKeys = false;
+		// this.controls.enableKeys = false;
 
     this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 

@@ -34,6 +34,19 @@ class KinectronInput {
     this.kinectron.makeConnection();
     this.kinectron.startBodies((bodies) => {
       _.each(_.filter(bodies.bodies, 'tracked'), (body) => {        
+        // body.joints.unshift({
+        //   'depthX':0,
+        //   'depthY':0,
+        //   'colorX':0,
+        //   'colorY':0,
+        //   'cameraX':0,
+        //   'cameraY':0,
+        //   'cameraZ':0,
+        //   'orientationX':0,
+        //   'orientationY':0,
+        //   'orientationZ':0,
+        //   'orientationW':0,
+        // });
         this.callbacks['body']('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
         // this.saveData('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
       });
@@ -61,29 +74,32 @@ class KinectronInput {
   }
 
   playbackData() {
-    // console.log("hello", this.savedData);
-    _.each(this.savedData, (d, idx) => {
-      // console.log("hello", d);
-      // let d = this.savedData[0];
-      // console.log("hello", d);  
-      setTimeout(() => {
-        this.callbacks['body'](
-          d['id'],
-          d['data'],
-          d['type'],
-          null,
-          {
-            play: () => {},
-            pause: () => {},
-            stop: () => {},
-            loop: () => {},
-            noLoop: () => {},
-            playing: false,
-            looping: false,
-          }
-        );
-      }, idx * 250);
-    });
+    this.playNextFrame(_.cloneDeep(this.savedData));
+  }
+
+  playNextFrame(data) {
+    if (this.nextFrameTimeout) { clearTimeout(this.nextFrameTimeout); }
+    if (data.length > 0) {
+      let d = data.shift(); 
+      this.callbacks['body'](
+        d['id'],
+        d['data'],
+        d['type'],
+        null,
+        {
+          play: () => {},
+          pause: () => {},
+          stop: () => {},
+          loop: () => {},
+          noLoop: () => {},
+          playing: false,
+          looping: false,
+        }
+      );
+      this.nextFrameTimeout = setTimeout(this.playNextFrame.bind(this, data), 1000/10);
+    } else {
+      this.nextFrameTimeout = setTimeout(this.playNextFrame.bind(this, _.cloneDeep(this.savedData)  ), 1);
+    }
   }
 
   on(name, cb, event, label) {

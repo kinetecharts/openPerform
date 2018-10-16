@@ -118,6 +118,10 @@ module.exports = {
         from: resolve(__dirname, config.copy.bmfonts.src),
         to: resolve(__dirname, config.copy.bmfonts.dest),
       },
+      {
+        from: resolve(__dirname, config.copy.libs.src),
+        to: resolve(__dirname, config.copy.libs.dest),
+      },
     ]),
 
     new webpack.HotModuleReplacementPlugin(),

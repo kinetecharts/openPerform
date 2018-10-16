@@ -20,7 +20,7 @@ class DataTags {
 
     this.color = color;
 
-    this.targets = ['rightfoot', 'leftfoot', 'head', 'righthand', 'lefthand'];
+    this.targets = ['rightshoulder', 'leftshoulder'];
     this.possibleTargets = ['hips',
       'rightupleg', 'rightleg', 'rightfoot',
       'leftupleg', 'leftleg', 'leftfoot',
@@ -36,6 +36,7 @@ class DataTags {
       showName: true,
       showPosition: true,
       showRotation: true,
+      showQuat: true,
     };
     this.fontsReady = false;
 
@@ -71,7 +72,7 @@ class DataTags {
     const font = _.filter(this.fonts, { name: 'regular' })[0].font;
     const texture = _.filter(this.fonts, { name: 'regular' })[0].texture;
 
-    const textScale = 0.001;
+    const textScale = 0.0005;
 
     // draw text first to get dimensions
     const tag = this.createTextMesh(
@@ -160,19 +161,25 @@ class DataTags {
 
             this.tags[idx].position.copy(gPos.clone());
 
-            let tagString = '';
+            let options = { text: '' };
             if (this.options.showName) {
-              tagString += d.name + '\n';
+              options.text += d.name + '\n';
             }
             if (this.options.showPosition) {
-              tagString += 'X: ' + gPos.x.toFixed(3) + ', ' + 'Y: ' + gPos.y.toFixed(3) + ', ' + 'Z: ' + gPos.z.toFixed(3) + '\n';
+              options.text += 'pos(' + gPos.x.toFixed(3) + ', ' + gPos.y.toFixed(3) + ', ' + gPos.z.toFixed(3) + ')\n';
             }
             if (this.options.showRotation) {
-              tagString += 'X: ' + d.rotation.x.toFixed(3) + ', ' + 'Y: ' + d.rotation.y.toFixed(3) + ', ' + 'Z: ' + d.rotation.z.toFixed(3) + '\n';
+              options.text += 'rot(' + d.rotation.x.toFixed(3) + ', ' + d.rotation.y.toFixed(3) + ', ' + d.rotation.z.toFixed(3) + ')\n';
             }
-            this.tags[idx].children[0].geometry.update({
-              text: tagString,
-            });
+            if (this.options.showQuat) {
+              options.text += 'quat(' + d.quaternion.x.toFixed(3) + ', ' + d.quaternion.y.toFixed(3) + ', ' + d.quaternion.z.toFixed(3) + ', ' + d.quaternion.w.toFixed(3) + ')\n';
+            }
+
+            if (d.name.toLowerCase().indexOf('left') !== -1) {
+              options.align = 'right';
+            }
+
+            this.tags[idx].children[0].geometry.update(options);
           }
         }
 

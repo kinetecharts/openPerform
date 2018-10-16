@@ -86,7 +86,7 @@ class Main extends React.Component {
   }
 
   sceneInit(scene) {
-    this.performers.init(this.state.scene.sceneGroup);
+    this.performers.init(this.state.scene.sceneGroup, this.state.scene);
     this.state.environments = this.state.scene.environments;
     this.state.availEnvironments = this.state.scene.availEnvironments;
     this.state.currentEnvironment = this.state.scene.currentEnvironment;

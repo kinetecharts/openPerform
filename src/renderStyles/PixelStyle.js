@@ -24,7 +24,7 @@ class PixelStyle {
     this.name = 'Pixel';
 
     this.options = {
-      pixelSize: 8
+      pixelSize: 13
     };
 
     this.container = $('#scenes');

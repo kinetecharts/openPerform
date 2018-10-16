@@ -11,6 +11,11 @@ import WaterEnvironment from './WaterEnvironment';
 import EmptyEnvironment from './EmptyEnvironment';
 import ForestEnvironment from './ForestEnvironment';
 import SpaceEnvironment from './SpaceEnvironment';
+import SpaceStationEnvironment from './SpaceStationEnvironment';
+import SolarSystemEnvironment from './SolarSystemEnvironment';
+import ForestMonsterEnvironment from './ForestMonsterEnvironment';
+
+import TestEnvironment from './TestEnvironment';
 
 import config from './../config';
 
@@ -58,6 +63,18 @@ class Environments {
         break;
       case 'space':
         this.environments.push(new SpaceEnvironment(this.renderer, this.parent, this.performers, defaults));
+        break;
+      case 'space_station':
+        this.environments.push(new SpaceStationEnvironment(this.renderer, this.parent, this.performers, defaults));
+        break;
+      case 'solar_system':
+        this.environments.push(new SolarSystemEnvironment(this.renderer, this.parent, this.performers, defaults));
+        break;
+      case 'forest_monster':
+        this.environments.push(new ForestMonsterEnvironment(this.renderer, this.parent, this.performers, defaults));
+        break;
+      case 'test':
+        this.environments.push(new TestEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
     }
     this.currentEnvironment = type;

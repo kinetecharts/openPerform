@@ -2,9 +2,46 @@ import Common from '../util/Common';
 
 class SkeletalTranslator {
   constructor() {
+    this.verticalMovement = true;
+    this.offsetCalibrated = false;
+    this.mirroredMovement = false;
+    this.moveRate = 1;
+
     this.skeletonHelper = null;
     this.boneContainer = null;
     this.mixer = null;
+    window.orients = [
+      ['w', 'x', 'y', 'z'],
+      ['w', 'x', 'z', 'y'],
+      ['w', 'y', 'x', 'z'],
+      ['w', 'y', 'z', 'x'],
+      ['w', 'z', 'x', 'y'],
+      ['w', 'z', 'y', 'x'],
+      ['x', 'w', 'y', 'z'],
+      ['x', 'w', 'z', 'y'],
+      ['x', 'y', 'w', 'z'],
+      ['x', 'y', 'z', 'w'], 
+      ['x', 'z', 'w', 'y'],
+      ['x', 'z', 'y', 'w'], 
+      ['y', 'w', 'x', 'z'],
+      ['y', 'w', 'z', 'x'],
+      ['y', 'x', 'w', 'z'],
+      ['y', 'x', 'z', 'w'], 
+      ['y', 'z', 'w', 'x'],
+      ['y', 'z', 'x', 'w'], 
+      ['z', 'w', 'x', 'y'],
+      ['z', 'w', 'y', 'x'],
+      ['z', 'x', 'w', 'y'],
+      ['z', 'x', 'y', 'w'], 
+      ['z', 'y', 'w', 'x'],
+      ['z', 'y', 'x', 'w'],
+    ];
+    window.orient = ['x', 'y', 'z', 'w'];
+    // window.orient = ['w', 'z', 'y', 'x'];
+    // window.orient = ["z", "w", "x", "y"];
+    window.randomOrient = () => {
+      window.orient = window.orients[Math.floor(Math.random()*window.orients.length)];
+    }
 
     this.bvhStructure = {
       hips: {
@@ -145,6 +182,28 @@ class SkeletalTranslator {
     ];
     window.kinectKeys = this.kinectKeys;
 
+    this.kinectronMeshGroupKeys = {
+      'chest': 'SpineShoulder',
+      'head': 'Head',
+      'hips': 'SpineBase',
+      'lArm': 'ShoulderLeft',
+      'lFoot': 'FootLeft',
+      'lForearm': 'ElbowLeft',
+      'lHand': 'HandLeft',
+      'lShin': 'KneeLeft',
+      'lThigh': 'HipLeft',
+      'neck': 'Neck',
+      'rArm': 'ElbowRight',
+      'rFoot': 'FootRight',
+      'rForearm': 'ShoulderRight',
+      'rHand': 'HandRight',
+      'rShin': 'KneeRight',
+      'rThigh': 'HipRight',
+      'spine': 'Hips',
+      'spine2': 'SpineMid',
+      'spine3': 'SpineMid',
+    }
+
     this.mixamoPrefix = '';
     this.mixamoKeys = [
       this.mixamoPrefix + 'Hips', // 0
@@ -159,6 +218,7 @@ class SkeletalTranslator {
     ];
 
     this.kinectronMixamoKeys = {
+      // SpineBase: this.mixamoKeys[0],
       SpineBase: this.mixamoKeys[1], SpineMid: this.mixamoKeys[2],
       Neck: this.mixamoKeys[4], Head: this.mixamoKeys[5],
       ShoulderLeft: this.mixamoKeys[7], ElbowLeft: this.mixamoKeys[8], WristLeft: this.mixamoKeys[9], HandLeft: this.mixamoKeys[10],
@@ -168,6 +228,97 @@ class SkeletalTranslator {
       SpineShoulder: this.mixamoKeys[3],
       HandTipLeft: this.mixamoKeys[13], ThumbLeft: this.mixamoKeys[19],
       HandTipRight: this.mixamoKeys[26], ThumbRight: this.mixamoKeys[32],
+    };
+
+    this.otherKeys = ["Pelvis","hoodie_02", // 0, 1
+      "Spine1","Spine2","Spine3","Spine4", // 2, 3, 4, 5
+      "Neck","Head","Jaw", // 6, 7, 8
+      "R_Collar","R_Shoulder","R_Elbow","R_Wrist", // 9, 10, 11, 12
+        "R_IndexA","R_IndexB","R_IndexC", // 13, 14, 15
+        "R_MiddleA","R_MiddleB","R_MiddleC", // 16, 17, 18
+        "R_RingA","R_RingB","R_RingC", // 19, 20, 21
+        "R_PinkyA","R_PinkyB","R_PinkyC", // 22, 23, 24
+        "R_ThumbA","R_ThumbB","R_ThumbC", // 25, 26, 27
+      "L_Collar","L_Shoulder","L_Elbow","L_Wrist", // 28, 29, 30, 31
+        "L_IndexA","L_IndexB","L_IndexC", // 32, 33, 34
+        "L_MiddleA","L_MiddleB","L_MiddleC", // 35, 36, 37
+        "L_RingA","L_RingB","L_RingC", // 38, 39, 40
+        "L_PinkyA","L_PinkyB","L_PinkyC", // 41, 42, 43
+        "L_ThumbA","L_ThumbB","L_ThumbC", // 44, 45, 46
+      "R_Rib1","L_Rib1", // 47, 48
+      "R_Hip", "R_Knee","R_Ankle","R_Toe", // 49, 50, 51, 52
+      "L_Hip","L_Knee","L_Ankle","L_Toe"]; // 53, 54, 55, 56
+
+    this.kinectronOtherKeys = {
+      SpineBase: this.otherKeys[2], SpineMid: this.otherKeys[4],
+      Neck: this.otherKeys[6], Head: this.otherKeys[7],
+      ShoulderLeft: this.otherKeys[28], ElbowLeft: this.otherKeys[29], WristLeft: this.otherKeys[30], HandLeft: this.otherKeys[31],
+      ShoulderRight: this.otherKeys[9], ElbowRight: this.otherKeys[10], WristRight: this.otherKeys[11], HandRight: this.otherKeys[12],
+      HipLeft: this.otherKeys[53], KneeLeft: this.otherKeys[54], AnkleLeft: this.otherKeys[55], FootLeft: this.otherKeys[56],
+      HipRight: this.otherKeys[49], KneeRight: this.otherKeys[50], AnkleRight: this.otherKeys[51], FootRight: this.otherKeys[52],
+      SpineShoulder: this.otherKeys[5],
+      HandTipLeft: this.otherKeys[34], ThumbLeft: this.otherKeys[46],
+      HandTipRight: this.otherKeys[15], ThumbRight: this.otherKeys[27],
+    };
+
+    this.otherKinectronKeys = {
+      Pelvis: this.kinectKeys[0],
+      hoodie_02: this.kinectKeys[0],
+      Spine1: this.kinectKeys[0],
+      Spine2: this.kinectKeys[0],
+      Spine3: this.kinectKeys[1],
+      Spine4: this.kinectKeys[20],
+      Neck: this.kinectKeys[2],
+      Head: this.kinectKeys[3],
+      Jaw: this.kinectKeys[0],
+      R_Collar: this.kinectKeys[0],
+      R_Shoulder: this.kinectKeys[0],
+      R_Elbow: this.kinectKeys[0],
+      R_Wrist: this.kinectKeys[0],
+      R_IndexA: this.kinectKeys[0],
+      R_IndexB: this.kinectKeys[0],
+      R_IndexC: this.kinectKeys[0],
+      R_MiddleA: this.kinectKeys[0],
+      R_MiddleB: this.kinectKeys[0],
+      R_MiddleC: this.kinectKeys[0],
+      R_RingA: this.kinectKeys[0],
+      R_RingB: this.kinectKeys[0],
+      R_RingC: this.kinectKeys[0],
+      R_PinkyA: this.kinectKeys[0],
+      R_PinkyB: this.kinectKeys[0],
+      R_PinkyC: this.kinectKeys[0],
+      R_ThumbA: this.kinectKeys[0],
+      R_ThumbB: this.kinectKeys[0],
+      R_ThumbC: this.kinectKeys[0],
+      L_Collar: this.kinectKeys[0],
+      L_Shoulder: this.kinectKeys[0],
+      L_Elbow: this.kinectKeys[0],
+      L_Wrist: this.kinectKeys[0],
+      L_IndexA: this.kinectKeys[0],
+      L_IndexB: this.kinectKeys[0],
+      L_IndexC: this.kinectKeys[0],
+      L_MiddleA: this.kinectKeys[0],
+      L_MiddleB: this.kinectKeys[0],
+      L_MiddleC: this.kinectKeys[0],
+      L_RingA: this.kinectKeys[0],
+      L_RingB: this.kinectKeys[0],
+      L_RingC: this.kinectKeys[0],
+      L_PinkyA: this.kinectKeys[0],
+      L_PinkyB: this.kinectKeys[0],
+      L_PinkyC: this.kinectKeys[0],
+      L_ThumbA: this.kinectKeys[0],
+      L_ThumbB: this.kinectKeys[0],
+      L_ThumbC: this.kinectKeys[0],
+      R_Rib1: this.kinectKeys[0],
+      L_Rib1: this.kinectKeys[0],
+      R_Hip: this.kinectKeys[16],
+      R_Knee: this.kinectKeys[17],
+      R_Ankle: this.kinectKeys[18],
+      R_Toe: this.kinectKeys[19],
+      L_Hip: this.kinectKeys[12],
+      L_Knee: this.kinectKeys[13],
+      L_Ankle: this.kinectKeys[14],
+      L_Toe: this.kinectKeys[15],
     };
 
     this.kinectTransportKeys = {
@@ -182,7 +333,7 @@ class SkeletalTranslator {
     };
 
     this.kinectPairs = [
-      ['Head', 'Neck'],
+      // ['Head', 'Neck'],
       // ['Neck', 'SpineShoulder'],
       ['SpineShoulder', 'SpineMid'],
       ['SpineMid', 'SpineBase'],
@@ -191,26 +342,34 @@ class SkeletalTranslator {
       ['ShoulderLeft', 'ElbowLeft'],
       ['ElbowLeft', 'WristLeft'],
       ['WristLeft', 'HandLeft'],
-      ['HandLeft', 'HandTipLeft'],
-      ['WristLeft', 'ThumbLeft'],
+      // ['HandLeft', 'HandTipLeft'],
+      // ['WristLeft', 'ThumbLeft'],
 
       ['SpineShoulder', 'ShoulderRight'],
       ['ShoulderRight', 'ElbowRight'],
       ['ElbowRight', 'WristRight'],
       ['WristRight', 'HandRight'],
-      ['HandRight', 'HandTipRight'],
-      ['WristRight', 'ThumbRight'],
+      // ['HandRight', 'HandTipRight'],
+      // ['WristRight', 'ThumbRight'],
       
       ['SpineBase', 'HipLeft'],
       ['HipLeft', 'KneeLeft'],
       ['KneeLeft', 'AnkleLeft'],
-      ['AnkleLeft', 'FootLeft'],
+      // ['AnkleLeft', 'FootLeft'],
 
       ['SpineBase', 'HipRight'],
       ['HipRight', 'KneeRight'],
       ['KneeRight', 'AnkleRight'],
-      ['AnkleRight', 'FootRight'],
+      // ['AnkleRight', 'FootRight'],
     ];
+  }
+
+  otherKinectronLookup(key) {
+    return this.otherKinectronKeys[key];
+  }
+
+  kinectronOtherLookup(key) {
+    return this.kinectronOtherKeys[key];
   }
 
   kinectronMixamoLookup(key) {
@@ -228,7 +387,7 @@ class SkeletalTranslator {
     // });
   }
 
-  createLine(positions, quaternions, names) {
+  createLine(positions, quaternions, names, color) {
     const geo = new THREE.Geometry();
     geo.vertices.push(
       positions[0],
@@ -237,7 +396,7 @@ class SkeletalTranslator {
     const line = new THREE.Line(
       geo,
       new THREE.LineBasicMaterial({
-        color: 0xFFFFFF,
+        color: color,
       }),
     );
     line.name = names[0];
@@ -267,39 +426,62 @@ class SkeletalTranslator {
     return axesHelper;
   }
 
-  createCubeBone(name, length, pos, quat, names) {
+  createCubeBone(name, length, pos, quat, names, color, size) {
     let materials = [
-      new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-      new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
-      new THREE.MeshBasicMaterial({ color: 0x0000ff }),
-      new THREE.MeshBasicMaterial({ color: 0x0ff000 }),
-      new THREE.MeshBasicMaterial({ color: 0x0ff000 }),
-      new THREE.MeshBasicMaterial({ color: 0xf0000f }),
+      // new THREE.MeshPhongMaterial({ color: color }),
+      // new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
+      // new THREE.MeshBasicMaterial({ color: 0x0000ff }),
+      // new THREE.MeshBasicMaterial({ color: 0x0ff000 }),
+      // new THREE.MeshBasicMaterial({ color: 0x0ff000 }),
+      // new THREE.MeshBasicMaterial({ color: 0xf0000f }),
     ];
 
-    console.log(names);
-    let geometry = this.updateCubeBoneLength(names[1], length);
-    let cube = new THREE.Mesh(geometry, materials);
-
+    // console.log(names);
+    let geometry = this.updateCubeBoneLength(names[1], length, size);
+    let cube = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ color: color }));
+    cube.size = size;
     cube.name = name;
     cube.position.copy(pos.clone());
     cube.quaternion.copy(quat.clone());
     cube.jointNames = names;
+    cube.srcMatrix = cube.matrix.clone();
     return cube;
   }
 
-  updateCubeBoneLength(name, length) {
-    let geometry = new THREE.BoxGeometry(0.02, length, 0.02);
+  updateCubeBoneLength(name, length, size) {
+    let geometry = new THREE.BoxGeometry(size.x, length, size.z);
+    // console.log(name);
     switch(name) {
       default:
         geometry.translate(0, length/2, 0);
         break;
       case 'RightShoulder':
       case 'LeftShoulder':
+      // case 'Spine2':
+      // case 'LeftHandThumb3':
+      // case 'RightHandThumb3':
+      // case 'LeftHandIndex3':
+      // case 'RightHandIndex3':
+      // case 'RightToeBase':
+      // case 'LeftToeBase':
+        geometry = new THREE.BoxGeometry(0.04, length, 0.04);
         geometry.translate(0, -(length/2), 0);
         break;
     }
     return geometry;
+  }
+
+  createBoneFromLine(positions, quats, name) {
+    let line = this.createLine(
+      positions,
+      quats,
+      name,
+    );
+    let bone = new THREE.Bone();
+    bone.name =  name;
+    bone.quaternion.copy(line.quaternion.clone());
+    bone.position.copy(positions[0].clone());
+    return bone;
   }
 
   createBonesFromLines(lines) {
@@ -311,7 +493,7 @@ class SkeletalTranslator {
     });
   }
 
-  createLineSkeleton(data, cb) {
+  createLineSkeleton(data, color, sizes, visible, cb) {
     let lineGroup = new THREE.Object3D();
     let axesGroup = new THREE.Object3D();
     let cubeBoneGroup = new THREE.Object3D();
@@ -341,11 +523,12 @@ class SkeletalTranslator {
         data[this.kinectKeys.indexOf(pair[1])].orientationW,
       );
 
-      lineGroup.add(this.createLine(
-        [startPos, endPos],
-        [startQuat, endQuat],
-        [this.kinectronMixamoLookup(pair[0]), this.kinectronMixamoLookup(pair[1])],
-      ));
+      // lineGroup.add(this.createLine(
+      //   [startPos, endPos],
+      //   [startQuat, endQuat],
+      //   [this.kinectronMixamoLookup(pair[0]), this.kinectronMixamoLookup(pair[1])],
+      //   color,
+      // ));
 
       cubeBoneGroup.add(this.createCubeBone(
         pair[0],
@@ -353,12 +536,18 @@ class SkeletalTranslator {
         startPos,
         startQuat,
         [this.kinectronMixamoLookup(pair[0]), this.kinectronMixamoLookup(pair[1])],
+        color,
+        sizes[pair[0]]
       ));
     });
 
-    _.each(data, (d) => {
-      axesGroup.add(this.createAxisIndicator(d));
-    });
+    // _.each(data, (d) => {
+    //   axesGroup.add(this.createAxisIndicator(d));
+    // });
+
+    // lineGroup.visible = visible;
+    cubeBoneGroup.visible = visible;
+    // axesGroup.visible = visible;
 
     cb(
       lineGroup,
@@ -367,141 +556,850 @@ class SkeletalTranslator {
     );
   }
 
-  updateLineSkeleton(lineGroup, axesGroup, cubeBoneGroup, data) {
+  updateLineSkeleton(lineGroup, axesGroup, cubeBoneGroup, kinectronData, visible, headGroup) {
     // update cube / bones
-    this.updateCubeBones(data, cubeBoneGroup);
+    this.updateCubeBones(kinectronData, cubeBoneGroup, visible);
 
-    _.each(data, (d, idx) => {
+    // console.log(_.filter(kinectronData, ['name', 'Neck'])[0]);
+    const translatedData = this.translateKinectron([
+      _.filter(kinectronData, ['name', 'Head'])[0], 
+      _.filter(kinectronData, ['name', 'Neck'])[0],
+    ]);
+    headGroup.children[0].position.copy(translatedData.position.clone());
+    headGroup.children[0].quaternion.copy(translatedData.quaternion.clone());
+
+    // _.each(data, (d, idx) => {
       // update lines
-      this.updateLines(d, lineGroup);
+      // this.updateLines(d, lineGroup, visible);
 
       // update axes
-      this.updateAxes(d, axesGroup);
-    });
+      // this.updateAxes(d, axesGroup, visible);
+    // });
   }
 
-  updateLines(d, lineGroup) {
-    let lines = _.filter(lineGroup.children, (c) => {
+  updateLines(d, lineGroup, visible) {
+    _.each(_.filter(lineGroup.children, (c) => {
       return (c.jointNames.indexOf(this.kinectronMixamoLookup(d.name)) > -1);
-    });
-    if (lines.length > 0) {
-      _.each(lines, (l) => {
+    }), (l) => {
         l.geometry.vertices[l.jointNames.indexOf(this.kinectronMixamoLookup(d.name))].copy(
           new THREE.Vector3(
             d.cameraX,
             d.cameraY,
-            d.cameraZ,
+            -d.cameraZ,
           )
         );
         l.geometry.verticesNeedUpdate = true;
-      });
-    }
-  }
-
-  updateAxes(d, axesGroup) {
-    let axes = _.filter(axesGroup.children, (c) => {
-      return c.name == d.name;
     });
-    if (axes.length > 0) {
-      _.each(axes, (c) => {
-        c.position.copy(
-          new THREE.Vector3(
-            d.cameraX,
-            d.cameraY,
-            d.cameraZ,
-          )
-        );
-        c.quaternion.copy(
-          new THREE.Quaternion(
-            d.orientationX,
-            d.orientationY,
-            d.orientationZ,
-            d.orientationW,
-          ),
-        );
-      });
-    }
+    lineGroup.visible = visible;
   }
 
-  updateCubeBones(data, cubeBoneGroup) {
+  updateAxes(d, axesGroup, visible) {
+    _.each(_.filter(axesGroup.children, (a) => {
+      return a.name == d.name;
+    }), (a) => {
+      a.position.copy(
+        new THREE.Vector3(
+          d.cameraX,
+          d.cameraY,
+          d.cameraZ,
+        )
+      );
+      let jointRotation = new THREE.Quaternion(
+        d.orientationX,
+        d.orientationY,
+        d.orientationZ,
+        d.orientationW,
+      );
+      // if (a.name.toLowerCase().indexOf('left') !== -1) {
+      //   jointRotation = Common.leftToRightHanded(jointRotation);
+      // }
+      a.quaternion.copy(
+        jointRotation
+      );
+      // if (a.name.toLowerCase().indexOf('left') !== -1) {
+      //   a.rotation.y -= Math.PI/5;
+      // }
+    });
+    axesGroup.visible = visible;
+  }
+
+  updateCubeBones(data, cubeBoneGroup, visible) {
     _.each(cubeBoneGroup.children, (c) => {
       let jointData =_.filter(data, (d) => {
         return (c.jointNames.indexOf(this.kinectronMixamoLookup(d.name)) !== -1);
       });
       if (jointData.length > 0) {
-        let joint1pos = new THREE.Vector3( // first joint position
+        // update bone length
+        c.geometry = this.updateCubeBoneLength(c.jointNames[1], new THREE.Vector3(
           jointData[0].cameraX,
           jointData[0].cameraY,
           jointData[0].cameraZ,
-        );
-        let joint2pos = new THREE.Vector3( // second joint position
+        ).distanceTo(new THREE.Vector3(
           jointData[1].cameraX,
           jointData[1].cameraY,
           jointData[1].cameraZ,
-        );
+        )), c.size);
+        let translatedData = this.translateKinectron(jointData);
+        
+        c.position.copy(translatedData.position.clone());
+        c.quaternion.copy(translatedData.quaternion.clone());
+        c.jointData = jointData;
+        // if (c.name.toLowerCase().indexOf('left') !== -1) {
+        // } else if (c.name.toLowerCase().indexOf('right') !== -1) {
+        // }
+      }
+    });
+    cubeBoneGroup.visible = visible;
+  }
 
+  translateKinectron(jointData) {
+    const translatedData = {
+      position: new THREE.Vector3(),
+      quaternion: new THREE.Quaternion(),
+    };
+
+    const joint1quat = new THREE.Quaternion( // first joint quaternion
+      jointData[0].orientationX,
+      jointData[0].orientationY,
+      jointData[0].orientationZ,
+      jointData[0].orientationW,
+    );
+    const joint2quat = new THREE.Quaternion( // second joint quaternion
+      jointData[1].orientationX,
+      jointData[1].orientationY,
+      jointData[1].orientationZ,
+      jointData[1].orientationW,
+    );
+
+    const joint1pos = new THREE.Vector3( // first joint position
+      jointData[0].cameraX,
+      jointData[0].cameraY,
+      jointData[0].cameraZ,
+    );
+
+    const joint2pos = new THREE.Vector3( // second joint position
+      jointData[1].cameraX,
+      jointData[1].cameraY,
+      jointData[1].cameraZ,
+    );
+
+    switch (jointData[0].name) {
+      default:
+        translatedData.position.copy(joint1pos);
+        break;
+      case 'RightToeBase':
+      case 'LeftToeBase':
+      case 'Neck':
+      translatedData.position.copy(joint2pos);
+      break;
+    }
+
+    // const quat = new THREE.Quaternion(); // create one and reuse it
+    // quat.setFromUnitVectors(joint1pos.normalize(), joint2pos.normalize());
+    // const quatFlip = this.getOrient(jointData, quat);
+
+    // console.log(jointData[0].name + ' - ' + jointData[1].name);
+    // ['Head', 'Neck'],
+    // ['Neck', 'SpineShoulder'],
+    // ['SpineShoulder', 'SpineMid'],
+    // ['SpineMid', 'SpineBase'],
+
+    // ['SpineShoulder', 'ShoulderLeft'],
+    // ['ShoulderLeft', 'ElbowLeft'],
+    // ['ElbowLeft', 'WristLeft'],
+    // ['WristLeft', 'HandLeft'],
+    // ['HandLeft', 'HandTipLeft'],
+    // ['WristLeft', 'ThumbLeft'],
+
+    // ['SpineShoulder', 'ShoulderRight'],
+    // ['ShoulderRight', 'ElbowRight'],
+    // ['ElbowRight', 'WristRight'],
+    // ['WristRight', 'HandRight'],
+    // ['HandRight', 'HandTipRight'],
+    // ['WristRight', 'ThumbRight'],
+    
+    // ['SpineBase', 'HipLeft'],
+    // ['HipLeft', 'KneeLeft'],
+    // ['KneeLeft', 'AnkleLeft'],
+    // ['AnkleLeft', 'FootLeft'],
+
+    // ['SpineBase', 'HipRight'],
+    // ['HipRight', 'KneeRight'],
+    // ['KneeRight', 'AnkleRight'],
+    // ['AnkleRight', 'FootRight'],
+    switch (jointData[1].name) {
+      default:
+        translatedData.quaternion.copy(joint2quat.clone());
+        break;
+      case 'ShoulderLeft':
+      case 'SpineShoulder': // Neck, ShoulderLeft, ShoulderRight
+      // case 'RightToeBase':
+      // case 'LeftToeBase':
+        translatedData.quaternion.copy(joint1quat.clone());
+        break;
+      case 'RightToeBase':
+      case 'LeftToeBase':
+      case 'Head':
+        let jointRotation = new THREE.Quaternion();
+        jointRotation.setFromUnitVectors(joint2pos.clone().normalize(), joint1pos.clone().normalize()); 
+        translatedData.quaternion.copy(jointRotation.clone());
+        break;
+      // case 'LeftHandThumb3':
+      // case 'RightHandThumb3':
+      // case 'LeftHandIndex3':
+      // case 'RightHandIndex3':
+      // case 'RightToeBase':
+      // case 'LeftToeBase':
+        // translatedData.quaternion.copy(quatFlip.clone());
+        // c.applyQuaternion(quatFlip);
+        // let axis = joint1pos.clone().cross(joint2pos.clone());
+        // let angle = joint1pos.angleTo(joint2pos.clone());
+        // let matrix = new THREE.Matrix4();
+        // matrix.makeRotationAxis(axis.clone(), angle);
+        // translatedData.quaternion.copy(new THREE.Quaternion().setFromRotationMatrix(matrix.clone()));
+        // c.applyMatrix(matrix.clone());
+        // l.geometry.vertices[l.jointNames.indexOf(this.kinectronMixamoLookup(d.name))].copy(
+        //   new THREE.Vector3(
+        //     d.cameraX,
+        //     d.cameraY,
+        //     d.cameraZ,
+        //   )
+        // );
+        // var quaternion = new THREE.Quaternion(); // create one and reuse it
+
+        // quaternion.setFromUnitVectors(joint1pos.normalize(), joint2pos.normalize());
+        // var matrix = new THREE.Matrix4();
+        // matrix.makeRotationFromQuaternion(quaternion);
+
+        // translatedData.matrix = matrix;
+        // break;
+    }
+
+    // let v = new THREE.Euler();
+		// v.setFromQuaternion(translatedData.quaternion.clone());
+
+		// v.y += Math.PI; // Y is 180 degrees off
+		// v.z *= -1; // flip Z
+
+    // translatedData.quaternion = new THREE.Quaternion().setFromEuler(v);
+
+    // let jointRotation = new THREE.Quaternion();
+    // jointRotation.setFromUnitVectors(joint2pos.clone().normalize(), joint1pos.clone().normalize()); 
+    // // translatedData.quaternion.copy(jointRotation.clone());
+
+    // let v = new THREE.Euler();
+		// v.setFromQuaternion(jointRotation.clone());
+
+		// // v.y += Math.PI; // Y is 180 degrees off
+		// v.z *= -1; // flip Z
+
+    // translatedData.quaternion.copy(new THREE.Quaternion().setFromEuler(v));
+
+    // convert Quaternion from Left-handed coordinate system to Right-handed
+		// let q = new THREE.Quaternion(translatedData.quaternion.x, translatedData.quaternion.y, translatedData.quaternion.z, translatedData.quaternion.w);
+
+		// let v = new THREE.Euler();
+		// v.setFromQuaternion(q);
+
+		// // v.y += Math.PI; // Y is 180 degrees off
+		// // v.z *= -1; // flip Z
+
+		// translatedData.quaternion.copy(new THREE.Quaternion().setFromEuler(v));
+    
+    return translatedData;
+  }
+
+  // inverseTransformDirection( dir, matrix ) {
+  //   return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
+  // }
+
+  updateMeshGroup(meshes, kinectronData, prefix, bboxes) {
+    _.each(meshes, (c) => {
+      let jointData =_.filter(kinectronData, (d) => {
+        if (c.jointNames == undefined) { return false; }
+        return (c.jointNames.indexOf(d.name) !== -1);
+      });
+      if (jointData.length > 0) {
         // update bone length
-        c.geometry = this.updateCubeBoneLength(c.jointNames[1], joint1pos.distanceTo(joint2pos));
-
-        switch(c.jointNames[1]) {
-          default:
-            c.position.copy(joint1pos);
-            break;
+        // c.geometry = this.updateCubeBoneLength(c.jointNames[1], new THREE.Vector3(
+        //   jointData[0].cameraX,
+        //   jointData[0].cameraY,
+        //   jointData[0].cameraZ,
+        // ).distanceTo(new THREE.Vector3(
+        //   jointData[1].cameraX,
+        //   jointData[1].cameraY,
+        //   jointData[1].cameraZ,
+        // )));
+        let translatedData = this.translateKinectron(jointData);
+        
+        c.position.copy(translatedData.position.clone());
+        c.quaternion.copy(translatedData.quaternion.clone().multiply(c.srcQuat.clone()));
+        c.jointData = jointData;
+        // if (c.name.toLowerCase().indexOf('left') !== -1) {
+        // } else if (c.name.toLowerCase().indexOf('right') !== -1) {
+        // }
+        let bbox = bboxes[c.name];
+        if (bbox !== undefined) {
+          bbox.position.copy(c.position.clone());          
+          bbox.quaternion.copy(c.quaternion.clone());
+          bbox.update();
         }
+      }
+    });
+    // _.each(kinectronData, (d) => {
+    //   let jointName = this.kinectronMeshGroupKeys[d.name];
+    //   // console.log(jointName);
+    //   if (jointName !== undefined) {
+    //     let mesh = meshes[jointName];
+    //     if (mesh !== undefined) {
+    //       mesh.position.copy(
+    //         new THREE.Vector3(
+    //           d.cameraX,
+    //           d.cameraY,
+    //           d.cameraZ,
+    //         )
+    //       );
+    //       mesh.quaternion.copy(
+    //         new THREE.Quaternion(
+    //           d.orientationX,
+    //           d.orientationY,
+    //           d.orientationZ,
+    //           d.orientationW,
+    //         )
+    //       );
 
-        let joint1quat = new THREE.Quaternion( // first joint quaternion
-          jointData[0].orientationX,
-          jointData[0].orientationY,
-          jointData[0].orientationZ,
-          jointData[0].orientationW,
-        );
-        let joint2quat = new THREE.Quaternion( // second joint quaternion
-          jointData[1].orientationX,
-          jointData[1].orientationY,
-          jointData[1].orientationZ,
-          jointData[1].orientationW,
-        );
-        let joint1quatFlip = new THREE.Quaternion( // second joint quaternion
-          jointData[0].orientationX,
-          jointData[0].orientationZ,
-          jointData[0].orientationW,
-          jointData[0].orientationY,
-        );
+    //       let bbox = bboxes[jointName];
+    //       if (bbox !== undefined) {
+    //         bbox.position.copy(mesh.position.clone());          
+    //         bbox.quaternion.copy(mesh.quaternion.clone());
+    //         bbox.update();
+    //       }
+    //     }
+    //   }
+    // });
+  }
+  updateMixamoModel(boneList, kinectronData, prefix, cubeGroup) {
+    // this.updateByCubeBones(boneList, kinectronData, prefix, cubeGroup);
+    // this.updateByKinectronData(boneList, kinectronData, prefix, cubeGroup);
 
-        switch(c.jointNames[1]) {
-          default:
-            c.quaternion.copy(joint2quat.clone());
-            break;
-          case 'LeftShoulder':
-          case 'RightShoulder':
-            c.quaternion.copy(joint1quat.clone());
-            break;
-          case 'Neck':
-            c.quaternion.copy(joint1quatFlip.clone());
-            break;
-        }
+    // this.moveAvatar(boneList, kinectronData);
+    this.transformBones(boneList, kinectronData, prefix, !this.mirroredMovement);
+
+    // this.take3(boneList, kinectronData, prefix);
+  }
+
+  take3(boneList, data, prefix) {
+    _.each(this.kinectPairs, (pair) => {
+      let startPos = new THREE.Vector3(
+        data[this.kinectKeys.indexOf(pair[0])].cameraX,
+        data[this.kinectKeys.indexOf(pair[0])].cameraY,
+        data[this.kinectKeys.indexOf(pair[0])].cameraZ,
+      );
+      let endPos = new THREE.Vector3(
+        data[this.kinectKeys.indexOf(pair[1])].cameraX,
+        data[this.kinectKeys.indexOf(pair[1])].cameraY,
+        data[this.kinectKeys.indexOf(pair[1])].cameraZ,
+      );
+
+      let startQuat = new THREE.Quaternion(
+        data[this.kinectKeys.indexOf(pair[0])].orientationX,
+        data[this.kinectKeys.indexOf(pair[0])].orientationY,
+        data[this.kinectKeys.indexOf(pair[0])].orientationZ,
+        data[this.kinectKeys.indexOf(pair[0])].orientationW,
+      );
+      let endQuat = new THREE.Quaternion(
+        data[this.kinectKeys.indexOf(pair[1])].orientationX,
+        data[this.kinectKeys.indexOf(pair[1])].orientationY,
+        data[this.kinectKeys.indexOf(pair[1])].orientationZ,
+        data[this.kinectKeys.indexOf(pair[1])].orientationW,
+      );
+
+      const boneName = prefix + this.kinectronMixamoLookup(pair[0]);
+      
+      let bones = _.filter(boneList, ['name', boneName]);
+
+      if (bones.length > 0) {
+        let jointRotation = new THREE.Quaternion();
+        jointRotation.setFromUnitVectors(startPos.clone().normalize(), endPos.clone().normalize()); 
+        bones[0].quaternion.copy(jointRotation.clone());
+
+        // let axis = startPos.cross(endPos.multiplyScalar(1.1));
+        // let angle = startPos.angleTo(endPos.multiplyScalar(1.1));
+        // let matrix = new THREE.Matrix4().makeRotationAxis(axis, angle);
+        // bones[0].applyMatrix(matrix.clone());
+        // let s = startPos.distanceTo(endPos);
+        // bones[0].scale.set(s, s, s);
       }
     });
   }
 
-  buildKinectronSkeleton(data, cb) {
-    cb(
-      new THREE.Skeleton(_.map(this.kinectPairs, (pair) => {
-        return this.createBoneFromLine(
-          new THREE.Vector3(
-            data[this.kinectKeys.indexOf(pair[0])].cameraX,
-            data[this.kinectKeys.indexOf(pair[0])].cameraY,
-            data[this.kinectKeys.indexOf(pair[0])].cameraZ,
-          ),
-          new THREE.Vector3(
-            data[this.kinectKeys.indexOf(pair[1])].cameraX,
-            data[this.kinectKeys.indexOf(pair[1])].cameraY,
-            data[this.kinectKeys.indexOf(pair[1])].cameraZ,
-          ),
-          pair[0] + '-' + pair[1],
-        ).bone
-      }))
+  // Apply the rotations tracked by kinect to the joints.
+	transformBones(boneList, kinectronData, prefix, flip) {
+    // Transform boneTransform = bones[boneIndex];
+    // if(boneTransform == null || kinectManager == null)
+    //   return;
+    
+    // int iJoint = (int)joint;
+    // if(iJoint < 0)
+    //   return;
+    
+    for (let i = 0; i < kinectronData.length; i++) {
+      // Get Kinect joint orientation
+      // Quaternion jointRotation = kinectManager.GetJointOrientation(userId, iJoint, flip);
+      // if(jointRotation == Quaternion.identity)
+      //   return;
+      
+      let jointRotation = new THREE.Quaternion(
+        kinectronData[i].orientationX,
+        kinectronData[i].orientationY,
+        kinectronData[i].orientationZ,
+        kinectronData[i].orientationW,
+      );
+
+      const boneName = prefix + this.kinectronMixamoLookup(kinectronData[i].name);
+      // if (boneName.toLowerCase().indexOf('right') !== -1) {
+        jointRotation = Common.leftToRightHanded(jointRotation);
+      // } 
+      // else {
+        // let v = new THREE.Euler();
+        // v.setFromQuaternion(jointRotation);
+
+        // v.y += Math.PI; // Y is 180 degrees off
+        // // v.z *= -1; // flip Z
+    
+        // jointRotation = new THREE.Quaternion().setFromEuler(v);
+      // }
+
+      let bones = _.filter(boneList, ['name', boneName]);
+
+      if (bones.length > 0) {
+        if (boneName == 'mixamorigLeftShoulder') {
+          let start = new THREE.Vector3(
+            _.filter(kinectronData, ['name', 'SpineShoulder'])[0].cameraX,
+            -_.filter(kinectronData, ['name', 'SpineShoulder'])[0].cameraY,
+            _.filter(kinectronData, ['name', 'SpineShoulder'])[0].cameraZ,
+          ).normalize();
+
+          let end = new THREE.Vector3(
+            _.filter(kinectronData, ['name', 'ShoulderLeft'])[0].cameraX,
+            -_.filter(kinectronData, ['name', 'ShoulderLeft'])[0].cameraY,
+            _.filter(kinectronData, ['name', 'ShoulderLeft'])[0].cameraZ,
+          ).normalize();
+
+          jointRotation.setFromUnitVectors(start, end);
+        } 
+
+        if (boneName == 'mixamorigRightShoulder') {
+          let end = new THREE.Vector3(
+            _.filter(kinectronData, ['name', 'SpineShoulder'])[0].cameraX,
+            -_.filter(kinectronData, ['name', 'SpineShoulder'])[0].cameraY,
+            _.filter(kinectronData, ['name', 'SpineShoulder'])[0].cameraZ,
+          ).normalize();
+
+          let start = new THREE.Vector3(
+            _.filter(kinectronData, ['name', 'ShoulderRight'])[0].cameraX,
+            -_.filter(kinectronData, ['name', 'ShoulderRight'])[0].cameraY,
+            _.filter(kinectronData, ['name', 'ShoulderRight'])[0].cameraZ,
+          ).normalize();
+
+          jointRotation.setFromUnitVectors(start, end);
+        } 
+
+        // Smoothly transition to the new rotation
+        jointRotation = this.kinect2AvatarRot(bones[0], jointRotation);
+        jointRotation = this.getOrient(window.orient, jointRotation);
+
+        bones[0].quaternion.copy(jointRotation.clone());
+      }
+    }
+  }
+
+  // transformSpecialBone()
+	// {
+	// 	// Vector3 jointDir = kinectManager.GetDirectionBetweenJoints(userId, (int)jointParent, (int)joint, false, true);
+  //   // Quaternion jointRotation = jointDir != Vector3.zero ? Quaternion.FromToRotation(baseDir, jointDir) : Quaternion.identity;
+    
+		
+  //   //		if(!flip)
+  //   //		{
+  //   //			Vector3 mirroredAngles = jointRotation.eulerAngles;
+  //   //			mirroredAngles.y = -mirroredAngles.y;
+  //   //			mirroredAngles.z = -mirroredAngles.z;
+  //   //			
+  //   //			jointRotation = Quaternion.Euler(mirroredAngles);
+  //   //		}
+		
+	// 	if(jointRotation != Quaternion.identity)
+	// 	{
+	// 		// Smoothly transition to the new rotation
+	// 		Quaternion newRotation = Kinect2AvatarRot(jointRotation, boneIndex);
+			
+	// 		if(smoothFactor != 0f)
+	// 			boneTransform.rotation = Quaternion.Slerp(boneTransform.rotation, newRotation, smoothFactor * Time.deltaTime);
+	// 		else
+	// 			boneTransform.rotation = newRotation;
+	// 	}
+		
+	// }
+
+  // Converts kinect joint rotation to avatar joint rotation
+  // depending on joint initial rotation and offset rotation
+  kinect2AvatarRot(bone, jointRotation) {
+    // Apply the new rotation.
+    let newRotation = jointRotation.multiply(bone.srcQuaternion.clone());
+
+    // If an offset node is specified, combine the transform with its
+    // orientation to essentially make the skeleton relative to the node
+		// if (this.offsetNode != null)
+		// {
+		// 	// Grab the total rotation by adding the Euler and offset's Euler.
+		// 	let totalRotation = newRotation.eulerAngles + offsetNode.transform.rotation.eulerAngles;
+		// 	// Grab our new rotation.
+		// 	newRotation = Quaternion.Euler(totalRotation);
+		// }
+    
+    if (bone.parent !== undefined) {
+      if (bone.parent.srcQuaternion) {
+        // Grab the total rotation by adding the Euler and offset's Euler.
+        // let totalRotation = newRotation.eulerAngles + offsetNode.transform.rotation.eulerAngles;
+        // Grab our new rotation.
+        newRotation = newRotation.clone().multiply(bone.parent.quaternion.clone().inverse());
+      }
+    }
+
+    return newRotation;
+  }
+
+  moveAvatar(boneList, kinectronData) {
+    this.trans = new THREE.Vector3(
+      _.filter(kinectronData, ['name', 'SpineBase'])[0].cameraX,
+      _.filter(kinectronData, ['name', 'SpineBase'])[0].cameraY,
+      _.filter(kinectronData, ['name', 'SpineBase'])[0].cameraZ,
     );
+
+    //     // Get the position of the body and store it.
+		// this.trans = new THREE.Vector3();//kinectManager.GetUserPosition(UserID);
+		
+		// If this is the first time we're moving the avatar, set the offset. Otherwise ignore it.
+		if (!this.offsetCalibrated) {
+			this.offsetCalibrated = true;
+			
+			this.xOffset = !this.mirroredMovement ? this.trans.x * this.moveRate : -this.trans.x * this.moveRate;
+			this.yOffset = this.trans.y * this.moveRate;
+			this.zOffset = -this.trans.z * this.moveRate;
+			
+			// if(this.offsetRelativeToSensor)
+			// {
+			// 	this.cameraPos = window.camera.position.clone(); //new THREE.Vector3();//Camera.main.transform.position;
+				
+			// 	this.yRelToAvatar = (this.offsetNode !== null ? this.offsetNode.transform.position.y : this.transform.position.y) - this.cameraPos.y;
+			// 	this.relativePos = new THREE.Vector3(this.trans.x * this.moveRate, this.yRelToAvatar, this.trans.z * this.moveRate);
+			// 	this.offsetPos = this.cameraPos + this.relativePos;
+				
+			// 	if(this.offsetNode !== null)
+			// 	{
+			// 		this.offsetNode.transform.position = this.offsetPos;
+			// 	}
+			// 	else
+			// 	{
+			// 		this.transform.position = this.offsetPos;
+			// 	}
+			// }
+		}
+	
+		// Smoothly transition to the new position
+		this.targetPos = this.kinect2AvatarPos(this.trans, this.verticalMovement);
+    // debugger;
+		// if(this.smoothFactor) {
+		// 	this.bodyRoot.localPosition = new THREE.Vector3().Lerp(this.bodyRoot.localPosition, this.targetPos, this.smoothFactor * this.Time.deltaTime);
+    // } else {
+    //   this.bodyRoot.localPosition = this.targetPos;
+    // }
+    _.filter(boneList, ['name', 'mixamorigHips'])[0].position.copy(
+      this.targetPos.clone()
+    );
+  }
+  
+  // Converts Kinect position to avatar skeleton position, depending on initial position, mirroring and move rate
+	kinect2AvatarPos(jointPosition, bMoveVertically) {
+		let xPos =  0;
+		let yPos = 0;
+		let zPos = 0;
+		// debugger;
+		// If movement is mirrored, reverse it.
+		if(!this.mirroredMovement) {
+			xPos = jointPosition.x * this.moveRate - this.xOffset;
+    } else {
+			xPos = -jointPosition.x * this.moveRate - this.xOffset;
+    }
+
+		yPos = jointPosition.y * this.moveRate - this.yOffset;
+		zPos = -jointPosition.z * this.moveRate - this.zOffset;
+		
+		// If we are tracking vertical movement, update the y. Otherwise leave it alone.
+		let avatarJointPos = new THREE.Vector3(xPos, bMoveVertically ? yPos : 0, zPos);
+		
+		return avatarJointPos;
+	}
+
+  updateByCubeBones(boneList, kinectronData, prefix, cubeGroup) {
+    _.each(cubeGroup.children, (c) => {
+      let bones =_.filter(boneList, (b) => {
+        const jointName = prefix + this.kinectronMixamoLookup(c.name).toLowerCase();
+        // console.log(jointName + ' == ' + b.name.toLowerCase());
+        return (prefix + c.jointNames[1].toLowerCase() == b.name.toLowerCase());
+      });
+      if (bones.length > 0) {
+        // console.log(bones[0].name);
+        c.updateMatrix();
+        // let qq = new THREE.Quaternion();
+        // let quat = bones[0].getWorldQuaternion(qq);
+        switch (c.name.toLowerCase()) {
+          case 'mixamorigleftshoulder':
+          case 'mixamorigrightshoulder':
+            // quat.multiply(c.getWorldQuaternion(qq).inverse());
+            // // bones[0].rotation.order = 'YZX';
+            
+            // if (jointName.indexOf('left') !== -1) {
+            //   bones[0].rotation.x -= Math.PI;
+            // } else if (jointName.indexOf('right') !== -1) {
+            //   bones[0].rotation.x += Math.PI;
+            // }
+            
+            break;
+          case 'mixamorigleftupleg':
+          case 'mixamorigrightupleg':
+          default:
+            // quat.multiply(c.getWorldQuaternion(qq).inverse());
+            
+
+            // bones[0].quaternion.copy(c.quaternion.clone());
+            // bones[0].position.copy(c.position.clone());
+            // bones[0].rotation.order = 'YXZ';
+            // bones[0].matrix.copy(c.matrix.clone());
+            // console.log(bones[0]);
+            break;
+        }
+        // bones[0].quaternion.copy(quat.clone());
+      }
+    });
+    if (_.size(boneList) > 0) {
+      // console.log(_.filter(boneList, ['name', 'mixamorigHips'])[0]);
+      _.filter(boneList, ['name', 'mixamorigHips'])[0].parent.position.copy(
+        new THREE.Vector3(
+          _.filter(kinectronData, ['name', 'SpineBase'])[0].cameraX,
+          _.filter(kinectronData, ['name', 'SpineBase'])[0].cameraY,
+          _.filter(kinectronData, ['name', 'SpineBase'])[0].cameraZ,
+        )
+      );
+      _.filter(boneList, ['name', 'mixamorigHips'])[0].parent.rotation.y = Math.PI;
+    }
+  }
+
+  updateByKinectronData(boneList, kinectronData, prefix, cubeGroup) {
+    if (_.size(boneList) > 0) {
+      for (let i = 0; i < kinectronData.length; i++) {
+        const jointName = prefix + this.kinectronMixamoLookup(kinectronData[i].name).toLowerCase();
+        // console.log(jointName);
+        let pos = new THREE.Vector3(
+          _.filter(kinectronData, ['name', kinectronData[i].name])[0].cameraX,
+          _.filter(kinectronData, ['name', kinectronData[i].name])[0].cameraY,
+          _.filter(kinectronData, ['name', kinectronData[i].name])[0].cameraZ,
+        );
+        let quat = this.getOrient(window.orient, new THREE.Quaternion(
+          _.filter(kinectronData, ['name', kinectronData[i].name])[0].orientationX,
+          _.filter(kinectronData, ['name', kinectronData[i].name])[0].orientationY,
+          _.filter(kinectronData, ['name', kinectronData[i].name])[0].orientationZ,
+          _.filter(kinectronData, ['name', kinectronData[i].name])[0].orientationW,
+        ));
+        let bones;
+        switch (kinectronData[i].name) {
+          default:
+            bones = _.filter(boneList, (b) => { return b.name.toLowerCase() == jointName; });
+            if (bones.length > 0) {
+              bones[0].position.copy(
+                pos.clone()
+              );
+              bones[0].quaternion.copy(
+                quat.clone()
+              );
+            }
+            break;
+          case 'SpineBase':
+            bones = _.filter(boneList, ['name', 'mixamorigHips']);
+            if (bones.length > 0) {
+              bones[0].parent.position.copy(
+                pos.clone()
+              );
+            }
+
+            bones = _.filter(boneList, ['name', 'mixamorigSpine']);
+            if (bones.length > 0) {
+              bones[0].position.copy(
+                pos.clone()
+              );
+            
+              bones[0].quaternion.copy(
+                quat.clone()
+              );
+            }
+            break;
+        }
+      }
+    }
+  }
+
+  getDirection(obj) {
+    var e = obj.matrixWorld.elements;
+		return new THREE.Vector3(e[8], e[9], e[10]).normalize();
+  }
+
+  getOrient(orient, quat) {
+    let o = _.map(orient, (o) =>{
+      switch(o) {
+        default:
+        case 'x':
+          return quat.x;
+          break;
+        case 'y':
+          return quat.y;
+          break;
+        case 'z':
+          return quat.z;
+          break;
+        case 'w':
+          return quat.w;
+          break;
+        case 0:
+          return 0;
+          break;
+      }
+    });
+    return new THREE.Quaternion( // second joint quaternion
+      o[0],
+      o[1],
+      o[2],
+      o[3],
+    );
+  }
+
+  buildKinectronSkeleton(data, cb) {
+    let bones = _.map(this.kinectPairs, (pair) => {
+      return this.createBoneFromLine(
+        [new THREE.Vector3(
+          data[this.kinectKeys.indexOf(pair[0])].cameraX,
+          data[this.kinectKeys.indexOf(pair[0])].cameraY,
+          data[this.kinectKeys.indexOf(pair[0])].cameraZ,
+        ),
+        new THREE.Vector3(
+          data[this.kinectKeys.indexOf(pair[1])].cameraX,
+          data[this.kinectKeys.indexOf(pair[1])].cameraY,
+          data[this.kinectKeys.indexOf(pair[1])].cameraZ,
+        )],
+        [new THREE.Quaternion(
+          data[this.kinectKeys.indexOf(pair[0])].orientationX,
+          data[this.kinectKeys.indexOf(pair[0])].orientationY,
+          data[this.kinectKeys.indexOf(pair[0])].orientationZ,
+          data[this.kinectKeys.indexOf(pair[0])].orientationW,
+        ),
+        new THREE.Quaternion(
+          data[this.kinectKeys.indexOf(pair[1])].orientationX,
+          data[this.kinectKeys.indexOf(pair[1])].orientationY,
+          data[this.kinectKeys.indexOf(pair[1])].orientationZ,
+          data[this.kinectKeys.indexOf(pair[1])].orientationW,
+        )],
+        pair[0]
+      )
+    });
+    let hips = new THREE.Bone();
+    hips.name = 'Hips';
+    bones.unshift(hips)
+    // bones = this.createBVHStruct(bones);
+    cb(new THREE.Skeleton(bones));
+  }
+
+  createBVHStruct(bones) {
+    // hips: rightupleg: rightleg: rightfoot
+    // hips: leftupleg: leftleg: leftfoot
+    
+    // hips: spine: spine1: spine2: spine3: neck: head:
+    
+    // hips: spine: spine1: spine2: spine3: rightshoulder: rightarm: rightforearm: righthand: righthandthumb1: righthandthumb2: righthandthumb3:
+    // hips: spine: spine1: spine2: spine3: rightshoulder: rightarm: rightforearm: righthand: rightinhandindex: righthandindex1: righthandindex2: righthandindex3:
+    // hips: spine: spine1: spine2: spine3: rightshoulder: rightarm: rightforearm: righthand: rightinhandmiddle: righthandmiddle1: righthandmiddle2: righthandmiddle3:
+    // hips: spine: spine1: spine2: spine3: rightshoulder: rightarm: rightforearm: righthand: rightinhandring: righthandring1: righthandring2: righthandring3:
+    // hips: spine: spine1: spine2: spine3: rightshoulder: rightarm: rightforearm: righthand: rightinhandpinky: righthandpinky1: righthandpinky2: righthandpinky3:
+
+    // hips: spine: spine1: spine2: spine3: leftshoulder: leftarm: leftforearm: lefthand: lefthandthumb1: lefthandthumb2: lefthandthumb3:
+    // hips: spine: spine1: spine2: spine3: leftshoulder: leftarm: leftforearm: lefthand: leftinhandindex: lefthandindex1: lefthandindex2: lefthandindex3:
+    // hips: spine: spine1: spine2: spine3: leftshoulder: leftarm: leftforearm: lefthand: leftinhandmiddle: lefthandmiddle1: lefthandmiddle2: lefthandmiddle3:
+    // hips: spine: spine1: spine2: spine3: leftshoulder: leftarm: leftforearm: lefthand: leftinhandring: lefthandring1: lefthandring2: lefthandring3:
+    // hips: spine: spine1: spine2: spine3: leftshoulder: leftarm: leftforearm: lefthand: leftinhandpinky: lefthandpinky1: lefthandpinky2: lefthandpinky3:
+
+    //   ['Head', 'Neck'],
+    //   ['Neck', 'SpineShoulder'],
+    //   ['SpineShoulder', 'SpineMid'],
+    //   ['SpineMid', 'SpineBase'],
+
+    //   ['SpineShoulder', 'ShoulderLeft'],
+    //   ['ShoulderLeft', 'ElbowLeft'],
+    //   ['ElbowLeft', 'WristLeft'],
+    //   ['WristLeft', 'HandLeft'],
+    //   ['HandLeft', 'HandTipLeft'],
+    //   ['HandLeft', 'ThumbLeft'],
+
+    //   ['SpineShoulder', 'ShoulderRight'],
+    //   ['ShoulderRight', 'ElbowRight'],
+    //   ['ElbowRight', 'WristRight'],
+    //   ['WristRight', 'HandRight'],
+    //   ['HandRight', 'HandTipRight'],
+    //   ['HandRight', 'ThumbRight'],
+      
+    //   ['SpineBase', 'HipLeft'],
+    //   ['HipLeft', 'KneeLeft'],
+    //   ['KneeLeft', 'AnkleLeft'],
+    //   ['AnkleLeft', 'FootLeft'],
+
+    //   ['SpineBase', 'HipRight'],
+    //   ['HipRight', 'KneeRight'],
+    //   ['KneeRight', 'AnkleRight'],
+    //   ['AnkleRight', 'FootRight'],
+
+    let hips = _.filter(bones, ['name', 'Hips'])[0];
+
+    let rightupleg = _.filter(bones, ['name', 'HipRight'])[0];
+    let rightleg = _.filter(bones, ['name', 'KneeRight'])[0];
+    let rightfoot = _.filter(bones, ['name', 'AnkleRight'])[0];
+
+
+    let leftupleg = _.filter(bones, ['name', 'HipLeft'])[0];
+    let leftleg = _.filter(bones, ['name', 'KneeLeft'])[0];
+    let leftfoot = _.filter(bones, ['name', 'AnkleLeft'])[0];
+
+    let head = _.filter(bones, ['name', 'Head'])[0];
+    let neck = _.filter(bones, ['name', 'Neck'])[0];
+    let spine3 = _.filter(bones, ['name', 'SpineShoulder'])[0];
+    let spine2 = _.filter(bones, ['name', 'SpineMid'])[0];
+    let spine1 = _.filter(bones, ['name', 'SpineBase'])[0];
+    // let spine = _.filter(bones, ['name', 'Spine'])[0];
+    
+    
+    neck.add(head);
+    spine3.add(neck);
+    spine2.add(spine3);
+    spine1.add(spine2);
+    // spine.add(spine1);
+    hips.add(spine1);
+
+    rightleg.add(rightfoot);
+    rightupleg.add(rightleg);
+    hips.add(rightupleg);
+
+    leftleg.add(leftfoot);
+    leftupleg.add(leftleg);
+    hips.add(leftupleg);
+    
+    return bones;
   }
 
   buildKinectronQuats(data, cb) {
@@ -664,6 +1562,22 @@ class SkeletalTranslator {
     keyframe.quaternion.multiply(quat);
 
     return keyframe;
+  }
+
+  updateBVHSkeleton(bones, joints) {
+    if (!this.parentRotation) this.parentRotation = new THREE.Quaternion();
+    _.each(this.kinectPairs, (pair) => {
+      let startPos = new THREE.Vector3(
+        joints[this.kinectKeys.indexOf(pair[0])].cameraX,
+        joints[this.kinectKeys.indexOf(pair[0])].cameraY,
+        joints[this.kinectKeys.indexOf(pair[0])].cameraZ,
+      );
+      let endPos = new THREE.Vector3(
+        joints[this.kinectKeys.indexOf(pair[1])].cameraX,
+        joints[this.kinectKeys.indexOf(pair[1])].cameraY,
+        joints[this.kinectKeys.indexOf(pair[1])].cameraZ,
+      );      
+    });
   }
 }
 

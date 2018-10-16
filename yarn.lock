@@ -7241,6 +7241,10 @@ three-fbxloader-offical@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/three-fbxloader-offical/-/three-fbxloader-offical-1.0.0.tgz#db7d684ee65174b3044dd96e479519952520f4d7"
 
+three-ik@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/three-ik/-/three-ik-0.1.0.tgz#a3ca9798c0f101bba9b418dc2e6ae9e5c990208a"
+
 three-orbit-controls@^82.1.0:
   version "82.1.0"
   resolved "https://registry.yarnpkg.com/three-orbit-controls/-/three-orbit-controls-82.1.0.tgz#11a7f33d0a20ecec98f098b37780f6537374fab4"

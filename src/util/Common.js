@@ -4,7 +4,20 @@
 
 
 function Common() {
-  const self = this;
+	const self = this;
+
+	this.leftToRightHanded = function(srcQuaternion) {
+		// convert Quaternion from Left-handed coordinate system to Right-handed
+		let q = new THREE.Quaternion(-srcQuaternion.x, srcQuaternion.y, srcQuaternion.z, -srcQuaternion.w);
+
+		let v = new THREE.Euler();
+		v.setFromQuaternion(q);
+
+		// v.y += Math.PI; // Y is 180 degrees off
+		v.x *= -1; // flip Z
+
+		return new THREE.Quaternion().setFromEuler(v);
+	}
 
   this.getKeys = function (obj, append) {
 	  const all = {};

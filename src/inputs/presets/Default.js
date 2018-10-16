@@ -756,72 +756,108 @@ class DefaultPreset {
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
     this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
 
-    this.inputManager.registerCallback('keyboard', 'l', 'Following Camera - Low Angle', () => {
-      if (!this.scene.cameraControl.followingObj) {
-        this.scene.cameraControl.follow(
-          this.main.performers.performers[
-            Object.keys(this.main.performers.performers)[0]
-          ].performer.meshes.mixamorighips,
-          new THREE.Vector3(0, 0.5, 0),
-          new THREE.Vector3(0, 0, 7),
-        );
-      } else {
-        this.scene.cameraControl.clearFollow();
-      }
+    this.inputManager.registerCallback('keyboard', '1', 'Environment 1', () => {
+      this.main.state.environments.updateEnvironment(4);
     });
 
-    this.inputManager.registerCallback('keyboard', 'c', 'Vogue Clone', () => {
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].performerEffects.effects[0].clonePerformer();
+    this.inputManager.registerCallback('keyboard', '2', 'Environment 2', () => {
+      this.main.state.environments.updateEnvironment(5);
     });
 
-    this.inputManager.registerCallback('keyboard', 'q', 'Randomize All Mesh Scale', () => {
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].randomizeAll(5000);
+    this.inputManager.registerCallback('keyboard', '3', 'Environment 3', () => {
+      this.main.state.environments.updateEnvironment(6);
     });
 
-    this.inputManager.registerCallback('keyboard', 'w', 'Random Limb Scale', () => {
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].randomizeLimbs(5000);
+    this.inputManager.registerCallback('keyboard', 'q', 'Render Style 0', () => {
+      this.main.state.renderStyles.updateRenderStyle(0);
     });
 
-    this.inputManager.registerCallback('keyboard', 'n', 'Detach Left Arm', () => { // toggle environment input
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].unParentPart('leftshoulder', false);
+    this.inputManager.registerCallback('keyboard', 'w', 'Render Style 1', () => {
+      this.main.state.renderStyles.updateRenderStyle(2);
     });
 
-    this.inputManager.registerCallback('keyboard', 'm', 'Detach Right Arm', () => { // toggle environment input
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].unParentPart('rightshoulder', false);
+    this.inputManager.registerCallback('keyboard', 'e', 'Render Style 2', () => {
+      this.main.state.renderStyles.updateRenderStyle(6);
     });
 
-    this.inputManager.registerCallback('keyboard', ',', 'Detach Left Leg', () => { // toggle environment input
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].unParentPart('leftupleg', false);
+    this.inputManager.registerCallback('keyboard', 'r', 'Render Style 3', () => {
+      this.main.state.renderStyles.updateRenderStyle(5);
     });
 
-    this.inputManager.registerCallback('keyboard', '.', 'Detach Right Leg', () => { // toggle environment input
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].unParentPart('rightupleg', false);
+    this.inputManager.registerCallback('keyboard', 'a', 'Render Style 3', () => {
+      window.randomOrient();
     });
 
-    this.inputManager.registerCallback('keyboard', '/', 'Detach Head', () => { // toggle environment input
-      this.main.performers.performers[
-        Object.keys(this.main.performers.performers)[0]
-      ].unParentPart('head', false);
+    this.inputManager.registerCallback('keyboard', 's', 'Render Style 3', () => {
+      window.toggleLineVislble();
     });
 
-    this.inputManager.registerCallback('keyboard', 'space', 'Toggle Floor', () => { this.scene.environments.environments[0].toggleVisible(); });
+    // this.inputManager.registerCallback('keyboard', 'l', 'Following Camera - Low Angle', () => {
+    //   if (!this.scene.cameraControl.followingObj) {
+    //     this.scene.cameraControl.follow(
+    //       this.main.performers.performers[
+    //         Object.keys(this.main.performers.performers)[0]
+    //       ].performer.meshes.mixamorighips,
+    //       new THREE.Vector3(0, 0.5, 0),
+    //       new THREE.Vector3(0, 0, 7),
+    //     );
+    //   } else {
+    //     this.scene.cameraControl.clearFollow();
+    //   }
+    // });
+
+    // this.inputManager.registerCallback('keyboard', 'c', 'Vogue Clone', () => {
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].performerEffects.effects[0].clonePerformer();
+    // });
+
+    // this.inputManager.registerCallback('keyboard', 'q', 'Randomize All Mesh Scale', () => {
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].randomizeAll(5000);
+    // });
+
+    // this.inputManager.registerCallback('keyboard', 'w', 'Random Limb Scale', () => {
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].randomizeLimbs(5000);
+    // });
+
+    // this.inputManager.registerCallback('keyboard', 'n', 'Detach Left Arm', () => { // toggle environment input
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].unParentPart('leftshoulder', false);
+    // });
+
+    // this.inputManager.registerCallback('keyboard', 'm', 'Detach Right Arm', () => { // toggle environment input
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].unParentPart('rightshoulder', false);
+    // });
+
+    // this.inputManager.registerCallback('keyboard', ',', 'Detach Left Leg', () => { // toggle environment input
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].unParentPart('leftupleg', false);
+    // });
+
+    // this.inputManager.registerCallback('keyboard', '.', 'Detach Right Leg', () => { // toggle environment input
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].unParentPart('rightupleg', false);
+    // });
+
+    // this.inputManager.registerCallback('keyboard', '/', 'Detach Head', () => { // toggle environment input
+    //   this.main.performers.performers[
+    //     Object.keys(this.main.performers.performers)[0]
+    //   ].unParentPart('head', false);
+    // });
+
+    // this.inputManager.registerCallback('keyboard', 'space', 'Toggle Floor', () => { this.scene.environments.environments[0].toggleVisible(); });
 
     // Camera positions
-    this.inputManager.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); // enable / disable camera rotation
+    // this.inputManager.registerCallback('keyboard', 'r', 'Rotate Camera', this.scene.toggleRotation.bind(this.scene)); // enable / disable camera rotation
 
     // this.inputManager.registerCallback('keyboard', 'q', 'Fly Close', () => { // fly to close up shot
     //   this.scene.cameraControl.fly_to(
@@ -849,38 +885,38 @@ class DefaultPreset {
     //   );
     // });
 
-    this.inputManager.registerCallback('keyboard', 'e', 'Fly Wide', () => { // fly to wide shot
-      this.scene.cameraControl.fly_to(
-        Config.camera.wideShot.position,
-        new THREE.Vector3(0, 0, 0),
-        Config.camera.wideShot.look,
-        TWEEN.Easing.Quadratic.InOut,
-        'path',
-        3000,
-        1,
-        () => { console.log('Camera moved!'); },
-      );
-    });
+    // this.inputManager.registerCallback('keyboard', 'e', 'Fly Wide', () => { // fly to wide shot
+    //   this.scene.cameraControl.fly_to(
+    //     Config.camera.wideShot.position,
+    //     new THREE.Vector3(0, 0, 0),
+    //     Config.camera.wideShot.look,
+    //     TWEEN.Easing.Quadratic.InOut,
+    //     'path',
+    //     3000,
+    //     1,
+    //     () => { console.log('Camera moved!'); },
+    //   );
+    // });
 
-    this.inputManager.registerCallback('keyboard', 'g', 'Snorry Cam', this.inputManager.snorryCam.bind(this.inputManager)); // look at face
+    // this.inputManager.registerCallback('keyboard', 'g', 'Snorry Cam', this.inputManager.snorryCam.bind(this.inputManager)); // look at face
 
-    this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this.inputManager)); // first person view
+    // this.inputManager.registerCallback('keyboard', 'f', 'First Person', this.inputManager.firstPerson.bind(this.inputManager)); // first person view
 
-    this.inputManager.registerCallback('keyboard', 't', 'Follow Performer', this.inputManager.followPerformer.bind(this.inputManager)); // follow x position of performer
+    // this.inputManager.registerCallback('keyboard', 't', 'Follow Performer', this.inputManager.followPerformer.bind(this.inputManager)); // follow x position of performer
 
-    this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this.inputManager)); // follow x position of performer
+    // this.inputManager.registerCallback('keyboard', 'y', 'Top View', this.inputManager.flyTop.bind(this.inputManager)); // follow x position of performer
 
-    this.inputManager.registerCallback('keyboard', 'u', '3/4 View', this.inputManager.cutThreeQ.bind(this.inputManager)); // follow x position of performer
+    // this.inputManager.registerCallback('keyboard', 'u', '3/4 View', this.inputManager.cutThreeQ.bind(this.inputManager)); // follow x position of performer
 
-    this.inputManager.registerCallback('keyboard', 'i', 'Fly Out', this.inputManager.flyOut.bind(this.inputManager)); // follow x position of performer
+    // this.inputManager.registerCallback('keyboard', 'i', 'Fly Out', this.inputManager.flyOut.bind(this.inputManager)); // follow x position of performer
 
     const spread = 0.5;
     const scale = 0.001;
     const delay = 0.25;
-    this.inputManager.registerCallback('keyboard', 'left', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(-1,0,0), spread, scale, delay));
-    this.inputManager.registerCallback('keyboard', 'up', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(0,0,-1), spread, scale, delay));
-    this.inputManager.registerCallback('keyboard', 'right', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(1,0,0), spread, scale, delay));
-    this.inputManager.registerCallback('keyboard', 'down', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(0,0,1), spread, scale, delay));
+    // this.inputManager.registerCallback('keyboard', 'left', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(-1,0,0), spread, scale, delay));
+    // this.inputManager.registerCallback('keyboard', 'up', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(0,0,-1), spread, scale, delay));
+    // this.inputManager.registerCallback('keyboard', 'right', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(1,0,0), spread, scale, delay));
+    // this.inputManager.registerCallback('keyboard', 'down', 'Fly Out', this.inputManager.cannonize.bind(this.inputManager, new THREE.Vector3(0,0,1), spread, scale, delay));
   }
 }
 

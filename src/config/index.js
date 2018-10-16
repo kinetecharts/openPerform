@@ -8,7 +8,7 @@ module.exports = {
     outputPreset: 'Default',
     backgroundColor: '000000', // will be overridden by environment settings
     floorColor: 'ffffff', // will be overridden by environment settings
-    environment: 'space',
+    environment: 'grid',
     performer: {
       wireframe: false,
       color: null, // if null, will use color from performerColors (listed below)
@@ -24,6 +24,9 @@ module.exports = {
     },
     renderStyle: 'normal',
     performerOutline: false, // show glow around performer when mouse over them in the list
+    camera: {
+      home: new THREE.Vector3(0, 0.6858277036264001, 11.401716728423622),
+    },
   },
   debug: {
     bvh: {
@@ -38,7 +41,7 @@ module.exports = {
       ],
       autoplay: true,
     },
-    stats: false,
+    stats: true,
     console2html: false,
     axis: false,
     ar: false,
@@ -121,7 +124,7 @@ module.exports = {
   firstPersonedPerformer: null,
 
   environments: [],
-  availEnvironments: [/*'muse', 'island', */'water', 'forest', 'grid', /*'grid-light', 'gradient',*/ 'empty', 'space'],
+  availEnvironments: [/*'muse', 'island', */'water', 'forest', 'grid', /*'grid-light', 'gradient',*/ 'empty', 'space_station', 'solar_system', 'forest_monster'],
   currentEnvironment: '',
 
   renderStyles: [],
@@ -134,7 +137,7 @@ module.exports = {
     },
   },
   kinectron: {
-    ip: '192.168.1.250',
+    ip: '10.0.1.18',
     ports: {
       incoming: config.kinectron.ports.incoming,
     },

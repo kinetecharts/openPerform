@@ -9,6 +9,9 @@
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 import TWEEN from 'tween.js';
 
+require('three/examples/js/controls/TransformControls.js');
+require('three/examples/js/utils/SkeletonUtils.js');
+
 require('./../libs/BufferGeometryMerge.js');
 
 import PerformerEffects from './../effects/performer';
@@ -21,7 +24,7 @@ import Common from './../util/Common';
 import config from './../config';
 
 class Performer {
-  constructor(parent, inputId, performerId, type, leader, actions, inputManager, outputManager, options, character) {
+  constructor(parent, inputId, performerId, type, leader, actions, inputManager, outputManager, options, character, scene) {
     this.activeTimeout == null;
     this.ranges = {
       min: new THREE.Vector3(),
@@ -29,6 +32,8 @@ class Performer {
     }
     window.bonescale = 45;
     this.character = character;
+    window.lineVisible = true;
+    window.toggleLineVislble = () => { window.lineVisible = !window.lineVisible }
 
     this.inputManager = inputManager;
     this.outputManager = outputManager;
@@ -84,7 +89,7 @@ class Performer {
     this.material = options.material.toLowerCase();
     this.materials = ['Shader', 'Basic', 'Lambert', 'Phong', 'Standard'];
 
-    this.displayType = { value: 'riggedMesh', label: 'Mesh Group' };
+    this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
       { value: 'bvhMeshGroup', label: 'Mesh Group' },
       // { value: 'abstractLines', label: 'Abstract Lines' },
@@ -195,6 +200,9 @@ class Performer {
     switch (type) {
       case 'bvhMeshGroup':
         this.loadSceneBody(source, './models/json/avatar.json', hide, size, style, intensity);
+        break;
+      case 'meshGroup':
+        this.loadMeshGroupBody(source, './models/characters/alien/', hide, size, style, intensity);
         break;
       case 'riggedMesh':
         // this.loadColladaBody(source, './models/characters/astronaut/model.fbx', hide, size, style, intensity);
@@ -327,14 +335,17 @@ class Performer {
 
     this.setPerformer({
       meshes: {},
+      bones: {},
       newMeshes: [],
       keys: {},
       scene: null,
     });
 
+    console.log('Loading: ', filename);
 
     this.loader.loadFBX(filename, {}, (result) => {
       const meshes = {};
+      const bones = {};
       const newMeshes = {};
       const keys = {};
       let s = null;
@@ -346,25 +357,34 @@ class Performer {
             s = object;
             s.material.transparent = true;
             s.material.opacity = 1;
-      //      meshes[this.prefix+object.name.toLowerCase()] = object;
-      //      keys[this.prefix+object.name.toLowerCase()] = this.prefix+object.name.toLowerCase();
-      //      break;
+            s.receiveShadow = true;
+            s.castShadow = true;
+            // s.visible = false;
+           break;
         }
       });
+      window.character = result;
       result.scale.set(size, size, size);
       console.log(result);
 
       _.each(s.skeleton.bones, (b) => {
+        b.srcMatrix = b.matrix.clone();
+        b.srcMatrixWorld = b.matrixWorld.clone();
+        b.srcPosition = b.position.clone();
+        b.srcQuaternion = b.quaternion.clone();
+        b.srcScale = b.scale.x;
+
         meshes[b.name.toLowerCase()] = b;
-        b.srcScale = 0.1;
+        bones[b.name.toLowerCase()] = b;
         newMeshes[b.name.toLowerCase()] = b;
         keys[b.name.toLowerCase()] = b.name.toLowerCase();
       });
 
-      // console.log(meshes);
+      console.log('Bone Names: ' + _.map(bones, 'name'));
 
-      // console.log(meshes);
-      // console.log(keys);
+      this.skeletonHelper = new THREE.SkeletonHelper(result.children[2]);
+			this.skeletonHelper.skeleton = s.skeleton;
+			this.parent.add(this.skeletonHelper);
 
       result.clock = new THREE.Clock();
       result.mixer = new THREE.AnimationMixer(result);
@@ -375,11 +395,103 @@ class Performer {
 
       this.setPerformer({
         meshes,
+        bones,
         newMeshes,
         keys,
         scene: this.getScene(),
       });
+
+      this.addEffects([
+        this.character.effect
+      ]);
     });
+  }
+
+  loadMeshGroupBody(source, folderPath, hide, size, style, intensity) {
+    this.prefix = 'mixamorig';
+    
+    this.setPerformer({ loading: true });
+    this.loader.loadJSONs([
+      folderPath + 'chest.json',
+      folderPath + 'head.json',
+      folderPath + 'hips.json',
+      folderPath + 'lArm.json',
+      folderPath + 'lFoot.json',
+      folderPath + 'lForearm.json',
+      folderPath + 'lHand.json',
+      folderPath + 'lShin.json',
+      folderPath + 'lThigh.json',
+      folderPath + 'neck.json',
+      folderPath + 'rArm.json',
+      folderPath + 'rFoot.json',
+      folderPath + 'rForearm.json',
+      folderPath + 'rHand.json',
+      folderPath + 'rShin.json',
+      folderPath + 'rThigh.json',
+      folderPath + 'spine.json',
+      folderPath + 'spine2.json',
+      folderPath + 'spine3.json',
+    ], {}, (results) => {
+      // result.scene.visible = false;
+      // console.log(result.scene);
+      let scene = new THREE.Object3D();
+      let bboxes = new THREE.Object3D();
+      let meshes = {}
+      let boxes = {};
+      this.setScene(scene);
+      this.getScene().scale.set(size, size, size);
+      _.each(results, (result) => {
+        let mesh = new THREE.Mesh(result.geo, new THREE.MeshPhongMaterial({color: 0x626653}));
+        let box = new THREE.BoxHelper(mesh, 0xffff00);
+
+        mesh.srcQuat = mesh.quaternion.clone();
+        mesh.name = result.name;
+        box.name = result.name;
+
+        let jointNames = _.filter(this.skeletalTranslator.kinectPairs, (p) => {
+          return p.indexOf(this.skeletalTranslator.kinectronMeshGroupKeys[result.name]) !== -1;
+        })[0];
+
+        console.log(jointNames);
+
+        mesh.jointNames = jointNames;
+        box.jointNames = jointNames;
+
+        bboxes.add(box);
+        scene.add(mesh);
+
+        meshes[result.name] = mesh;
+        boxes[result.name] = box;
+      });
+
+      this.setPerformer({
+        keys: this.skeletalTranslator.bvhKeys,
+        meshes: meshes,
+        boxes: boxes,
+        newMeshes: {},
+        scene: scene,
+      });
+      this.parent.add(scene);
+      this.parent.add(bboxes);
+
+      console.log(_.map(meshes, 'name'));
+    });
+    // this.loader.loadScene(filename, {}, (result) => {
+    //   result.scene.visible = false;
+    //   console.log(result.scene);
+    //   this.setScene(result.scene);
+      
+    //   this.getScene().scale.set(size, size, size);
+      
+    //   this.setPerformer(this.parseBVHGroup(source, hide, style, intensity));
+    //   const s = this.getScene();
+    //   s.position.copy(this.getOffset().clone());
+    //   this.parent.add(s);
+    //   // this.addEffects([
+    //     // this.effects[4],
+    //   //   // this.effects[6] // Midi Streamer
+    //   // ]);// defaults
+    // });
   }
 
   loadSceneBody(source, filename, hide, size, style, intensity) {
@@ -493,6 +605,7 @@ class Performer {
     if (this.lineGroup) { this.parent.remove(this.lineGroup); }
     if (this.axesGroup) { this.parent.remove(this.axesGroup); }
     if (this.cubeBoneGroup) { this.parent.remove(this.cubeBoneGroup); }
+    if (this.skeletonHelper) { this.parent.remove(this.skeletonHelper); }
     this.scene = null;
   }
 
@@ -1323,13 +1436,13 @@ class Performer {
         );
       } else if (this.getPerformer().meshes[jointName]) {
         // console.log(this.getPerformer().meshes[jointName]);
-        this.getPerformer().meshes[jointName].position.set(
-          data[i].position.x,
-          data[i].position.y,
-          data[i].position.z,
-        );
+        // this.getPerformer().meshes[jointName].position.set(
+        //   data[i].position.x,
+        //   data[i].position.y,
+        //   data[i].position.z,
+        // );
 
-        this.getPerformer().meshes[jointName].quaternion.copy(data[i].quaternion);
+        // this.getPerformer().meshes[jointName].quaternion.copy(data[i].quaternion);
       }
     }
   }
@@ -1533,123 +1646,267 @@ class Performer {
   }
 
   updateFromKinectron(data) {
-    // [{
-    //   "depthX":0.5019103288650513,
-    //   "depthY":0.4254000782966614,
-    //   "colorX":0.5041413903236389,
-    //   "colorY":0.43979138135910034,
-    //   "cameraX":-0.01628301851451397,
-    //   "cameraY":0.14479131996631622,
-    //   "cameraZ":2.0694429874420166,
-    //   "orientationX":-0.0016110598808154464,
-    //   "orientationY":0.9982007741928101,
-    //   "orientationZ":-0.004516969434916973,
-    //   "orientationW":0.059768687933683395,
-    //   "name":"SpineBase"
-    // }]
-    // ["SpineBase","SpineMid","Neck","Head","ShoulderLeft","ElbowLeft","WristLeft","HandLeft","ShoulderRight","ElbowRight","WristRight","HandRight","HipLeft","KneeLeft","AnkleLeft","FootLeft","HipRight","KneeRight","AnkleRight","FootRight","SpineShoulder","HandTipLeft","ThumbLeft","HandTipRight","ThumbRight"]
+    if (this.getPerformer() == null) {
+      this.setPerformer({ loading: true });
+      
+      this.loader.loadMTL('./models/characters/alien/head.mtl', {}, (materials) => {
+        materials.preload();
+        this.loader.loadOBJ('./models/characters/alien/head.obj', { materials: materials }, (head, props) => {
+          const zOffset = 20;
+          const yOffset = 0.5;
 
-    this.prefix = 'mixamorig';
-    if (data !== null) {
-      if (this.getPerformer() === null) {
-        console.log(data);
-        this.setPerformer({ loading: false });
+          this.headGroup = new THREE.Object3D();
+          window.headGroup = this.headGroup;
+          // this.head = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({color:this.character.color}));
+          head.scale.set(0.15,0.15,0.15);
+          this.headGroup.add(head);
+          this.headGroup.position.z = 12;
+          this.headGroup.position.y = 0.899;
+          this.headGroup.scale.set(2,2,2);
+          this.parent.add(this.headGroup);
         
-        const sceneGroup = new THREE.Object3D();
-        let bones = [];
-        this.skeletalTranslator.createLineSkeleton(data, (lineGroup, axesGroup, cubeBoneGroup) => {
-          this.lineGroup = lineGroup;
-          this.parent.add(lineGroup);
-          
-          this.axesGroup = axesGroup;
-          this.parent.add(axesGroup);
 
-          this.cubeBoneGroup = cubeBoneGroup;
-          this.parent.add(cubeBoneGroup);
+          this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.sizes, window.lineVisible, (lineGroup, axesGroup, cubeBoneGroup) => {
+
+            this.lineGroup = lineGroup;
+            // this.lineGroup.position.z = zOffset;
+            // this.lineGroup.position.y = yOffset;
+            // this.parent.add(lineGroup);
+            
+            // this.axesGroup = axesGroup;
+            // this.axesGroup.position.z = zOffset;
+            // this.axesGroup.position.y = yOffset;
+            // this.parent.add(axesGroup);
+      
+            this.cubeBoneGroup = cubeBoneGroup;
+            this.cubeBoneGroup.position.z = zOffset - 7.35;
+            this.cubeBoneGroup.position.y = yOffset;
+            window.cubeBoneGroup = this.cubeBoneGroup;
+            this.parent.add(cubeBoneGroup);
+
+            this.lineGroup.scale.set(2, 2, 2);
+            // this.axesGroup.scale.set(2, 2, 2);
+            this.cubeBoneGroup.scale.set(2, 2, 2);
+          });
         });
+      });
+        // let size = 1 / this.modelShrink;
+        // this.origScale = size;
 
-        // this.loader.loadFBX('models/characters/flash/model.fbx', {}, (group) => {
-        //   sceneGroup.add(group);
-        //   this.setScene(sceneGroup);
-        //   group.traverse((child) => {
-        //     if (child instanceof THREE.SkinnedMesh && child.hasOwnProperty('skeleton')) {
-        //       console.log(_.map(child.skeleton.bones, 'name'));
-        //       // _.each(bones, (b) => {
-        //       //   b.quaternion.copy(_.filter(child.skeleton.bones, ['name', b.name])[0].quaternion.clone());
-        //       // });
-              
-        //       let meshes = {};
-        //       let newMeshes = {};
-        //       let keys = {};
-
-              
-        //       _.each(child.skeleton.bones, (b) => {
-        //         meshes[b.name] = b;
-        //         b.srcScale = 0.1;
-        //         newMeshes[b.name] = b;
-        //         keys[b.name] = b.name;
-        //         b.srcQuat = new THREE.Quaternion();
-        //         b.srcQuat.setFromRotationMatrix(b.matrixWorld);
-        //         b.srcQuat.conjugate();
-        //         b.srcPos = b.position.clone();
-        //       });
-
-        //       this.setPerformer({
-        //         loading: false,
-        //         mesh: child,
-        //         skeleton: group.children[0].skeleton,
-        //         scene: this.getScene(),
-        //         meshes: meshes,
-        //         newMeshes: newMeshes,
-        //         keys: keys,
-        //       });
-        //     }
-        //   });
-
-        //   group.scale.set(0.005, 0.005, 0.005);
-        //   group.rotation.y = Math.PI;
-        //   this.parent.add(this.getScene());
-
-        //   sceneGroup.clock = new THREE.Clock();
-        //   sceneGroup.mixer = new THREE.AnimationMixer(group);
-        //   sceneGroup.mixer.clipAction(group.animations[0]); // .stop();
-
-        // //   console.log(this.getScene());
-        // });
-      } else if (this.getPerformer() !== null && this.getPerformer().loading === false) {
-        this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data);
-        // for (let i = 0; i < data.length; i++) {
-        //   const jointName = this.skeletalTranslator.kinectronMixamoLookup(data[i].name);
-        //   if (this.getPerformer().meshes[jointName]) {
-        //     // this.getPerformer().meshes[jointName].position.copy(
-        //     //   new THREE.Vector3(
-        //     //     data[i].cameraX,
-        //     //     data[i].cameraY,
-        //     //     data[i].cameraZ,
-        //     //   ).multiplyScalar(50)
-        //     // );
-            
-        //     var quaternion = new THREE.Quaternion(
-        //       data[i].orientationX,
-        //       data[i].orientationY,
-        //       data[i].orientationZ,
-        //       data[i].orientationW,
-        //     );
-        //     // quaternion.setFromRotationMatrix(this.getPerformer().meshes[jointName]);
-        //     quaternion.multiply(this.getPerformer().meshes[jointName].srcQuat);
-            
-        //     var basicQuaternion = new THREE.Quaternion();
-        //     quaternion.slerp(basicQuaternion,0.5);
-
-        //     this.getPerformer().meshes[jointName].quaternion.copy(
-        //       quaternion.clone()
-        //     );
-        //     this.getPerformer().meshes[jointName].rotation.order = 'XYZ';
-        //   }
+        // console.log('Performer data source: ', this.type);
+        // switch (this.type) {
+        //   case 'bvh':
+        //   case 'clone_bvh':
+        //     size = (1 / this.modelShrink) / 2;
+        //     this.origScale = size;
+        //     break;
         // }
-      }
+        // this.loadPerformer(
+        //   this.type,
+        //   this.getType().value,
+        //   this.hiddenParts,
+        //   this.character.scale,
+        //   this.style,
+        //   this.intensity,
+        // );
+
+        // this.setPerformer({
+        //   loading: false,
+        //   scene: this.getScene(),
+        //   bones: bones,
+        //   newMeshes: newMeshes,
+        //   keys: keys,
+        // });
+    } else {
+      this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data, window.lineVisible, this.headGroup);
+      // this.skeletalTranslator.updateMixamoModel(this.getPerformer().bones, data, this.prefix, this.cubeBoneGroup);
+      // this.skeletalTranslator.updateMeshGroup(this.getPerformer().meshes, data, this.prefix, this.getPerformer().boxes);
     }
   }
+
+  // updateFromKinectron(data) {
+  //   // [{
+  //   //   "depthX":0.5019103288650513,
+  //   //   "depthY":0.4254000782966614,
+  //   //   "colorX":0.5041413903236389,
+  //   //   "colorY":0.43979138135910034,
+  //   //   "cameraX":-0.01628301851451397,
+  //   //   "cameraY":0.14479131996631622,
+  //   //   "cameraZ":2.0694429874420166,
+  //   //   "orientationX":-0.0016110598808154464,
+  //   //   "orientationY":0.9982007741928101,
+  //   //   "orientationZ":-0.004516969434916973,
+  //   //   "orientationW":0.059768687933683395,
+  //   //   "name":"SpineBase"
+  //   // }]
+  //   // ["SpineBase","SpineMid","Neck","Head","ShoulderLeft","ElbowLeft","WristLeft","HandLeft","ShoulderRight","ElbowRight","WristRight","HandRight","HipLeft","KneeLeft","AnkleLeft","FootLeft","HipRight","KneeRight","AnkleRight","FootRight","SpineShoulder","HandTipLeft","ThumbLeft","HandTipRight","ThumbRight"]
+
+  //   this.prefix = 'mixamorig';
+  //   if (data !== null) {
+  //     if (this.getPerformer() === null) {
+  //       console.log(data);
+  //       this.setPerformer({ loading: true });
+        
+  //       const sceneGroup = new THREE.Object3D();
+  //       let bones = [];
+  //       this.skeletalTranslator.createLineSkeleton(data, (lineGroup, axesGroup, cubeBoneGroup) => {
+  //         this.lineGroup = lineGroup;
+  //         this.parent.add(lineGroup);
+          
+  //         this.axesGroup = axesGroup;
+  //         this.parent.add(axesGroup);
+
+  //         this.cubeBoneGroup = cubeBoneGroup;
+  //         this.parent.add(cubeBoneGroup);
+  //       });
+
+  //       this.loader.loadFBX('models/characters/flash/model.fbx', {}, (group) => {
+  //         group.name = 'Root';
+  //         sceneGroup.add(group);
+  //         this.setScene(sceneGroup);
+  //         group.traverse((child) => {
+  //           if (child instanceof THREE.SkinnedMesh && child.hasOwnProperty('skeleton')) {
+  //             child.castShadow = true;
+  //             child.receiveShadow = true;
+              
+  //             console.log(_.map(child.skeleton.bones, 'name'));
+  //             // _.each(bones, (b) => {
+  //             //   b.quaternion.copy(_.filter(child.skeleton.bones, ['name', b.name])[0].quaternion.clone());
+  //             // });
+              
+  //             let bones = {};
+  //             let newMeshes = {};
+  //             let keys = {};
+
+              
+  //             _.each(child.skeleton.bones, (b) => {
+  //               bones[b.name] = b;
+  //               b.srcScale = 0.1;
+  //               newMeshes[b.name] = b;
+  //               keys[b.name] = b.name;
+  //               b.srcQuat = b.quaternion.clone();
+  //               b.srcPos = b.position.clone();
+  //               b.srcMatrix = b.matrix.clone();
+  //               b.srcMatrixWorld = b.matrixWorld.clone();
+  //               // console.log(b.parent);
+  //             });
+
+  //             this.setPerformer({
+  //               loading: false,
+  //               mesh: child,
+  //               skeleton: child.skeleton,
+  //               scene: this.getScene(),
+  //               bones: bones,
+  //               newMeshes: newMeshes,
+  //               keys: keys,
+  //             });
+  //           }
+  //         });
+
+  //         group.scale.set(0.005, 0.005, 0.005);
+  //         group.rotation.y = Math.PI;
+  //         this.parent.add(this.getScene());
+
+  //         // sceneGroup.clock = new THREE.Clock();
+  //         // sceneGroup.mixer = new THREE.AnimationMixer(group);
+  //         // sceneGroup.mixer.clipAction(group.animations[0]); // .stop();
+  //         console.log(this.getScene());
+  //       });
+  //     } else if (this.getPerformer() !== null && this.getPerformer().loading === false) {
+  //       this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data);
+  //       // this.skeletalTranslator.updateBVHSkeleton(this.getPerformer().meshes, data);
+  //       // this.skeletalTranslator.buildKinectronSkeleton(data, (skeleton) => {
+          
+  //       //   // var source = new THREE.SkeletonHelper(skeleton.bones[0]);
+  //       //   // source.skeleton = skeleton;
+  //       //   // this.parent.add(source);
+
+  //       //   // THREE.SkeletonUtils.retarget( this.getPerformer().mesh, skeleton, {
+  //       //   //   preserveMatrix: false,
+  //       //   //   preservePosition: false,
+  //       //   //   preserveHipPosition: false,
+  //       //   //   useTargetMatrix: false
+  //       //   // });
+  //       // })
+  //       let localPos = new THREE.Vector3();
+  //       _.each(this.getPerformer().bones, (b) => {
+  //         const jointName = this.skeletalTranslator.otherKinectronLookup(b.name);
+  //         // console.log(jointName);
+  //         // localPos = b.pos;
+  //         // b.traverseAncestors((parent) => {
+  //         //   if (parent.name !== 'Root') {
+  //         //     localPos
+  //         //   }
+  //         // });
+  //         // b.pos.copy(localPos.clone());
+  //       });
+
+  //       for (let i = 0; i < data.length; i++) {
+  //         const jointName = this.skeletalTranslator.kinectronMixamoLookup(data[i].name);
+  //         // const jointName = this.skeletalTranslator.kinectronOtherLookup(data[i].name);
+  //         if (this.getPerformer().bones[jointName]) {
+  //           // let obj = this.getPerformer().meshes[jointName]
+  //           // while(obj.parent.name !== 'Flash') {
+  //           //   // console.log(obj.parent.name);
+  //           //   obj = obj.parent;
+  //           //   this.skeletalTranslator.getRotationBetweenJoints(
+  //           //     new THREE.Vector3(
+  //           //       data[i].cameraX,
+  //           //       data[i].cameraY,
+  //           //       data[i].cameraZ,
+  //           //     )
+  //           //   );
+  //           // }
+
+  //           // this.getPerformer().meshes[jointName].position.copy(
+  //           //   new THREE.Vector3(
+  //           //     data[i].cameraX,
+  //           //     data[i].cameraY,
+  //           //     data[i].cameraZ,
+  //           //   )
+  //           // );
+
+  //           // this.getPerformer().meshes[jointName].quaternion.copy(
+  //           //   new THREE.Quaternion(
+  //           //     data[i].orientationX,
+  //           //     data[i].orientationY,
+  //           //     data[i].orientationZ,
+  //           //     data[i].orientationW,
+  //           //   )
+  //           // );
+            
+  //           // var quaternion = new THREE.Quaternion(
+  //           //   data[i].orientationX,
+  //           //   data[i].orientationY,
+  //           //   data[i].orientationZ,
+  //           //   data[i].orientationW,
+  //           // );
+  //           // // quaternion.setFromRotationMatrix(this.getPerformer().meshes[jointName]);
+  //           // quaternion.multiply(this.getPerformer().meshes[jointName].srcQuat);
+            
+  //           // var basicQuaternion = new THREE.Quaternion();
+  //           // quaternion.slerp(basicQuaternion,0.5);
+            
+  //           let cubeBones = _.filter(this.cubeBoneGroup.children, (c) => { return c.name == data[i].name; });
+  //           if (cubeBones.length > 0) {
+  //             cubeBones[0].updateMatrix();
+  //             this.getPerformer().bones[jointName].position.setFromMatrixPosition(cubeBones[0].matrixWorld.clone());
+  //             this.getPerformer().bones[jointName].quaternion.setFromRotationMatrix(cubeBones[0].matrixWorld.clone());
+
+  //             // this.getPerformer().meshes[jointName].updateMatrixWorld(); // important!
+  //             // _.each(this.getPerformer().meshes[jointName].children, (c) => {
+  //             //   c.applyMatrix( new THREE.Matrix4().getInverse(this.getPerformer().meshes[jointName].matrixWorld));
+  //             // });
+
+  //             // this.getPerformer().meshes[jointName].position.copy(cubeBones[0].position.clone());
+  //             // this.getPerformer().meshes[jointName].quaternion.copy(cubeBones[0].quaternion.clone());
+  //           }
+  //           // this.getPerformer().meshes[jointName].rotation.order = 'XYZ';
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   getRanges(x, y, z) {
     if (x < this.ranges.min.x) { this.ranges.min.x = x; console.log(this.ranges); }
