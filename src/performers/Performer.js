@@ -602,10 +602,12 @@ class Performer {
 
   clearScene() {
     this.parent.remove(this.getScene());
+    if (this.headGroup) { this.parent.remove(this.headGroup); }
     if (this.lineGroup) { this.parent.remove(this.lineGroup); }
     if (this.axesGroup) { this.parent.remove(this.axesGroup); }
     if (this.cubeBoneGroup) { this.parent.remove(this.cubeBoneGroup); }
     if (this.skeletonHelper) { this.parent.remove(this.skeletonHelper); }
+    this.performerEffects.removeAll();
     this.scene = null;
   }
 
@@ -1652,9 +1654,6 @@ class Performer {
       this.loader.loadMTL('./models/characters/' + this.character.name + '/head.mtl', {}, (materials) => {
         materials.preload();
         this.loader.loadOBJ('./models/characters/' + this.character.name + '/head.obj', { materials: materials }, (head, props) => {
-          const zOffset = 20;
-          const yOffset = 0.5;
-
           this.headGroup = new THREE.Object3D();
           window.headGroup = this.headGroup;
           // this.head = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({color:this.character.color}));
@@ -1666,7 +1665,7 @@ class Performer {
           this.parent.add(this.headGroup);
         
 
-          this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.bones, this.character.boneType, window.lineVisible, (lineGroup, axesGroup, cubeBoneGroup) => {
+          this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.bones, this.character.boneType, window.lineVisible, (lineGroup, axesGroup, cubeBoneGroup, cubeBones) => {
 
             this.lineGroup = lineGroup;
             // this.lineGroup.position.z = zOffset;
@@ -1679,14 +1678,29 @@ class Performer {
             // this.parent.add(axesGroup);
       
             this.cubeBoneGroup = cubeBoneGroup;
-            this.cubeBoneGroup.position.z = zOffset - 7.35;
-            this.cubeBoneGroup.position.y = yOffset;
+            this.cubeBoneGroup.position.z = this.character.offset.z;
+            this.cubeBoneGroup.position.y = this.character.offset.y;
             window.cubeBoneGroup = this.cubeBoneGroup;
             this.parent.add(cubeBoneGroup);
+
+            this.setScene(this.cubeBoneGroup);
 
             this.lineGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
             // this.axesGroup.scale.set(2, 2, 2);
             this.cubeBoneGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
+
+            this.setPerformer({
+              loading: false,
+              scene: this.getScene(),
+              meshes: cubeBones,
+              // bones: bones,
+              // newMeshes: newMeshes,
+              // keys: keys,
+            });
+
+            this.addEffects([
+              this.character.effect
+            ]);
           });
         });
       });
@@ -1709,14 +1723,6 @@ class Performer {
         //   this.style,
         //   this.intensity,
         // );
-
-        // this.setPerformer({
-        //   loading: false,
-        //   scene: this.getScene(),
-        //   bones: bones,
-        //   newMeshes: newMeshes,
-        //   keys: keys,
-        // });
     } else {
       if (this.cubeBoneGroup !== undefined && this.cubeBoneGroup.children.length > 0) {
         this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data, window.lineVisible, this.headGroup);

@@ -8,7 +8,7 @@ module.exports = {
     outputPreset: 'Default',
     backgroundColor: '000000', // will be overridden by environment settings
     floorColor: 'ffffff', // will be overridden by environment settings
-    environment: 'grid',
+    environment: 'solar_system',
     performer: {
       wireframe: false,
       color: null, // if null, will use color from performerColors (listed below)
@@ -90,7 +90,7 @@ module.exports = {
     },
   },
 
-  bvhChooserModal: true,
+  bvhChooserModal: false,
 
   keyboardModal: false,
   keyboardContent: document.createElement('div'),

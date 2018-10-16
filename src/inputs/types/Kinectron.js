@@ -18,6 +18,7 @@ class KinectronInput {
     this.callbacks = {};
     this.events = [];
     this.labels = [];
+    this.nextFrameTimeouts = {};
     
     this.savedData = require('./Kinectron-Data.js');
 
@@ -33,7 +34,7 @@ class KinectronInput {
     this.kinectron = new Kinectron(config.kinectron.ip);
     this.kinectron.makeConnection();
     this.kinectron.startBodies((bodies) => {
-      _.each(_.filter(bodies.bodies, 'tracked'), (body) => {        
+      _.each(this.validateBodies(bodies.bodies), (body) => {        
         // body.joints.unshift({
         //   'depthX':0,
         //   'depthY':0,
@@ -51,6 +52,11 @@ class KinectronInput {
         // this.saveData('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
       });
     });
+  }
+
+  validateBodies(bodies) {
+    const performerLimit = 3;
+    return _.filter(bodies, 'tracked').slice(0, performerLimit);
   }
 
   zipWithNames(joints) {
@@ -73,14 +79,17 @@ class KinectronInput {
     console.log(this.savedData);
   }
 
-  playbackData() {
-    this.playNextFrame(_.cloneDeep(this.savedData));
+  playbackData(ids) {
+    _.each(ids, (id) => {
+      this.playNextFrame(_.cloneDeep(this.savedData), id);
+    });
   }
 
-  playNextFrame(data) {
-    if (this.nextFrameTimeout) { clearTimeout(this.nextFrameTimeout); }
+  playNextFrame(data, id) {
+    if (this.nextFrameTimeouts[id]) { clearTimeout(this.nextFrameTimeouts[id]); }
     if (data.length > 0) {
       let d = data.shift(); 
+      d['id'] = id;
       this.callbacks['body'](
         d['id'],
         d['data'],
@@ -96,9 +105,9 @@ class KinectronInput {
           looping: false,
         }
       );
-      this.nextFrameTimeout = setTimeout(this.playNextFrame.bind(this, data), 1000/10);
+      this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, data, id), 1000/10);
     } else {
-      this.nextFrameTimeout = setTimeout(this.playNextFrame.bind(this, _.cloneDeep(this.savedData)  ), 1);
+      this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, _.cloneDeep(this.savedData), id), 1);
     }
   }
 

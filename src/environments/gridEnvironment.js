@@ -26,7 +26,7 @@ class GridEnvironment {
     this.options = {
       bgColor: '#' + this.defaults.backgroundColor,
       floorColor: '#' + this.defaults.floorColor,
-      floorSize: 50,
+      floorSize: 100,
       numLines: 25,
     };
 
@@ -88,10 +88,12 @@ class GridEnvironment {
     this.removeElements();
 
     this.gridFloor = new THREE.GridHelper(floorSize / 2, numLines, color, color);
+    window.gridFloor = this.gridFloor;
     this.gridFloor.castShadow = true;
     this.gridFloor.receiveShadow = true;
     this.gridFloor.visible = true;
-    this.gridFloor.position.z = 10;
+    this.gridFloor.position.z = 16;
+    this.gridFloor.position.y = -0.8999999999999999;
     this.elements.push(this.gridFloor);
     this.parent.add(this.gridFloor);
   }
@@ -102,7 +104,8 @@ class GridEnvironment {
       new THREE.ShadowMaterial({ opacity: 0.9 })
     );
     this.shadowFloor.rotation.x = -Math.PI/2;
-    this.shadowFloor.position.z = 10;
+    this.shadowFloor.position.z = 16;
+    this.shadowFloor.position.y = -0.8999999999999999;
     this.shadowFloor.receiveShadow = true;
     this.parent.add(this.shadowFloor);
     this.elements.push(this.shadowFloor);

@@ -21,13 +21,20 @@ class Ribbons {
     this.color = new THREE.Color(color);
     this.lightColor = new THREE.Color().setHSL(this.color.getHSL().h, this.color.getHSL().s, this.color.getHSL().l + 0.1);
 
-    this.targets = ['righthand', 'lefthand', 'rightfoot', 'leftfoot'];
-    this.possibleTargets = ['hips',
-      'rightupleg', 'rightleg', 'rightfoot',
-      'leftupleg', 'leftleg', 'leftfoot',
-      'spine', 'spine3', 'head',
-      'rightarm', 'rightforearm', 'righthand',
-      'leftarm', 'leftforearm', 'lefthand',
+    this.targets = ['wristleft', 'wristright'];
+    this.possibleTargets = [
+      'spineshoulder',
+      'spinemid',
+      'shoulderleft',
+      'elbowleft',
+      'wristleft',
+      'shoulderright',
+      'elbowright',
+      'wristright',
+      'hipleft',
+      'kneeleft',
+      'hipright',
+      'kneeright',
     ];
 
     this.ribbons = [];
@@ -100,7 +107,8 @@ class Ribbons {
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
-      if (_.filter(this.targets, t => 'mixamorig' + t === d.name.toLowerCase()).length > 0) {
+      // console.log(this.ribbons[idx]);
+      if (_.filter(this.targets, t => '' + t === d.name.toLowerCase()).length > 0) {
         if (this.ribbons[idx]) {
           const time = performance.now();
           if (time - this.ribbons[idx].lastRibbonUpdateTime > 50) {

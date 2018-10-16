@@ -19,13 +19,20 @@ class ParticleSystem {
     this.parent = parent;
     this.color = new THREE.Color(color);
 
-    this.targets = ['rightfoot', 'leftfoot', 'head', 'righthand', 'lefthand'];
-    this.possibleTargets = ['hips',
-      'rightupleg', 'rightleg', 'rightfoot',
-      'leftupleg', 'leftleg', 'leftfoot',
-      'spine', 'spine3', 'head',
-      'rightarm', 'rightforearm', 'righthand',
-      'leftarm', 'leftforearm', 'lefthand',
+    this.targets = ['wristleft', 'wristright', 'ankleleft', 'ankleright'];
+    this.possibleTargets = [
+      'spineshoulder',
+      'spinemid',
+      'shoulderleft',
+      'elbowleft',
+      'wristleft',
+      'shoulderright',
+      'elbowright',
+      'wristright',
+      'hipleft',
+      'kneeleft',
+      'hipright',
+      'kneeright',
     ];
 
     this.systems = [];
@@ -35,11 +42,11 @@ class ParticleSystem {
       positionRandomness: 0.05,
       velocity: new THREE.Vector3(),
       velocityRandomness: 0.05,
-      color: '#' + this.color.getHexString(),
+      color: '#3d4034',
       colorRandomness: 0.01,
       turbulence: 0,
-      lifetime: 1,
-      size: 15,
+      lifetime: 2,
+      size: 60,
       sizeRandomness: 15,
       position: new THREE.Vector3(),
     };
@@ -66,7 +73,7 @@ class ParticleSystem {
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
-      if (_.filter(this.targets, t => `mixamorig${t}` == d.name.toLowerCase()).length > 0) {
+      if (_.filter(this.targets, t => '' + t == d.name.toLowerCase()).length > 0) {
         if (!this.systems[idx]) {
           this.systems[idx] = new THREE.GPUParticleSystem({
             maxParticles: 3000,

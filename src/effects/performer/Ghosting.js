@@ -22,8 +22,8 @@ class Ghosting {
     this.trailInterval = null;
 
     this.options = {
-      rate: 0.5,
-      life: 1.25,
+      rate: 0.75,
+      life: 1.75,
       size: 1,
       isPlaying: true,
       opacity: 0.75,

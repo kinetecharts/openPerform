@@ -355,12 +355,12 @@ class SkeletalTranslator {
       // ['SpineBase', 'HipLeft'],
       ['HipLeft', 'KneeLeft'],
       ['KneeLeft', 'AnkleLeft'],
-      // ['AnkleLeft', 'FootLeft'],
+      ['AnkleLeft', 'FootLeft'],
 
       // ['SpineBase', 'HipRight'],
       ['HipRight', 'KneeRight'],
       ['KneeRight', 'AnkleRight'],
-      // ['AnkleRight', 'FootRight'],
+      ['AnkleRight', 'FootRight'],
     ];
   }
 
@@ -517,6 +517,7 @@ class SkeletalTranslator {
     let lineGroup = new THREE.Object3D();
     let axesGroup = new THREE.Object3D();
     let cubeBoneGroup = new THREE.Object3D();
+    let cubeBones = [];
 
     _.each(this.kinectPairs, (pair) => {
       let startPos = new THREE.Vector3(
@@ -550,7 +551,7 @@ class SkeletalTranslator {
       //   color,
       // ));
 
-      cubeBoneGroup.add(this.createCubeBone(
+      let cubeBone = this.createCubeBone(
         pair[0],
         startPos.distanceTo(endPos),
         startPos,
@@ -559,8 +560,11 @@ class SkeletalTranslator {
         color,
         bones[pair[0]],
         type,
-      ));
+      );
+      cubeBones[pair] = cubeBone;
+      cubeBoneGroup.add(cubeBone);
     });
+    
 
     // _.each(data, (d) => {
     //   axesGroup.add(this.createAxisIndicator(d));
@@ -573,7 +577,8 @@ class SkeletalTranslator {
     cb(
       lineGroup,
       axesGroup,
-      cubeBoneGroup
+      cubeBoneGroup,
+      cubeBones
     );
   }
 
@@ -651,7 +656,7 @@ class SkeletalTranslator {
       let jointData =_.filter(data, (d) => {
         return (c.jointNames.indexOf(this.kinectronMixamoLookup(d.name)) !== -1);
       });
-      if (jointData.length > 0) {
+      if (jointData.length > 1) {
         // update bone length
         c.geometry = this.updateCubeBoneLength(c.jointNames[1], new THREE.Vector3(
           jointData[0].cameraX,
@@ -710,8 +715,8 @@ class SkeletalTranslator {
       default:
         translatedData.position.copy(joint1pos);
         break;
-      case 'RightToeBase':
-      case 'LeftToeBase':
+      // case 'RightToeBase':
+      // case 'LeftToeBase':
       case 'Neck':
       translatedData.position.copy(joint2pos);
       break;
@@ -760,8 +765,8 @@ class SkeletalTranslator {
       // case 'LeftToeBase':
         translatedData.quaternion.copy(joint1quat.clone());
         break;
-      case 'RightToeBase':
-      case 'LeftToeBase':
+      // case 'RightToeBase':
+      // case 'LeftToeBase':
       case 'Head':
         let jointRotation = new THREE.Quaternion();
         jointRotation.setFromUnitVectors(joint2pos.clone().normalize(), joint1pos.clone().normalize()); 

@@ -6,6 +6,13 @@ class DefaultPreset {
     this.inputManager = inputManager;
     this.main = main;
     this.scene = scene;
+    this.environmentTimer = null;
+    this.environmentIds = [4, 5, 6];
+    this.environmentIdx = 2;
+
+    this.effectsTimer = null;
+    this.effectsIds = [0, 5, 2, 6];
+    this.effectsIdx = 1;
   }
 
   initCallbacks(type) {
@@ -751,6 +758,21 @@ class DefaultPreset {
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
+    this.inputManager.registerCallback('keyboard', 'space', 'Start Routine', () => {
+      if (this.effectsTimer !== null) { clearInterval(this.effectsTimer); this.effectsTimer = null; }
+      
+      this.effectsTimer = setInterval(() => {
+        this.main.state.renderStyles.updateRenderStyle(this.effectsIds[this.effectsIdx]);
+        this.effectsIdx++
+        if (this.effectsIdx > this.effectsIds.length-1) {
+          this.effectsIdx = 0;
+          this.main.state.environments.updateEnvironment(this.environmentIds[this.environmentIdx]);
+          this.environmentIdx++;
+          if (this.environmentIdx > this.environmentIds.length-1) { this.environmentIdx = 0; }
+        }
+      }, 1000 * 3);
+    });
+
     this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
 
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));

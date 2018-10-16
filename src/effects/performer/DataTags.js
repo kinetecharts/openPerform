@@ -20,13 +20,20 @@ class DataTags {
 
     this.color = color;
 
-    this.targets = ['rightshoulder', 'leftshoulder'];
-    this.possibleTargets = ['hips',
-      'rightupleg', 'rightleg', 'rightfoot',
-      'leftupleg', 'leftleg', 'leftfoot',
-      'spine', 'spine3', 'head',
-      'rightarm', 'rightforearm', 'righthand',
-      'leftarm', 'leftforearm', 'lefthand',
+    this.targets = ['wristleft', 'wristright', 'ankleright', 'ankleleft'];
+    this.possibleTargets = [
+      'spineshoulder',
+      'spinemid',
+      'shoulderleft',
+      'elbowleft',
+      'wristleft',
+      'shoulderright',
+      'elbowright',
+      'wristright',
+      'hipleft',
+      'kneeleft',
+      'hipright',
+      'kneeright',
     ];
 
     this.tags = [];
@@ -35,8 +42,8 @@ class DataTags {
       padding: [0, 0, 0, 0],
       showName: true,
       showPosition: true,
-      showRotation: true,
-      showQuat: true,
+      showRotation: false,
+      showQuat: false,
     };
     this.fontsReady = false;
 
@@ -72,7 +79,7 @@ class DataTags {
     const font = _.filter(this.fonts, { name: 'regular' })[0].font;
     const texture = _.filter(this.fonts, { name: 'regular' })[0].texture;
 
-    const textScale = 0.0005;
+    const textScale = 0.002;
 
     // draw text first to get dimensions
     const tag = this.createTextMesh(
@@ -154,10 +161,20 @@ class DataTags {
   update(data, currentPose, distances) {
     let idx = 0;
     data.traverse((d) => {
-      if (_.filter(this.targets, t => `mixamorig${t}` == d.name.toLowerCase()).length > 0) {
+      if (_.filter(this.targets, t => '' + t == d.name.toLowerCase()).length > 0) {
         if (this.tags[idx]) {
           if (this.tags[idx]) {
             const gPos = new THREE.Vector3().setFromMatrixPosition(d.matrixWorld);
+
+            
+            // console.log(this.tags[idx]);
+            if (d.name.toLowerCase().indexOf('right') !== -1) {
+              gPos.x += 0.15;
+            } else if (d.name.toLowerCase().indexOf('left') !== -1) {
+              this.tags[idx].children[0].geometry.computeBoundingBox();
+              // console.log(this.tags[idx].children[0].geometry.boundingBox.max.x);
+              gPos.x -= this.tags[idx].children[0].geometry.boundingBox.max.x/375 - 0.15;
+            }
 
             this.tags[idx].position.copy(gPos.clone());
 
@@ -166,7 +183,7 @@ class DataTags {
               options.text += d.name + '\n';
             }
             if (this.options.showPosition) {
-              options.text += 'pos(' + gPos.x.toFixed(3) + ', ' + gPos.y.toFixed(3) + ', ' + gPos.z.toFixed(3) + ')\n';
+              options.text += '{ x: ' + gPos.x.toFixed(3) + ', y: ' + gPos.y.toFixed(3) + ', z: ' + gPos.z.toFixed(3) + ' }\n';
             }
             if (this.options.showRotation) {
               options.text += 'rot(' + d.rotation.x.toFixed(3) + ', ' + d.rotation.y.toFixed(3) + ', ' + d.rotation.z.toFixed(3) + ')\n';

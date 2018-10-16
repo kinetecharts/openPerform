@@ -32,6 +32,21 @@ class ForestMonsterEnvironment {
     // this.initFloor(25);
     this.initLights();
     this.initMirror();
+    this.initShadowFloor(100);
+
+  }
+
+  initShadowFloor(size) {
+    this.shadowFloor = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry( size, size, 1 ),
+      new THREE.ShadowMaterial({ opacity: 0.9 })
+    );
+    this.shadowFloor.rotation.x = -Math.PI/2;
+    this.shadowFloor.position.z = 16;
+    this.shadowFloor.position.y = -0.8999999999999999;
+    this.shadowFloor.receiveShadow = true;
+    this.parent.add(this.shadowFloor);
+    this.elements.push(this.shadowFloor);
   }
 
   toggleVisible(val) {
@@ -108,7 +123,7 @@ class ForestMonsterEnvironment {
   }
 
   initSpace() {
-    this.loader.loadGLTF('../models/environments/shift_happens_-_forest_diorama/scene.gltf', {}, (gltf) => {
+    this.loader.loadGLTF('../models/environments/alien/scene.gltf', {}, (gltf) => {
       this.gltf = gltf;
       window.gltf = this.gltf.scene;
       
@@ -126,9 +141,9 @@ class ForestMonsterEnvironment {
         }
       });
 
-      gltf.scene.scale.set(0.0065, 0.0065, 0.0065);
-      gltf.scene.position.set(-12.699999999999992, -12.099999999999987, 25.200000000000003);
-      gltf.scene.rotation.set(0, 27.270796326794898, 0);
+      gltf.scene.scale.set(20, 20, 20);
+      gltf.scene.position.set(-7.699999999999992, 35.4, 66.1);
+      gltf.scene.rotation.set(-0.01, 28.270796326794898, 0.03);
 
       if (this.gltf.animations.length > 0) {
         this.gltf.clock = new THREE.Clock();
