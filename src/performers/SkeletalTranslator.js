@@ -437,7 +437,7 @@ class SkeletalTranslator {
     ];
 
     // console.log(names);
-    let geometry = this.updateCubeBoneLength(names[1], length, bone, type);
+    let geometry = this.createCubeGeo(names[1], length, bone, type);
     let cube = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
       color: bone.color,
       flatShading: true,
@@ -455,7 +455,15 @@ class SkeletalTranslator {
     return cube;
   }
 
-  updateCubeBoneLength(name, length, bone, type) {
+  updateCubeGeo(geometry, name, length, bone, type) {
+    if (length !== geometry.length) {
+      geometry = this.createCubeGeo(name, length, bone, type);
+    }
+    geometry.length = length;
+    return geometry;
+  }
+
+  createCubeGeo(name, length, bone, type) {
     let geometry;
     switch(type) {
       default:
@@ -488,6 +496,8 @@ class SkeletalTranslator {
         geometry.translate(0, -(length/2), 0);
         break;
     }
+    geometry.length = length;
+    geometry.srcLength = length;
     return geometry;
   }
 
@@ -658,7 +668,7 @@ class SkeletalTranslator {
       });
       if (jointData.length > 1) {
         // update bone length
-        c.geometry = this.updateCubeBoneLength(c.jointNames[1], new THREE.Vector3(
+        c.geometry = this.updateCubeGeo(c.geometry, c.jointNames[1], new THREE.Vector3(
           jointData[0].cameraX,
           jointData[0].cameraY,
           jointData[0].cameraZ,
@@ -849,7 +859,7 @@ class SkeletalTranslator {
       });
       if (jointData.length > 0) {
         // update bone length
-        // c.geometry = this.updateCubeBoneLength(c.jointNames[1], new THREE.Vector3(
+        // c.geometry = this.createCubeGeo(c.jointNames[1], new THREE.Vector3(
         //   jointData[0].cameraX,
         //   jointData[0].cameraY,
         //   jointData[0].cameraZ,

@@ -131,7 +131,7 @@
 #performerTable tbody {
   display: block;
   max-height: 95px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #performerTable thead,

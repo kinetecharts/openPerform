@@ -25,8 +25,8 @@ class DotShiftStyle {
     this.name = 'Dot Shift';
 
     this.options = {
-      dotScale: 8,
-      shiftAmt: 0.02,
+      dotScale: 3,
+      shiftAmt: 0.463,
     };
 
     this.container = $('#scenes');

@@ -42,12 +42,17 @@ class Environments {
     return this.environments;
   }
 
+  toggleEnvironment(val) {
+    this.hideAll();
+    this.show(val);
+  }
+  
   updateEnvironment(val) {
     this.add(this.availEnvironments[val], this.defaults);
   }
 
   add(type, defaults) {
-    this.removeAll();
+    // this.removeAll();
     switch (type) {
       case 'forest':
         this.environments.push(new ForestEnvironment(this.renderer, this.parent, this.performers, defaults));
@@ -78,6 +83,30 @@ class Environments {
         break;
     }
     this.currentEnvironment = type;
+  }
+
+  hideAll() {
+    _.each(this.environments, (environment) => {
+      environment.setVisible(false);
+    });
+  }
+
+  hide(inputId) {
+    if (this.environments[inputId]) {
+      this.environments[inputId].setVisible(false);
+    }
+  }
+
+  showAll() {
+    _.each(this.environments, (environment) => {
+      environment.setVisible(true);
+    });
+  }
+
+  show(inputId) {
+    if (this.environments[inputId]) {
+      this.environments[inputId].setVisible(true);
+    }
   }
 
   removeAll() {

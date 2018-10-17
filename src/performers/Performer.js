@@ -1659,8 +1659,9 @@ class Performer {
           // this.head = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({color:this.character.color}));
           head.scale.set(this.character.headScale, this.character.headScale, this.character.headScale);
           this.headGroup.add(head);
-          this.headGroup.position.z = this.character.headOffset.z;
+          this.headGroup.position.x = this.character.headOffset.x;
           this.headGroup.position.y = this.character.headOffset.y;
+          this.headGroup.position.z = this.character.headOffset.z;
           this.headGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
           this.parent.add(this.headGroup);
         
@@ -1678,8 +1679,9 @@ class Performer {
             // this.parent.add(axesGroup);
       
             this.cubeBoneGroup = cubeBoneGroup;
-            this.cubeBoneGroup.position.z = this.character.offset.z;
+            this.cubeBoneGroup.position.x = this.character.offset.x;
             this.cubeBoneGroup.position.y = this.character.offset.y;
+            this.cubeBoneGroup.position.z = this.character.offset.z;
             window.cubeBoneGroup = this.cubeBoneGroup;
             this.parent.add(cubeBoneGroup);
 

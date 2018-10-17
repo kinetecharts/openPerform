@@ -67,10 +67,13 @@ class SolarSystemEnvironment {
   }
 
   setVisible(val) {
-    console.log(val);
+    // console.log(val);
     this.visible = val;
     this.elements.forEach((element) => {
       element.visible = val;
+    });
+    this.lights.forEach((light) => {
+      light.visible = val;
     });
   }
 
@@ -171,7 +174,7 @@ class SolarSystemEnvironment {
       window.moon = moon;
       
       this.moon.scene.traverse((child) => {
-        console.log(child);
+        // console.log(child);
         switch (child.type) {
           default:
             break;

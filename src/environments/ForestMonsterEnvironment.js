@@ -58,10 +58,13 @@ class ForestMonsterEnvironment {
   }
 
   setVisible(val) {
-    console.log(val);
+    // console.log(val);
     this.visible = val;
     this.elements.forEach((element) => {
       element.visible = val;
+    });
+    this.lights.forEach((light) => {
+      light.visible = val;
     });
   }
 

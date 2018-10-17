@@ -143,7 +143,7 @@ class Scene {
 
   initVRScene(inputs, defaults, callback) {
     // / Global : this.renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new THREE.WebGLRenderer(/*{ antialias: true, alpha: true }*/);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.w, this.h);
     this.renderer.setClearColor(new THREE.Color('#' + defaults.backgroundColor), 0);

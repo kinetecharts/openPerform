@@ -39,7 +39,7 @@ class Loader {
   }
 
   loadGLTF(url, props, cb) {
-    new THREE.GLTFLoader().load(url, (result) => { cb(result, props); }, this.onError);
+    new THREE.GLTFLoader().load(url, (result) => { cb(result, props); }, this.onProgress, this.onError);
   }
 
   loadOBJ(url, props, cb) {

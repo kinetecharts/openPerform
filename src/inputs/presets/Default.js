@@ -766,7 +766,7 @@ class DefaultPreset {
         this.effectsIdx++
         if (this.effectsIdx > this.effectsIds.length-1) {
           this.effectsIdx = 0;
-          this.main.state.environments.updateEnvironment(this.environmentIds[this.environmentIdx]);
+          this.main.state.environments.toggleEnvironment(this.environmentIdx);
           this.environmentIdx++;
           if (this.environmentIdx > this.environmentIds.length-1) { this.environmentIdx = 0; }
         }
@@ -777,6 +777,10 @@ class DefaultPreset {
 
     this.inputManager.registerCallback('keyboard', '-', 'Toggle GUI', this.main.toggleGUI.bind(this.main));
     this.inputManager.registerCallback('keyboard', '=', 'Toggle Fullscreen', this.main.toggleFullscreen.bind(this.main));
+
+    this.inputManager.registerCallback('keyboard', '`', 'Environment 1', () => {
+      this.main.state.environments.toggleEnvironment(1);
+    });
 
     this.inputManager.registerCallback('keyboard', '1', 'Environment 1', () => {
       this.main.state.environments.updateEnvironment(4);

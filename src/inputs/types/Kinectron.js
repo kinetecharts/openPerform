@@ -28,6 +28,8 @@ class KinectronInput {
     this.initializeKinectron();
 
     window.playbackData = this.playbackData.bind(this);
+    window.stopAllPlayback = this.stopAllPlayback.bind(this);
+    window.stopPlayback = this.stopPlayback.bind(this);
   }
 
   initializeKinectron() {
@@ -79,6 +81,16 @@ class KinectronInput {
     console.log(this.savedData);
   }
 
+  stopAllPlayback() {
+    _.each(this.nextFrameTimeouts, (nextFrameTimeout) => {
+      if (nextFrameTimeout) { clearTimeout(nextFrameTimeout); nextFrameTimeout = null; }
+    });
+  }
+
+  stopPlayback(id) {
+    if (this.nextFrameTimeouts[id]) { clearTimeout(this.nextFrameTimeouts[id]); this.nextFrameTimeouts[id] = null; }
+  }
+
   playbackData(ids) {
     _.each(ids, (id) => {
       this.playNextFrame(_.cloneDeep(this.savedData), id);
@@ -86,7 +98,7 @@ class KinectronInput {
   }
 
   playNextFrame(data, id) {
-    if (this.nextFrameTimeouts[id]) { clearTimeout(this.nextFrameTimeouts[id]); }
+    if (this.nextFrameTimeouts[id]) { clearTimeout(this.nextFrameTimeouts[id]); this.nextFrameTimeouts[id] = null; }
     if (data.length > 0) {
       let d = data.shift(); 
       d['id'] = id;

@@ -46,8 +46,8 @@ module.exports = {
     axis: false,
     ar: false,
   },
-  inputs: ['Kinectron', 'KinectTransport', 'Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
-  outputs: ['MidiController'],
+  inputs: ['Kinectron', 'Keyboard', 'Mouse'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  outputs: [/*'MidiController'*/],
   effects: [/*'Vogue',*/ 'Ghosting', 'Ribbons', 'Particles', 'Data Tags', 'Movement Sculpture', /*, 'Midi Stream'*/],
   performerColors: [
     'DA1619',

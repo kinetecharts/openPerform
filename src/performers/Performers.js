@@ -22,8 +22,8 @@ class Performers {
     this.characters = [
       {
         name: 'robot',
-        offset: this.charOffset,
-        scale: 2, headScale: 2, headOffset: { z: 12.5, y: 0.15 },
+        offset: { x: 3, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 2, headOffset: { x: 3, y: 0.15, z: 12.5 },
         effect: 'Data Tags', color: 0x6e6e6e,
         boneType: 'box',
         bones: {
@@ -64,8 +64,8 @@ class Performers {
       },
       {
         name: 'astronaut',
-        offset: this.charOffset,
-        scale: 2, headScale: 0.625, headOffset: { z: 12.5, y: 0.4 },
+        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 0.625, headOffset: { x: 0, y: 0.4, z: 12.5 },
         effect: 'Ghosting', color: 0x888888,
         boneType: 'cylinder',
         bones: {
@@ -106,8 +106,8 @@ class Performers {
       },
       {
         name: 'alien',
-        offset: this.charOffset,
-        scale: 2, headScale: 0.175, headOffset: { z: 12.5, y: 0.4 },
+        offset: { x: -3, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 0.175, headOffset: { x: -3, y: 0.4, z: 12.5 },
         effect: 'Particles', color: 0x3d4034,
         boneType: 'poly',
         bones: {
@@ -183,7 +183,7 @@ class Performers {
           this.inputManager,
           this.outputManager,
           options,
-          this.characters[Math.floor(Math.random()*this.characters.length)],
+          this.characters[_.size(this.performers)], //Math.floor(Math.random()*this.characters.length)
           this.scene,
         );
         console.log('Added performer: ', _.size(this.performers));
