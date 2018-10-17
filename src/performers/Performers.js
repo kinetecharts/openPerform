@@ -186,7 +186,7 @@ class Performers {
           this.characters[_.size(this.performers)], //Math.floor(Math.random()*this.characters.length)
           this.scene,
         );
-        console.log('Added performer: ', _.size(this.performers));
+        // console.log('Added performer: ', _.size(this.performers));
       }
     }
   }

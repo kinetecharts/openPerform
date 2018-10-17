@@ -51,6 +51,10 @@ class KinectronInput {
         //   'orientationW':0,
         // });
         this.callbacks['body']('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
+        this.callbacks['body']('Kinectron_User_' + body.trackingId + '_1', this.zipWithNames(body.joints), 'kinectron');
+        this.callbacks['body']('Kinectron_User_' + body.trackingId + '_2', this.zipWithNames(body.joints), 'kinectron');
+        
+        
         // this.saveData('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
       });
     });
@@ -102,21 +106,9 @@ class KinectronInput {
     if (data.length > 0) {
       let d = data.shift(); 
       d['id'] = id;
-      this.callbacks['body'](
-        d['id'],
-        d['data'],
-        d['type'],
-        null,
-        {
-          play: () => {},
-          pause: () => {},
-          stop: () => {},
-          loop: () => {},
-          noLoop: () => {},
-          playing: false,
-          looping: false,
-        }
-      );
+      this.callbacks['body'](d['id'], d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      this.callbacks['body'](d['id']+"_1", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      this.callbacks['body'](d['id']+"_2", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
       this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, data, id), 1000/10);
     } else {
       this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, _.cloneDeep(this.savedData), id), 1);

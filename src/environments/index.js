@@ -35,7 +35,9 @@ class Environments {
 
     this.updateEnvironment = this.updateEnvironment.bind(this);
 
-    this.add(this.defaultEnvironment, this.defaults); // default
+    this.add('solar_system', this.defaults); // default
+    this.add('space_station', this.defaults); // default
+    this.add('forest_monster', this.defaults); // default
   }
 
   getEnvironments() {

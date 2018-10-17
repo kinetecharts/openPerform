@@ -66,6 +66,19 @@ class ForestMonsterEnvironment {
     this.lights.forEach((light) => {
       light.visible = val;
     });
+
+    this.toggleSkybox(val);
+  }
+
+  toggleSkybox(visible) {
+    switch(visible) {
+      case true:
+        this.initSkybox();
+        break;
+      case false:
+        this.parent.remove(this.skyBox);
+        break;
+    }
   }
 
   initLights() {
@@ -126,44 +139,64 @@ class ForestMonsterEnvironment {
   }
 
   initSpace() {
-    this.loader.loadGLTF('../models/environments/alien/scene.gltf', {}, (gltf) => {
-      this.gltf = gltf;
-      window.gltf = this.gltf.scene;
-      
-      this.gltf.scene.traverse((child) => {
-        // console.log(child);
-        switch (child.type) {
-          default:
-            break;
-          case 'Mesh':
-            // child.material.transparent = true;
-            // child.material.opacity = 0.25;
-            child.castShadow = true;
-            child.receiveShadow = true;
-            break;
-        }
+    this.loader.loadMTL('./models/environments/alien/beach.mtl', {}, (materials) => {
+      materials.preload();
+      this.loader.loadOBJ('./models/environments/alien/beach.obj', { materials: materials }, (obj, props) => {
+        window.obj = obj;
+        obj.scale.set(20, 20, 20);
+        obj.position.set(-6.5, 0.8999999999999997, 57.6);
+        obj.rotation.set(-0.01, 94.18, 0.019);
+        console.log(obj.material);
+
+        this.elements.push(obj);
+        this.parent.add(obj);
       });
-
-      gltf.scene.scale.set(20, 20, 20);
-      gltf.scene.position.set(-7.699999999999992, 35.4, 66.1);
-      gltf.scene.rotation.set(-0.01, 28.270796326794898, 0.03);
-
-      if (this.gltf.animations.length > 0) {
-        this.gltf.clock = new THREE.Clock();
-        this.gltf.mixer = new THREE.AnimationMixer(this.gltf.scene);
-        this.gltf.mixer.clipAction(gltf.animations[0]).play();
-      }
-      
-      this.elements.push(gltf.scene);
-      this.parent.add(gltf.scene);
     });
+    // this.loader.loadGLTF('../models/environments/alien/scene.gltf', {}, (gltf) => {
+    //   this.gltf = gltf;
+    //   window.gltf = this.gltf.scene;
+      
+    //   this.gltf.scene.traverse((child) => {
+    //     // console.log(child);
+    //     switch (child.type) {
+    //       default:
+    //         break;
+    //       case 'Mesh':
+    //       child.material.refractionRatio = 0;
+    //       child.material.roughness = 0;
+    //         // console.log(child.material);
+    //         // child.material = new THREE.MeshPhongMaterial({
+    //         //   color: child.material.color,
+    //         //   flatShading:true
+    //         // });
+    //         // child.material.transparent = true;
+    //         // child.material.opacity = 0.25;
+    //         child.castShadow = true;
+    //         child.receiveShadow = true;
+    //         break;
+    //     }
+    //   });
+
+    //   gltf.scene.scale.set(20, 20, 20);
+    //   gltf.scene.position.set(-7.699999999999992, 35.4, 66.1);
+    //   gltf.scene.rotation.set(-0.01, 28.270796326794898, 0.03);
+
+    //   if (this.gltf.animations.length > 0) {
+    //     this.gltf.clock = new THREE.Clock();
+    //     this.gltf.mixer = new THREE.AnimationMixer(this.gltf.scene);
+    //     this.gltf.mixer.clipAction(gltf.animations[0]).play();
+    //   }
+      
+    //   this.elements.push(gltf.scene);
+    //   this.parent.add(gltf.scene);
+    // });
   }
 
   initSkybox() {
     const cubeMap = new THREE.CubeTexture([]);
     cubeMap.format = THREE.RGBFormat;
 
-    this.loader.loadImage('textures/de38ad4f55903add2fdbe290bcc6ef79.png', {}, (image) => {
+    this.loader.loadImage('textures/newmoon.png', {}, (image) => {
         const getSide = (x, y) => {
             const size = 1024;
 
@@ -201,7 +234,7 @@ class ForestMonsterEnvironment {
     );
 
     this.parent.add(this.skyBox);
-    this.elements.push(this.skyBox);
+    // this.elements.push(this.skyBox);
   }
 
   initFloor(size) {

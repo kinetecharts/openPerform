@@ -44,8 +44,8 @@ class GroupMenu extends React.Component {
     if (this.props.performers.length < 1) {
       return false;
     }
-    console.log(this.props.performers.getCloneGroups());
-    console.log(this.props.performers.getPerformers());
+    // console.log(this.props.performers.getCloneGroups());
+    // console.log(this.props.performers.getPerformers());
     return (
       <Panel className="groupMenu" /* defaultExpanded */>
         <Panel.Heading>

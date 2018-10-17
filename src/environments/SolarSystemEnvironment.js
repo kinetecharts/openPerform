@@ -70,11 +70,24 @@ class SolarSystemEnvironment {
     // console.log(val);
     this.visible = val;
     this.elements.forEach((element) => {
-      element.visible = val;
+      element.visible = this.visible;
     });
     this.lights.forEach((light) => {
-      light.visible = val;
+      light.visible = this.visible;
     });
+
+    this.toggleSkybox(this.visible);
+  }
+
+  toggleSkybox(visible) {
+    switch(visible) {
+      case true:
+        this.initSkybox();
+        break;
+      case false:
+        this.parent.remove(this.skyBox);
+        break;
+    }
   }
 
   initSpace() {
@@ -121,7 +134,6 @@ class SolarSystemEnvironment {
             const canvas = document.createElement('canvas');
             canvas.width = size;
             canvas.height = size;
-            
 
             const context = canvas.getContext('2d');
             context.drawImage(image, -x * size, -y * size);
@@ -153,7 +165,7 @@ class SolarSystemEnvironment {
     );
 
     this.parent.add(this.skyBox);
-    this.elements.push(this.skyBox);
+    // this.elements.push(this.skyBox);
   }
 
   initFloor(size) {

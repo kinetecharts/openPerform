@@ -49,7 +49,7 @@ class PerformerEffects {
         this.effects.push(new MidiStream(effect, this.parent, this.color));
         break;
     }
-    console.log(this.effects);
+    // console.log(this.effects);
   }
 
   remove(effect) {

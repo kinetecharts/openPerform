@@ -51,20 +51,69 @@ class SpaceStationEnvironment {
     this.lights.forEach((light) => {
       light.visible = val;
     });
+
+    this.toggleSkybox(val);
+  }
+
+  toggleSkybox(visible) {
+    switch(visible) {
+      case true:
+        this.initSkybox();
+        break;
+      case false:
+        this.parent.remove(this.skyBox);
+        break;
+    }
   }
 
   initSpace() {
     this.loader.loadGLTF('../models/environments/space_station/scene.gltf', {}, (gltf) => {
       this.gltf = gltf;
       window.gltf = this.gltf.scene;
-      
       this.gltf.scene.traverse((child) => {
         // console.log(child);
         switch (child.type) {
           default:
             break;
           case 'Mesh':
-            child.material.flatShading = true;
+            if (child.material.color.r.toFixed(1) == 0.8
+              && child.material.color.g.toFixed(1) == 0.8
+              && child.material.color.b.toFixed(1) == 0.8) {
+              child.material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color(0x30312D),
+                flatShading:true
+              });
+            } else if (child.material.color.r == 1
+              && child.material.color.g == 0
+              && child.material.color.b == 0) {
+              child.material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color(0xC0320C),
+                flatShading:true,
+                // transparent: true,
+                // opacity: 0.75,
+              });
+            } else if (child.material.color.r.toFixed(1) == 0.3
+            && child.material.color.g.toFixed(1) == 0.8
+            && child.material.color.b.toFixed(1) == 0.7) {
+              child.material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color(0xDC900E),
+                flatShading:true
+              });
+            } else if (child.material.color.r.toFixed(1) == 0.0
+            && child.material.color.g == 1
+            && child.material.color.b.toFixed(1) == 0.5) {
+              child.material = new THREE.MeshPhongMaterial({
+                color: new THREE.Color(0xDED20E),
+                flatShading:true
+              });
+            } else {
+              child.material = new THREE.MeshPhongMaterial({
+                color: child.material.color,
+                flatShading:true
+              });
+            }
+            
+            if (child.name.indexOf('Circle00') > -1) { child.visible = false; }
             child.castShadow = true;
             child.receiveShadow = true;
             break;
@@ -78,7 +127,9 @@ class SpaceStationEnvironment {
       if (this.gltf.animations.length > 0) {
         this.gltf.clock = new THREE.Clock();
         this.gltf.mixer = new THREE.AnimationMixer(this.gltf.scene);
-        this.gltf.mixer.clipAction(gltf.animations[0]).play();
+        let clip = this.gltf.mixer.clipAction(gltf.animations[0]);
+        clip.loop = THREE.LoopPingPong;
+        clip.play();
       }
       
       this.elements.push(gltf.scene);
@@ -90,7 +141,7 @@ class SpaceStationEnvironment {
     const cubeMap = new THREE.CubeTexture([]);
     cubeMap.format = THREE.RGBFormat;
 
-    this.loader.loadImage('textures/newmoon.png', {}, (image) => {
+    this.loader.loadImage('textures/de38ad4f55903add2fdbe290bcc6ef79.png', {}, (image) => {
         const getSide = (x, y) => {
             const size = 1024;
 
@@ -128,7 +179,7 @@ class SpaceStationEnvironment {
     );
 
     this.parent.add(this.skyBox);
-    this.elements.push(this.skyBox);
+    // this.elements.push(this.skyBox);
   }
 
   initMirror() {
