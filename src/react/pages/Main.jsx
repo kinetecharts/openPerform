@@ -33,7 +33,7 @@ import OutputManager from './../../outputs';
 
 import Performers from './../../performers/Performers';
 
-import BVHPlayer from './../../performers/BVHPlayer';
+// import BVHPlayer from './../../performers/BVHPlayer';
 
 require('./../../styles/colors.css');
 require('./../../styles/fonts.css');
@@ -49,7 +49,7 @@ class Main extends React.Component {
     super(props);
     this.state = config;
     this.BVHFiles = config.debug.bvh.files;
-    this.BVHPlayers = [];
+    // this.BVHPlayers = [];
   }
 
   componentWillMount() {
@@ -180,26 +180,26 @@ class Main extends React.Component {
   }
 
   addBVHPerformer(modelPaths, autoplay) {
-    const bvhPlayer = new BVHPlayer(
-      modelPaths,
-      this.state.scene.sceneGroup,
-      autoplay,
-      this.updatePerformers.bind(this),
-    );
-    this.BVHPlayers.push(bvhPlayer);
-    return bvhPlayer;
+    // const bvhPlayer = new BVHPlayer(
+    //   modelPaths,
+    //   this.state.scene.sceneGroup,
+    //   autoplay,
+    //   this.updatePerformers.bind(this),
+    // );
+    // this.BVHPlayers.push(bvhPlayer);
+    // return bvhPlayer;
   }
 
   rawBvhUpload(result, autoplay) {
-    const bvhPlayer = new BVHPlayer(
-      result,
-      this.state.scene.sceneGroup,
-      autoplay,
-      this.updatePerformers.bind(this),
-    );
-    bvhPlayer.loadRaw(result);
-    this.BVHPlayers.push(bvhPlayer);
-    this.closeBVHChooser();
+    // const bvhPlayer = new BVHPlayer(
+    //   result,
+    //   this.state.scene.sceneGroup,
+    //   autoplay,
+    //   this.updatePerformers.bind(this),
+    // );
+    // bvhPlayer.loadRaw(result);
+    // this.BVHPlayers.push(bvhPlayer);
+    // this.closeBVHChooser();
   }
 
   urlBvhUpload(url) {

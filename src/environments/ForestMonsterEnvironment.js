@@ -27,12 +27,12 @@ class ForestMonsterEnvironment {
 
     this.loader = new FileLoader();
 
-    this.initSkybox();
+    // this.initSkybox();
     this.initSpace();
     // this.initFloor(25);
     this.initLights();
     this.initMirror();
-    this.initShadowFloor(100);
+    // this.initShadowFloor(100);
 
   }
 
@@ -41,9 +41,10 @@ class ForestMonsterEnvironment {
       new THREE.PlaneBufferGeometry( size, size, 1 ),
       new THREE.ShadowMaterial({ opacity: 0.9 })
     );
+    // window.shadowFloor = this.shadowFloor;
     this.shadowFloor.rotation.x = -Math.PI/2;
     this.shadowFloor.position.z = 16;
-    this.shadowFloor.position.y = -0.8999999999999999;
+    this.shadowFloor.position.y = -1.45;
     this.shadowFloor.receiveShadow = true;
     this.parent.add(this.shadowFloor);
     this.elements.push(this.shadowFloor);
@@ -67,7 +68,7 @@ class ForestMonsterEnvironment {
       light.visible = val;
     });
 
-    this.toggleSkybox(val);
+    // this.toggleSkybox(val);
   }
 
   toggleSkybox(visible) {
@@ -84,7 +85,7 @@ class ForestMonsterEnvironment {
   initLights() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
-    window.directionalLight = directionalLight;
+    // window.directionalLight = directionalLight;
     directionalLight.position.set(0, 2, 0);
     let lightTarget = new THREE.Object3D();
     this.parent.add(lightTarget);
@@ -131,7 +132,7 @@ class ForestMonsterEnvironment {
       color: 0x889999,
       recursion: 1
     } );
-    window.verticalMirror = verticalMirror;
+    // window.verticalMirror = verticalMirror;
     verticalMirror.position.y = 1.25;
     verticalMirror.position.z = 5;
     this.parent.add(verticalMirror);
@@ -142,12 +143,19 @@ class ForestMonsterEnvironment {
     this.loader.loadMTL('./models/environments/alien/beach.mtl', {}, (materials) => {
       materials.preload();
       this.loader.loadOBJ('./models/environments/alien/beach.obj', { materials: materials }, (obj, props) => {
-        window.obj = obj;
+        // window.obj = obj;
         obj.scale.set(20, 20, 20);
         obj.position.set(-6.5, 0.8999999999999997, 57.6);
         obj.rotation.set(-0.01, 94.18, 0.019);
-        console.log(obj.material);
+        
+        _.each(obj.children[0].material, (mat) => {
+          mat.shininess = 0;//mat.shininess / 2;
+          mat.flatShading = true;
+        });
 
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+        
         this.elements.push(obj);
         this.parent.add(obj);
       });

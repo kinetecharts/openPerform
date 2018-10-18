@@ -26,18 +26,18 @@ class InputManager {
 
     this.spread = 0.5;
     this.spreadAngle = new THREE.Vector3(-1, 0, 0);
-    window.cannons = this.cannons = [
-      {
-        spread: Math.random()*127,
-        scale: Math.random()*127,
-        angle: Math.random()*127,
-      },
-      {
-        spread: Math.random()*127,
-        scale: Math.random()*127,
-        angle: Math.random()*127,
-      },
-    ];
+    // window.cannons = this.cannons = [
+    //   {
+    //     spread: Math.random()*127,
+    //     scale: Math.random()*127,
+    //     angle: Math.random()*127,
+    //   },
+    //   {
+    //     spread: Math.random()*127,
+    //     scale: Math.random()*127,
+    //     angle: Math.random()*127,
+    //   },
+    // ];
     // initialize all presets
     this.initPresets();
 

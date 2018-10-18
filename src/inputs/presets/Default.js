@@ -12,7 +12,7 @@ class DefaultPreset {
 
     this.effectsTimer = null;
     this.effectsIds = [0, 5, 2, 6];
-    this.effectsIdx = 1;
+    this.effectsIdx = 0;
   }
 
   initCallbacks(type) {
@@ -770,7 +770,7 @@ class DefaultPreset {
           this.environmentIdx++;
           if (this.environmentIdx > this.environmentIds.length-1) { this.environmentIdx = 0; }
         }
-      }, 1000 * 3);
+      }, 1000 * 10);
     });
 
     this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
@@ -811,11 +811,11 @@ class DefaultPreset {
     });
 
     this.inputManager.registerCallback('keyboard', 'a', 'Render Style 3', () => {
-      window.randomOrient();
+      // window.randomOrient();
     });
 
     this.inputManager.registerCallback('keyboard', 's', 'Render Style 3', () => {
-      window.toggleLineVislble();
+      // window.toggleLineVislble();
     });
 
     // this.inputManager.registerCallback('keyboard', 'l', 'Following Camera - Low Angle', () => {

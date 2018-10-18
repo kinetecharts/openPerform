@@ -30,10 +30,10 @@ class Performer {
       min: new THREE.Vector3(),
       max: new THREE.Vector3(),
     }
-    window.bonescale = 45;
+    // window.bonescale = 45;
     this.character = character;
-    window.lineVisible = true;
-    window.toggleLineVislble = () => { window.lineVisible = !window.lineVisible }
+    // window.lineVisible = true;
+    // window.toggleLineVislble = () => { window.lineVisible = !window.lineVisible }
 
     this.inputManager = inputManager;
     this.outputManager = outputManager;
@@ -263,7 +263,7 @@ class Performer {
       // console.log(keys);
 
       this.setScene(s);
-      window.s = s;
+      // window.s = s;
       this.parent.add(s);
 
       this.setPerformer({
@@ -318,7 +318,7 @@ class Performer {
       // console.log(keys);
 
       this.setScene(s);
-      window.s = s;
+      // window.s = s;
       this.parent.add(s);
 
       this.setPerformer({
@@ -363,7 +363,7 @@ class Performer {
            break;
         }
       });
-      window.character = result;
+      // window.character = result;
       result.scale.set(size, size, size);
       console.log(result);
 
@@ -1655,7 +1655,7 @@ class Performer {
         materials.preload();
         this.loader.loadOBJ('./models/characters/' + this.character.name + '/head.obj', { materials: materials }, (head, props) => {
           this.headGroup = new THREE.Object3D();
-          window.headGroup = this.headGroup;
+          // window.headGroup = this.headGroup;
           // this.head = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({color:this.character.color}));
           head.scale.set(this.character.headScale, this.character.headScale, this.character.headScale);
           this.headGroup.add(head);
@@ -1666,7 +1666,7 @@ class Performer {
           this.parent.add(this.headGroup);
         
 
-          this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.bones, this.character.boneType, window.lineVisible, (lineGroup, axesGroup, cubeBoneGroup, cubeBones) => {
+          this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.bones, this.character.boneType, true, (lineGroup, axesGroup, cubeBoneGroup, cubeBones) => {
 
             this.lineGroup = lineGroup;
             // this.lineGroup.position.z = zOffset;
@@ -1682,7 +1682,7 @@ class Performer {
             this.cubeBoneGroup.position.x = this.character.offset.x;
             this.cubeBoneGroup.position.y = this.character.offset.y;
             this.cubeBoneGroup.position.z = this.character.offset.z;
-            window.cubeBoneGroup = this.cubeBoneGroup;
+            // window.cubeBoneGroup = this.cubeBoneGroup;
             this.parent.add(cubeBoneGroup);
 
             this.setScene(this.cubeBoneGroup);
@@ -1691,6 +1691,7 @@ class Performer {
             // this.axesGroup.scale.set(2, 2, 2);
             this.cubeBoneGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
 
+            cubeBones['Head'] = head;
             this.setPerformer({
               loading: false,
               scene: this.getScene(),
@@ -1701,7 +1702,7 @@ class Performer {
             });
 
             this.addEffects([
-              this.character.effect
+              ['Ghosting', 'Particles'][Math.floor(Math.random()*2)]
             ]);
           });
         });
@@ -1727,7 +1728,7 @@ class Performer {
         // );
     } else {
       if (this.cubeBoneGroup !== undefined && this.cubeBoneGroup.children.length > 0) {
-        this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data, window.lineVisible, this.headGroup);
+        this.skeletalTranslator.updateLineSkeleton(this.lineGroup, this.axesGroup, this.cubeBoneGroup, data, true, this.headGroup);
       }
       // this.skeletalTranslator.updateMixamoModel(this.getPerformer().bones, data, this.prefix, this.cubeBoneGroup);
       // this.skeletalTranslator.updateMeshGroup(this.getPerformer().meshes, data, this.prefix, this.getPerformer().boxes);

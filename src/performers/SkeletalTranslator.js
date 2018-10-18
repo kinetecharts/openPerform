@@ -10,38 +10,38 @@ class SkeletalTranslator {
     this.skeletonHelper = null;
     this.boneContainer = null;
     this.mixer = null;
-    window.orients = [
-      ['w', 'x', 'y', 'z'],
-      ['w', 'x', 'z', 'y'],
-      ['w', 'y', 'x', 'z'],
-      ['w', 'y', 'z', 'x'],
-      ['w', 'z', 'x', 'y'],
-      ['w', 'z', 'y', 'x'],
-      ['x', 'w', 'y', 'z'],
-      ['x', 'w', 'z', 'y'],
-      ['x', 'y', 'w', 'z'],
-      ['x', 'y', 'z', 'w'], 
-      ['x', 'z', 'w', 'y'],
-      ['x', 'z', 'y', 'w'], 
-      ['y', 'w', 'x', 'z'],
-      ['y', 'w', 'z', 'x'],
-      ['y', 'x', 'w', 'z'],
-      ['y', 'x', 'z', 'w'], 
-      ['y', 'z', 'w', 'x'],
-      ['y', 'z', 'x', 'w'], 
-      ['z', 'w', 'x', 'y'],
-      ['z', 'w', 'y', 'x'],
-      ['z', 'x', 'w', 'y'],
-      ['z', 'x', 'y', 'w'], 
-      ['z', 'y', 'w', 'x'],
-      ['z', 'y', 'x', 'w'],
-    ];
-    window.orient = ['x', 'y', 'z', 'w'];
-    // window.orient = ['w', 'z', 'y', 'x'];
-    // window.orient = ["z", "w", "x", "y"];
-    window.randomOrient = () => {
-      window.orient = window.orients[Math.floor(Math.random()*window.orients.length)];
-    }
+    // window.orients = [
+    //   ['w', 'x', 'y', 'z'],
+    //   ['w', 'x', 'z', 'y'],
+    //   ['w', 'y', 'x', 'z'],
+    //   ['w', 'y', 'z', 'x'],
+    //   ['w', 'z', 'x', 'y'],
+    //   ['w', 'z', 'y', 'x'],
+    //   ['x', 'w', 'y', 'z'],
+    //   ['x', 'w', 'z', 'y'],
+    //   ['x', 'y', 'w', 'z'],
+    //   ['x', 'y', 'z', 'w'], 
+    //   ['x', 'z', 'w', 'y'],
+    //   ['x', 'z', 'y', 'w'], 
+    //   ['y', 'w', 'x', 'z'],
+    //   ['y', 'w', 'z', 'x'],
+    //   ['y', 'x', 'w', 'z'],
+    //   ['y', 'x', 'z', 'w'], 
+    //   ['y', 'z', 'w', 'x'],
+    //   ['y', 'z', 'x', 'w'], 
+    //   ['z', 'w', 'x', 'y'],
+    //   ['z', 'w', 'y', 'x'],
+    //   ['z', 'x', 'w', 'y'],
+    //   ['z', 'x', 'y', 'w'], 
+    //   ['z', 'y', 'w', 'x'],
+    //   ['z', 'y', 'x', 'w'],
+    // ];
+    // window.orient = ['x', 'y', 'z', 'w'];
+    // // window.orient = ['w', 'z', 'y', 'x'];
+    // // window.orient = ["z", "w", "x", "y"];
+    // window.randomOrient = () => {
+    //   window.orient = window.orients[Math.floor(Math.random()*window.orients.length)];
+    // }
 
     this.bvhStructure = {
       hips: {
@@ -180,7 +180,7 @@ class SkeletalTranslator {
       'HandTipRight',
       'ThumbRight',
     ];
-    window.kinectKeys = this.kinectKeys;
+    // window.kinectKeys = this.kinectKeys;
 
     this.kinectronMeshGroupKeys = {
       'chest': 'SpineShoulder',
@@ -355,12 +355,12 @@ class SkeletalTranslator {
       // ['SpineBase', 'HipLeft'],
       ['HipLeft', 'KneeLeft'],
       ['KneeLeft', 'AnkleLeft'],
-      ['AnkleLeft', 'FootLeft'],
+      // ['AnkleLeft', 'FootLeft'],
 
       // ['SpineBase', 'HipRight'],
       ['HipRight', 'KneeRight'],
       ['KneeRight', 'AnkleRight'],
-      ['AnkleRight', 'FootRight'],
+      // ['AnkleRight', 'FootRight'],
     ];
   }
 
@@ -456,8 +456,11 @@ class SkeletalTranslator {
   }
 
   updateCubeGeo(geometry, name, length, bone, type) {
-    if (length !== geometry.length) {
+    // only update if length changes and it's been longer than X seconds
+    if (length !== geometry.length && geometry.clock.getElapsedTime() > 0.5) {
+      geometry = null;
       geometry = this.createCubeGeo(name, length, bone, type);
+      geometry.clock = new THREE.Clock();
     }
     geometry.length = length;
     return geometry;
@@ -498,6 +501,7 @@ class SkeletalTranslator {
     }
     geometry.length = length;
     geometry.srcLength = length;
+    geometry.clock = new THREE.Clock();
     return geometry;
   }
 
@@ -1045,7 +1049,7 @@ class SkeletalTranslator {
 
         // Smoothly transition to the new rotation
         jointRotation = this.kinect2AvatarRot(bones[0], jointRotation);
-        jointRotation = this.getOrient(window.orient, jointRotation);
+        jointRotation = this.getOrient(['x', 'y', 'z', 'w'], jointRotation);
 
         bones[0].quaternion.copy(jointRotation.clone());
       }
@@ -1244,7 +1248,7 @@ class SkeletalTranslator {
           _.filter(kinectronData, ['name', kinectronData[i].name])[0].cameraY,
           _.filter(kinectronData, ['name', kinectronData[i].name])[0].cameraZ,
         );
-        let quat = this.getOrient(window.orient, new THREE.Quaternion(
+        let quat = this.getOrient(['x', 'y', 'z', 'w'], new THREE.Quaternion(
           _.filter(kinectronData, ['name', kinectronData[i].name])[0].orientationX,
           _.filter(kinectronData, ['name', kinectronData[i].name])[0].orientationY,
           _.filter(kinectronData, ['name', kinectronData[i].name])[0].orientationZ,

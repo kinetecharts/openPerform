@@ -27,7 +27,7 @@ class SpaceStationEnvironment {
 
     this.loader = new FileLoader();
 
-    this.initSkybox();
+    // this.initSkybox();
     this.initSpace();
     this.initFloor(50);
     this.initLights();
@@ -52,7 +52,7 @@ class SpaceStationEnvironment {
       light.visible = val;
     });
 
-    this.toggleSkybox(val);
+    // this.toggleSkybox(val);
   }
 
   toggleSkybox(visible) {
@@ -69,7 +69,7 @@ class SpaceStationEnvironment {
   initSpace() {
     this.loader.loadGLTF('../models/environments/space_station/scene.gltf', {}, (gltf) => {
       this.gltf = gltf;
-      window.gltf = this.gltf.scene;
+      // window.gltf = this.gltf.scene;
       this.gltf.scene.traverse((child) => {
         // console.log(child);
         switch (child.type) {
@@ -130,6 +130,11 @@ class SpaceStationEnvironment {
         let clip = this.gltf.mixer.clipAction(gltf.animations[0]);
         clip.loop = THREE.LoopPingPong;
         clip.play();
+
+        // clip.startAt(3).play();
+        // setTimeout(() => {
+        //   clip.paused = true;
+        // }, 1000);
       }
       
       this.elements.push(gltf.scene);
@@ -199,7 +204,7 @@ class SpaceStationEnvironment {
       color: 0x889999,
       recursion: 1
     } );
-    window.verticalMirror = verticalMirror;
+    // window.verticalMirror = verticalMirror;
     verticalMirror.position.y = 1.25;
     verticalMirror.position.z = 5;
     this.parent.add(verticalMirror);
@@ -211,7 +216,7 @@ class SpaceStationEnvironment {
       new THREE.PlaneBufferGeometry( size, size, 1 ),
       new THREE.MeshPhongMaterial({ color:0x797979, opacity: 0.9 })
     );
-    window.floor = this.floor;
+    // window.floor = this.floor;
     this.floor.position.y = -1.0875;
     this.floor.position.z = 15;
     this.floor.rotation.x = -Math.PI/2;
@@ -224,7 +229,7 @@ class SpaceStationEnvironment {
   initLights() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
-    window.directionalLight = directionalLight;
+    // window.directionalLight = directionalLight;
     directionalLight.position.set(0, 2, 0);
     let lightTarget = new THREE.Object3D();
     this.parent.add(lightTarget);

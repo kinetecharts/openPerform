@@ -21,7 +21,7 @@ import CameraControl from './../camera/cameraControl';
 import Environments from './../environments';
 import RenderStyles from './../renderStyles';
 
-import VR from './vr/vr.js';
+// import VR from './vr/vr.js';
 import ARPlanes from './ar/ARPlanes';
 
 import FileLoader from '../util/Loader';
@@ -45,7 +45,7 @@ class Scene {
 
     this.stats = null;
 
-    this.vr = null;
+    // this.vr = null;
     this.arDisplay = null;
 
     this.environments = null;
@@ -94,7 +94,7 @@ class Scene {
 
     // / Global : this.scene
     this.scene = new THREE.Scene();
-    window.scene = this.scene;
+    // window.scene = this.scene;
 
     this.arView = new THREE.ARView(this.arDisplay, this.renderer);
 
@@ -122,12 +122,12 @@ class Scene {
       showPlanes: true,
       showShadows: true,
     };
-    window.params = this.params;
+    // window.params = this.params;
 
     this.planes = new ARPlanes(this.arDisplay, (size) => {
       this.params.numPlanes = size;
     });
-    window.planes = this.planes;
+    // window.planes = this.planes;
     this.scene.add(this.planes);
 
     this.addCreateCommon();
@@ -157,11 +157,11 @@ class Scene {
 
     // / Global : this.scene
     this.scene = new THREE.Scene();
-    window.scene = this.scene;
+    // window.scene = this.scene;
 
     // / Global : this.camera
     this.camera = new THREE.PerspectiveCamera(20, this.w / this.h, 0.01, 10000);
-    window.camera = this.camera;
+    // window.camera = this.camera;
     this.camera.position.copy(defaults.camera.home.clone())
     this.scene.add(this.camera);
 
@@ -169,7 +169,7 @@ class Scene {
 
     this.controls = new THREE.TrackballControls(this.camera, this.renderer.domElement);
     this.controls.target = new THREE.Vector3(0, 1.25, 0);
-    window.controls = this.controls;
+    // window.controls = this.controls;
 
     this.controls.rotateSpeed = 1.0;
     this.controls.zoomSpeed = 1.2;
@@ -196,7 +196,7 @@ class Scene {
 
     this.cameraControl = new CameraControl(this.scene, this.camera, this.controls);
 
-    this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
+    // this.vr = new VR(this.renderer, this.camera, this.scene, this.controls);
 
     // initiating renderer
     this.render();
@@ -426,7 +426,7 @@ class Scene {
     this.controls.update();
     this.cameraControl.update();
 
-    if (this.vr) { this.vr.update(); }
+    // if (this.vr) { this.vr.update(); }
 
     window.requestAnimationFrame(this.render.bind(this));
   }

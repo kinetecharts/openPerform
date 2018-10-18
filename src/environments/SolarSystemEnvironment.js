@@ -51,7 +51,7 @@ class SolarSystemEnvironment {
       color: 0x889999,
       recursion: 1
     } );
-    window.verticalMirror = verticalMirror;
+    // window.verticalMirror = verticalMirror;
     verticalMirror.position.y = 1.25;
     verticalMirror.position.z = 5;
     this.parent.add(verticalMirror);
@@ -76,7 +76,7 @@ class SolarSystemEnvironment {
       light.visible = this.visible;
     });
 
-    this.toggleSkybox(this.visible);
+    // this.toggleSkybox(this.visible);
   }
 
   toggleSkybox(visible) {
@@ -93,7 +93,7 @@ class SolarSystemEnvironment {
   initSpace() {
     this.loader.loadGLTF('../models/environments/solar_system/model.gltf', {}, (gltf) => {
       this.gltf = gltf;
-      window.gltf = this.gltf.scene;
+      // window.gltf = this.gltf.scene;
       
       this.gltf.scene.traverse((child) => {
         // console.log(child);
@@ -183,7 +183,7 @@ class SolarSystemEnvironment {
 
     this.loader.loadGLTF('../models/environments/moon2/1226 Moon.gltf', {}, (moon) => {
       this.moon = moon;
-      window.moon = moon;
+      // window.moon = moon;
       
       this.moon.scene.traverse((child) => {
         // console.log(child);
@@ -209,7 +209,7 @@ class SolarSystemEnvironment {
   initLights() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
-    window.directionalLight = directionalLight;
+    // window.directionalLight = directionalLight;
     directionalLight.position.set(0, 2, 0);
     let lightTarget = new THREE.Object3D();
     this.parent.add(lightTarget);

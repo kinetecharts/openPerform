@@ -22,7 +22,7 @@ class CameraControl {
     this.movementType = 'cut'; // or 'track'
 
     this.trackSpeed = {t:0.01};
-    window._trackSpeed = this.trackSpeed
+    // window._trackSpeed = this.trackSpeed
 
   }
 

@@ -52,7 +52,7 @@ class SpaceEnvironment {
     this.loader.loadGLTF('../models/environments/moon/moon.gltf', {}, (gltf) => {
       const s = 0.2;
       gltf.scene.scale.set(s, s, s);
-      window.gltf = gltf.scene;
+      // window.gltf = gltf.scene;
       gltf.scene.position.y = -14.75;
       
       this.elements.push(gltf.scene);

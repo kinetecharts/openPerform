@@ -58,7 +58,7 @@ class GridEnvironment {
       color: 0x889999,
       recursion: 1
     } );
-    window.verticalMirror = verticalMirror;
+    // window.verticalMirror = verticalMirror;
     verticalMirror.position.y = 1.25;
     verticalMirror.position.z = 5;
     this.parent.add(verticalMirror);
@@ -88,7 +88,7 @@ class GridEnvironment {
     this.removeElements();
 
     this.gridFloor = new THREE.GridHelper(floorSize / 2, numLines, color, color);
-    window.gridFloor = this.gridFloor;
+    // window.gridFloor = this.gridFloor;
     this.gridFloor.castShadow = true;
     this.gridFloor.receiveShadow = true;
     this.gridFloor.visible = true;
@@ -114,7 +114,7 @@ class GridEnvironment {
   initLights() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
-    window.directionalLight = directionalLight;
+    // window.directionalLight = directionalLight;
     directionalLight.position.set(0, 2, 0);
     let lightTarget = new THREE.Object3D();
     this.parent.add(lightTarget);

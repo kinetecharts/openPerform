@@ -15,6 +15,9 @@ import config from './../../config';
 
 class KinectronInput {
   constructor() {
+    this.maxPerformers = 6; // max simultaneous kinect performers
+    this.depthRange = [1, 2.65]; // range limit in meters
+
     this.callbacks = {};
     this.events = [];
     this.labels = [];
@@ -28,8 +31,8 @@ class KinectronInput {
     this.initializeKinectron();
 
     window.playbackData = this.playbackData.bind(this);
-    window.stopAllPlayback = this.stopAllPlayback.bind(this);
-    window.stopPlayback = this.stopPlayback.bind(this);
+    // window.stopAllPlayback = this.stopAllPlayback.bind(this);
+    // window.stopPlayback = this.stopPlayback.bind(this);
   }
 
   initializeKinectron() {
@@ -37,7 +40,8 @@ class KinectronInput {
     this.kinectron.makeConnection();
     this.kinectron.startBodies((bodies) => {
       _.each(this.validateBodies(bodies.bodies), (body) => {        
-        // body.joints.unshift({
+        // Example Data
+        // {
         //   'depthX':0,
         //   'depthY':0,
         //   'colorX':0,
@@ -49,20 +53,28 @@ class KinectronInput {
         //   'orientationY':0,
         //   'orientationZ':0,
         //   'orientationW':0,
-        // });
-        this.callbacks['body']('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
-        this.callbacks['body']('Kinectron_User_' + body.trackingId + '_1', this.zipWithNames(body.joints), 'kinectron');
-        this.callbacks['body']('Kinectron_User_' + body.trackingId + '_2', this.zipWithNames(body.joints), 'kinectron');
+        // }
+
+        // Limit tracking to certain rainge.
+        if (body.joints[0].cameraZ > this.depthRange[0] && body.joints[0].cameraZ < this.depthRange[1]) {
+          this.callbacks['body']('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
         
-        
-        // this.saveData('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
+          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_1', this.zipWithNames(body.joints), 'kinectron');
+          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_2', this.zipWithNames(body.joints), 'kinectron');
+
+          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_3', this.zipWithNames(body.joints), 'kinectron');
+          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_4', this.zipWithNames(body.joints), 'kinectron');
+          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_5', this.zipWithNames(body.joints), 'kinectron');
+          
+          
+          // this.saveData('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
+        }
       });
     });
   }
 
   validateBodies(bodies) {
-    const performerLimit = 3;
-    return _.filter(bodies, 'tracked').slice(0, performerLimit);
+    return _.filter(bodies, 'tracked').slice(0, this.maxPerformers);
   }
 
   zipWithNames(joints) {
@@ -109,6 +121,9 @@ class KinectronInput {
       this.callbacks['body'](d['id'], d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
       this.callbacks['body'](d['id']+"_1", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
       this.callbacks['body'](d['id']+"_2", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      this.callbacks['body'](d['id']+"_3", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      this.callbacks['body'](d['id']+"_4", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      this.callbacks['body'](d['id']+"_5", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
       this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, data, id), 1000/10);
     } else {
       this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, _.cloneDeep(this.savedData), id), 1);

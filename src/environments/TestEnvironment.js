@@ -52,7 +52,7 @@ class TestEnvironment {
   initSpace() {
     this.loader.loadGLTF('../models/environments/test/scene.gltf', {}, (gltf) => {
       this.gltf = gltf;
-      window.gltf = this.gltf.scene;
+      // window.gltf = this.gltf.scene;
       
       this.gltf.scene.traverse((child) => {
         console.log(child);
@@ -143,7 +143,7 @@ class TestEnvironment {
   initLights() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
 
-    window.directionalLight = directionalLight;
+    // window.directionalLight = directionalLight;
     directionalLight.position.set(0, 2, 2);
     directionalLight.castShadow = true;
 
