@@ -20,8 +20,9 @@ class DataTags {
 
     this.color = color;
 
-    this.targets = ['wristleft', 'wristright', 'ankleright', 'ankleleft'];
+    this.targets = ['wristleft', 'wristright', 'kneeright', 'kneeleft', 'head'];
     this.possibleTargets = [
+      'head',
       'spineshoulder',
       'spinemid',
       'shoulderleft',
@@ -164,7 +165,8 @@ class DataTags {
       if (_.filter(this.targets, t => '' + t == d.name.toLowerCase()).length > 0) {
         if (this.tags[idx]) {
           if (this.tags[idx]) {
-            const gPos = new THREE.Vector3().setFromMatrixPosition(d.matrixWorld);
+            // console.log(d);
+            let gPos = new THREE.Vector3().setFromMatrixPosition(d.matrixWorld);
 
             
             // console.log(this.tags[idx]);
@@ -176,27 +178,38 @@ class DataTags {
               gPos.x -= this.tags[idx].children[0].geometry.boundingBox.max.x/375 - 0.15;
             }
 
-            this.tags[idx].position.copy(gPos.clone());
-
             let options = { text: '' };
-            if (this.options.showName) {
-              options.text += d.name + '\n';
-            }
-            if (this.options.showPosition) {
-              options.text += '{ x: ' + gPos.x.toFixed(3) + ', y: ' + gPos.y.toFixed(3) + ', z: ' + gPos.z.toFixed(3) + ' }\n';
-            }
-            if (this.options.showRotation) {
-              options.text += 'rot(' + d.rotation.x.toFixed(3) + ', ' + d.rotation.y.toFixed(3) + ', ' + d.rotation.z.toFixed(3) + ')\n';
-            }
-            if (this.options.showQuat) {
-              options.text += 'quat(' + d.quaternion.x.toFixed(3) + ', ' + d.quaternion.y.toFixed(3) + ', ' + d.quaternion.z.toFixed(3) + ', ' + d.quaternion.w.toFixed(3) + ')\n';
+            if (d.name == 'Head') {
+              options.text += 'Dance Machine';
+              options.align = 'center';
+              
+              gPos = new THREE.Vector3().setFromMatrixPosition(d.children[0].matrixWorld);
+              gPos.y += 0.25;
+              
+              this.tags[idx].children[0].geometry.update(options);
+              this.tags[idx].children[0].geometry.computeBoundingBox();
+              gPos.x -= this.tags[idx].children[0].geometry.boundingBox.max.x/1000;
+            } else {
+              if (this.options.showName) {
+                options.text += d.name + '\n';
+              }
+              if (this.options.showPosition) {
+                options.text += '{ X: ' + gPos.x.toFixed(3) + ', Y: ' + gPos.y.toFixed(3) + ', Z: ' + gPos.z.toFixed(3) + ' }\n';
+              }
+              if (this.options.showRotation) {
+                options.text += 'rot(' + d.rotation.x.toFixed(3) + ', ' + d.rotation.y.toFixed(3) + ', ' + d.rotation.z.toFixed(3) + ')\n';
+              }
+              if (this.options.showQuat) {
+                options.text += 'quat(' + d.quaternion.x.toFixed(3) + ', ' + d.quaternion.y.toFixed(3) + ', ' + d.quaternion.z.toFixed(3) + ', ' + d.quaternion.w.toFixed(3) + ')\n';
+              }
+
+              if (d.name.toLowerCase().indexOf('left') !== -1) {
+                options.align = 'right';
+              }
+              this.tags[idx].children[0].geometry.update(options);
             }
 
-            if (d.name.toLowerCase().indexOf('left') !== -1) {
-              options.align = 'right';
-            }
-
-            this.tags[idx].children[0].geometry.update(options);
+            this.tags[idx].position.copy(gPos.clone());
           }
         }
 

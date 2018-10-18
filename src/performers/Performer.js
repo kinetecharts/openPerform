@@ -71,7 +71,7 @@ class Performer {
       }
       this.name = 'Clone ' + (parseInt(performerId) - 1);
     }
-    this.color = options.color;
+    this.color = this.character.color;//options.color;
 
     this.prefix = 'mixamorig';
 
@@ -1655,17 +1655,29 @@ class Performer {
         materials.preload();
         this.loader.loadOBJ('./models/characters/' + this.character.name + '/head.obj', { materials: materials }, (head, props) => {
           this.headGroup = new THREE.Object3D();
-          // window.headGroup = this.headGroup;
-          // this.head = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({color:this.character.color}));
+          
+          head.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              // console.log(this.character.name, child);
+              switch(this.character.name) {
+                case 'robot2':
+                case 'avatar':
+                  child.material.color.set(new THREE.Color(this.character.color));
+                  break;
+              }
+            }
+          });
+          window.head = this.headGroup;
           head.scale.set(this.character.headScale, this.character.headScale, this.character.headScale);
           this.headGroup.add(head);
+          this.headGroup.name = 'Head';
+          this.headGroup.jointNames = ['Head', 'Neck'];
           this.headGroup.position.x = this.character.headOffset.x;
           this.headGroup.position.y = this.character.headOffset.y;
           this.headGroup.position.z = this.character.headOffset.z;
-          this.headGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
-          this.parent.add(this.headGroup);
-        
+          // this.headGroup.scale.set(this.character.scale, this.character.scale, this.character.scale);
 
+      
           this.skeletalTranslator.createLineSkeleton(data, this.character.color, this.character.bones, this.character.boneType, true, (lineGroup, axesGroup, cubeBoneGroup, cubeBones) => {
 
             this.lineGroup = lineGroup;
@@ -1679,6 +1691,7 @@ class Performer {
             // this.parent.add(axesGroup);
       
             this.cubeBoneGroup = cubeBoneGroup;
+            this.cubeBoneGroup.add(this.headGroup);
             this.cubeBoneGroup.position.x = this.character.offset.x;
             this.cubeBoneGroup.position.y = this.character.offset.y;
             this.cubeBoneGroup.position.z = this.character.offset.z;
@@ -1702,7 +1715,7 @@ class Performer {
             });
 
             this.addEffects([
-              ['Ghosting', 'Particles'][Math.floor(Math.random()*2)]
+              ['Ghosting', 'Particles', 'Data Tags'][Math.floor(Math.random()*3)]
             ]);
           });
         });

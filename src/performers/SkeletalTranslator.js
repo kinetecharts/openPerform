@@ -480,6 +480,9 @@ class SkeletalTranslator {
       case 'cylinder':
         geometry = new THREE.CylinderGeometry(bone.x, bone.z, length, 8);
         break;
+      case 'smooth':
+        geometry = new THREE.CylinderGeometry(bone.x, bone.z, length, 16);
+        break;
     }
     // console.log(name);
     switch(name) {
@@ -668,7 +671,7 @@ class SkeletalTranslator {
   updateCubeBones(data, cubeBoneGroup, visible) {
     _.each(cubeBoneGroup.children, (c) => {
       let jointData =_.filter(data, (d) => {
-        return (c.jointNames.indexOf(this.kinectronMixamoLookup(d.name)) !== -1);
+        return (c.jointNames.indexOf(this.kinectronMixamoLookup(d.name)) !== -1) && (d.name !== 'Head');
       });
       if (jointData.length > 1) {
         // update bone length

@@ -19,7 +19,7 @@ class ParticleSystem {
     this.parent = parent;
     this.color = new THREE.Color(color);
 
-    this.targets = ['wristleft', 'wristright', 'ankleleft', 'ankleright'];
+    this.targets = ['wristleft', 'wristright', 'kneeleft', 'kneeright'];
     this.possibleTargets = [
       'spineshoulder',
       'spinemid',
@@ -42,7 +42,7 @@ class ParticleSystem {
       positionRandomness: 0.05,
       velocity: new THREE.Vector3(),
       velocityRandomness: 0.05,
-      color: '#3d4034',
+      color: this.color,
       colorRandomness: 0.01,
       turbulence: 0,
       lifetime: 2,

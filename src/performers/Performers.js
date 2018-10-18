@@ -22,8 +22,8 @@ class Performers {
     this.characters = [
       {
         name: 'robot',
-        offset: { x: 3, y: this.charOffset.y, z: this.charOffset.z },
-        scale: 2, headScale: 2, headOffset: { x: 3, y: 0.15, z: 12.5 },
+        offset: { x: -5, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 2, headOffset: { x: 0, y: 0.075, z: 0 },
         effect: 'Data Tags', color: 0x6e6e6e,
         boneType: 'box',
         bones: {
@@ -64,8 +64,8 @@ class Performers {
       },
       {
         name: 'astronaut',
-        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
-        scale: 2, headScale: 0.625, headOffset: { x: 0, y: 0.4, z: 12.5 },
+        offset: { x: -3, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 0.6, headOffset: { x: 0, y: 0.175, z: 0 },
         effect: 'Ghosting', color: 0x888888,
         boneType: 'cylinder',
         bones: {
@@ -106,8 +106,8 @@ class Performers {
       },
       {
         name: 'alien',
-        offset: { x: -3, y: this.charOffset.y, z: this.charOffset.z },
-        scale: 2, headScale: 0.175, headOffset: { x: -3, y: 0.4, z: 12.5 },
+        offset: { x: -1, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 0.19, headOffset: { x: 0, y: 0.255, z: 0 },
         effect: 'Particles', color: 0x3d4034,
         boneType: 'poly',
         bones: {
@@ -146,52 +146,92 @@ class Performers {
       },
       {
         name: 'robot2',
-        offset: { x: 2, y: this.charOffset.y, z: this.charOffset.z },
-        scale: 2, headScale: 2, headOffset: { x: 2, y: 0.15, z: 12.5 },
-        effect: 'Data Tags', color: 0x6e6e6e,
+        offset: { x: 1, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 0.15, headOffset: { x: 0, y: 0.1, z: 0 },
+        effect: 'Data Tags', color: 0xE62F5C,
         boneType: 'box',
         bones: {
-          'SpineBase': {color: 0x6e6e6e, x: 0.11, z: 0.11},
-          'SpineMid': {color: 0x6e6e6e, x: 0.2, z: 0.175},
+          'SpineBase': {color: 0xE62F5C, x: 0.11, z: 0.11},
+          'SpineMid': {color: 0xE62F5C, x: 0.2, z: 0.175},
 
-          'Neck': {color: 0x6e6e6e, x: 0.02, z: 0.02},
-          'Head': {color: 0x6e6e6e, x: 0.04, z: 0.04},
+          'Neck': {color: 0xE62F5C, x: 0.02, z: 0.02},
+          'Head': {color: 0xE62F5C, x: 0.04, z: 0.04},
 
-          'ShoulderLeft': {color: 0x6e6e6e, x: 0.06, z: 0.06},
-          'ElbowLeft': {color: 0x6e6e6e, x: 0.04, z: 0.06},
-          'WristLeft': {color: 0x015f8a, x: 0.05, z: 0.04},
-          'HandLeft': {color: 0x6e6e6e, x: 0.02, z: 0.02},
+          'ShoulderLeft': {color: 0xE62F5C, x: 0.06, z: 0.06},
+          'ElbowLeft': {color: 0xE62F5C, x: 0.04, z: 0.06},
+          'WristLeft': {color: 0xE62F5C, x: 0.05, z: 0.04},
+          'HandLeft': {color: 0xE62F5C, x: 0.02, z: 0.02},
           
-          'ShoulderRight': {color: 0x6e6e6e, x: 0.06, z: 0.06},
-          'ElbowRight': {color: 0x6e6e6e, x: 0.04, z: 0.06},
-          'WristRight': {color: 0x015f8a, x: 0.05, z: 0.04},
-          'HandRight': {color: 0x6e6e6e, x: 0.02, z: 0.02},
+          'ShoulderRight': {color: 0xE62F5C, x: 0.06, z: 0.06},
+          'ElbowRight': {color: 0xE62F5C, x: 0.04, z: 0.06},
+          'WristRight': {color: 0xE62F5C, x: 0.05, z: 0.04},
+          'HandRight': {color: 0xE62F5C, x: 0.02, z: 0.02},
           
-          'HipLeft': {color: 0x6e6e6e, x: 0.08, z: 0.08},
-          'KneeLeft': {color: 0x6e6e6e, x: 0.06, z: 0.08},
-          'AnkleLeft': {color: 0x6e6e6e, x: 0.02, z: 0.02},
-          'FootLeft': {color: 0x6e6e6e, x: 0.02, z: 0.02},
+          'HipLeft': {color: 0xE62F5C, x: 0.08, z: 0.08},
+          'KneeLeft': {color: 0xE62F5C, x: 0.06, z: 0.08},
+          'AnkleLeft': {color: 0xE62F5C, x: 0.02, z: 0.02},
+          'FootLeft': {color: 0xE62F5C, x: 0.02, z: 0.02},
           
-          'HipRight': {color: 0x6e6e6e, x: 0.08, z: 0.08},
-          'KneeRight': {color: 0x6e6e6e, x: 0.06, z: 0.08},
-          'AnkleRight': {color: 0x6e6e6e, x: 0.02, z: 0.02},
-          'FootRight': {color: 0x6e6e6e, x: 0.02, z: 0.02},
+          'HipRight': {color: 0xE62F5C, x: 0.08, z: 0.08},
+          'KneeRight': {color: 0xE62F5C, x: 0.06, z: 0.08},
+          'AnkleRight': {color: 0xE62F5C, x: 0.02, z: 0.02},
+          'FootRight': {color: 0xE62F5C, x: 0.02, z: 0.02},
           
-          'SpineShoulder': {color: 0x015f8a, x: 0.2, z: 0.2},
+          'SpineShoulder': {color: 0xE62F5C, x: 0.2, z: 0.2},
           
-          'HandTipLeft': {color: 0x6e6e6e, x: 0.02, z: 0.02},
-          'ThumbLeft': {color: 0x6e6e6e, x: 0.02, z: 0.02},
+          'HandTipLeft': {color: 0xE62F5C, x: 0.02, z: 0.02},
+          'ThumbLeft': {color: 0xE62F5C, x: 0.02, z: 0.02},
 
-          'HandTipRight': {color: 0x6e6e6e, x: 0.02, z: 0.02},
-          'ThumbRight': {color: 0x6e6e6e, x: 0.02, z: 0.02},
+          'HandTipRight': {color: 0xE62F5C, x: 0.02, z: 0.02},
+          'ThumbRight': {color: 0xE62F5C, x: 0.02, z: 0.02},
         }
       },
       {
-        name: 'astronaut2',
-        offset: { x: 1, y: this.charOffset.y, z: this.charOffset.z },
-        scale: 2, headScale: 0.625, headOffset: { x: 1, y: 0.4, z: 12.5 },
-        effect: 'Ghosting', color: 0x888888,
-        boneType: 'cylinder',
+        name: 'avatar',
+        offset: { x: 3, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 0.00175, headOffset: { x: 0, y: 0.19, z: 0 },
+        effect: 'Ghosting', color: 0xE2653B,
+        boneType: 'smooth',
+        bones: {
+          'SpineBase': {color: 0xE2653B, x: 0.11, z: 0.15},
+          'SpineMid': {color: 0xE2653B, x: 0.15, z: 0.15},
+          'Neck': {color: 0xE2653B, x: 0.02, z: 0.02},
+          'Head': {color: 0xE2653B, x: 0.04, z: 0.04},
+
+          'ShoulderLeft': {color: 0xE2653B, x: 0.04, z: 0.06},
+          'ElbowLeft': {color: 0xE2653B, x: 0.02, z: 0.04},
+          'WristLeft': {color: 0xE2653B, x: 0.03, z: 0.02},
+          'HandLeft': {color: 0xE2653B, x: 0.02, z: 0.02},
+          
+          'ShoulderRight': {color: 0xE2653B, x: 0.04, z: 0.06},
+          'ElbowRight': {color: 0xE2653B, x: 0.02, z: 0.04},
+          'WristRight': {color: 0xE2653B, x: 0.03, z: 0.02},
+          'HandRight': {color: 0xE2653B, x: 0.02, z: 0.02},
+          
+          'HipLeft': {color: 0xE2653B, x: 0.06, z: 0.06},
+          'KneeLeft': {color: 0xE2653B, x: 0.04, z: 0.06},
+          'AnkleLeft': {color: 0xE2653B, x: 0.02, z: 0.02},
+          'FootLeft': {color: 0xE2653B, x: 0.02, z: 0.02},
+          
+          'HipRight': {color: 0xE2653B, x: 0.06, z: 0.06},
+          'KneeRight': {color: 0xE2653B, x: 0.04, z: 0.06},
+          'AnkleRight': {color: 0xE2653B, x: 0.02, z: 0.02},
+          'FootRight': {color: 0xE2653B, x: 0.02, z: 0.02},
+          
+          'SpineShoulder': {color: 0xE2653B, x: 0.19, z: 0.15},
+          
+          'HandTipLeft': {color: 0xE2653B, x: 0.02, z: 0.02},
+          'ThumbLeft': {color: 0xE2653B, x: 0.02, z: 0.02},
+          'HandTipRight': {color: 0xE2653B, x: 0.02, z: 0.02},
+          'ThumbRight': {color: 0xE2653B, x: 0.02, z: 0.02},
+        }
+      },
+      {
+        name: 'coon',
+        offset: { x: 5, y: this.charOffset.y, z: this.charOffset.z },
+        scale: 2, headScale: 3.5, headOffset: { x: 0, y: 0.1, z: 0 },
+        effect: 'Particles', color: 0x888888,
+        boneType: 'poly',
         bones: {
           'SpineBase': {color: 0x888888, x: 0.11, z: 0.11},
           'SpineMid': {color: 0x888888, x: 0.2, z: 0.15},
@@ -226,46 +266,6 @@ class Performers {
 
           'HandTipRight': {color: 0x888888, x: 0.02, z: 0.02},
           'ThumbRight': {color: 0x888888, x: 0.02, z: 0.02},
-        }
-      },
-      {
-        name: 'alien2',
-        offset: { x: -2, y: this.charOffset.y, z: this.charOffset.z },
-        scale: 2, headScale: 0.175, headOffset: { x: -2, y: 0.4, z: 12.5 },
-        effect: 'Particles', color: 0x3d4034,
-        boneType: 'poly',
-        bones: {
-          'SpineBase': {color: 0x3d4034, x: 0.11, z: 0.11},
-          'SpineMid': {color: 0x3d4034, x: 0.1125, z: 0.15},
-          'Neck': {color: 0x3d4034, x: 0.02, z: 0.02},
-          'Head': {color: 0x3d4034, x: 0.04, z: 0.04},
-
-          'ShoulderLeft': {color: 0x3d4034, x: 0.04, z: 0.06},
-          'ElbowLeft': {color: 0x3d4034, x: 0.02, z: 0.04},
-          'WristLeft': {color: 0x24261f, x: 0.03, z: 0.02},
-          'HandLeft': {color: 0x3d4034, x: 0.02, z: 0.02},
-          
-          'ShoulderRight': {color: 0x3d4034, x: 0.04, z: 0.06},
-          'ElbowRight': {color: 0x3d4034, x: 0.02, z: 0.04},
-          'WristRight': {color: 0x24261f, x: 0.03, z: 0.02},
-          'HandRight': {color: 0x3d4034, x: 0.02, z: 0.02},
-          
-          'HipLeft': {color: 0x3d4034, x: 0.06, z: 0.06},
-          'KneeLeft': {color: 0x3d4034, x: 0.04, z: 0.06},
-          'AnkleLeft': {color: 0x3d4034, x: 0.02, z: 0.02},
-          'FootLeft': {color: 0x3d4034, x: 0.02, z: 0.02},
-          
-          'HipRight': {color: 0x3d4034, x: 0.06, z: 0.06},
-          'KneeRight': {color: 0x3d4034, x: 0.04, z: 0.06},
-          'AnkleRight': {color: 0x3d4034, x: 0.02, z: 0.02},
-          'FootRight': {color: 0x3d4034, x: 0.02, z: 0.02},
-          
-          'SpineShoulder': {color: 0x3d4034, x: 0.19, z: 0.1125},
-          
-          'HandTipLeft': {color: 0x3d4034, x: 0.02, z: 0.02},
-          'ThumbLeft': {color: 0x3d4034, x: 0.02, z: 0.02},
-          'HandTipRight': {color: 0x3d4034, x: 0.02, z: 0.02},
-          'ThumbRight': {color: 0x3d4034, x: 0.02, z: 0.02},
         }
       },
     ];

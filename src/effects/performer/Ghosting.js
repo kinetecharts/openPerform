@@ -59,9 +59,18 @@ class Ghosting {
         if (part instanceof THREE.Mesh) {
           part.castShadow = false;
           part.receiveShadow = false;
-          part.material = part.material.clone();
-          part.material.opacity = options.opacity;
-          part.material.transparent = true;
+          if (!part.material.clone) {
+            part.material = _.map(part.material, (mat) => {
+              mat = mat.clone();
+              mat.opacity = options.opacity;
+              mat.transparent = true;
+              return mat;
+            });
+          } else {
+            part.material = part.material.clone();
+            part.material.opacity = options.opacity;
+            part.material.transparent = true;
+          }
         }
       });
 
@@ -75,18 +84,36 @@ class Ghosting {
     if (clone) {
       clone.traverse((part) => { // fade out clone material over time
         if (part instanceof THREE.Mesh) {
-          new TWEEN.Tween({ opacity: part.material.opacity })
-            .to({ opacity: 0 }, options.life * 1000)
-            .onUpdate(function() {
-              part.material.opacity = this.opacity;
-            })
-            .onComplete(() => {
-              if (clone) {
-                this.parent.remove(clone);
-                clone = null;
-              }
-            })
-            .start();
+
+          if (!part.material.opacity) {
+            _.each(part.material, (mat) => {
+              new TWEEN.Tween({ opacity: mat.opacity })
+                .to({ opacity: 0 }, options.life * 1000)
+                .onUpdate(function() {
+                  mat.opacity = this.opacity;
+                })
+                .onComplete(() => {
+                  if (clone) {
+                    this.parent.remove(clone);
+                    clone = null;
+                  }
+                })
+                .start();
+            });
+          } else {
+            new TWEEN.Tween({ opacity: part.material.opacity })
+              .to({ opacity: 0 }, options.life * 1000)
+              .onUpdate(function() {
+                part.material.opacity = this.opacity;
+              })
+              .onComplete(() => {
+                if (clone) {
+                  this.parent.remove(clone);
+                  clone = null;
+                }
+              })
+              .start();
+          }
         }
       });
     }

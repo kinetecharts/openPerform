@@ -486,19 +486,19 @@ class Scene {
     }
     var x = e.touches[0].pageX / window.innerWidth;
     var y = e.touches[0].pageY / window.innerHeight;
-    console.log(x, y);
+    // console.log(x, y);
 
-    var hits = this.arDisplay.hitTest(x, y);
-    if (hits && hits.length) {
-      const hit = hits[0];
-      THREE.ARUtils.placeObjectAtHit(
-        this.sceneGroup,
-        hit,
-        1,
-        true,
-      );
-      this.sceneGroup.visible = true;
-    }
+    // var hits = this.arDisplay.hitTest(x, y);
+    // if (hits && hits.length) {
+    //   const hit = hits[0];
+    //   THREE.ARUtils.placeObjectAtHit(
+    //     this.sceneGroup,
+    //     hit,
+    //     1,
+    //     true,
+    //   );
+    //   this.sceneGroup.visible = true;
+    // }
   }
   updateGuiOptions(data) {
     if (data.showTargetPlanes !== this.guiOptions.showTargetPlanes) {
