@@ -46,12 +46,18 @@ class EdgesStyle {
   }
 
   init() {
+    this.firstPass.clear = true;
+
+    this.secondPass.clear = true;
+    this.secondPass.enabled = true;
     this.secondPass.renderToScreen = true;
+
     this.composer.addPass(this.firstPass);
     this.composer.addPass(this.secondPass);
   }
 
   remove() {
+    this.secondPass.enabled = false;
     this.secondPass.renderToScreen = false;
   }
 

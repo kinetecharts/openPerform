@@ -180,15 +180,15 @@ class DataTags {
 
             let options = { text: '' };
             if (d.name == 'Head') {
-              options.text += 'Dance Machine';
-              options.align = 'center';
+              // options.text += 'Dance Machine';
+              // options.align = 'center';
               
-              gPos = new THREE.Vector3().setFromMatrixPosition(d.children[0].matrixWorld);
-              gPos.y += 0.25;
+              // gPos = new THREE.Vector3().setFromMatrixPosition(d.children[0].matrixWorld);
+              // gPos.y += 0.25;
               
-              this.tags[idx].children[0].geometry.update(options);
-              this.tags[idx].children[0].geometry.computeBoundingBox();
-              gPos.x -= this.tags[idx].children[0].geometry.boundingBox.max.x/1000;
+              // this.tags[idx].children[0].geometry.update(options);
+              // this.tags[idx].children[0].geometry.computeBoundingBox();
+              // gPos.x -= this.tags[idx].children[0].geometry.boundingBox.max.x/1000;
             } else {
               if (this.options.showName) {
                 options.text += d.name + '\n';

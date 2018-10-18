@@ -808,6 +808,10 @@ class DefaultPreset {
     //   this.main.state.environments.toggleEnvironment(1);
     // });
 
+    this.inputManager.registerCallback('keyboard', '0', 'Clear Timer', () => {
+      if (this.sceneTimer !== null) { clearInterval(this.sceneTimer); this.sceneTimer = null; }
+    });
+
     this.inputManager.registerCallback('keyboard', '1', 'Environment 1', () => {
       this.main.state.environments.toggleEnvironment(0);
     });

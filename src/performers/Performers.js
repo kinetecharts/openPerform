@@ -308,7 +308,7 @@ class Performers {
           this.inputManager,
           this.outputManager,
           options,
-          this.characters[_.size(this.performers)], //Math.floor(Math.random()*this.characters.length)
+          this.characters[Math.floor(Math.random()*this.characters.length)], //_.size(this.performers)
           this.scene,
         );
         // console.log('Added performer: ', _.size(this.performers));

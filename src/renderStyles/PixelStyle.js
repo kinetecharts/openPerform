@@ -42,12 +42,15 @@ class PixelStyle {
   }
 
   init() {
+    this.firstPass.clear = true;
+    this.firstPass.enabled = true;
     this.firstPass.renderToScreen = true;
 
     this.composer.addPass(this.firstPass);
   }
 
   remove() {
+    this.firstPass.enabled = false;
     this.firstPass.renderToScreen = false;
   }
 

@@ -83,7 +83,7 @@ class RenderStyles {
 
   add(type, defaults) {
     this.removeAll();
-    this.composer.reset();
+
     this.composer.addPass(this.renderPass);
     switch (type.toLowerCase()) {
       default:
@@ -141,6 +141,9 @@ class RenderStyles {
         renderStyle.remove();
       }
     });
+
+    this.composer.reset();
+    this.composer.passes = [];
     this.renderStyles = [];
   }
 
