@@ -787,7 +787,7 @@ class DefaultPreset {
         this.triggerScene(this.sceneIdx);
         this.sceneIdx++;
         if (this.sceneIdx > 5) { this.sceneIdx = 0; }
-      }, 1000 * 5);
+      }, 1000 * 60);
     });
 
     this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));
