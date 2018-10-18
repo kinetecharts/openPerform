@@ -35,9 +35,15 @@ class AfterImageStyle {
 
     this.afterimagePass = new THREE.AfterimagePass(this.options.damp);
     this.afterimagePass.renderToScreen = true;
-    this.composer.addPass(this.afterimagePass);
+
+    this.init = this.init.bind(this);
+    this.init();
 
     this.updateOptions = this.updateOptions.bind(this);
+  }
+
+  init() {
+    this.composer.addPass(this.afterimagePass);
   }
 
   update(timeDelta) {

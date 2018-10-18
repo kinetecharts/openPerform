@@ -41,9 +41,15 @@ class BloomStyle {
       this.options.threshold,
     );
     this.firstPass.renderToScreen = true;
-    this.composer.addPass(this.firstPass);
+    
+    this.init = this.init.bind(this);
+    this.init();
 
     this.updateOptions = this.updateOptions.bind(this);
+  }
+
+  init() {
+    this.composer.addPass(this.firstPass);
   }
 
   update(timeDelta) {

@@ -32,26 +32,27 @@ class EdgesStyle {
 
     // color to grayscale conversion
     this.firstPass = new THREE.ShaderPass(THREE.LuminosityShader);
-    this.composer.addPass(this.firstPass);
 
     // you might want to use a gaussian blur filter before
     // the next pass to improve the result of the Sobel operator
     // Sobel operator
     this.secondPass = new THREE.ShaderPass(THREE.SobelOperatorShader);
-    this.secondPass.renderToScreen = true;
     this.secondPass.uniforms.resolution.value.x = this.w;
     this.secondPass.uniforms.resolution.value.y = this.h;
-    this.composer.addPass(this.secondPass);
+    
+    this.init = this.init.bind(this);
 
     this.updateOptions = this.updateOptions.bind(this);
   }
 
-  remove() {
-    // this.composer.removePass(this.firstPass);
-    this.firstPass = null;
+  init() {
+    this.secondPass.renderToScreen = true;
+    this.composer.addPass(this.firstPass);
+    this.composer.addPass(this.secondPass);
+  }
 
-    // this.composer.removePass(this.secondPass);
-    this.secondPass = null;
+  remove() {
+    this.secondPass.renderToScreen = false;
   }
 
   update(timeDelta) {

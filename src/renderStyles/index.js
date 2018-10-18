@@ -57,6 +57,19 @@ class RenderStyles {
       });
     }
 
+    this.renderPass = new THREE.RenderPass(this.scene, this.camera);
+
+    this.outlineStyle = new OutlineStyle(this.composer, this.scene, this.camera, defaults);
+    this.pixelStyle = new PixelStyle(this.composer, defaults);
+    this.sketchStyle = new SketchStyle(this.composer, defaults);
+    this.dotShiftStyle = new DotShiftStyle(this.composer, defaults);
+    this.afterImageStyle = new AfterImageStyle(this.composer, defaults);
+    this.halftoneStyle = new HalftoneStyle(this.composer, defaults);
+    this.edgesStyle = new EdgesStyle(this.composer, defaults);
+    this.bloomStyle = new BloomStyle(this.composer, defaults);
+
+    // this.add = this.add.bind(this);
+
     this.add(this.defaultRenderStyle, defaults); // default
   }
 
@@ -71,37 +84,52 @@ class RenderStyles {
   add(type, defaults) {
     this.removeAll();
     this.composer.reset();
-    this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
+    this.composer.addPass(this.renderPass);
     switch (type.toLowerCase()) {
       default:
       case 'normal':
         break;
       case 'outline':
-        let outline = new OutlineStyle(this.composer, this.scene, this.camera, defaults);
-        this.selectPerformer = outline.selectPerformer;
-        this.deselectPerformer = outline.deselectPerformer;
-        this.renderStyles.push(outline);
+        this.outlineStyle.composer = this.composer;
+        this.outlineStyle.init();
+        this.selectPerformer = this.outlineStyle.selectPerformer;
+        this.deselectPerformer = this.outlineStyle.deselectPerformer;
+        this.renderStyles.push(this.outlineStyle);
         break;
       case 'sketch':
-        this.renderStyles.push(new SketchStyle(this.composer, defaults));
+        this.sketchStyle.composer = this.composer;
+        this.sketchStyle.init();
+        this.renderStyles.push(this.sketchStyle);
         break;
       case 'dotshift':
-        this.renderStyles.push(new DotShiftStyle(this.composer, defaults));
+        this.dotShiftStyle.composer = this.composer;
+        this.dotShiftStyle.init();
+        this.renderStyles.push(this.dotShiftStyle);
         break;
       case 'afterimage':
-        this.renderStyles.push(new AfterImageStyle(this.composer, defaults));
+        this.afterImageStyle.composer = this.composer;
+        this.afterImageStyle.init();
+        this.renderStyles.push(this.afterImageStyle);
         break;
       case 'halftone':
-        this.renderStyles.push(new HalftoneStyle(this.composer, defaults));
+        this.halftoneStyle.composer = this.composer;
+        this.halftoneStyle.init();
+        this.renderStyles.push(this.halftoneStyle);
         break;
       case 'pixel':
-        this.renderStyles.push(new PixelStyle(this.composer, defaults));
+        this.pixelStyle.composer = this.composer;
+        this.pixelStyle.init();
+        this.renderStyles.push(this.pixelStyle);
         break;
       case 'edges':
-        this.renderStyles.push(new EdgesStyle(this.composer, defaults));
+        this.edgesStyle.composer = this.composer;
+        this.edgesStyle.init();
+        this.renderStyles.push(this.edgesStyle);
         break;
       case 'bloom':
-        this.renderStyles.push(new BloomStyle(this.composer, defaults));
+        this.bloomStyle.composer = this.composer;
+        this.bloomStyle.init();
+        this.renderStyles.push(this.bloomStyle);
         break;
     }
     this.currentRenderStyle = type;

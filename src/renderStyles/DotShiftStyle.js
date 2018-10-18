@@ -34,23 +34,26 @@ class DotShiftStyle {
     this.h = this.container.height();
 
     this.firstPass = new THREE.ShaderPass(THREE.DotScreenShader);
-    this.firstPass.uniforms['scale'].value = this.options.dotScale;
-    this.composer.addPass(this.firstPass);
+    this.firstPass.uniforms['scale'].value = this.options.dotScale 
 
     this.secondPass = new THREE.ShaderPass(THREE.RGBShiftShader);
     this.secondPass.uniforms['amount'].value = this.options.shiftAmt;
     this.secondPass.renderToScreen = true;
-    this.composer.addPass(this.secondPass);
+
+    this.init = this.init.bind(this);
 
     this.updateOptions = this.updateOptions.bind(this);
   }
 
-  remove() {
-    // this.composer.removePass(this.firstPass);
-    this.firstPass = null;
+  init() {
+    this.secondPass.renderToScreen = true;
 
-    // this.composer.removePass(this.secondPass);
-    this.secondPass = null;
+    this.composer.addPass(this.firstPass);
+    this.composer.addPass(this.secondPass);
+  }
+
+  remove() {
+    this.secondPass.renderToScreen = false;
   }
 
   update(timeDelta) {

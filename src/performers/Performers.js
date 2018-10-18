@@ -22,7 +22,7 @@ class Performers {
     this.characters = [
       {
         name: 'robot',
-        offset: { x: -5, y: this.charOffset.y, z: this.charOffset.z },
+        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
         scale: 2, headScale: 2, headOffset: { x: 0, y: 0.075, z: 0 },
         effect: 'Data Tags', color: 0x6e6e6e,
         boneType: 'box',
@@ -64,7 +64,7 @@ class Performers {
       },
       {
         name: 'astronaut',
-        offset: { x: -3, y: this.charOffset.y, z: this.charOffset.z },
+        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
         scale: 2, headScale: 0.6, headOffset: { x: 0, y: 0.175, z: 0 },
         effect: 'Ghosting', color: 0x888888,
         boneType: 'cylinder',
@@ -106,7 +106,7 @@ class Performers {
       },
       {
         name: 'alien',
-        offset: { x: -1, y: this.charOffset.y, z: this.charOffset.z },
+        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
         scale: 2, headScale: 0.19, headOffset: { x: 0, y: 0.255, z: 0 },
         effect: 'Particles', color: 0x3d4034,
         boneType: 'poly',
@@ -146,7 +146,7 @@ class Performers {
       },
       {
         name: 'robot2',
-        offset: { x: 1, y: this.charOffset.y, z: this.charOffset.z },
+        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
         scale: 2, headScale: 0.15, headOffset: { x: 0, y: 0.1, z: 0 },
         effect: 'Data Tags', color: 0xE62F5C,
         boneType: 'box',
@@ -188,7 +188,7 @@ class Performers {
       },
       {
         name: 'avatar',
-        offset: { x: 3, y: this.charOffset.y, z: this.charOffset.z },
+        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
         scale: 2, headScale: 0.00175, headOffset: { x: 0, y: 0.19, z: 0 },
         effect: 'Ghosting', color: 0xE2653B,
         boneType: 'smooth',
@@ -228,7 +228,7 @@ class Performers {
       },
       {
         name: 'coon',
-        offset: { x: 5, y: this.charOffset.y, z: this.charOffset.z },
+        offset: { x: 0, y: this.charOffset.y, z: this.charOffset.z },
         scale: 2, headScale: 3.5, headOffset: { x: 0, y: 0.1, z: 0 },
         effect: 'Particles', color: 0x888888,
         boneType: 'poly',

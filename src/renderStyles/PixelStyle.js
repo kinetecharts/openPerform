@@ -35,15 +35,20 @@ class PixelStyle {
     this.firstPass.uniforms.resolution.value = new THREE.Vector2(this.w, this.h);
     this.firstPass.uniforms.resolution.value.multiplyScalar(window.devicePixelRatio);
     this.firstPass.uniforms.pixelSize.value = this.options.pixelSize;
-    this.firstPass.renderToScreen = true;
-    this.composer.addPass(this.firstPass);
-
+    
+    this.init = this.init.bind(this);
+    
     this.updateOptions = this.updateOptions.bind(this);
   }
 
+  init() {
+    this.firstPass.renderToScreen = true;
+
+    this.composer.addPass(this.firstPass);
+  }
+
   remove() {
-    // this.composer.removePass(this.firstPass);
-    this.firstPass = null;
+    this.firstPass.renderToScreen = false;
   }
 
   update(timeDelta) {

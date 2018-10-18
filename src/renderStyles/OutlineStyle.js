@@ -35,8 +35,6 @@ class OutlineStyle {
     );
     this.updateOptions(this.defaults);
 
-    this.composer.addPass(this.firstPass);
-
     new THREE.TextureLoader().load('textures/tri_pattern.jpg', (texture) => {
       this.firstPass.patternTexture = texture;
       texture.wrapS = THREE.RepeatWrapping;
@@ -47,11 +45,17 @@ class OutlineStyle {
     this.effectFXAA.uniforms['resolution'].value.set(1 / this.w, 1 / this.h);
     this.effectFXAA.renderToScreen = true;
     
-    this.composer.addPass(this.effectFXAA);
+    this.init = this.init.bind(this);
+    this.init();
     
     this.updateOptions = this.updateOptions.bind(this);
     this.selectPerformer = this.selectPerformer.bind(this);
     this.deselectPerformer = this.deselectPerformer.bind(this);
+  }
+
+  init() {
+    this.composer.addPass(this.firstPass);
+    this.composer.addPass(this.effectFXAA);
   }
 
   selectPerformer(performer) {

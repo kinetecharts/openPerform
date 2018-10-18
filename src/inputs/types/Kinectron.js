@@ -59,12 +59,12 @@ class KinectronInput {
         if (body.joints[0].cameraZ > this.depthRange[0] && body.joints[0].cameraZ < this.depthRange[1]) {
           this.callbacks['body']('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
         
-          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_1', this.zipWithNames(body.joints), 'kinectron');
-          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_2', this.zipWithNames(body.joints), 'kinectron');
+          // this.callbacks['body']('Kinectron_User_' + body.trackingId + '_1', this.zipWithNames(body.joints), 'kinectron');
+          // this.callbacks['body']('Kinectron_User_' + body.trackingId + '_2', this.zipWithNames(body.joints), 'kinectron');
 
-          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_3', this.zipWithNames(body.joints), 'kinectron');
-          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_4', this.zipWithNames(body.joints), 'kinectron');
-          this.callbacks['body']('Kinectron_User_' + body.trackingId + '_5', this.zipWithNames(body.joints), 'kinectron');
+          // this.callbacks['body']('Kinectron_User_' + body.trackingId + '_3', this.zipWithNames(body.joints), 'kinectron');
+          // this.callbacks['body']('Kinectron_User_' + body.trackingId + '_4', this.zipWithNames(body.joints), 'kinectron');
+          // this.callbacks['body']('Kinectron_User_' + body.trackingId + '_5', this.zipWithNames(body.joints), 'kinectron');
           
           
           // this.saveData('Kinectron_User_' + body.trackingId, this.zipWithNames(body.joints), 'kinectron');
@@ -119,11 +119,14 @@ class KinectronInput {
       let d = data.shift(); 
       d['id'] = id;
       this.callbacks['body'](d['id'], d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
-      this.callbacks['body'](d['id']+"_1", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
-      this.callbacks['body'](d['id']+"_2", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
-      this.callbacks['body'](d['id']+"_3", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
-      this.callbacks['body'](d['id']+"_4", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
-      this.callbacks['body'](d['id']+"_5", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      
+      // this.callbacks['body'](d['id']+"_1", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      // this.callbacks['body'](d['id']+"_2", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      
+      // this.callbacks['body'](d['id']+"_3", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      // this.callbacks['body'](d['id']+"_4", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      // this.callbacks['body'](d['id']+"_5", d['data'], d['type'], null, { play: () => {}, pause: () => {}, stop: () => {}, loop: () => {}, noLoop: () => {}, playing: false, looping: false});
+      
       this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, data, id), 1000/10);
     } else {
       this.nextFrameTimeouts[id] = setTimeout(this.playNextFrame.bind(this, _.cloneDeep(this.savedData), id), 1);

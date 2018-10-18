@@ -38,7 +38,6 @@ class SketchStyle {
     };
 
     this.firstPass = new THREE.ShaderPass(this.firstShader);
-    this.composer.addPass(this.firstPass);
 
     this.secondShader = {
       uniforms: {
@@ -74,9 +73,16 @@ class SketchStyle {
     this.secondPass = new THREE.ShaderPass(this.secondShader);
     this.secondPass.renderToScreen = true;
     this.secondPass.material.extensions.derivatives = true;
-    this.composer.addPass(this.secondPass);
+
+    this.init = this.init.bind(this);
+    this.init();
 
     this.updateOptions = this.updateOptions.bind(this);
+  }
+
+  init() {
+    this.composer.addPass(this.firstPass);
+    this.composer.addPass(this.secondPass);
   }
 
   update(timeDelta) {
