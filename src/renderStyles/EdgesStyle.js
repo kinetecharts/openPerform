@@ -46,6 +46,14 @@ class EdgesStyle {
     this.updateOptions = this.updateOptions.bind(this);
   }
 
+  remove() {
+    // this.composer.removePass(this.firstPass);
+    this.firstPass = null;
+
+    // this.composer.removePass(this.secondPass);
+    this.secondPass = null;
+  }
+
   update(timeDelta) {
     // put frame updates here.
   }

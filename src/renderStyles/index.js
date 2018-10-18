@@ -69,9 +69,9 @@ class RenderStyles {
   }
 
   add(type, defaults) {
+    this.removeAll();
     this.composer.reset();
     this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
-    this.removeAll();
     switch (type.toLowerCase()) {
       default:
       case 'normal':
@@ -110,7 +110,7 @@ class RenderStyles {
   removeAll() {
     _.each(this.renderStyles, (renderStyle) => {
       if (renderStyle) {
-        // renderStyle.remove();
+        renderStyle.remove();
       }
     });
     this.renderStyles = [];

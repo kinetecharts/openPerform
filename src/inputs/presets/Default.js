@@ -7,8 +7,18 @@ class DefaultPreset {
     this.main = main;
     this.scene = scene;
     
+    this.transTime = 60;
     this.sceneTimer = null;
     this.sceneIdx = 0;
+
+    // $('#upperDisplay').fadeOut();
+    // $('#lowerDisplay').fadeOut();
+    setTimeout(() => {
+      this.main.state.environments.toggleEnvironment(0);
+      this.main.state.renderStyles.updateRenderStyle(0);
+      this.sceneTimer = setInterval(this.triggerScene.bind(this), 1000 * this.transTime);
+      $('#startOverlay').fadeOut();
+    }, 1000 * 5);
   }
 
   initCallbacks(type) {
@@ -753,8 +763,8 @@ class DefaultPreset {
     this.inputManager.registerCallback('kinecttransport', 'bodies', 'Kinect Body', this.main.updatePerformers.bind(this.main));
   }
 
-  triggerScene(idx) {
-    switch(idx) {
+  triggerScene() {
+    switch(this.sceneIdx) {
       case 0:
         this.main.state.environments.toggleEnvironment(0);
         this.main.state.renderStyles.updateRenderStyle(0);
@@ -777,17 +787,16 @@ class DefaultPreset {
         this.main.state.renderStyles.updateRenderStyle(6);
         break;
     }
+    this.sceneIdx++;
+    if (this.sceneIdx > 5) { this.sceneIdx = 0; }
   }
 
   initKeyboardCallbacks() { // Uses mousetrap: https://github.com/ccampbell/mousetrap
     this.inputManager.registerCallback('keyboard', 'space', 'Start Routine', () => {
-      if (this.sceneTimer !== null) { clearInterval(this.sceneTimer); this.sceneTimer = null; }
+      this.main.toggleStartOverlay();
+      // if (this.sceneTimer !== null) { clearInterval(this.sceneTimer); this.sceneTimer = null; }
 
-      this.sceneTimer = setInterval(() => {
-        this.triggerScene(this.sceneIdx);
-        this.sceneIdx++;
-        if (this.sceneIdx > 5) { this.sceneIdx = 0; }
-      }, 1000 * 60);
+      // this.sceneTimer = setInterval(this.triggerScene.bind(this), 1000 * this.transTime);
     });
 
     this.inputManager.registerCallback('keyboard', 'esc', 'Hide / Show Keyboard Shortcuts', this.main.openKeyboardModal.bind(this.main));

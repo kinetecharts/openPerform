@@ -41,6 +41,11 @@ class PixelStyle {
     this.updateOptions = this.updateOptions.bind(this);
   }
 
+  remove() {
+    // this.composer.removePass(this.firstPass);
+    this.firstPass = null;
+  }
+
   update(timeDelta) {
     // put frame updates here.
   }
