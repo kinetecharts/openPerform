@@ -33,6 +33,10 @@ const config = {
       src: './src/bmfonts',
       dest: './dist/bmfonts',
     },
+    libs: {
+      src: './src/libs',
+      dest: './dist/libs',
+    },
   },
   fileUpload: {
     port: 8888,
@@ -46,7 +50,7 @@ const config = {
     },
   },
   perceptionNeuron: {
-    enabled: true,
+    enabled: false,
     ip: '192.168.1.250', // ip the Axis Neuron translation app is broadcasting from
     ports: {
       incoming: 9000, // port the Axis Neuron translation app is broadcasting on
@@ -54,36 +58,42 @@ const config = {
     },
   },
   gamepads: {
-    enabled: true,
+    enabled: false,
     ports: {
       outgoing: 9101, // port the browser connects on
     },
   },
   midiController: {
-    enabled: true,
+    enabled: false,
     ports: {
       outgoing: 9301, // port the browser connects on
     },
   },
   oscController: {
-    enabled: true,
+    enabled: false,
     ports: {
       incoming: 9400,
       outgoing: 9401, // port the browser connects on
     },
   },
   poseNet: {
-    enabled: true,
+    enabled: false,
     ports: {
       incoming: 9500,
       outgoing: 9501, // port the browser connects on
     },
   },
   iPhoneX: {
-    enabled: true,
+    enabled: false,
     ports: {
       incoming: 9600,
       outgoing: 9601, // port the browser connects on
+    },
+  },
+  kinectron: {
+    enabled: false,
+    ports: {
+      incoming: 9700,
     },
   },
 };
