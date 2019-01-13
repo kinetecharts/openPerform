@@ -392,7 +392,7 @@ class Scene {
   renderAR() {
     this.updateCommon();
 
-    this.renderer.clearColor();
+    // this.renderer.clearColor();
 
     this.arView.render();
 
