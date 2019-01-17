@@ -15,8 +15,8 @@ import config from './../../config';
 
 class KinectronInput {
   constructor() {
-    this.maxPerformers = 6; // max simultaneous kinect performers
-    this.depthRange = [1, 2.65]; // range limit in meters
+    this.maxPerformers = 4; // max simultaneous kinect performers
+    this.depthRange = [1.219, 3.657]; // range limit in meters
 
     this.callbacks = {};
     this.events = [];

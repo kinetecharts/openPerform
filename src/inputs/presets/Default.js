@@ -16,7 +16,7 @@ class DefaultPreset {
     setTimeout(() => {
       this.main.state.environments.toggleEnvironment(0);
       this.main.state.renderStyles.updateRenderStyle(0);
-      this.sceneTimer = setInterval(this.triggerScene.bind(this), 1000 * this.transTime);
+     // this.sceneTimer = setInterval(this.triggerScene.bind(this), 1000 * this.transTime);
       $('#startOverlay').fadeOut();
     }, 1000 * 5);
   }
@@ -767,24 +767,24 @@ class DefaultPreset {
     switch(this.sceneIdx) {
       case 0:
         this.main.state.environments.toggleEnvironment(0);
-        this.main.state.renderStyles.updateRenderStyle(0);
+        // this.main.state.renderStyles.updateRenderStyle(0);
         break;
       case 1:
-        this.main.state.renderStyles.updateRenderStyle(5);
+        // this.main.state.renderStyles.updateRenderStyle(5);
         break;
       case 2:
         this.main.state.environments.toggleEnvironment(1);
-        this.main.state.renderStyles.updateRenderStyle(0);
+        // this.main.state.renderStyles.updateRenderStyle(0);
         break;
       case 3:
-        this.main.state.renderStyles.updateRenderStyle(2);
+        // this.main.state.renderStyles.updateRenderStyle(2);
         break;
       case 4:
         this.main.state.environments.toggleEnvironment(2);
-        this.main.state.renderStyles.updateRenderStyle(0);
+        // this.main.state.renderStyles.updateRenderStyle(0);
         break;
       case 5:
-        this.main.state.renderStyles.updateRenderStyle(6);
+        // this.main.state.renderStyles.updateRenderStyle(6);
         break;
     }
     this.sceneIdx++;

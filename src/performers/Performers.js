@@ -38,7 +38,6 @@ class Performers {
           'WristLeft': {color: 0x015f8a, x: 0.05, z: 0.04},
           'HandLeft': {color: 0x6e6e6e, x: 0.02, z: 0.02},
           
-          'ShoulderRight': {color: 0x6e6e6e, x: 0.06, z: 0.06},
           'ElbowRight': {color: 0x6e6e6e, x: 0.04, z: 0.06},
           'WristRight': {color: 0x015f8a, x: 0.05, z: 0.04},
           'HandRight': {color: 0x6e6e6e, x: 0.02, z: 0.02},
@@ -294,7 +293,7 @@ class Performers {
 
   add(inputId, type, leader, actions, options) {
     if (this.performers && !this.performers[inputId] && this.colors) {
-      let performerLimit = 6;
+      let performerLimit = 4;
       if (_.size(this.performers) < performerLimit) {
         (options == null) ? options = _.cloneDeep(config.defaults.performer) : null;
         (options.color == null) ? options.color = this.colors[_.size(this.performers) % this.colors.length] : null;

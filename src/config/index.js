@@ -137,7 +137,7 @@ module.exports = {
     },
   },
   kinectron: {
-    ip: '10.0.1.18',
+    ip: '127.0.0.1', //'10.0.1.18',
     ports: {
       incoming: config.kinectron.ports.incoming,
     },
