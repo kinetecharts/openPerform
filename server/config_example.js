@@ -8,6 +8,9 @@ const config = {
     port: 8080,
   },
   favicon: path.resolve(__dirname, './../dist/images/favicon.ico'),
+  shaderToy: {
+    key: 'XXXXXX',
+  },
   copy: {
     html: {
       src: './src/html/index.html',

@@ -8,6 +8,7 @@
 
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 import TWEEN from 'tween.js';
+import ShaderToyLoader from './../materials/ShaderToyLoader';
 
 require('./../libs/BufferGeometryMerge.js');
 
@@ -26,6 +27,56 @@ class Performer {
     this.outputManager = outputManager;
 
     this.skeletalTranslator = new SkeletalTranslator();
+    this.shaderToyLoader = new ShaderToyLoader();
+    this.shaderToyIds = [
+      'MsBfzm', // halftone lines
+      'MdBfzm', // halftone dots
+      'XsdyD4', // gradient lines
+      'MlySDW', // folded wrapping paper
+      'MlVSDW', // grid - noise warp
+      'llyXWh', // scrolling dashed lines
+      'MlKXWm', // distance blobs
+      'lscXDn', // triangluar grid (gree)
+      '4dV3Dh', // colorful tris
+      'XlGSRW', // triangle wobbles
+      'XsyXzw', // dancing dots
+      'MtcXRB', // luma dots
+      'Xt33DM', // sift
+      'XdsGWs', // star psf
+      'Mld3Rn', // perspex web lattice
+      'Ml2GWy', // fracta tiling
+      'Mss3Wf', // basic fractal
+      'ldKXWG', // hexagonal tiling 5
+      '4dKXz3', // hexagonal tiling 7
+      'XlB3Rt', // has choas
+      'lsKyWV', // curlesque
+      'MtjGz3', // p6mm inversion 
+      'Xss3Dr', // procedural checkerboard
+      '4dccWj', //
+      'MdSGRc', // voronoi - metrics
+      'MdfBzl', // ice and fire
+      'XsdBRj',
+      'ltlfRM', // flicky
+
+      'lsSGRc', // blocks
+      'MslGD8', // voronoi - basic
+      'XdGXD3', // caves
+      '4tdSWr', // clouds
+      'Xlj3Rh', // diy spaceman cave
+      '4ssGzn', // fire2
+      'llcXW7', // foamy water
+      'lsXGzH',
+      'XtlSD7', // 1 Super Mario1!!!!
+      'Msl3Rr', // 2 wood blocks???
+      '4lKSzh', // 3 water
+      'lsSXzD', // 4 something flashing???
+      'ldXXDj', // 5 something purple?
+      'XdBGzd', // 6 empty
+      'Xd23Dh', // 7
+      'ldfyzl', // 8
+      'MddGzf', // 9
+      '4sX3R2', // 10
+    ];
 
     this.actions = actions;
 
@@ -74,7 +125,7 @@ class Performer {
     this.intensity = options.intensity;
 
     this.material = options.material.toLowerCase();
-    this.materials = ['Shader', 'Basic', 'Lambert', 'Phong', 'Standard'];
+    this.materials = ['Shader', 'Basic', 'Lambert', 'Phong', 'Standard', 'Shader Toy 1', 'Shader Toy 2', 'Shader Toy 3', 'Shader Toy 4', 'Shader Toy 5', 'Shader Toy 6', 'Shader Toy 7', 'Shader Toy 8', 'Shader Toy 9', 'Shader Toy 10'];
 
     this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
@@ -122,7 +173,7 @@ class Performer {
     this.modelShrink = 100;
 
     this.hiddenParts = [
-      // "hips"
+      // 'hips'
     ];
 
     console.log('New Performer: ', this.inputId);
@@ -219,7 +270,7 @@ class Performer {
 
       // console.log(result.scene);
       s.traverse((object) => {
-        //  // console.log(object.name + ": " + object.type);
+        //  // console.log(object.name + ': ' + object.type);
         switch (object.type) {
           case 'SkinnedMesh':
             s = object;
@@ -486,36 +537,120 @@ class Performer {
     return this.materials;
   }
 
-  generateMaterial() {
-    let material = new THREE.MeshBasicMaterial(); 
-    switch (this.getMaterial().toLowerCase()) {
-      case 'shader':    
-        break;
-      case 'lambert':
-        material = new THREE.MeshLambertMaterial();
-        break;
-      default:
-      case 'phong':
-        material = new THREE.MeshPhongMaterial();
-        break;
-      case 'standard':
-        material = new THREE.MeshStandardMaterial();
-        break;
-    }
-    material.wireframe = this.getWireframe();
-    material.color.set(parseInt(this.getMaterialColor(), 16));
-    return material;
+  generateMaterials() {
+    return new Promise((resolve, reject) => {
+      switch (this.getMaterial().toLowerCase()) {
+        default:
+        case 'phong':
+          resolve([new THREE.MeshPhongMaterial()]);
+          break;
+        case 'basic': 
+          resolve([new THREE.MeshBasicMaterial()]);
+          break;
+        case 'lambert':
+          resolve([new THREE.MeshLambertMaterial()]);
+          break;
+        case 'standard':
+          resolve([new THREE.MeshStandardMaterial()]);
+          break;
+
+        case 'shader toy 1':
+          this.shaderToyLoader.getShader(this.shaderToyIds[0]) // Mtdyzf
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 2':
+          this.shaderToyLoader.getShader(this.shaderToyIds[1]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 3':
+          this.shaderToyLoader.getShader(this.shaderToyIds[2]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 4':
+          this.shaderToyLoader.getShader(this.shaderToyIds[3]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 5':
+          this.shaderToyLoader.getShader(this.shaderToyIds[4]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 6':
+          this.shaderToyLoader.getShader(this.shaderToyIds[5]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 7':
+          this.shaderToyLoader.getShader(this.shaderToyIds[6]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 8':
+          this.shaderToyLoader.getShader(this.shaderToyIds[7]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 9':
+          this.shaderToyLoader.getShader(this.shaderToyIds[8]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+
+        case 'shader toy 10':
+          this.shaderToyLoader.getShader(this.shaderToyIds[9]) // Mtdyzf, XsX3RB
+            .then((mat) => {
+              resolve(mat);
+            })
+            .catch(reject);
+          break;
+      }
+    });
   }
 
   updateMaterial() {
-    _.each(this.getPerformer().meshes, (parent) => {
-      parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
-          object.material = this.generateMaterial(this.getMaterial());
-          object.material.needsUpdate = true;
-        }
-      });
-    });
+    this.generateMaterials(this.getMaterial())
+      .then((mat) => {
+        console.log('updateMaterial!', mat);
+        _.each(this.getPerformer().meshes, (parent) => {
+          parent.traverse((object) => {
+            if (object.hasOwnProperty('material')) {
+              object.material = mat[0];
+              object.material.needsUpdate = true;
+            }
+          });
+        });
+      })
+      .catch(() => { console.log('Shit'); });
   }
 
   toggleSnorried() { this.setSnorried(!this.getSnorried()); }
@@ -535,7 +670,7 @@ class Performer {
 
   updateIntensity(intensity) {
     this.setIntensity(intensity);
-    // this.parseBVHGroup("bvh", this.getHiddenParts(), this.getStyle(), intensity);
+    // this.parseBVHGroup('bvh', this.getHiddenParts(), this.getStyle(), intensity);
     _.each(this.getPerformer().newMeshes, (mesh) => {
       mesh.scale.set(mesh.srcScale * intensity, mesh.srcScale * intensity, mesh.srcScale * intensity);
     });
@@ -574,8 +709,13 @@ class Performer {
             object.receiveShadow = true;
           }
           if (object.hasOwnProperty('material')) {
-            object.material = this.generateMaterial(this.material);
-            object.material.needsUpdate = true;
+            this.generateMaterials(this.getMaterial())
+            .then((mat) => {
+              // console.log('parseBVH!', mat);
+              object.material = mat[0];
+              object.material.needsUpdate = true;
+            })
+            .catch(() => { console.log('Shit'); });
           }
           if (object instanceof THREE.Mesh) {
             switch (source) {
@@ -735,23 +875,23 @@ class Performer {
   }
 
   getModelGeo(id) {
-    // console.log("Fetching geometry: ", id, this.modelGeos[id]);
+    // console.log('Fetching geometry: ', id, this.modelGeos[id]);
     return this.modelGeos[id];
   }
 
   setModelGeo(id, model) {
     this.modelGeos[id] = model;
-    // console.log("Adding geometry: " + id, this.modelGeos);
+    // console.log('Adding geometry: ' + id, this.modelGeos);
   }
 
   getColladaScenes(id) {
-    // console.log("Fetching Animated Mesh: ", id, this.colladaScenes[id]);
+    // console.log('Fetching Animated Mesh: ', id, this.colladaScenes[id]);
     return this.colladaScenes[id];
   }
 
   setColladaScenes(id, mesh) {
     this.colladaScenes[id] = mesh;
-    // console.log("Adding Animated Mesh: " + id, this.colladaScenes);
+    // console.log('Adding Animated Mesh: ' + id, this.colladaScenes);
   }
 
   updateParameters(data) {

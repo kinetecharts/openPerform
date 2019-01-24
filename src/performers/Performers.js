@@ -20,6 +20,13 @@ class Performers {
     
     window.performers = this.performers = {};
     this.dataBuffer = [];
+
+    this.materials = ['Shader', 'Basic', 'Lambert', 'Phong', 'Standard', 'Shader Toy 1', 'Shader Toy 2', 'Shader Toy 3', 'Shader Toy 4', 'Shader Toy 5', 'Shader Toy 6', 'Shader Toy 7', 'Shader Toy 8', 'Shader Toy 9', 'Shader Toy 10'];
+    this.currentMaterial = 0;
+
+    this.updateMaterials = this.updateMaterials.bind(this);
+    this.nextMaterial = this.nextMaterial.bind(this);
+    this.prevMaterial = this.prevMaterial.bind(this);
   }
   init(parent) {
     this.parent = parent;
@@ -262,7 +269,7 @@ class Performers {
   }
 
   delayClonesById(id, delay) {
-    console.log(id, delay);
+    // console.log(id, delay);
     let s = 1;
     _.each(this.getCloneGroups()[id], (performer) => {
       performer.setDelay(delay * s);
@@ -271,7 +278,7 @@ class Performers {
   }
 
   delayAll(delay) {
-    console.log(this.getCloneGroups());
+    // console.log(this.getCloneGroups());
     _.each(this.getCloneGroups(), (performerGroup, idx) => {
       let s = 1;
       _.each(performerGroup, (performer) => {
@@ -297,6 +304,30 @@ class Performers {
         s++;
       });
     })
+  }
+
+  nextMaterial() {
+    this.currentMaterial++;
+    if (this.currentMaterial > this.materials.length) {
+      this.currentMaterial = 0;
+    }
+    this.updateMaterials(this.currentMaterial);
+  }
+
+  prevMaterial() {
+    this.currentMaterial--;
+    if (this.currentMaterial < 0) {
+      this.currentMaterial = this.materials.length - 1;
+    }
+    this.updateMaterials(this.currentMaterial);
+  }
+
+  updateMaterials(val) {
+    let idx = 0;
+    _.each(this.performers, (performer) => {
+      performer.setMaterial(val);
+      idx++;
+    });
   }
 
   updateColors(colors) {

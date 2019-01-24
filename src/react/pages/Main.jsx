@@ -6,7 +6,6 @@
  * @desc [This is where the magic happens. The main React class where all things are initialized.]
 */
 
-
 import ConsoleLogHTML from 'console-log-html';
 
 import WEBVR from './../../three/vr/WebVR';
@@ -66,6 +65,8 @@ class Main extends React.Component {
     this.state.outputManger = new OutputManager(this.state.scene, this);
 
     this.performers = new Performers(this.state.inputManger, this.state.outputManger);
+    window.prevMaterial = this.performers.prevMaterial;
+    window.nextMaterial = this.performers.nextMaterial;
 
     // once the dom has mounted, initialize threejs
     this.state.scene.initScene(
@@ -82,6 +83,13 @@ class Main extends React.Component {
       colorIdx: id,
     });
     this.updateColors(this.state.colorSet[id]);
+  }
+
+  setRenderStyle(id) {
+    this.setState({
+      currentRenderStyle: id,
+    });
+    this.state.renderStyles.updateRenderStyle(id);
   }
 
   sceneInit(scene) {
@@ -154,10 +162,26 @@ class Main extends React.Component {
     this.updateColors(this.state.colorSet[this.colorIdx]);
   }
 
+  updateLightPosition(x, z) {
+    this.state.scene.environments.updateLightPosition(x, z);
+  }
+
   updateColors(colors) {
     if (this.state.scene.environments && this.performers) {
-      this.state.scene.environments.updateColors(colors.background);
+      this.state.scene.environments.updateColors("#" + colors.background);
       this.performers.updateColors(colors.performers);
+    }
+  }
+
+  nextMaterial() {
+    if (this.state.scene.environments && this.performers) {
+      this.performers.nextMaterial();
+    }
+  }
+
+  prevMaterial(val) {
+    if (this.state.scene.environments && this.performers) {
+      this.performers.prevMaterial();
     }
   }
 
@@ -177,6 +201,8 @@ class Main extends React.Component {
         break;
     }
   }
+
+  
 
   addBVHPerformer(modelPaths, autoplay) {
     const bvhPlayer = new BVHPlayer(

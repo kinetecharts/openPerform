@@ -1,6 +1,7 @@
  #lowerDisplay {
 	display: table;
 	width: 100%;
+	display: none;
 }
 
 #lowerDisplay > div {

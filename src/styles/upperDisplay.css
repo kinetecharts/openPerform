@@ -1,3 +1,7 @@
+#upperDisplay {
+	display: none;
+}
+
 /* #upperDisplay {
 	position: absolute;
 	top: 0;

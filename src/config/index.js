@@ -12,7 +12,7 @@ module.exports = {
     performer: {
       wireframe: false,
       color: null, // if null, will use color from performerColors (listed below)
-      material: 'basic',
+      material: 'phong',
       visible: true,
       following: false,
       snorry: false,
@@ -39,7 +39,7 @@ module.exports = {
   ],
   debug: {
     bvh: {
-      enabled: true, // load bvh file / create performer from playback
+      enabled: false, // load bvh file / create performer from playback
       files: [
         'animations/bvh/duality_edit.bvh',
         // 'animations/bvh/dai_cmp_edit.bvh',

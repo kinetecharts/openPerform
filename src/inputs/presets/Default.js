@@ -6,6 +6,16 @@ class DefaultPreset {
     this.inputManager = inputManager;
     this.main = main;
     this.scene = scene;
+
+    setTimeout(() => {
+      this.resetAll();
+      // this.main.setColor(0);
+    }, 1000);
+
+    setTimeout(() => {
+      this.main.setColor(0);
+      this.inputManager.followPerformer(0, 7);
+    }, 10000);
   }
 
   initCallbacks(type) {
@@ -276,7 +286,7 @@ class DefaultPreset {
                   }
                   break;
               }
-            break;
+              break;
             case 'clip':
               switch(parseInt(controlPath[3])) { // row
                 default:
@@ -338,19 +348,19 @@ class DefaultPreset {
                       break;
                     case 1:
                       if (parseInt(data[1])) {
-                        this.inputManager.rotate(7);
+                        this.scene.unsetRotation();
+                        this.inputManager.followPerformer(0, 7);
                       }
                       break;
                     case 2:
                       if (parseInt(data[1])) {
                         this.scene.unsetRotation();
-                        this.inputManager.followPerformer(0, 7);
+                        this.inputManager.cutTop(0, 7);
                       }
                       break;
                     case 3:
                       if (parseInt(data[1])) {
-                        this.scene.unsetRotation();
-                        this.inputManager.cutTop(0, 7);
+                        this.inputManager.rotate(7);
                       }
                       break;
                     case 4:
@@ -366,7 +376,7 @@ class DefaultPreset {
                   break;
               }
               break;
-              case 'visible':
+            case 'visible':
               switch(parseInt(controlPath[3])) { // row
                 default:
                   console.log('OSC Row not found: ', parseInt(controlPath[3]));
@@ -406,9 +416,34 @@ class DefaultPreset {
                   break;
               }
               break;
+            case 'material':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      this.main.performers.prevMaterial();
+                      break;
+                    case 2:
+                      this.main.performers.nextMaterial();
+                      break;
+                  }
+                  break;
+              }
+              break;
             case 'rotSpace':
               this.inputManager.spreadClonesById(0, data[2] * 127);
               this.inputManager.rotateClonesById(0, data[1] * 127);
+              break;
+            case 'lightPos':
+              this.main.updateLightPosition(data[2], data[1]);
+              // this.inputManager.spreadClonesById(0, data[2] * 127);
+              // this.inputManager.rotateClonesById(0, data[1] * 127);
               break;
             case 'scale':
               this.inputManager.scaleClonesById(0, data[1] * 127);
@@ -416,13 +451,47 @@ class DefaultPreset {
             case 'delay':
               this.inputManager.delayClonesById(0, data[1] * 127);
               break;
+            case 'style':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(0);
+                      }
+                      break;
+                    case 2:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(1);
+                      }
+                      break;
+                    case 3:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(4);
+                      }
+                      break;
+                    case 4:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(3);
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
             case 'color':
               // console.log(parseInt(controlPath[3]));
               switch(parseInt(controlPath[3])) { // row
                 default:
                   console.log('OSC Row not found: ', parseInt(controlPath[3]));
                   break;
-                case 2:
+                case 1:
                   switch(parseInt(controlPath[4])) { // col
                     default:
                       console.log('OSC Col not found: ', parseInt(controlPath[4]));
@@ -442,24 +511,17 @@ class DefaultPreset {
                         this.main.setColor(2);
                       }
                       break;
-                  }
-                  break;
-                case 1:
-                  switch(parseInt(controlPath[4])) { // col
-                    default:
-                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
-                      break;
-                    case 1:
+                    case 4:
                       if (parseInt(data[1])) {
                         this.main.setColor(3);
                       }
                       break;
-                    case 2:
+                    case 5:
                       if (parseInt(data[1])) {
                         this.main.setColor(4);
                       }
                       break;
-                    case 3:
+                    case 6:
                       if (parseInt(data[1])) {
                         this.main.setColor(5);
                       }

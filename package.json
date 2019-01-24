@@ -49,6 +49,7 @@
   "dependencies": {
     "base64-image-loader": "^1.2.1",
     "bootstrap": "^3.3.7",
+    "comment-regex": "^1.0.1",
     "console-log-html": "^2.0.2",
     "copy-webpack-plugin": "^4.3.1",
     "dat-gui": "^0.5.0",
@@ -79,6 +80,7 @@
     "three": "^0.96.0",
     "three-buffer-vertex-data": "^1.1.0",
     "three-orbit-controls": "^82.1.0",
+    "three-shadertoy-material": "^1.2.6",
     "tls": "^0.0.1",
     "tween": "^0.9.0",
     "tween.js": "^16.6.0",
