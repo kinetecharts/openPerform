@@ -96,7 +96,7 @@ class BVHChooserModal extends React.Component {
           <Modal.Title>
             <span>Welcome to</span>
             <div className="modal-image">
-              <img alt="OP Logo" height="100%" width="auto" src={'../../images/op_logo_lockup.png'} />
+              <img alt="OP Logo" height="100%" width="auto" src={'images/op_logo_lockup.png'} />
             </div>
           </Modal.Title>
         </Modal.Header>

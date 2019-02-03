@@ -20,9 +20,9 @@ module.exports = {
 		filename: 'bundle.js',
 		// the output bundle
 
-		path: resolve(__dirname, 'dist'),
+		path: resolve(__dirname, 'dist/'),
 
-		publicPath: '/'
+		publicPath: resolve(__dirname, 'dist/')
 		// necessary for HMR to know where to load the hot update chunks
 	},
 	module: {
@@ -39,15 +39,15 @@ module.exports = {
 				}
 			},
 			{
+				test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+				loader: 'url-loader?name=/fonts/[name].[ext]&limit=10000',
+			},
+			{
 			  test: /\.css$/,
 			  loader: 'style-loader'
 			}, {
 			  test: /\.css$/,
 			  loader: 'css-loader'
-			},
-			{
-				test: /\.(eot|ttf|woff|woff2)$/,
-				loader: 'file-loader?name=fonts/[name].[ext]'
 			},
 			{
 				test: /\.(jpe?g|gif|svg)$/i,
@@ -75,27 +75,27 @@ module.exports = {
 		new CopyWebpackPlugin([
       {
         from: resolve(__dirname, config.copy.html.src),
-        to: resolve(__dirname, config.copy.html.dest),
+        to: resolve(__dirname, './dist/' + config.copy.html.dest),
       },
       {
         from: resolve(__dirname, config.copy.images.src),
-        to: resolve(__dirname, config.copy.images.dest),
+        to: resolve(__dirname, './dist/' + config.copy.images.dest),
       },
       {
         from: resolve(__dirname, config.copy.textures.src),
-        to: resolve(__dirname, config.copy.textures.dest),
+        to: resolve(__dirname, './dist/' + config.copy.textures.dest),
 			},
 			{
         from: resolve(__dirname, config.copy.models.src),
-        to: resolve(__dirname, config.copy.models.dest),
+        to: resolve(__dirname, './dist/' + config.copy.models.dest),
 			},
 			{
         from: resolve(__dirname, config.copy.animations.src),
-        to: resolve(__dirname, config.copy.animations.dest),
+        to: resolve(__dirname, './dist/' + config.copy.animations.dest),
 			},
 			{
         from: resolve(__dirname, config.copy.bmfonts.src),
-        to: resolve(__dirname, config.copy.bmfonts.dest),
+        to: resolve(__dirname, './dist/' + config.copy.bmfonts.dest),
       },
     ]),
 		new webpack.LoaderOptionsPlugin({

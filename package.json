@@ -6,7 +6,7 @@
   "scripts": {
     "webpack": "webpack-dev-server --history-api-fallback  --watch-poll --progress --colors",
     "data": "node server/dataServer.js",
-    "build": "webpack --config webpack-production.config.js --progress --profile --colors",
+    "build": "webpack --config webpack-production.config.js --progress --profile --colors | webpack --config webpack-gh-pages.config.js --progress --profile --colors",
     "file": "node ./server/fileServer.js",
     "start": "npm run file | npm run data",
     "dev": "npm run webpack | npm run data"

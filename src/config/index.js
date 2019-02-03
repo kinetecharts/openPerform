@@ -25,7 +25,7 @@ module.exports = {
     renderStyle: 'normal',
   },
 
-  inputs: ['KinectTransport', 'Keyboard', 'Mouse', 'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  inputs: [/*'KinectTransport', */'Keyboard', 'Mouse', /*'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'*/], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: ['MidiController'],
   performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
