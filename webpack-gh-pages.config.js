@@ -17,7 +17,7 @@ module.exports = {
 
 		path: resolve(__dirname, 'docs/'),
 
-		publicPath: resolve(__dirname, 'docs/')
+		// publicPath: resolve(__dirname, 'docs/')
 		// necessary for HMR to know where to load the hot update chunks
 	},
 	module: {
@@ -35,7 +35,7 @@ module.exports = {
 			},
 			{
 				test: /\.(woff|woff2|ttf|eot)(\?v=[a-z0-9]\.[a-z0-9]\.[a-z0-9])?$/,
-				loader: 'file-loader?name=/fonts/[name].[ext]&limit=10000',
+				loader: 'file-loader?name=fonts/[name].[ext]&limit=10000',
 			},
 			{
 			  test: /\.css$/,
