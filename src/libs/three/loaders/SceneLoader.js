@@ -2,7 +2,7 @@
  * @author alteredq / http://alteredqualia.com/
  */
 
-const JSONScene = require('./../../../models/json/avatar.json');
+const JSONScene = require('./../../../static/models/json/avatar.json');
 
 THREE.SceneLoader = function (manager) {
   this.onLoadStart = function () {};

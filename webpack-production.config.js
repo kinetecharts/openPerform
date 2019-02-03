@@ -5,12 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const config = require('./server/config');
 
 module.exports = {
-	/*watch: true,
-	watchOptions: {
-		aggregateTimeout: 300,
-		poll: 1000,
-		ignored: '/node_modules/'
-	},*/
+	mode: "production",
 	context: resolve(__dirname, 'src'),
 	entry: [
 		'./index.jsx',
@@ -74,45 +69,10 @@ module.exports = {
 	plugins: [
 		new CopyWebpackPlugin([
       {
-        from: resolve(__dirname, config.copy.html.src),
-        to: resolve(__dirname, './dist/' + config.copy.html.dest),
-      },
-      {
-        from: resolve(__dirname, config.copy.images.src),
-        to: resolve(__dirname, './dist/' + config.copy.images.dest),
-      },
-      {
-        from: resolve(__dirname, config.copy.textures.src),
-        to: resolve(__dirname, './dist/' + config.copy.textures.dest),
-			},
-			{
-        from: resolve(__dirname, config.copy.models.src),
-        to: resolve(__dirname, './dist/' + config.copy.models.dest),
-			},
-			{
-        from: resolve(__dirname, config.copy.animations.src),
-        to: resolve(__dirname, './dist/' + config.copy.animations.dest),
-			},
-			{
-        from: resolve(__dirname, config.copy.bmfonts.src),
-        to: resolve(__dirname, './dist/' + config.copy.bmfonts.dest),
+        from: resolve(__dirname, config.copy.all.src),
+        to: resolve(__dirname, './dist/'),
       },
     ]),
-		new webpack.LoaderOptionsPlugin({
-		  minimize: true,
-		  debug: false
-		}),
-		// new webpack.optimize.UglifyJsPlugin({
-		//   beautify: false,
-		//   mangle: {
-		//     screw_ie8: false,
-		//     keep_fnames: true
-		//   },
-		//   compress: {
-		//     screw_ie8: false
-		//   },
-		//   comments: false
-		// }),
 		new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
@@ -123,15 +83,6 @@ module.exports = {
 			'window.TWEEN': 'tween.js',
 			React: 'react',
 			_: 'lodash',
-    }),
-
-		new webpack.optimize.CommonsChunkPlugin({
-		  name: "vendor",
-		  filename: "vendor.js",
-		  minChunks: function (module) {
-		    // this assumes your vendor imports exist in the node_modules directory
-		    return module.context && module.context.indexOf("node_modules") !== -1;
-		  }
-		})
+    })
 	]
 }
