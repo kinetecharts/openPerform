@@ -35,7 +35,7 @@ module.exports = {
 			},
 			{
 				test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-				loader: 'url-loader?name=/fonts/[name].[ext]&limit=10000',
+				loader: 'url-loader?limit=10000',
 			},
 			{
 			  test: /\.css$/,
