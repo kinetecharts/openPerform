@@ -60,16 +60,15 @@ module.exports = {
         },
       },
       {
+        test: /\.(woff|woff2|ttf|eot)(\?v=[a-z0-9]\.[a-z0-9]\.[a-z0-9])?$/,
+        loader: 'file-loader?name=fonts/[name].[ext]&limit=10000',
+      },
+      {
         test: /\.css$/,
         loader: 'style-loader',
-      },
-      {
+      }, {
         test: /\.css$/,
         loader: 'css-loader',
-      },
-      {
-        test: /\.(eot|ttf|woff|woff2)$/,
-        loader: 'file-loader?name=fonts/[name].[ext]',
       },
       {
         test: /\.(jpe?g|gif|svg)$/i,
@@ -86,7 +85,7 @@ module.exports = {
       },
       {
         test: /\.glsl$/,
-        loader: 'webpack-glsl-loader'
+        loader: 'webpack-glsl-loader',
       },
     ],
   },
