@@ -5,8 +5,7 @@ node_js:
 install:
   - npm i -g yarn && yarn
 
-before_script:
-  - yarn prod
+
 
 deploy:
   provider: pages
