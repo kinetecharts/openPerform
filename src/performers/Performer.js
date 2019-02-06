@@ -106,19 +106,19 @@ class Performer {
     this.loadObjModels([
       {
         id: 'hand',
-        url: '/models/obj/hand.obj',
+        url: 'models/obj/hand.obj',
       },
       {
         id: 'head',
-        url: '/models/obj/head.obj',
+        url: 'models/obj/head.obj',
       },
       /* {
         id:'chair',
-        url: '/models/obj/chair.obj'
+        url: 'models/obj/chair.obj'
       },
       {
         id:'heart',
-        url: '/models/obj/heart.obj'
+        url: 'models/obj/heart.obj'
       } */
     ]);
 

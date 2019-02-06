@@ -24,7 +24,6 @@ module.exports = {
     effect: 'ribbons',
     renderStyle: 'normal',
   },
-
   inputs: [
     'Keyboard', 'Mouse',
     /*'KinectTransport',
