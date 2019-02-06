@@ -78,13 +78,6 @@ class Main extends React.Component {
     );
   }
 
-  setColor(id) {
-    this.setState({
-      colorIdx: id,
-    });
-    this.updateColors(this.state.colorSet[id]);
-  }
-
   setRenderStyle(id) {
     this.setState({
       currentRenderStyle: id,
@@ -171,6 +164,13 @@ class Main extends React.Component {
       this.state.scene.environments.updateColors("#" + colors.background);
       this.performers.updateColors(colors.performers);
     }
+  }
+
+  setColor(id) {
+    this.setState({
+      colorIdx: id,
+    });
+    this.updateColors(this.state.colorSet[id]);
   }
 
   nextMaterial() {

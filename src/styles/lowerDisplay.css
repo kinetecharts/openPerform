@@ -1,7 +1,7 @@
  #lowerDisplay {
 	display: table;
 	width: 100%;
-	display: none;
+	/* display: none; */
 }
 
 #lowerDisplay > div {
@@ -512,7 +512,7 @@
 
 #performerParts {
 	border-bottom: 1px solid #ddd;
-	background: url('../images/performer_outline.jpg');
+	background: url('./../static/images/performer_outline.jpg');
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;

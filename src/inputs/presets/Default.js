@@ -7,10 +7,10 @@ class DefaultPreset {
     this.main = main;
     this.scene = scene;
 
-    setTimeout(() => {
-      this.resetAll();
-      // this.main.setColor(0);
-    }, 1000);
+    // setTimeout(() => {
+    //   this.resetAll();
+    //   // this.main.setColor(0);
+    // }, 1000);
 
     setTimeout(() => {
       this.main.setColor(0);
@@ -235,8 +235,40 @@ class DefaultPreset {
       // console.log(controlPath);
       switch(controlPath[1]) { // page
         default:
-          console.log('OSC Page not found: ', controlPath[1]);
+          console.log('OSC Page not found: !' + controlPath[1]) + '¡';
           break;
+        case 'signal':
+          // conosle.log('signal!');
+          break;
+        case 'beat':
+          let largeScale = 0.5;
+          let smallScale = 0.4;
+          // console.log(data[1]);
+          if (this.main.performers.performers) {
+            this.sIn = { s: smallScale };
+            new TWEEN.Tween(this.sIn)
+              .to({ s: largeScale }, 500)
+              .onUpdate(() => {
+                this.main.performers.performers[
+                  Object.keys(this.main.performers.performers)[0]
+                ].setScale(this.sIn.s);
+              })
+              .easing(TWEEN.Easing.Quadratic.InOut)
+              .onComplete(() => {
+                this.sOut = { s: largeScale };
+                new TWEEN.Tween(this.sOut)
+                  .to({ s: smallScale }, 250)
+                  .onUpdate(() => {
+                    this.main.performers.performers[
+                      Object.keys(this.main.performers.performers)[0]
+                    ].setScale(this.sOut.s);
+                  })
+                  .easing(TWEEN.Easing.Quadratic.InOut)
+                  .start();
+              })
+              .start();
+          }
+        break;
         case 'controls':
           switch(controlPath[2]) { // group
             default:

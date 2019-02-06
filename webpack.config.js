@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const config = require('./server/config');
 
 module.exports = {
+  mode: "development",
   node: {
     fs: 'empty',
   },
@@ -59,16 +60,15 @@ module.exports = {
         },
       },
       {
+        test: /\.(woff|woff2|ttf|eot)(\?v=[a-z0-9]\.[a-z0-9]\.[a-z0-9])?$/,
+        loader: 'file-loader?name=fonts/[name].[ext]&limit=10000',
+      },
+      {
         test: /\.css$/,
         loader: 'style-loader',
-      },
-      {
+      }, {
         test: /\.css$/,
         loader: 'css-loader',
-      },
-      {
-        test: /\.(eot|ttf|woff|woff2)$/,
-        loader: 'file-loader?name=fonts/[name].[ext]',
       },
       {
         test: /\.(jpe?g|gif|svg)$/i,
@@ -84,7 +84,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(glsl|frag|vert)$/,
+        test: /\.glsl$/,
         loader: 'webpack-glsl-loader',
       },
     ],
@@ -99,28 +99,8 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       {
-        from: resolve(__dirname, config.copy.html.src),
-        to: resolve(__dirname, config.copy.html.dest),
-      },
-      {
-        from: resolve(__dirname, config.copy.images.src),
-        to: resolve(__dirname, config.copy.images.dest),
-      },
-      {
-        from: resolve(__dirname, config.copy.textures.src),
-        to: resolve(__dirname, config.copy.textures.dest),
-      },
-      {
-        from: resolve(__dirname, config.copy.models.src),
-        to: resolve(__dirname, config.copy.models.dest),
-      },
-      {
-        from: resolve(__dirname, config.copy.animations.src),
-        to: resolve(__dirname, config.copy.animations.dest),
-      },
-      {
-        from: resolve(__dirname, config.copy.bmfonts.src),
-        to: resolve(__dirname, config.copy.bmfonts.dest),
+        from: resolve(__dirname, config.copy.all.src),
+        to: resolve(__dirname, './dist/'),
       },
     ]),
 
@@ -143,12 +123,6 @@ module.exports = {
       'window.TWEEN': 'tween.js',
       React: 'react',
       _: 'lodash',
-    }),
-
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.js',
-      minChunks: module => module.context && module.context.indexOf('node_modules') !== -1, // this assumes your vendor imports exist in the node_modules directory
-    }),
-  ],
+    })
+  ]
 };

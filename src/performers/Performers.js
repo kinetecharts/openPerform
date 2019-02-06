@@ -323,10 +323,8 @@ class Performers {
   }
 
   updateMaterials(val) {
-    let idx = 0;
     _.each(this.performers, (performer) => {
-      performer.setMaterial(val);
-      idx++;
+      performer.setMaterial(performer.materials.getMaterialNames()[val]);
     });
   }
 

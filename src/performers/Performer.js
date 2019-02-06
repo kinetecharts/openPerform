@@ -8,9 +8,10 @@
 
 // Parent should be a Three Scene, updateFromPN recieves data from PerceptionNeuron.js
 import TWEEN from 'tween.js';
-import ShaderToyLoader from './../materials/ShaderToyLoader';
 
 require('./../libs/BufferGeometryMerge.js');
+
+import Materials from './Materials';
 
 import PerformerEffects from './../effects/performer';
 
@@ -27,58 +28,14 @@ class Performer {
     this.outputManager = outputManager;
 
     this.skeletalTranslator = new SkeletalTranslator();
-    this.shaderToyLoader = new ShaderToyLoader();
-    this.shaderToyIds = [
-      'MsBfzm', // halftone lines
-      'MdBfzm', // halftone dots
-      'XsdyD4', // gradient lines
-      'MlySDW', // folded wrapping paper
-      'MlVSDW', // grid - noise warp
-      'llyXWh', // scrolling dashed lines
-      'MlKXWm', // distance blobs
-      'lscXDn', // triangluar grid (gree)
-      '4dV3Dh', // colorful tris
-      'XlGSRW', // triangle wobbles
-      'XsyXzw', // dancing dots
-      'MtcXRB', // luma dots
-      'Xt33DM', // sift
-      'XdsGWs', // star psf
-      'Mld3Rn', // perspex web lattice
-      'Ml2GWy', // fracta tiling
-      'Mss3Wf', // basic fractal
-      'ldKXWG', // hexagonal tiling 5
-      '4dKXz3', // hexagonal tiling 7
-      'XlB3Rt', // has choas
-      'lsKyWV', // curlesque
-      'MtjGz3', // p6mm inversion 
-      'Xss3Dr', // procedural checkerboard
-      '4dccWj', //
-      'MdSGRc', // voronoi - metrics
-      'MdfBzl', // ice and fire
-      'XsdBRj',
-      'ltlfRM', // flicky
-
-      'lsSGRc', // blocks
-      'MslGD8', // voronoi - basic
-      'XdGXD3', // caves
-      '4tdSWr', // clouds
-      'Xlj3Rh', // diy spaceman cave
-      '4ssGzn', // fire2
-      'llcXW7', // foamy water
-      'lsXGzH',
-      'XtlSD7', // 1 Super Mario1!!!!
-      'Msl3Rr', // 2 wood blocks???
-      '4lKSzh', // 3 water
-      'lsSXzD', // 4 something flashing???
-      'ldXXDj', // 5 something purple?
-      'XdBGzd', // 6 empty
-      'Xd23Dh', // 7
-      'ldfyzl', // 8
-      'MddGzf', // 9
-      '4sX3R2', // 10
-    ];
-
+    
     this.actions = actions;
+
+    this.wireframe = options.wireframe;
+    this.color = options.color;
+    this.material = options.material.toLowerCase();
+
+    this.materialManager = new Materials();
 
     this.dataBuffer = [];
     this.delay = 0;
@@ -109,11 +66,10 @@ class Performer {
       }
       this.name = 'Clone ' + (parseInt(performerId) - 1);
     }
-    this.color = options.color;
-
+    
     this.prefix = 'robot_';
 
-    this.wireframe = options.wireframe;
+    this.materialName = options.material;
     this.visible = options.visible;
     this.following = options.following;
     this.snorried = options.snorry;
@@ -123,10 +79,7 @@ class Performer {
     this.styleId = this.styles.indexOf(options.style);
     this.style = options.style;
     this.intensity = options.intensity;
-
-    this.material = options.material.toLowerCase();
-    this.materials = ['Shader', 'Basic', 'Lambert', 'Phong', 'Standard', 'Shader Toy 1', 'Shader Toy 2', 'Shader Toy 3', 'Shader Toy 4', 'Shader Toy 5', 'Shader Toy 6', 'Shader Toy 7', 'Shader Toy 8', 'Shader Toy 9', 'Shader Toy 10'];
-
+    
     this.displayType = { value: 'bvhMeshGroup', label: 'Mesh Group' };
     this.displayTypes = [
       { value: 'bvhMeshGroup', label: 'Mesh Group' },
@@ -184,12 +137,16 @@ class Performer {
     // this.guiFolder = this.gui.addFolder(this.name + ' Effects');
     // this.guiFolder.open()
 
-    this.performerEffects = new PerformerEffects(this.parent, parseInt(this.color, 16));
+    this.performerEffects = new PerformerEffects(this.parent, parseInt(options.color, 16));
 
     // this.addEffects(this.effects[0]);//defaults
 
     this.scaleInterval = null;
     this.colorInterval = null;
+
+    this.setColor = this.setColor.bind(this);
+    this.setScale = this.setScale.bind(this);
+    this.setMaterialTime = this.setMaterialTime.bind(this);
   }
 
   loadColladaModels(models) {
@@ -311,7 +268,7 @@ class Performer {
     
     this.loader.loadScene(filename, {}, (result) => {
       result.scene.visible = false;
-      console.log(result.scene);
+      // console.log(result.scene);
       this.setScene(result.scene);
       
       this.getScene().scale.set(size, size, size);
@@ -427,29 +384,6 @@ class Performer {
     return this.scene;
   }
 
-  getWireframe() {
-    return this.wireframe;
-  }
-
-  getMaterialColor() {
-    return this.color;
-  }
-
-  setMaterialColor(color) {
-    this.color = color;
-    this.updateMaterialColor();
-  }
-
-  updateMaterialColor() {
-    _.each(this.getPerformer().meshes, (parent) => {
-      parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
-          object.material.color.set(parseInt(this.getMaterialColor(), 16));
-        }
-      });
-    });
-  }
-
   getStyleInt() {
     return this.styleInt;
   }
@@ -525,122 +459,15 @@ class Performer {
     this.getScene().visible = val;
   }
 
+  /**************** Material ****************/
   getMaterial() {
     return this.material;
   }
 
-  setMaterial(val) {
-    this.material = val;
-  }
-
-  getMaterials() {
-    return this.materials;
-  }
-
-  generateMaterials() {
-    return new Promise((resolve, reject) => {
-      switch (this.getMaterial().toLowerCase()) {
-        default:
-        case 'phong':
-          resolve([new THREE.MeshPhongMaterial()]);
-          break;
-        case 'basic': 
-          resolve([new THREE.MeshBasicMaterial()]);
-          break;
-        case 'lambert':
-          resolve([new THREE.MeshLambertMaterial()]);
-          break;
-        case 'standard':
-          resolve([new THREE.MeshStandardMaterial()]);
-          break;
-
-        case 'shader toy 1':
-          this.shaderToyLoader.getShader(this.shaderToyIds[0]) // Mtdyzf
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 2':
-          this.shaderToyLoader.getShader(this.shaderToyIds[1]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 3':
-          this.shaderToyLoader.getShader(this.shaderToyIds[2]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 4':
-          this.shaderToyLoader.getShader(this.shaderToyIds[3]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 5':
-          this.shaderToyLoader.getShader(this.shaderToyIds[4]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 6':
-          this.shaderToyLoader.getShader(this.shaderToyIds[5]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 7':
-          this.shaderToyLoader.getShader(this.shaderToyIds[6]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 8':
-          this.shaderToyLoader.getShader(this.shaderToyIds[7]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 9':
-          this.shaderToyLoader.getShader(this.shaderToyIds[8]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-
-        case 'shader toy 10':
-          this.shaderToyLoader.getShader(this.shaderToyIds[9]) // Mtdyzf, XsX3RB
-            .then((mat) => {
-              resolve(mat);
-            })
-            .catch(reject);
-          break;
-      }
-    });
-  }
-
-  updateMaterial() {
-    this.generateMaterials(this.getMaterial())
+  setMaterial(materialName) {
+    this.material = materialName;
+    this.materialManager.getMaterial(materialName, this.color, this.wireframe)
       .then((mat) => {
-        console.log('updateMaterial!', mat);
         _.each(this.getPerformer().meshes, (parent) => {
           parent.traverse((object) => {
             if (object.hasOwnProperty('material')) {
@@ -650,8 +477,65 @@ class Performer {
           });
         });
       })
-      .catch(() => { console.log('Shit'); });
+      .catch(() => { console.log('Material not loaded. :('); });
   }
+
+  setMaterialTime(val) {
+    _.each(this.getPerformer().meshes, (parent) => {
+      parent.traverse((object) => {
+        if (object.hasOwnProperty('material')) {
+          object.material.updateTime(val);
+        }
+      });
+    });
+  }
+  /*******************************************/
+
+  /**************** Color ****************/
+  getColor() {
+    return this.color;
+  }
+
+  setColor(val) {
+    this.color = val;
+    _.each(this.getPerformer().meshes, (parent) => {
+      parent.traverse((object) => {
+        if (object.hasOwnProperty('material')) {
+          object.material.color = new THREE.Color(parseInt(this.getColor(), 16));
+          object.material.needsUpdate = true;
+        }
+      });
+    });
+  }
+  /*******************************************/
+
+  /**************** Wireframe ****************/
+  showWireframe() {
+    this.setWireframe(true);
+  }
+
+  hideWireframe() {
+    this.setWireframe(false);
+  }
+
+  getWireframe() {
+    return this.wireframe;
+  }
+
+  toggleWireframe() {
+    this.setWireframe(!this.getWireframe());
+  }
+
+  setWireframe(val) {
+    _.each(this.getPerformer().meshes, (parent) => {
+      parent.traverse((object) => {
+        if (object.hasOwnProperty('material')) {
+          object.material.wireframe = val;
+        }
+      });
+    });
+  }
+  /*******************************************/
 
   toggleSnorried() { this.setSnorried(!this.getSnorried()); }
   getSnorried() { return this.snorried; }
@@ -709,7 +593,7 @@ class Performer {
             object.receiveShadow = true;
           }
           if (object.hasOwnProperty('material')) {
-            this.generateMaterials(this.getMaterial())
+            this.materialManager.getMaterial(this.getMaterial(), this.color, this.wireframe)
             .then((mat) => {
               // console.log('parseBVH!', mat);
               object.material = mat[0];
@@ -1034,20 +918,11 @@ class Performer {
     }, switchTime);
   }
 
-  setColor(color) {
-    this.getScene().traverse((part) => {
-      if (part.hasOwnProperty('material')) {
-        part.material.color.set(parseInt(color, 16));
-        part.material.needsUpdate = true;
-      }
-    });
-  }
-
   randomizeColors(switchTime) {
     this.getScene().traverse((part) => {
       if (part.hasOwnProperty('material')) {
         // part.material = new THREE.MeshPhongMaterial();
-        part.material.wireframe = this.wireframe;
+        part.material.wireframe = this.getWireframe();
         part.material.color.set(this.colors[Common.mapRange(Math.random(), 0, 1, 0, this.colors.length - 1)]);
 
         part.material.needsUpdate = true;
@@ -1060,7 +935,7 @@ class Performer {
       this.getScene().traverse((part) => {
         if (part.hasOwnProperty('material')) {
           // part.material = new THREE.MeshPhongMaterial();
-          part.material.wireframe = this.wireframe;
+          part.material.wireframe = this.getWireframe();
           part.material.color.set(this.colors[Common.mapRange(Math.random(), 0, 1, 0, this.colors.length - 1)]);
 
           part.material.needsUpdate = true;
@@ -1168,39 +1043,6 @@ class Performer {
         }
       }
     }
-  }
-
-  showWireframe() {
-    this.wireframe = true;
-    _.each(this.getPerformer().meshes, (parent) => {
-      parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
-          object.material.wireframe = this.wireframe;
-        }
-      });
-    });
-  }
-
-  hideWireframe() {
-    this.wireframe = false;
-    _.each(this.getPerformer().meshes, (parent) => {
-      parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
-          object.material.wireframe = this.wireframe;
-        }
-      });
-    });
-  }
-
-  toggleWireframe() {
-    this.wireframe = !this.wireframe;
-    _.each(this.getPerformer().meshes, (parent) => {
-      parent.traverse((object) => {
-        if (object.hasOwnProperty('material')) {
-          object.material.wireframe = this.wireframe;
-        }
-      });
-    });
   }
 
   distanceBetween(part1, part2) {
