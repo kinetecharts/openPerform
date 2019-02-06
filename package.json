@@ -10,7 +10,8 @@
     "build-gh-pages": "webpack --config webpack-gh-pages.config.js --progress --profile --colors",
     "file": "node ./server/fileServer.js",
     "start": "npm run file | npm run data",
-    "dev": "npm run webpack | npm run data"
+    "dev": "npm run webpack | npm run data",
+    "test": ""
   },
   "repository": {
     "type": "git",
