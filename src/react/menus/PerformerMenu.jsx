@@ -1,18 +1,14 @@
 /**
  * @author Travis Bennett
- * @email 
+ * @email
  * @create date 2018-08-27 10:07:30
  * @modify date 2018-08-27 10:07:30
  * @desc [description]
 */
 
-
-import ReactDom from 'react-dom';
-import Select from 'react-select';
-
 import Icon from 'react-fa';
 
-import { Panel, Table, OverlayTrigger, Popover, ListGroup, ListGroupItem, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Panel, Table } from 'react-bootstrap';
 
 import 'react-select/dist/react-select.css';
 
@@ -21,8 +17,6 @@ import PerformerControlsMenu from './controls/PerformerControlsMenu';
 import PerformerCameraMenu from './camera/PerformerCameraMenu';
 import PerformerStylesMenu from './styles/PerformerStylesMenu';
 import PerformerEffectsMenu from './effects/PerformerEffectsMenu';
-import NumberInput from '../inputs/NumberInput';
-
 
 class PerformerMenu extends React.Component {
   constructor(props) {
@@ -76,52 +70,50 @@ class PerformerMenu extends React.Component {
     this.setState({ forceUpdate: true });
   }
   updateOffsetX(performer, value) {
-    let off = performer.getOffset();
+    const off = performer.getOffset();
     off.x = parseFloat(value);
     performer.setOffset(off);
     this.setState({ forceUpdate: true });
   }
   updateOffsetY(performer, value) {
-    let off = performer.getOffset();
+    const off = performer.getOffset();
     off.y = parseFloat(value);
     performer.setOffset(off);
     this.setState({ forceUpdate: true });
   }
   updateOffsetZ(performer, value) {
-    let off = performer.getOffset();
+    const off = performer.getOffset();
     off.z = parseFloat(value);
     performer.setOffset(off);
     this.setState({ forceUpdate: true });
   }
 
   updateRotationX(performer, value) {
-    let rot = performer.getRotation();
+    const rot = performer.getRotation();
     rot.x = parseFloat(value);
     performer.setRotation(rot);
     this.setState({ forceUpdate: true });
   }
   updateRotationY(performer, value) {
-    let rot = performer.getRotation();
+    const rot = performer.getRotation();
     rot.y = parseFloat(value);
     performer.setRotation(rot);
     this.setState({ forceUpdate: true });
   }
   updateRotationZ(performer, value) {
-    let rot = performer.getRotation();
+    const rot = performer.getRotation();
     rot.z = parseFloat(value);
     performer.setRotation(rot);
     this.setState({ forceUpdate: true });
   }
 
   handleColorChange(performer, val) {
-    performer.setMaterialColor(val.hex.replace(/^#/, ''));
-    this.setState({forceUpdate: true});
+    performer.setColor(val.hex.replace(/^#/, ''));
+    this.setState({ forceUpdate: true });
   }
   handleMaterialChange(performer, val) {
-    performer.setMaterial(performer.getMaterials()[val]);
-    performer.updateMaterial();
-    
-    this.setState({forceUpdate: true});
+    performer.setMaterial(performer.materialManager.getMaterialNames()[val]);
+    this.setState({ forceUpdate: true });
   }
   handleChangeEffect(performer, val, event) {
     event.persist();
@@ -131,7 +123,7 @@ class PerformerMenu extends React.Component {
       performer.performerEffects.add(performer.effects[val - 1]);
     }
     this.setState({
-      forceUpdate: true
+      forceUpdate: true,
     }, () => {
       this.recenterEffectsPopover(event);
     });
@@ -240,10 +232,10 @@ class PerformerMenu extends React.Component {
                         toggleVisible={this.toggleVisible.bind(this, performer)}
                         wireframe={performer.getWireframe()}
                         toggleWireframe={this.toggleWireframe.bind(this, performer)}
-                        color={performer.getMaterialColor()}
+                        color={performer.getColor()}
                         handleColorChange={this.handleColorChange.bind(this, performer)}
                         material={performer.getMaterial()}
-                        materials={performer.getMaterials()}
+                        materials={performer.materialManager.getMaterialNames()}
                         handleMaterialChange={this.handleMaterialChange.bind(this, performer)}
                       />
                     </td>

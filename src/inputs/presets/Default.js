@@ -6,6 +6,16 @@ class DefaultPreset {
     this.inputManager = inputManager;
     this.main = main;
     this.scene = scene;
+
+    // setTimeout(() => {
+    //   this.resetAll();
+    //   // this.main.setColor(0);
+    // }, 1000);
+
+    setTimeout(() => {
+      this.main.setColor(0);
+      this.inputManager.followPerformer(0, 7);
+    }, 10000);
   }
 
   initCallbacks(type) {
@@ -225,8 +235,40 @@ class DefaultPreset {
       // console.log(controlPath);
       switch(controlPath[1]) { // page
         default:
-          console.log('OSC Page not found: ', controlPath[1]);
+          console.log('OSC Page not found: !' + controlPath[1]) + '¡';
           break;
+        case 'signal':
+          // conosle.log('signal!');
+          break;
+        case 'beat':
+          let largeScale = 0.5;
+          let smallScale = 0.4;
+          // console.log(data[1]);
+          if (this.main.performers.performers) {
+            this.sIn = { s: smallScale };
+            new TWEEN.Tween(this.sIn)
+              .to({ s: largeScale }, 500)
+              .onUpdate(() => {
+                this.main.performers.performers[
+                  Object.keys(this.main.performers.performers)[0]
+                ].setScale(this.sIn.s);
+              })
+              .easing(TWEEN.Easing.Quadratic.InOut)
+              .onComplete(() => {
+                this.sOut = { s: largeScale };
+                new TWEEN.Tween(this.sOut)
+                  .to({ s: smallScale }, 250)
+                  .onUpdate(() => {
+                    this.main.performers.performers[
+                      Object.keys(this.main.performers.performers)[0]
+                    ].setScale(this.sOut.s);
+                  })
+                  .easing(TWEEN.Easing.Quadratic.InOut)
+                  .start();
+              })
+              .start();
+          }
+        break;
         case 'controls':
           switch(controlPath[2]) { // group
             default:
@@ -276,7 +318,7 @@ class DefaultPreset {
                   }
                   break;
               }
-            break;
+              break;
             case 'clip':
               switch(parseInt(controlPath[3])) { // row
                 default:
@@ -338,19 +380,19 @@ class DefaultPreset {
                       break;
                     case 1:
                       if (parseInt(data[1])) {
-                        this.inputManager.rotate(7);
+                        this.scene.unsetRotation();
+                        this.inputManager.followPerformer(0, 7);
                       }
                       break;
                     case 2:
                       if (parseInt(data[1])) {
                         this.scene.unsetRotation();
-                        this.inputManager.followPerformer(0, 7);
+                        this.inputManager.cutTop(0, 7);
                       }
                       break;
                     case 3:
                       if (parseInt(data[1])) {
-                        this.scene.unsetRotation();
-                        this.inputManager.cutTop(0, 7);
+                        this.inputManager.rotate(7);
                       }
                       break;
                     case 4:
@@ -366,7 +408,7 @@ class DefaultPreset {
                   break;
               }
               break;
-              case 'visible':
+            case 'visible':
               switch(parseInt(controlPath[3])) { // row
                 default:
                   console.log('OSC Row not found: ', parseInt(controlPath[3]));
@@ -406,9 +448,34 @@ class DefaultPreset {
                   break;
               }
               break;
+            case 'material':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      this.main.performers.prevMaterial();
+                      break;
+                    case 2:
+                      this.main.performers.nextMaterial();
+                      break;
+                  }
+                  break;
+              }
+              break;
             case 'rotSpace':
               this.inputManager.spreadClonesById(0, data[2] * 127);
               this.inputManager.rotateClonesById(0, data[1] * 127);
+              break;
+            case 'lightPos':
+              this.main.updateLightPosition(data[2], data[1]);
+              // this.inputManager.spreadClonesById(0, data[2] * 127);
+              // this.inputManager.rotateClonesById(0, data[1] * 127);
               break;
             case 'scale':
               this.inputManager.scaleClonesById(0, data[1] * 127);
@@ -416,13 +483,47 @@ class DefaultPreset {
             case 'delay':
               this.inputManager.delayClonesById(0, data[1] * 127);
               break;
+            case 'style':
+              switch(parseInt(controlPath[3])) { // row
+                default:
+                  console.log('OSC Row not found: ', parseInt(controlPath[3]));
+                  break;
+                case 1:
+                  switch(parseInt(controlPath[4])) { // col
+                    default:
+                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
+                      break;
+                    case 1:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(0);
+                      }
+                      break;
+                    case 2:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(1);
+                      }
+                      break;
+                    case 3:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(4);
+                      }
+                      break;
+                    case 4:
+                      if (parseInt(data[1])) {
+                        this.main.setRenderStyle(3);
+                      }
+                      break;
+                  }
+                  break;
+              }
+              break;
             case 'color':
               // console.log(parseInt(controlPath[3]));
               switch(parseInt(controlPath[3])) { // row
                 default:
                   console.log('OSC Row not found: ', parseInt(controlPath[3]));
                   break;
-                case 2:
+                case 1:
                   switch(parseInt(controlPath[4])) { // col
                     default:
                       console.log('OSC Col not found: ', parseInt(controlPath[4]));
@@ -442,24 +543,17 @@ class DefaultPreset {
                         this.main.setColor(2);
                       }
                       break;
-                  }
-                  break;
-                case 1:
-                  switch(parseInt(controlPath[4])) { // col
-                    default:
-                      console.log('OSC Col not found: ', parseInt(controlPath[4]));
-                      break;
-                    case 1:
+                    case 4:
                       if (parseInt(data[1])) {
                         this.main.setColor(3);
                       }
                       break;
-                    case 2:
+                    case 5:
                       if (parseInt(data[1])) {
                         this.main.setColor(4);
                       }
                       break;
-                    case 3:
+                    case 6:
                       if (parseInt(data[1])) {
                         this.main.setColor(5);
                       }

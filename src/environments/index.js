@@ -89,6 +89,12 @@ class Environments {
     });
   }
 
+  updateLightPosition(x, z) {
+    _.each(this.environments, (environment) => {
+      environment.updateLightPosition(x, z);
+    });
+  }
+
   updateColors(bg) {
     _.each(this.environments, (environment) => {
       environment.updateBackgroundColor(bg);
