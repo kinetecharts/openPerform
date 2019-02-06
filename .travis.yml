@@ -6,10 +6,11 @@ install:
   - npm i -g yarn && yarn
 
 before_script:
+  - cp ./server/config_example.js ./server/config.js
   - npm run build
 
 deploy:
-  local-dir: dist
+  local-dir: ./dist
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
