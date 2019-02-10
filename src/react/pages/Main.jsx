@@ -620,7 +620,7 @@ class Main extends React.Component {
               </Col>
             </Row>
           </Grid>
-          <Grid fluid><Row><Col id="startOverlay" xs={12} md={12} ><h1>SPACE DANCE</h1></Col></Row></Grid>
+          <Grid fluid><Row><Col id="startOverlay" xs={12} md={12} ></Col></Row></Grid>
           <Grid fluid><Row><Col id="blackOverlay" xs={12} md={12} /></Row></Grid>
           <Grid fluid><Row><Col id="endOverlay" xs={12} md={12} /></Row></Grid>
           <KeyboardHelpModal

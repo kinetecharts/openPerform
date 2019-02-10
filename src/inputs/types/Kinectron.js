@@ -31,6 +31,7 @@ class KinectronInput {
     this.initializeKinectron();
 
     window.playbackData = this.playbackData.bind(this);
+    window.saveData = this.savedData;
     // window.stopAllPlayback = this.stopAllPlayback.bind(this);
     // window.stopPlayback = this.stopPlayback.bind(this);
   }

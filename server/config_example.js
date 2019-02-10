@@ -33,6 +33,10 @@ const config = {
       src: './src/bmfonts',
       dest: './dist/bmfonts',
     },
+    libs: {
+      src: './src/libs',
+      dest: './dist/libs',
+    },
   },
   fileUpload: {
     port: 8888,

@@ -25,7 +25,7 @@ module.exports = {
     renderStyle: 'normal',
     performerOutline: false, // show glow around performer when mouse over them in the list
     camera: {
-      home: new THREE.Vector3(0, 0.6858277036264001, 11.401716728423622),
+      home: new THREE.Vector3(0, 1.7, 8.8),
     },
   },
   debug: {
