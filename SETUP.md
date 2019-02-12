@@ -26,11 +26,11 @@ Software
     1. Navigate to directory (press up arrow to go through previous commands)
         1. I believe it’s ‘/mnt/c/users/travi/documents/repositories/openperform’
     2. Run:
-        > ‘yarn’
+        > yarn
     3. Then run:
-        > ‘npm run build’
+        > npm run build
     4. Then run:
-        > ‘npm run start’
+        > npm run start
 5. Open Chrome
     1. Navigate to:
         > localhost:8080
@@ -42,3 +42,14 @@ Software
     3. Are there any errors in the terminal?
     4. Are there any errors in the console?
     5. Did you try a different usb port?
+
+Update
+1. In Ubuntu
+    Stop webserver:
+    >Control + C
+1. In Sourcetree
+    1. Pull latest code from KinectSkeleton
+3. Then run:
+    >npm run build
+4. Then run:
+    >npm run start
