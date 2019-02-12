@@ -1,7 +1,7 @@
 Setup Instructions for OpenPerform - Kinect Skeleton Dance
+------------
 
 Hardware
-------------
 1. Plug everything in
 2. Plug in HDMI before turning the machine on!
     1. Use lower HDMI port on the graphics cards
@@ -13,7 +13,6 @@ Hardware
 6. Make sure the Kinect is level
 
 Software
-------------
 1. Make sure windows is connected to the internet
 2. Open Sourcetree
     1. Pull latest code from KinectSkeleton

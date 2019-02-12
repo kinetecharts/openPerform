@@ -146,7 +146,7 @@ class Scene {
     this.renderer = new THREE.WebGLRenderer(/*{ antialias: true, alpha: true }*/);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.w, this.h);
-    this.renderer.setClearColor(new THREE.Color('#' + defaults.backgroundColor), 0);
+    this.renderer.setClearColor(parseInt(defaults.backgroundColor, 16));
     this.renderer.autoClear = true;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMapSoft = true;
@@ -168,7 +168,7 @@ class Scene {
     this.addCreateCommon(); 
 
     this.controls = new THREE.TrackballControls(this.camera, this.renderer.domElement);
-    this.controls.target = new THREE.Vector3(0, 1.25, 0);
+    this.controls.target = new THREE.Vector3(0, 1.5, 0);
     // window.controls = this.controls;
 
     this.controls.rotateSpeed = 1.0;

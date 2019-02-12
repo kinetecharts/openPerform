@@ -113,11 +113,11 @@ class KidsRoomEnvironment {
         }
       });
 
-      gltf.scene.scale.set(0.075, 0.075, 0.075);
+      gltf.scene.scale.set(0.05, 0.05, 0.05);
 
       gltf.scene.position.x = -0.39;
-      gltf.scene.position.y = -2.1199999999999997;
-      gltf.scene.position.z = 37.6;
+      gltf.scene.position.y = -1.78;
+      gltf.scene.position.z = 25.6;
 
       gltf.scene.rotation.y = 14.75;
 
@@ -212,7 +212,7 @@ class KidsRoomEnvironment {
   initFloor(size) {
     this.floor = new THREE.Mesh(
       new THREE.PlaneBufferGeometry( size, size, 1 ),
-      new THREE.MeshPhongMaterial({ color:0xffffbf, opacity: 1 })
+      new THREE.MeshPhongMaterial({ color:0xead184, opacity: 1 })
     );
     // window.floor = this.floor;
     this.floor.position.y = -1.0875;
@@ -224,37 +224,69 @@ class KidsRoomEnvironment {
     this.parent.add(this.floor);
   }
 
-  initLights() {
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.65);
+  // initLights() {
+  //   const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.75);
 
-    // window.directionalLight = directionalLight;
-    directionalLight.position.set(0, 2, 0);
+  //   directionalLight.position.set(1, 2, 0);
+  //   let lightTarget = new THREE.Object3D();
+  //   this.parent.add(lightTarget);
+  //   lightTarget.position.set(0, 0, 20);
+  //   directionalLight.target = lightTarget
+  //   directionalLight.castShadow = true;
+
+  //   directionalLight.shadow.mapSize.width = 512;  // default
+  //   directionalLight.shadow.mapSize.height = 512; // default
+  //   directionalLight.shadow.camera.near = 0.5;    // default
+  //   directionalLight.shadow.camera.far = 500;     // default
+
+  //   var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+  //   this.parent.add(helper);
+
+  //   this.lights.push(directionalLight);
+  //   this.parent.add(directionalLight);
+
+  //   let hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0x797979, 0.7);
+
+  //   this.lights.push(hemiLight);
+  //   this.parent.add(hemiLight);
+  // }
+
+  initLights() {
+    const hemiLight = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.6 );
+    hemiLight.groundColor.setHSL( 0, 0, 0 );
+    hemiLight.position.set( 1, 1.5, 0 );
+    // hemiLight.position.multiplyScalar( 30 );
+    this.parent.add( hemiLight );
+
+    // const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
+    // this.parent.add( hemiLightHelper );
+    //
+    const dirLight = new THREE.DirectionalLight( 0xFFFFFF, 0.95 );
+    // dirLight.color.setHSL( 0.95, 0.95, 0.95 );
+    dirLight.position.set( 1, 1.5, 0 );
+    // dirLight.position.multiplyScalar( 30 );
+    this.parent.add( dirLight );
+
     let lightTarget = new THREE.Object3D();
     this.parent.add(lightTarget);
-    lightTarget.position.set(0, 0, 20);
-    directionalLight.target = lightTarget
-    directionalLight.castShadow = true;
-
-    // let targetObj = new THREE.Object3D();
-    // targetObj.position.set(0, 1.75, 0);
-    // directionalLight.target = targetObj;
-    // this.parent.add(directionalLight.target);
-
-    directionalLight.shadow.mapSize.width = 512;  // default
-    directionalLight.shadow.mapSize.height = 512; // default
-    directionalLight.shadow.camera.near = 0.5;    // default
-    directionalLight.shadow.camera.far = 500;     // default
-
-    // var helper = new THREE.DirectionalLightHelper(directionalLight, 5);
-    // this.parent.add(helper);
-
-    this.lights.push(directionalLight);
-    this.parent.add(directionalLight);
-
-    let hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0x797979, 0.75);
-
-    this.lights.push(hemiLight);
-    this.parent.add(hemiLight);
+    lightTarget.position.set(0, 0, 5);
+    dirLight.target = lightTarget;
+    dirLight.castShadow = true;
+    
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    
+    var d = 50;
+    dirLight.shadow.camera.left = - d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = - d;
+    dirLight.shadow.camera.far = 3500;
+    dirLight.shadow.bias = 0.000;
+    
+    // const dirLightHeper = new THREE.DirectionalLightHelper( dirLight, 10 );
+    // this.parent.add( dirLightHeper );
   }
 
   removeElements() {

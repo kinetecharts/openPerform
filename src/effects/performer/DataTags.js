@@ -20,7 +20,21 @@ class DataTags {
 
     this.color = color;
 
-    this.targets = ['wristleft', 'wristright', 'kneeright', 'kneeleft', 'head'];
+    this.messages = [
+      { x: -0.7, y: 0.45, width: 350, color: 0x373B3B, text: 'Things will only get better' },
+      { x: -0.8, y: 0.45, width: 400, color: 0x373B3B, text: 'A healthy body will be good for life' },
+      { x: -0.8, y: 0.45, width: 400, color: 0x373B3B, text: 'You will have more fun play dates' },
+      { x: -0.65, y: 0.45, width: 300, color: 0x373B3B, text: 'You will avoid boring people' },
+      { x: -0.8, y: 0.45, width: 400, color: 0x373B3B, text: 'Free your mind, the rest will follow' },
+      { x: -0.65, y: 0.45, width: 300, color: 0x373B3B, text: 'Fame and fun lie ahead' },
+      { x: -0.65, y: 0.45, width: 300, color: 0x373B3B, text: 'A new toy is in your future' },
+      { x: -0.8, y: 0.45, width: 400, color: 0x373B3B, text: 'Everyone agrees,\nyou are the coolest' },
+      { x: -0.8, y: 0.45, width: 400, color: 0x373B3B, text: 'Fun is on the horizon' },
+      { x: -0.8, y: 0.45, width: 400, color: 0x373B3B, text: 'Tomorrow will be even more fun' },
+    ];
+    this.messageID = Math.floor(Math.random() * this.messages.length);
+    
+    this.targets = ['head']; // ['wristleft', 'wristright', 'kneeright', 'kneeleft', 'head'];
     this.possibleTargets = [
       'head',
       'spineshoulder',
@@ -38,6 +52,7 @@ class DataTags {
     ];
 
     this.tags = [];
+    this.tags2 = [];
 
     this.options = {
       padding: [0, 0, 0, 0],
@@ -45,6 +60,8 @@ class DataTags {
       showPosition: true,
       showRotation: false,
       showQuat: false,
+      width: this.messages[this.messageID].width,
+      text: this.messages[this.messageID].text,
     };
     this.fontsReady = false;
 
@@ -80,23 +97,23 @@ class DataTags {
     const font = _.filter(this.fonts, { name: 'regular' })[0].font;
     const texture = _.filter(this.fonts, { name: 'regular' })[0].texture;
 
-    const textScale = 0.002;
+    const textScale = 0.004;
 
     // draw text first to get dimensions
-    const tag = this.createTextMesh(
-      font,
-      texture,
-      '',
-      'left',
-      0xFFFFFF,
-      font.common.lineHeight,
-      null,
-    );
+    const tag = this.createTextMesh({
+      font: font,
+      texture: texture,
+      text: options.text,
+      align: 'center',
+      color: options.color,
+      lineHeight: font.common.lineHeight,
+      width: options.width,
+    });
 
     tag.scale.set(textScale, textScale, textScale);
 
     tag.children[0].geometry.computeBoundingBox();
-    tag.position.x = 0.016;
+    // tag.position.x = 0.016;
     tag.position.y = (options.padding[0] + options.padding[2]/2)
       - (options.padding[0] / 2)
       - ((tag.children[0].totalHeight * textScale) / 2);
@@ -107,7 +124,7 @@ class DataTags {
   }
 
   // draw msdf text
-  createTextMesh(font, texture, text, align, color, lineHeight, width) {
+  createTextMesh({font, texture, text, align, color, lineHeight, width}) {
     const textOptions = {
       text: text,
       font: font,
@@ -168,7 +185,6 @@ class DataTags {
             // console.log(d);
             let gPos = new THREE.Vector3().setFromMatrixPosition(d.matrixWorld);
 
-            
             // console.log(this.tags[idx]);
             if (d.name.toLowerCase().indexOf('right') !== -1) {
               gPos.x += 0.15;
@@ -180,15 +196,15 @@ class DataTags {
 
             let options = { text: '' };
             if (d.name == 'Head') {
-              // options.text += 'Dance Machine';
-              // options.align = 'center';
-              
-              // gPos = new THREE.Vector3().setFromMatrixPosition(d.children[0].matrixWorld);
-              // gPos.y += 0.25;
-              
-              // this.tags[idx].children[0].geometry.update(options);
-              // this.tags[idx].children[0].geometry.computeBoundingBox();
-              // gPos.x -= this.tags[idx].children[0].geometry.boundingBox.max.x/1000;
+              gPos = new THREE.Vector3().setFromMatrixPosition(d.children[0].matrixWorld);
+              gPos.x += this.messages[this.messageID].x;
+              gPos.y += this.messages[this.messageID].y;
+
+              this.tags2[idx].position.copy(new THREE.Vector3(
+                gPos.x + 0.01,
+                gPos.y - 0.01,
+                gPos.z + 0.01,
+              ));
             } else {
               if (this.options.showName) {
                 options.text += d.name + '\n';
@@ -206,18 +222,17 @@ class DataTags {
               if (d.name.toLowerCase().indexOf('left') !== -1) {
                 options.align = 'right';
               }
-              this.tags[idx].children[0].geometry.update(options);
+              this.tags[idx].children[0].geometry.update(options); // live update
             }
-
             this.tags[idx].position.copy(gPos.clone());
           }
         }
 
         if (!this.tags[idx] && this.fontsReady) {
-          this.tags[idx] = this.addTag(this.parent, d, this.options, this.font);
+          this.tags[idx] = this.addTag(this.parent, d, this.options);
+          this.options.color = 0x000000;
+          this.tags2[idx] = this.addTag(this.parent, d, this.options);
         }
-
-
         idx++;
       }
     });

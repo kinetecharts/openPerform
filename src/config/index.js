@@ -6,7 +6,7 @@ module.exports = {
   defaults: {
     inputPreset: 'Default',
     outputPreset: 'Default',
-    backgroundColor: '000000', // will be overridden by environment settings
+    backgroundColor: '76a0b6', // will be overridden by environment settings
     floorColor: 'ffffff', // will be overridden by environment settings
     environment: 'solar_system',
     performer: {

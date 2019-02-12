@@ -749,6 +749,8 @@ class Performer {
     }
     material.wireframe = this.getWireframe();
     material.color.set(parseInt(this.getMaterialColor(), 16));
+    material.castShadow = true;
+    material.recieveShadow = true;
     return material;
   }
 
@@ -1658,6 +1660,7 @@ class Performer {
           
           head.traverse((child) => {
             if (child instanceof THREE.Mesh) {
+              child.castShadow = true;
               // console.log(this.character.name, child);
               switch(this.character.name) {
                 case 'robot2':
@@ -1667,7 +1670,7 @@ class Performer {
               }
             }
           });
-          window.head = this.headGroup;
+
           head.scale.set(this.character.headScale, this.character.headScale, this.character.headScale);
           this.headGroup.add(head);
           this.headGroup.name = 'Head';
@@ -1715,6 +1718,7 @@ class Performer {
             });
 
             this.addEffects([
+              // ['Data Tags'][Math.floor(Math.random()*1)]
               ['Ghosting', 'Particles', 'Data Tags'][Math.floor(Math.random()*3)]
             ]);
           });
