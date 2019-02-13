@@ -15,6 +15,7 @@ import SpaceStationEnvironment from './SpaceStationEnvironment';
 import SolarSystemEnvironment from './SolarSystemEnvironment';
 import ForestMonsterEnvironment from './ForestMonsterEnvironment';
 import KidsRoomEnvironment from './KidsRoomEnvironment';
+import HospitalEnvironment from './HospitalEnvironment';
 
 import TestEnvironment from './TestEnvironment';
 
@@ -36,9 +37,11 @@ class Environments {
 
     this.updateEnvironment = this.updateEnvironment.bind(this);
 
+    this.add('hospital', this.defaults); // default
     this.add('kids_room', this.defaults); // default
+    // this.add('space', this.defaults); // default
     // this.add('space_station', this.defaults); // default
-    // this.add('forest_monster', this.defaults); // default
+    // this.add('solar_system', this.defaults); // default
   }
 
   getEnvironments() {
@@ -57,6 +60,9 @@ class Environments {
   add(type, defaults) {
     // this.removeAll();
     switch (type) {
+      case 'hospital':
+        this.environments.push(new HospitalEnvironment(this.renderer, this.parent, this.performers, defaults));
+        break;
       case 'kids_room':
         this.environments.push(new KidsRoomEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;

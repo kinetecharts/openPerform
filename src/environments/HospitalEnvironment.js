@@ -1,15 +1,15 @@
 
 import FileLoader from '../util/Loader.js';
-import KidsRoomMenu from '../react/menus/environment/KidsRoomMenu';
+import HospitalMenu from '../react/menus/environment/HospitalMenu';
 
-class KidsRoomEnvironment {
+class HospitalEnvironment {
   constructor(renderer, parent, performers, defaults) {
     this.renderer = renderer;
     this.parent = parent;
     this.performers = performers;
     this.defaults = defaults;
 
-    this.name = "Kids Room";
+    this.name = "Hospital";
 
     this.elements = [];
     this.lights = [];
@@ -60,83 +60,26 @@ class KidsRoomEnvironment {
   }
 
   initSpace() {
-    this.loader.loadGLTF('../models/environments/kids_room/scene.gltf', {}, (gltf) => {
-      this.gltf = gltf;
-      window.gltf = this.gltf.scene;
-      this.gltf.scene.traverse((child) => {
-        // console.log(child);
+    console.log('asdf asdfasdf');
+    this.loader.loadGLTF('../models/environments/hospital/scene.gltf', {}, (gltf) => {
+      this.gltf = gltf.scene;
+
+      this.gltf.position.copy(new THREE.Vector3(7.109999999999994, -1.6053299999999988, 39));
+      this.gltf.rotation.set(0, 4.1, 0);
+      this.gltf.scale.set(0.013, 0.013, 0.013);
+
+      this.gltf.traverse((child) => {
         switch (child.type) {
           default:
             break;
           case 'Mesh':
-            if (child.material.color.r.toFixed(1) == 0.8
-              && child.material.color.g.toFixed(1) == 0.8
-              && child.material.color.b.toFixed(1) == 0.8) {
-              child.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color(0x30312D),
-                flatShading:true
-              });
-            } else if (child.material.color.r == 1
-              && child.material.color.g == 0
-              && child.material.color.b == 0) {
-              child.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color(0xC0320C),
-                flatShading:true,
-                // transparent: true,
-                // opacity: 0.75,
-              });
-            } else if (child.material.color.r.toFixed(1) == 0.3
-            && child.material.color.g.toFixed(1) == 0.8
-            && child.material.color.b.toFixed(1) == 0.7) {
-              child.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color(0xDC900E),
-                flatShading:true
-              });
-            } else if (child.material.color.r.toFixed(1) == 0.0
-            && child.material.color.g == 1
-            && child.material.color.b.toFixed(1) == 0.5) {
-              child.material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color(0xDED20E),
-                flatShading:true
-              });
-            } else {
-              child.material = new THREE.MeshPhongMaterial({
-                color: child.material.color,
-                flatShading:true
-              });
-            }
-            
-            if (child.name.indexOf('Circle00') > -1) { child.visible = false; }
             child.castShadow = true;
             child.receiveShadow = true;
             break;
         }
       });
-
-      gltf.scene.scale.set(0.05, 0.05, 0.05);
-
-      gltf.scene.position.x = -0.39;
-      gltf.scene.position.y = -1.78;
-      gltf.scene.position.z = 25.6;
-
-      gltf.scene.rotation.y = 14.75;
-
-
-      if (this.gltf.animations.length > 0) {
-        this.gltf.clock = new THREE.Clock();
-        this.gltf.mixer = new THREE.AnimationMixer(this.gltf.scene);
-        let clip = this.gltf.mixer.clipAction(gltf.animations[0]);
-        clip.loop = THREE.LoopPingPong;
-        clip.play();
-
-        // clip.startAt(3).play();
-        // setTimeout(() => {
-        //   clip.paused = true;
-        // }, 1000);
-      }
-      
-      this.elements.push(gltf.scene);
-      this.parent.add(gltf.scene);
+      this.elements.push(this.gltf);
+      this.parent.add(this.gltf);
     });
   }
 
@@ -212,7 +155,7 @@ class KidsRoomEnvironment {
   initFloor(size) {
     this.floor = new THREE.Mesh(
       new THREE.PlaneBufferGeometry( size, size, 1 ),
-      new THREE.MeshPhongMaterial({ color:0xead184, opacity: 1 })
+      new THREE.MeshPhongMaterial({ color:0x88a635, opacity: 1 })
     );
     // window.floor = this.floor;
     this.floor.position.y = -1.0875;
@@ -225,7 +168,7 @@ class KidsRoomEnvironment {
   }
 
   initLights() {
-    const hemiLight = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.6 );
+    const hemiLight = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.95 );
     hemiLight.groundColor.setHSL( 0, 0, 0 );
     hemiLight.position.set( 1, 1.5, 0 );
     // hemiLight.position.multiplyScalar( 30 );
@@ -294,9 +237,9 @@ class KidsRoomEnvironment {
 
   // returns react gui object when effect is selected
   getGUI() {
-    return <KidsRoomMenu data={this.options}
+    return <HospitalMenu data={this.options}
       updateOptions={this.updateOptions.bind(this)}/>;
   }
 }
 
-module.exports = KidsRoomEnvironment;
+module.exports = HospitalEnvironment;
