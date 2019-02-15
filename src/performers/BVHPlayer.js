@@ -18,7 +18,7 @@ class BVHPlayer {
 
     this.skeletalTranslator = new SkeletalTranslator();
 
-    const type = (typeof this.content == 'String') ? 'raw' : 'url';
+    const type = (typeof this.content == String) ? 'raw' : 'url';
 
     this.autoplay = autoplay;
     this.playing = false;
