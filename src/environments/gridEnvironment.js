@@ -102,8 +102,8 @@ class GridEnvironment {
     this.directionalLight.shadow.camera.near = 0.5;    // default
     this.directionalLight.shadow.camera.far = 500;     // default
 
-    var helper = new THREE.DirectionalLightHelper( this.directionalLight, 5 );
-    this.parent.add( helper );
+    // var helper = new THREE.DirectionalLightHelper( this.directionalLight, 5 );
+    // this.parent.add( helper );
 
     this.lights.push(this.directionalLight);
     this.parent.add(this.directionalLight);
@@ -158,12 +158,12 @@ class GridEnvironment {
     spotLight2.position.set( 0, 40, 35 );
     spotLight3.position.set( - 15, 40, 45 );
 
-    let lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
-    let lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
-    let lightHelper3 = new THREE.SpotLightHelper( spotLight3 );
+    // let lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
+    // let lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
+    // let lightHelper3 = new THREE.SpotLightHelper( spotLight3 );
 
     this.parent.add( spotLight1, spotLight2, spotLight3 );
-	  this.parent.add( lightHelper1, lightHelper2, lightHelper3 );
+	  // this.parent.add( lightHelper1, lightHelper2, lightHelper3 );
   }
 
   createSpotlight( color ) {
