@@ -22,7 +22,6 @@ class CameraControl {
     this.movementType = 'cut'; // or 'track'
 
     this.trackSpeed = {t:0.01};
-    window._trackSpeed = this.trackSpeed
 
   }
 
@@ -63,10 +62,10 @@ class CameraControl {
 
     switch (direction) {
       case 'in':
-        zoomDistance = -Math.abs(zoomDistance);
+        this.zoomDistance = -Math.abs(zoomDistance);
         break;
       case 'out':
-        zoomDistance = Math.abs(zoomDistance);
+        this.zoomDistance = Math.abs(zoomDistance);
         break;
     }
 
@@ -317,7 +316,7 @@ class CameraControl {
   }
 
   followZoom(newOffset, easing, duration) {
-    const objTween = new TWEEN.Tween(this.offsetObj)
+    return new TWEEN.Tween(this.offsetObj)
       .to(newOffset, duration)
       .easing(easing)
       .start();

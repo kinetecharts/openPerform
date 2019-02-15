@@ -36,9 +36,9 @@ class Scene {
     this.sceneGroup = new THREE.Object3D();
     // this.sceneGroup.visible = false;
 
-    this.container;
-    this.w;
-    this.h;
+    this.container = null;
+    this.w = 0;
+    this.h = 0;
 
     this.stats = null;
 

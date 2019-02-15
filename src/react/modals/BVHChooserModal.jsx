@@ -80,11 +80,12 @@ class BVHChooserModal extends React.Component {
 
   // select file from list
   fileSelected(number) {
-    this.setState({
-      file: this.props.bvhFiles[number],
+    const f = this.props.bvhFiles[number];
+    this.setState(prevState => ({
+      file: f,
       filetype: 'url',
       selected: [number],
-    });
+    }));
   }
 
   render() {
