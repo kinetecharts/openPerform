@@ -6,11 +6,11 @@
  * @desc [Environment switcher.]
 */
 
-import GridEnvironment from 'GridEnvironment';
-import WaterEnvironment from 'WaterEnvironment';
-import EmptyEnvironment from 'EmptyEnvironment';
-import ForestEnvironment from 'ForestEnvironment';
-import SpaceEnvironment from 'SpaceEnvironment';
+import GridEnvironment from './gridEnvironment';
+import WaterEnvironment from './waterEnvironment';
+import EmptyEnvironment from './emptyEnvironment';
+import ForestEnvironment from './forestEnvironment';
+import SpaceEnvironment from './spaceEnvironment';
 
 import config from './../config';
 
