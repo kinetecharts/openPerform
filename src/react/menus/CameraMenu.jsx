@@ -10,11 +10,11 @@ class CameraMenu extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.forceUpdate === true) {
+    if (this.state.forceUpdate === true || this.props.flyTop == null) {
       this.setState({ forceUpdate: false });
       return true;
     }
-
+    
     if (this.props && this.state) {
       if (!_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState)) {
         this.props = nextProps;
@@ -25,10 +25,6 @@ class CameraMenu extends React.Component {
     return false;
   }
   render() {
-    // console.log(this.props.inputManager);
-    if (this.props.flyTop == null) {
-      this.state.forceUpdate = true;
-    }
     return (
       <Panel className="cameraMenu" /* defaultExpanded */>
         <Panel.Heading>

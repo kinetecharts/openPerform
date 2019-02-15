@@ -26,8 +26,8 @@ class BVHPlayer {
 
     this.clock = new THREE.Clock();
 
-    this.mixer;
-    this.clip;
+    this.mixer = null;
+    this.clip = null;
     this.skeletonHelper = null;
     this.boneContainer = new THREE.Group();
 

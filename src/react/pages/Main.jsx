@@ -61,8 +61,11 @@ class Main extends React.Component {
     // coordinate input data and callbacks.
     // Add / remove inputs in src/config/index.js
     // (Includes keyboard and mouse control)
-    this.state.inputManger = new InputManager(this.state.inputs, this.state.scene, this);
-    this.state.outputManger = new OutputManager(this.state.scene, this);
+    this.setState(prevState => ({
+      inputManger: new InputManager(prevState.inputs, prevState.scene, this),
+      outputManger: new OutputManager(prevState.scene, this),
+    }));
+    
 
     this.performers = new Performers(this.state.inputManger, this.state.outputManger);
     window.prevMaterial = this.performers.prevMaterial;
@@ -87,11 +90,10 @@ class Main extends React.Component {
 
   sceneInit(scene) {
     this.performers.init(this.state.scene.sceneGroup);
-    this.state.environments = this.state.scene.environments;
-    this.state.availEnvironments = this.state.scene.availEnvironments;
-    this.state.currentEnvironment = this.state.scene.currentEnvironment;
-    this.state.renderStyles = this.state.scene.renderStyles;
-    this.state.currentRenderStyle = this.state.scene.currentRenderStyle;
+    this.setState(prevState => ({
+      environments: prevState.scene.environments,
+      renderStyles: prevState.scene.renderStyles,
+    }));
 
     if (this.state.debug.bvh.enabled) {
       _.each(this.BVHFiles, (file) => {
@@ -167,9 +169,6 @@ class Main extends React.Component {
   }
 
   setColor(id) {
-    this.setState({
-      colorIdx: id,
-    });
     this.updateColors(this.state.colorSet[id]);
   }
 
@@ -188,16 +187,28 @@ class Main extends React.Component {
   switchColorSet(setName) {
     switch (setName) {
       case 'darkColors':
-        return this.state.colorSet = this.state.darkColors;
+        this.setState({
+          colorSet: this.state.darkColors,
+        });
+        return this.state.darkColors;
         break;
       case 'colors1':
-        return this.state.colorSet = this.state.colors1;
+        this.setState({
+          colorSet: this.state.colors1,
+        });
+        return this.state.colors1;
         break;
       case 'colors2':
-        return this.state.colorSet = this.state.colors2;
+        this.setState({
+          colorSet: this.state.colors2,
+        });
+        return this.state.colors2;
         break;
       default:
-        return this.state.colorSet = this.state.dark;
+        this.setState({
+          colorSet: this.state.dark,
+        });
+        return this.state.dark;
         break;
     }
   }
@@ -365,7 +376,6 @@ class Main extends React.Component {
 
   removeClone(performer) {
     this.performers.remove(performer.inputId);
-    this.setState({ forceUpdate: true });
   }
 
   togglePerformerSnorry(performer) {
@@ -478,16 +488,16 @@ class Main extends React.Component {
   }
 
   changeInputPreset(val) {
-    this.setState({
-      currentInputPreset: this.state.inputPresets[val],
-    });
+    this.setState(prevState => ({
+      currentInputPreset: prevState.inputPresets[val],
+    }));
     this.state.inputManger.connectCallbacks(this.state.inputPresets[val]);
   }
 
   changeOutputPreset(val) {
-    this.setState({
-      currentOutputPreset: this.state.outputPresets[val],
-    });
+    this.setState(prevState => ({
+      currentOutputPreset: prevState.outputPresets[val],
+    }));
     this.state.outputManger.connectCallbacks(this.state.outputPresets[val]);
   }
 

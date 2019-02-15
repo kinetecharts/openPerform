@@ -13,15 +13,9 @@ class ForestMenu extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      data: this.props.data,
-    };
   }
 
   updateOptions(d) {
-    this.setState({
-      data: d
-    });
     this.props.updateOptions(d);
     this.forceUpdate();
   }

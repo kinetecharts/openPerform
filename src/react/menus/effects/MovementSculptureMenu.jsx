@@ -18,7 +18,6 @@ class MovementSculptureMenu extends React.Component {
     this.props = props;
     this.state = {
       data: this.props.data,
-      currentTargets: this.props.currentTargets,
       possibleTargets: this.props.possibleTargets,
     };
   }
@@ -29,9 +28,6 @@ class MovementSculptureMenu extends React.Component {
     this.props.updateOptions(d);
   }
   updateParts(d) {
-    this.setState({
-      currentTargets: d,
-    });
     this.props.updateParts(d);
   }
   render() {

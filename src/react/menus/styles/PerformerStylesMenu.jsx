@@ -29,11 +29,13 @@ class PerformerStylesMenu extends React.Component {
         return true;
       }
       return false;
-    }
+    } 
     return false;
   }
   handleClick() {
-    this.setState({ displayColorPicker: !this.state.displayColorPicker })
+    this.setState(prevState => ({
+      displayColorPicker: !prevState.displayColorPicker,
+    }));
   }
   handleClose() {
     this.setState({ forceUpdate: true, displayColorPicker: false })

@@ -717,12 +717,12 @@ class Performer {
 
               case 'lines':
                 var l = 0;
-                var longest = null;
-                if (object.srcBox.max.x > l) { l = object.srcBox.max.x; longest = 'x'; }
-                if (object.srcBox.max.y > l) { l = object.srcBox.max.y; longest = 'y'; }
-                if (object.srcBox.max.z > l) { l = object.srcBox.max.z; longest = 'z'; }
+                let longest = null;
+                if (object.srcBox.max.x > l) { longest = 'x'; }
+                if (object.srcBox.max.y > l) { longest = 'y'; }
+                if (object.srcBox.max.z > l) { longest = 'z'; }
 
-                l = new THREE.Vector3();
+                let l = new THREE.Vector3();
                 l[longest] = object.srcBox.max[longest];
 
                 // console.log(l);

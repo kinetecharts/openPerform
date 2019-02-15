@@ -4,7 +4,7 @@ class Paint {
   constructor(parent) {
     this.parent = parent;
 
-    this.line;
+    this.line = null;
     this.shapes = {};
 
     this.vector1 = new THREE.Vector3();
