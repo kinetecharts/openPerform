@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/kinetecharts/openPerform.svg?branch=master)](https://travis-ci.org/kinetecharts/openPerform)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/kinetecharts/openPerform.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kinetecharts/openPerform/context:javascript)
 
 ![alt text](https://github.com/kinetecharts/openPerform/raw/master/src/static/images/preview.gif "OpenPerform Preview")
 
