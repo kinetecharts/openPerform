@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kinetecharts/openPerform.svg?branch=master)](https://travis-ci.org/kinetecharts/openPerform)
+[![Build Status](https://travis-ci.org/kinetecharts/openPerform.svg)](https://travis-ci.org/kinetecharts/openPerform)
 
 ![alt text](https://github.com/kinetecharts/openPerform/raw/master/src/static/images/preview.gif "OpenPerform Preview")
 
