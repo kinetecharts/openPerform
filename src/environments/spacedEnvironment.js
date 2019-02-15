@@ -9,7 +9,7 @@
 import FileLoader from '../util/Loader.js';
 import SpaceMenu from '../react/menus/environment/SpaceMenu';
 
-class SpaceEnvironment {
+class SpacedEnvironment {
   constructor(renderer, parent, performers, defaults) {
     this.renderer = renderer;
     this.parent = parent;
@@ -120,4 +120,4 @@ class SpaceEnvironment {
   }
 }
 
-module.exports = SpaceEnvironment;
+module.exports = SpacedEnvironment;
