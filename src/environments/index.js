@@ -6,11 +6,11 @@
  * @desc [Environment switcher.]
 */
 
-import GridEnvironment from './GridEnvironment';
-import WaterEnvironment from './WaterEnvironment';
-import EmptyEnvironment from './EmptyEnvironment';
-import ForestEnvironment from './ForestEnvironment';
-import SpaceEnvironment from './SpaceEnvironment';
+import GridEnvironment from './gridEnvironment';
+import WaterEnvironment from './waterEnvironment';
+import EmptyEnvironment from './emptyEnvironment';
+import ForestEnvironment from './forestEnvironment';
+import SpacedEnvironment from './spacedEnvironment';
 
 import config from './../config';
 
@@ -57,7 +57,7 @@ class Environments {
         this.environments.push(new EmptyEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
       case 'space':
-        this.environments.push(new SpaceEnvironment(this.renderer, this.parent, this.performers, defaults));
+        this.environments.push(new SpacedEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
     }
     this.currentEnvironment = type;
@@ -86,6 +86,12 @@ class Environments {
   toggle(variableName) {
     _.each(this.environments, (environment) => {
       environment.toggle(variableName);
+    });
+  }
+
+  updateLightPosition(x, z) {
+    _.each(this.environments, (environment) => {
+      environment.updateLightPosition(x, z);
     });
   }
 

@@ -36,9 +36,9 @@ class Scene {
     this.sceneGroup = new THREE.Object3D();
     // this.sceneGroup.visible = false;
 
-    this.container;
-    this.w;
-    this.h;
+    this.container = null;
+    this.w = 0;
+    this.h = 0;
 
     this.stats = null;
 
@@ -222,67 +222,6 @@ class Scene {
         this.planes.hidePlanes();
       }
     });
-    // // ARFolder.add(this.params, 'showShadows').name('Show Shadows').onChange((val) => {
-    // //   if (val == true) {
-    // //     this.planes.showShadows();
-    // //   } else {
-    // //     this.planes.hideShadows();
-    // //   }
-    // // });
-
-    // let PerformerFolder = this.gui.addFolder('Performer');
-
-    // PerformerFolder.add(this.params, 'pScale', 1, 10).name('Size').step(0.1).listen().onChange((val) => {
-    //   this.sceneGroup.scale.set(val, val, val);
-    // });
-
-    // PerformerFolder.addColor(this.params, 'pColor').name('Color').listen().onChange((val) => {
-    //   this.opLite.updateMaterials(this.opLite.performerBody, new THREE.Color(val));
-    // });
-
-    // let LightFolder = this.gui.addFolder('Light');
-    // LightFolder.add(this.params, 'lFollow').name('Follow').listen();
-
-    // LightFolder.add(this.params, 'lRotate').name('Rotate').listen();
-
-    // LightFolder.add(this.params, 'lRot', 0, Math.PI*2).step(0.01).name('Angle').listen().onChange((val) => {
-    //   this.setSpotlightPos(val, this.params.lHeight, this.params.lRadius);
-    // });
-
-    // LightFolder.add(this.params, 'lRadius', 0, 10).step(0.1).name('Radius').listen().onChange((val) => {
-    //   this.setSpotlightPos(this.params.lRot, this.params.lHeight, val);
-    // });
-
-    // LightFolder.add(this.params, 'lHeight', 0, 2).step(0.01).name('Height').listen().onChange((val) => {
-    //   this.setSpotlightPos(this.params.lRot, val, this.params.lRadius);
-    // });
-
-    // LightFolder.addColor(this.params, 'lColor').name('light color').listen().onChange((val) => {
-    //   this.spotLight.color.setHex(val);
-    // });
-    // LightFolder.add(this.params, 'lIntense', 0, 2).name('intensity').step(0.1).listen().onChange((val) => {
-    //   this.spotLight.intensity = val;
-    // });
-    // LightFolder.add(this.params, 'lDist', 50, 200).name('distance').step(1).listen().onChange((val) => {
-    //   this.spotLight.distance = val;
-    // });
-    // LightFolder.add(this.params, 'lAngle', 0, Math.PI / 3).name('angle').step(0.1).listen().onChange((val) => {
-    //   this.spotLight.angle = val;
-    // });
-    // LightFolder.add(this.params, 'lPen', 0, 1).name('penumbra').step(0.1).listen().onChange((val) => {
-    //   this.spotLight.penumbra = val;
-    // });
-    // LightFolder.add(this.params, 'lDecay', 1, 10).name('decay').step(0.1).listen().onChange((val) => {
-    //   this.spotLight.decay = val;
-    // });
-
-    // LightFolder.add(this.params, 'shadowDarkness', 0.01, 1).name('Shadow Darkness').step(0.01).listen().onChange((val) => {
-    //   this.spotLight.shadowDarkness = val;
-    // });
-
-    // LightFolder.add(this.params, 'shadowBias', 0.001, 1).name('Shadow Bias').step(0.001).listen().onChange((val) => {
-    //   this.spotLight.shadowBias = val;
-    // });
   }
 
   addEventListeners() {

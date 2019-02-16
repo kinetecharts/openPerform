@@ -3,7 +3,6 @@ import FileLoader from '../util/Loader.js';
 class Head extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.head = null;
 
     this.loader = new FileLoader();

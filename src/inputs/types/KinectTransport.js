@@ -53,7 +53,7 @@ class KinectTransport {
           break;
         case 'depth':
           if (typeof this.callbacks[obj.type] === 'function') {
-            this.callbacks['depth']('Kinect_User_' + idx, obj, 'kinect');
+            this.callbacks['depth'](`Kinect_User_${idx}`, obj, 'kinect');
           }
           break;
       }

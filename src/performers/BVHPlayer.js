@@ -18,7 +18,7 @@ class BVHPlayer {
 
     this.skeletalTranslator = new SkeletalTranslator();
 
-    const type = (typeof this.content == 'String') ? 'raw' : 'url';
+    const type = (typeof this.content == String) ? 'raw' : 'url';
 
     this.autoplay = autoplay;
     this.playing = false;
@@ -26,8 +26,8 @@ class BVHPlayer {
 
     this.clock = new THREE.Clock();
 
-    this.mixer;
-    this.clip;
+    this.mixer = null;
+    this.clip = null;
     this.skeletonHelper = null;
     this.boneContainer = new THREE.Group();
 

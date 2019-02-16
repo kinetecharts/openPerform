@@ -503,8 +503,7 @@ THREE.TrailRenderer.prototype.advanceGeometry = function() {
 
             if( this.currentLength >= this.length ) {
 
-                var disconnectIndex  = this.currentEnd + 1  >= this.length ? 0 : this.currentEnd + 1;
-                disconnectRange = this.disconnectNodes( disconnectIndex );
+                disconnectRange = this.disconnectNodes( this.currentEnd + 1  >= this.length ? 0 : this.currentEnd + 1 );
 
             }
 

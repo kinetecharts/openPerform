@@ -1,8 +1,5 @@
 
-
 import Line from './Line';
-
-import config from './../../config';
 
 class GroupEffects {
   constructor(parent, colors, guiFolder) {

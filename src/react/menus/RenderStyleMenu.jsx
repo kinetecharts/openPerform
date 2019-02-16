@@ -53,7 +53,7 @@ class RenderStyleMenu extends React.Component {
       return false;
     }
 
-    console.log(this.props.renderStyles.getRenderStyles());
+    // console.log(this.props.renderStyles.getRenderStyles());
 
     return (
       <Panel className="renderStyleMenu" /* defaultExpanded */>

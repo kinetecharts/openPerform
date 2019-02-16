@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kinetecharts/openPerform.svg)](https://travis-ci.org/kinetecharts/openPerform)
+
 ![alt text](https://github.com/kinetecharts/openPerform/raw/master/src/static/images/preview.gif "OpenPerform Preview")
 
 OpenPerform brings real-time motion capture to artists and performers excluded by the high barriers to entry of expensive or "closed" systems. Our open source javascript performance framework enables artists to take direct control of the medium, to quickly collaborate with others, and to easily craft new experiences for all web-based platforms (including AR and VR).
@@ -10,9 +12,9 @@ Check out the various styles and effects OpenPerform has to offer with our BVH a
 
 Built With
 ------------
-* Node v10.8.0
-* Yarn 1.9.4
-* Webpack 4.17.1
+* Node v10.15.0
+* Yarn 1.13.0
+* Webpack 4.29.3
 
 Note: These versions are a recommendation. New versions may or may not work properly.
 

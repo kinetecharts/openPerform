@@ -12,7 +12,7 @@ module.exports = {
     performer: {
       wireframe: false,
       color: null, // if null, will use color from performerColors (listed below)
-      material: 'basic',
+      material: 'phong',
       visible: true,
       following: false,
       snorry: false,
@@ -24,8 +24,13 @@ module.exports = {
     effect: 'ribbons',
     renderStyle: 'normal',
   },
-
-  inputs: [/*'KinectTransport', */'Keyboard', 'Mouse', /*'PerceptionNeuron', 'MidiController', 'Gamepads', 'OSCController', 'PoseNet', 'iPhoneX'*/], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+  inputs: [
+    'Keyboard', 'Mouse',
+    /*'KinectTransport',
+    'PerceptionNeuron',
+    'OSCController',
+    'MidiController', 'Gamepads',
+    'PoseNet', 'iPhoneX'*/], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: ['MidiController'],
   performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
