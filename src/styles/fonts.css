@@ -49,5 +49,7 @@
 @font-face {
 	font-family: 'lato-thin-webfont';
 	src: url('./../static/fonts/lato-thin-webfont.eot?#iefix') format('embedded-opentype'),
-		url('./../static/fonts/lato-thin-webfont.woff') format('woff'), url('./../static/fonts/lato-thin-webfont.ttf') format('truetype'), url('./../static/fonts/lato-thin-webfont.svg#lato-thin-webfont') format('svg');
+		url('./../static/fonts/lato-thin-webfont.woff') format('woff'),
+		url('./../static/fonts/lato-thin-webfont.ttf') format('truetype'),
+		url('./../static/fonts/lato-thin-webfont.svg#lato-thin-webfont') format('svg');
 }
