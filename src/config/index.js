@@ -55,7 +55,8 @@ module.exports = {
       ],
       autoplay: true,
     },
-    stats: false,
+    stats: false, // shows debug / stats
+    io: false, // show io menu
     console2html: false,
     axis: false,
     ar: false,
