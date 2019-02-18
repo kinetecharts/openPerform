@@ -29,9 +29,9 @@ module.exports = {
     // the output bundle
     filename: 'bundle.js',
 
-    path: resolve(__dirname, 'dist'),
+    path: resolve(__dirname, 'dist/'),
 
-    publicPath: resolve(__dirname, 'dist'), // necessary for HMR to know where to load the hot update chunks
+    publicPath: resolve(__dirname, 'dist/'), // necessary for HMR to know where to load the hot update chunks
   },
 
   devtool: 'inline-source-map',
@@ -39,9 +39,9 @@ module.exports = {
   devServer: {
     hot: true, // enable HMR on the server
 
-    contentBase: resolve(__dirname, 'dist'), // match the output path
+    contentBase: resolve(__dirname, 'dist/'), // match the output path
 
-    publicPath: resolve(__dirname, 'dist'), // match the output `publicPath`
+    publicPath: resolve(__dirname, 'dist/'), // match the output `publicPath`
 
     host: '0.0.0.0', // work on any protocol, IP, etc
 
@@ -61,11 +61,11 @@ module.exports = {
       },
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+        loader: 'url-loader?name=/fonts/[name].[ext]',
       },
       {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file-loader?name=fonts/[name].[ext]&limit=10000',
+        loader: 'file-loader?name=/fonts/[name].[ext]',
       },
       {
         test: /\.css$/,
