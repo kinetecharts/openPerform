@@ -530,6 +530,13 @@ class Main extends React.Component {
     this.state.outputManger.outputs.midicontroller.sendTest();
   }
 
+  getDebugMenu() {
+    if (!this.state.debug.stats) {
+      return null;
+    }
+    return (<DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />);
+  }
+
   render() {
     return (
       <Grid className="container-no-padding" fluid>
@@ -543,7 +550,7 @@ class Main extends React.Component {
           <Grid fluid id="page">
             <Row className="row-half-height" id="upperDisplay">
               <Col xs={2} md={2}>
-                <DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />
+                {this.getDebugMenu()}
               </Col>
               <Col xs={2} md={2}>
                 <ARMenu active={this.state.isAR} />
