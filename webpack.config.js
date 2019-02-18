@@ -31,7 +31,7 @@ module.exports = {
 
     path: resolve(__dirname, 'dist/'),
 
-    publicPath: resolve(__dirname, 'dist/'), // necessary for HMR to know where to load the hot update chunks
+    publicPath: '/', // necessary for HMR to know where to load the hot update chunks
   },
 
   devtool: 'inline-source-map',
@@ -41,7 +41,7 @@ module.exports = {
 
     contentBase: resolve(__dirname, 'dist'), // match the output path
 
-    publicPath: resolve(__dirname, 'dist'), // match the output `publicPath`
+    publicPath: '/', // match the output `publicPath`
 
     host: '0.0.0.0', // work on any protocol, IP, etc
 
