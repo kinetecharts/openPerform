@@ -12,10 +12,12 @@ module.exports = {
     // the entry point of our app
   ],
   output: {
-    filename: 'bundle.js',
     // the output bundle
-    publicPath: '/',
-    path: resolve(__dirname, 'docs/'),
+    filename: 'bundle.js',
+
+    publicPath: resolve(__dirname, 'docs'),
+
+    path: resolve(__dirname, 'docs'),
   },
   module: {
     rules: [
