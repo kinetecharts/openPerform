@@ -1,6 +1,8 @@
 const webpack = require('webpack');
 const { resolve } = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebappWebpackPlugin = require('webapp-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const config = require('./server/config');
 
@@ -15,7 +17,7 @@ module.exports = {
     // the output bundle
     filename: 'bundle.js',
 
-    publicPath: resolve(__dirname, 'docs/'),
+    publicPath: '/',
 
     path: resolve(__dirname, 'docs/'),
   },
@@ -72,9 +74,14 @@ module.exports = {
     new CopyWebpackPlugin([
       {
         from: resolve(__dirname, config.copy.all.src),
-        to: resolve(__dirname, './docs/'),
+        to: resolve(__dirname, 'docs/'),
       },
     ]),
+    new WebappWebpackPlugin(resolve(__dirname, './src/static/images/op_logo.png')),
+    new HtmlWebpackPlugin({
+      title: 'Open Perform by Kinetech Arts',
+      template: resolve(__dirname, './src/html/index.html'),
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
