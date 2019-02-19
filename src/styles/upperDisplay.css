@@ -90,6 +90,48 @@
 	border: none;
 }
 
+.helpMenu {
+	position: relative;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	border: none;
+	border-radius: 10px;
+	display: inline-block;
+	float: right;
+	background: rgba(0, 0, 0, 0.125);
+	pointer-events: all;
+}
+
+.helpMenu .panel-heading {
+	background: none;
+	color: #FFFFFF;
+	border: none;
+}
+
+.helpMenu h5 {
+	margin: 0;
+	padding: 0;
+	text-shadow: none;
+	display: inline-block;
+	text-align: left;
+	width: 100%;
+}
+
+.helpMenu .panel-collapse {
+	border-top: 1px solid #FFFFFF;
+}
+
+.helpMenu .list-group {
+	background: none;
+	border: none;
+}
+
+.infoMenu .list-group-item {
+	background: none;
+	border: none;
+}
+
 .debugMenu {
 	position: relative;
 	color: #fff;
