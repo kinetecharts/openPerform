@@ -7,6 +7,7 @@ module.exports = {
     inputPreset: 'Default',
     outputPreset: 'Default',
     backgroundColor: '000000', // will be overridden by environment settings
+    gridColor: '000000', // will be overridden by environment settings
     floorColor: 'ffffff', // will be overridden by environment settings
     environment: 'grid',
     performer: {

@@ -13,6 +13,8 @@ import WEBVR from './../../three/vr/WebVR';
 import { Grid, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
+import InfoMenu from '../menus/InfoMenu';
+import HelpMenu from '../menus/HelpMenu';
 import IOMenu from '../menus/IOMenu';
 import PerformerMenu from '../menus/PerformerMenu';
 import EnvironmentMenu from '../menus/EnvironmentMenu';
@@ -579,6 +581,7 @@ class Main extends React.Component {
           <Grid fluid id="page">
             <Row className="row-half-height" id="upperDisplay">
               <Col xs={2} md={2}>
+                <InfoMenu />
                 {this.getDebugMenu()}
               </Col>
               <Col xs={2} md={2}>
@@ -611,6 +614,7 @@ class Main extends React.Component {
                 />
               </Col>
               <Col xs={4} md={4}>
+                <HelpMenu openKeyboardModal={this.openKeyboardModal.bind(this)}/>
                 {this.getIOMenu()}
               </Col>
             </Row>

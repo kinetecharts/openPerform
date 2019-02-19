@@ -35,6 +35,7 @@ class GridMenu extends React.Component {
                   <DatColor label="Background Color" path="bgColor"/>
                   <DatNumber min={10} max={100} label="Grid Lines" path="numLines" />
                   <DatColor label="Floor Color" path="floorColor"/>
+                  <DatColor label="Grid Color" path="gridColor"/>
                 {/* </DatFolder> */}
               </DatGui>
           </ListGroupItem>
