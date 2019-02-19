@@ -16,7 +16,8 @@ const outputTypes = require.context('./types', false, /\.js$/);
 const presets = require.context('./presets', false, /\.js$/);
 
 class OutputManager {
-  constructor(threeScene, parent) {
+  constructor(allowedOutputs, threeScene, parent) {
+    this.allowedOutputs = allowedOutputs;
     this.scene = threeScene; // bridge to threejs environment (/src/three/scene.js)
     this.parent = parent; // bridge to react environment (/src/react/pages/Main.jsx)
 
@@ -27,14 +28,18 @@ class OutputManager {
     this.initPresets();
   }
 
-  initOutputTypes() {
+  initInputTypes() {
     const types = _.uniq(_.map(outputTypes.keys(), t => t.split('.')[1].split('/')[1]));
-    _.each(types, (t) => {
+    _.each(_.without(this.allowedOutputs, types), (t) => {
       const InterfaceClass = require('./types/' + t);
-      this.outputs[t.toLowerCase()] = new InterfaceClass();
+      let url = '';
+      if (config[t.toLowerCase()]) {
+        url = 'ws://' + window.location.hostname + ':' + config[t.toLowerCase()].ports.incoming;
+      }
+      this.outputs[t.toLowerCase()] = new InterfaceClass(url);
     });
 
-    // connect current preset with outputs
+    // connect current preset with inputs
     this.connectCallbacks((this.parent.state.currentOutputPreset === null) ?
       this.parent.state.defaults.outputPreset :
       this.parent.state.currentOutputPreset);
@@ -42,21 +47,21 @@ class OutputManager {
 
   initPresets() {
     const pres = _.uniq(_.map(presets.keys(), p => p.split('.')[1].split('/')[1]));
-    this.parent.state.outputPreset = pres.slice(0);
+    this.parent.state.inputPresets = pres.slice(0);
     _.each(pres, (p) => {
       const PresetClass = require('./presets/' + p);
       this.presets[p.toLowerCase()] = new PresetClass(this, this.parent, this.scene);
     });
 
     // initialize all interfaces
-    this.initOutputTypes();
+    this.initInputTypes();
   }
 
   connectCallbacks(preset) {
     this.clearAllCallbacks();
 
     const types = _.uniq(_.map(outputTypes.keys(), t => t.split('.')[1].split('/')[1]));
-    _.each(types, (t) => {
+    _.each(_.without(this.allowedOutputs, types), (t) => {
       this.presets[preset.toLowerCase()].initCallbacks(t);
     });
     console.log('Loading ' + preset + ' output preset.');
@@ -69,8 +74,8 @@ class OutputManager {
   }
 
   clearAllCallbacks() {
-    _.each(this.outputs, (i) => {
-      i.clearCallbacks();
+    _.each(this.outputs, (o) => {
+      o.clearCallbacks();
     });
   }
 
