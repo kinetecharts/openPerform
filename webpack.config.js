@@ -1,6 +1,8 @@
 const { resolve } = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebappWebpackPlugin = require('webapp-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const config = require('./server/config');
 
@@ -31,7 +33,7 @@ module.exports = {
 
     path: resolve(__dirname, 'dist/'),
 
-    publicPath: resolve(__dirname, 'dist/'), // necessary for HMR to know where to load the hot update chunks
+    publicPath: '/', // necessary for HMR to know where to load the hot update chunks
   },
 
   devtool: 'inline-source-map',
@@ -41,7 +43,7 @@ module.exports = {
 
     contentBase: resolve(__dirname, 'dist/'), // match the output path
 
-    publicPath: resolve(__dirname, 'dist/'), // match the output `publicPath`
+    publicPath: '/', // match the output `publicPath`
 
     host: '0.0.0.0', // work on any protocol, IP, etc
 
@@ -108,14 +110,17 @@ module.exports = {
       },
     ]),
 
+    new WebappWebpackPlugin(resolve(__dirname, './src/static/images/op_logo.png')),
+    new HtmlWebpackPlugin({
+      title: 'Open Perform by Kinetech Arts',
+      template: resolve(__dirname, './src/html/index.html'),
+    }),
+
     new webpack.HotModuleReplacementPlugin(),
     // enable HMR globally
 
     new webpack.NamedModulesPlugin(),
     // prints more readable module names in the browser console on HMR updates
-
-    // new ExtractTextPlugin('styles.css')
-    // export css to separate file
 
     new webpack.ProvidePlugin({
       $: 'jquery',

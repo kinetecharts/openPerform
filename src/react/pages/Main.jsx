@@ -13,6 +13,8 @@ import WEBVR from './../../three/vr/WebVR';
 import { Grid, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
+import InfoMenu from '../menus/InfoMenu';
+import HelpMenu from '../menus/HelpMenu';
 import IOMenu from '../menus/IOMenu';
 import PerformerMenu from '../menus/PerformerMenu';
 import EnvironmentMenu from '../menus/EnvironmentMenu';
@@ -63,7 +65,7 @@ class Main extends React.Component {
     // (Includes keyboard and mouse control)
     this.setState(prevState => ({
       inputManger: new InputManager(prevState.inputs, prevState.scene, this),
-      outputManger: new OutputManager(prevState.scene, this),
+      outputManger: new OutputManager(prevState.outputs, prevState.scene, this),
     }));
     
 
@@ -530,6 +532,42 @@ class Main extends React.Component {
     this.state.outputManger.outputs.midicontroller.sendTest();
   }
 
+  getDebugMenu() {
+    if (!this.state.debug.stats) {
+      return null;
+    }
+    return (<DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />);
+  }
+
+  getIOMenu() {
+    if (!this.state.debug.io) {
+      return null;
+    }
+    return (<IOMenu
+      // inputs
+      openKeyboardModal={this.openKeyboardModal.bind(this)}
+      changeInputPreset={this.changeInputPreset.bind(this)}
+      currentInputPreset={(this.state.currentInputPreset === null) ?
+        this.state.defaults.inputPreset :
+        this.state.currentInputPreset}
+      inputPresets={this.state.inputPresets}
+      inputs={this.state.inputs}
+
+      // outputs
+      changeOutputPreset={this.changeOutputPreset.bind(this)}
+      currentOutputPreset={(this.state.currentOutputPreset === null) ?
+        this.state.defaults.outputPreset :
+        this.state.currentOutputPreset}
+      outputPresets={this.state.outputPresets}
+      changeMidiDevice={this.changeMidiDevice.bind(this)}
+      currentMidiDevice={this.state.currentMidiDevice}
+      midiDevices={this.state.midiDevices}
+      currentMidiChannel={this.state.currentMidiChannel}
+      changeMidiChannel={this.changeMidiChannel.bind(this)}
+      sendMidiTest={this.sendMidiTest.bind(this)}
+      />);
+  }
+
   render() {
     return (
       <Grid className="container-no-padding" fluid>
@@ -543,7 +581,8 @@ class Main extends React.Component {
           <Grid fluid id="page">
             <Row className="row-half-height" id="upperDisplay">
               <Col xs={2} md={2}>
-                <DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />
+                <InfoMenu />
+                {this.getDebugMenu()}
               </Col>
               <Col xs={2} md={2}>
                 <ARMenu active={this.state.isAR} />
@@ -575,29 +614,8 @@ class Main extends React.Component {
                 />
               </Col>
               <Col xs={4} md={4}>
-                <IOMenu
-                  // inputs
-                  openKeyboardModal={this.openKeyboardModal.bind(this)}
-                  changeInputPreset={this.changeInputPreset.bind(this)}
-                  currentInputPreset={(this.state.currentInputPreset === null) ?
-                    this.state.defaults.inputPreset :
-                    this.state.currentInputPreset}
-                  inputPresets={this.state.inputPresets}
-                  inputs={this.state.inputs}
-
-                  // outputs
-                  changeOutputPreset={this.changeOutputPreset.bind(this)}
-                  currentOutputPreset={(this.state.currentOutputPreset === null) ?
-                    this.state.defaults.outputPreset :
-                    this.state.currentOutputPreset}
-                  outputPresets={this.state.outputPresets}
-                  changeMidiDevice={this.changeMidiDevice.bind(this)}
-                  currentMidiDevice={this.state.currentMidiDevice}
-                  midiDevices={this.state.midiDevices}
-                  currentMidiChannel={this.state.currentMidiChannel}
-                  changeMidiChannel={this.changeMidiChannel.bind(this)}
-                  sendMidiTest={this.sendMidiTest.bind(this)}
-                  />
+                <HelpMenu openKeyboardModal={this.openKeyboardModal.bind(this)}/>
+                {this.getIOMenu()}
               </Col>
             </Row>
             <Row className="row-half-height" id="lowerDisplay">
