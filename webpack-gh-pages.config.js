@@ -17,9 +17,9 @@ module.exports = {
     // the output bundle
     filename: 'bundle.js',
 
-    publicPath: '/',
+    publicPath: resolve(__dirname, 'dist/'),
 
-    path: resolve(__dirname, 'docs/'),
+    path: resolve(__dirname, 'dist/'),
   },
   module: {
     rules: [
@@ -74,7 +74,7 @@ module.exports = {
     new CopyWebpackPlugin([
       {
         from: resolve(__dirname, config.copy.all.src),
-        to: resolve(__dirname, 'docs/'),
+        to: resolve(__dirname, 'dist/'),
       },
     ]),
     new WebappWebpackPlugin(resolve(__dirname, './src/static/images/op_logo.png')),

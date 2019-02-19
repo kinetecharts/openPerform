@@ -7,7 +7,7 @@ install:
 
 before_script:
   - cp ./server/config_example.js ./server/config.js
-  - npm run build
+  - npm run build-gh-pages
 
 deploy:
   local-dir: ./dist

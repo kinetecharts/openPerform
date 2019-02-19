@@ -1,4 +1,4 @@
-import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 import Icon from 'react-fa';
 
 class HelpMenu extends React.Component {
