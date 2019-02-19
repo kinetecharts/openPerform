@@ -3,6 +3,7 @@
  */
 
 const JSONScene = require('./../../../static/models/json/avatar.json');
+const LegacyJSONLoader = require('three/examples/js/loaders/deprecated/LegacyJSONLoader');
 
 THREE.SceneLoader = function (manager) {
   this.onLoadStart = function () {};
@@ -15,7 +16,7 @@ THREE.SceneLoader = function (manager) {
   this.geometryHandlers = {};
   this.hierarchyHandlers = {};
 
-  this.addGeometryHandler('ascii', THREE.JSONLoader);
+  this.addGeometryHandler('ascii', THREE.LegacyJSONLoader);
 
   this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 };

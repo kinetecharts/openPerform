@@ -2,6 +2,7 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/kinetecharts/openPerform.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kinetecharts/openPerform/context:javascript)
 [![dependencies Status](https://david-dm.org/kinetecharts/openPerform/status.svg)](https://david-dm.org/kinetecharts/openPerform)
 [![devDependencies Status](https://david-dm.org/kinetecharts/openPerform/dev-status.svg)](https://david-dm.org/kinetecharts/openPerform?type=dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ![alt text](https://github.com/kinetecharts/openPerform/raw/master/src/static/images/preview.gif "OpenPerform Preview")
 
