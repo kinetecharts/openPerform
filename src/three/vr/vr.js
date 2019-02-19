@@ -90,7 +90,7 @@ class VR {
     // }
 
     if (WEBVR.isAvailable() === false) {
-      console.log('¡¡¡¡¡ WebVR Not Available !!!!!');
+      console.log('WebVR Not Available');
     } else {
       switch (this.toolType) {
         case 'paint':
