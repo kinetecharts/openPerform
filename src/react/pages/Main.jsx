@@ -63,7 +63,7 @@ class Main extends React.Component {
     // (Includes keyboard and mouse control)
     this.setState(prevState => ({
       inputManger: new InputManager(prevState.inputs, prevState.scene, this),
-      outputManger: new OutputManager(prevState.scene, this),
+      outputManger: new OutputManager(prevState.outputs, prevState.scene, this),
     }));
     
 
