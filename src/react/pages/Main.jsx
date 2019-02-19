@@ -530,6 +530,42 @@ class Main extends React.Component {
     this.state.outputManger.outputs.midicontroller.sendTest();
   }
 
+  getDebugMenu() {
+    if (!this.state.debug.stats) {
+      return null;
+    }
+    return (<DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />);
+  }
+
+  getIOMenu() {
+    if (!this.state.debug.io) {
+      return null;
+    }
+    return (<IOMenu
+      // inputs
+      openKeyboardModal={this.openKeyboardModal.bind(this)}
+      changeInputPreset={this.changeInputPreset.bind(this)}
+      currentInputPreset={(this.state.currentInputPreset === null) ?
+        this.state.defaults.inputPreset :
+        this.state.currentInputPreset}
+      inputPresets={this.state.inputPresets}
+      inputs={this.state.inputs}
+
+      // outputs
+      changeOutputPreset={this.changeOutputPreset.bind(this)}
+      currentOutputPreset={(this.state.currentOutputPreset === null) ?
+        this.state.defaults.outputPreset :
+        this.state.currentOutputPreset}
+      outputPresets={this.state.outputPresets}
+      changeMidiDevice={this.changeMidiDevice.bind(this)}
+      currentMidiDevice={this.state.currentMidiDevice}
+      midiDevices={this.state.midiDevices}
+      currentMidiChannel={this.state.currentMidiChannel}
+      changeMidiChannel={this.changeMidiChannel.bind(this)}
+      sendMidiTest={this.sendMidiTest.bind(this)}
+      />);
+  }
+
   render() {
     return (
       <Grid className="container-no-padding" fluid>
@@ -543,7 +579,7 @@ class Main extends React.Component {
           <Grid fluid id="page">
             <Row className="row-half-height" id="upperDisplay">
               <Col xs={2} md={2}>
-                <DebugMenu fileUpload={this.urlBvhUpload.bind(this)} arGui={(this.state.scene.scene) ? this.state.scene.getARGUI() : null} />
+                {this.getDebugMenu()}
               </Col>
               <Col xs={2} md={2}>
                 <ARMenu active={this.state.isAR} />
@@ -575,29 +611,7 @@ class Main extends React.Component {
                 />
               </Col>
               <Col xs={4} md={4}>
-                <IOMenu
-                  // inputs
-                  openKeyboardModal={this.openKeyboardModal.bind(this)}
-                  changeInputPreset={this.changeInputPreset.bind(this)}
-                  currentInputPreset={(this.state.currentInputPreset === null) ?
-                    this.state.defaults.inputPreset :
-                    this.state.currentInputPreset}
-                  inputPresets={this.state.inputPresets}
-                  inputs={this.state.inputs}
-
-                  // outputs
-                  changeOutputPreset={this.changeOutputPreset.bind(this)}
-                  currentOutputPreset={(this.state.currentOutputPreset === null) ?
-                    this.state.defaults.outputPreset :
-                    this.state.currentOutputPreset}
-                  outputPresets={this.state.outputPresets}
-                  changeMidiDevice={this.changeMidiDevice.bind(this)}
-                  currentMidiDevice={this.state.currentMidiDevice}
-                  midiDevices={this.state.midiDevices}
-                  currentMidiChannel={this.state.currentMidiChannel}
-                  changeMidiChannel={this.changeMidiChannel.bind(this)}
-                  sendMidiTest={this.sendMidiTest.bind(this)}
-                  />
+                {this.getIOMenu()}
               </Col>
             </Row>
             <Row className="row-half-height" id="lowerDisplay">

@@ -6,16 +6,6 @@ class DefaultPreset {
     this.inputManager = inputManager;
     this.main = main;
     this.scene = scene;
-
-    // setTimeout(() => {
-    //   this.resetAll();
-    //   // this.main.setColor(0);
-    // }, 1000);
-
-    setTimeout(() => {
-      this.main.setColor(0);
-      this.inputManager.followPerformer(0, 7);
-    }, 10000);
   }
 
   initCallbacks(type) {

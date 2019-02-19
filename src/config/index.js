@@ -31,7 +31,7 @@ module.exports = {
     'OSCController',
     'MidiController', 'Gamepads',
     'PoseNet', 'iPhoneX'*/], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
-  outputs: ['MidiController'],
+  outputs: [/*'MidiController'*/],
   performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   colorSet: [
@@ -44,7 +44,7 @@ module.exports = {
   ],
   debug: {
     bvh: {
-      enabled: true, // load bvh file / create performer from playback
+      enabled: false, // load bvh file / create performer from playback
       files: [
         'animations/bvh/duality_edit.bvh',
         // 'animations/bvh/dai_cmp_edit.bvh',
@@ -55,7 +55,8 @@ module.exports = {
       ],
       autoplay: true,
     },
-    stats: true,
+    stats: false, // shows debug / stats
+    io: false, // show io menu
     console2html: false,
     axis: false,
     ar: false,
