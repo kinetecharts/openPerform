@@ -49,6 +49,7 @@ class RenderStyles {
   }
 
   updateRenderStyle(val) {
+    this.currentRenderStyle = val;
     this.add(this.availRenderStyles[val]);
   }
 

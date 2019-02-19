@@ -84,9 +84,6 @@ class Main extends React.Component {
   }
 
   setRenderStyle(id) {
-    this.setState({
-      currentRenderStyle: id,
-    });
     this.state.renderStyles.updateRenderStyle(id);
   }
 
@@ -189,27 +186,27 @@ class Main extends React.Component {
   switchColorSet(setName) {
     switch (setName) {
       case 'darkColors':
-        this.setState({
-          colorSet: this.state.darkColors,
-        });
+        this.setState(prevState => ({
+          colorSet: prevState.darkColors,
+        }));
         return this.state.darkColors;
         break;
       case 'colors1':
-        this.setState({
-          colorSet: this.state.colors1,
-        });
+        this.setState(prevState => ({
+          colorSet: prevState.colors1,
+        }));
         return this.state.colors1;
         break;
       case 'colors2':
-        this.setState({
-          colorSet: this.state.colors2,
-        });
+        this.setState(prevState => ({
+          colorSet: prevState.colors2,
+        }));
         return this.state.colors2;
         break;
       default:
-        this.setState({
-          colorSet: this.state.dark,
-        });
+        this.setState(prevState => ({
+          colorSet: prevState.dark,
+        }));
         return this.state.dark;
         break;
     }

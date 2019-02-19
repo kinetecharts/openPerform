@@ -104,7 +104,7 @@ export default class AnimateAlongSpline {
         lookZ: srcLook.z,
       })
 
-      this.tweens.push[objTween];
+      this.tweens.push(objTween);
 
       objTween.to({
           percent: 0.999999,
@@ -161,7 +161,7 @@ export default class AnimateAlongSpline {
         percent: trim,
       });
 
-      this.tweens.push[srcTween];
+      this.tweens.push(srcTween);
 
       srcTween.to({
           percent: 0.5 - gap / 2,
@@ -214,7 +214,7 @@ export default class AnimateAlongSpline {
         percent: 1 - trim,
       });
 
-      this.tweens.push[desTween];
+      this.tweens.push(desTween);
 
       desTween.to({
           percent: 0.5 + gap / 2,
