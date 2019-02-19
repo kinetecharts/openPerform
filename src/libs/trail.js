@@ -496,18 +496,18 @@ THREE.TrailRenderer.prototype.advanceGeometry = function() {
             this.updateNodePositionsFromOrientationTangent( nextIndex, positionAndOrientation.position, positionAndOrientation.tangent );
         }
 
-        if ( this.currentLength >= 1 ) {
+        // if ( this.currentLength >= 1 ) {
 
-            var connectRange = this.connectNodes( this.currentEnd , nextIndex );
-            var disconnectRange = null;
+        //     var connectRange = this.connectNodes( this.currentEnd , nextIndex );
+        //     var disconnectRange = null;
 
-            if( this.currentLength >= this.length ) {
+        //     if( this.currentLength >= this.length ) {
 
-                disconnectRange = this.disconnectNodes( this.currentEnd + 1  >= this.length ? 0 : this.currentEnd + 1 );
+        //         disconnectRange = this.disconnectNodes( this.currentEnd + 1  >= this.length ? 0 : this.currentEnd + 1 );
 
-            }
+        //     }
 
-        }
+        // }
 
         if( this.currentLength < this.length ) {
 

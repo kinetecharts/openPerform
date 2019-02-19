@@ -12,8 +12,8 @@ class Head extends React.Component {
     console.log('Loading fbx head....');
     this.loader.loadFBX('/models/fbx/SlothCharacter/sloth_head_blendshapes5.fbx', {}, (object) => {
       this.head = object;
-      console.log(this.head);
-      this.state.scene.scene.add(this.head);
+      // console.log(this.head);
+      // this.state.scene.scene.add(this.head);
     });
   }
 

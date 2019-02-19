@@ -716,6 +716,10 @@
 	border-color: #ffffff transparent transparent !important;
 }
 
+.renderStyleMenu .list-group, .renderStyleMenu .list-group-item {
+	background: none;
+	border: none;
+}
 .renderStyleMenu ul {
 	list-style: none;
 	padding: 0;
