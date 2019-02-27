@@ -37,13 +37,12 @@ class KinectTransport {
 
   onMessage(data) {
     const dataObj = JSON.parse(data.data);
+    let idx = 1;
     _.forEach(dataObj, (obj, key) => {
       switch (obj.type) {
         default:
           break;
         case 'bodies':
-          let idx = 1;
-          console.log(obj.bodies.bodies);
           _.forEach(obj.bodies.bodies, (body) => {
             if (typeof this.callbacks[obj.type] === 'function') {
               this.callbacks['bodies']('Kinect_User_' + idx, body, 'kinect');
