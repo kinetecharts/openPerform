@@ -6,11 +6,12 @@
   "scripts": {
     "webpack": "webpack-dev-server --history-api-fallback  --watch-poll --progress --colors",
     "data": "node server/dataServer.js",
-    "build": "webpack --config webpack-production.config.js --progress --profile --colors",
-    "build-gh-pages": "webpack --config webpack-gh-pages.config.js --progress --profile --colors",
-    "file": "node ./server/fileServer.js",
-    "start": "npm run file | npm run data",
-    "dev": "npm run webpack | npm run data",
+    "build": "NODE_ENV=production webpack --config webpack-production.config.js --progress --profile --colors",
+    "build-ios": "NODE_ENV=production webpack --config webpack-ios.config.js --progress --profile --colors",
+    "build-gh-pages": "NODE_ENV=production webpack --config webpack-gh-pages.config.js --progress --profile --colors",
+    "file": "NODE_ENV=production node ./server/fileServer.js",
+    "start": "NODE_ENV=production npm run file | npm run data",
+    "dev": "NODE_ENV=development npm run webpack | npm run data",
     "test": "mocha"
   },
   "repository": {

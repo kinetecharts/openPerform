@@ -1,0 +1,17 @@
+{
+  "name": "open_perform_ios_server",
+  "version": "0.0.1",
+  "description": "Just the components needed to run the nodejs server inside of iOS.",
+  "main": "dist/index.html",
+  "repository": "https://github.com/kinetecharts/openPerform",
+  "author": "Travis Bennett",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "express": "^4.16.4",
+    "node-osc": "^3.0.0",
+    "path": "^0.12.7",
+    "serve-static": "^1.13.2",
+    "ws": "^6.1.4"
+  }
+}
