@@ -27,11 +27,11 @@ module.exports = {
   },
   inputs: [
     'Keyboard', 'Mouse',
-    /*'KinectTransport',
+    'KinectTransport',
     'PerceptionNeuron',
     'OSCController',
     'MidiController', 'Gamepads',
-    'PoseNet', 'iPhoneX'*/], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
+    'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: [/*'MidiController'*/],
   performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
   // performerColors: ['158C9B', '158C9B', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
@@ -56,10 +56,10 @@ module.exports = {
       ],
       autoplay: true,
     },
-    stats: false, // shows debug / stats
-    io: false, // show io menu
+    stats: true, // shows debug / stats
+    io: true, // show io menu
     console2html: false,
-    axis: false,
+    axis: true,
     ar: false,
   },
   bvhFiles: [

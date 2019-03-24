@@ -110,7 +110,13 @@ class Main extends React.Component {
 
       ConsoleLogHTML.connect(
         con,
-        {},
+        {
+          error: "text-danger",
+          warn: "text-warning",
+          info: "text-success",
+          debug: "text-info",
+          log: "",
+        },
         true,
         false,
         true,

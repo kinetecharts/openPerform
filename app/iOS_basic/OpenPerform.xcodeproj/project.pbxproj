@@ -51,7 +51,7 @@
 		A0F8C2922224871400EE4055 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A0F8C29B22249F6900EE4055 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A0F8C3372224CFE500EE4055 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		A0F8C33D2224F3F900EE4055 /* OP_logo_launch_2048_1536.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = OP_logo_launch_2048_1536.png; path = Images/launch/OP_logo_launch_2048_1536.png; sourceTree = SOURCE_ROOT; };
+		A0F8C33D2224F3F900EE4055 /* OP_logo_launch_2048_1536.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = OP_logo_launch_2048_1536.png; path = openPerform/OP_logo_launch_2048_1536.png; sourceTree = SOURCE_ROOT; };
 		A0F8C3422225128400EE4055 /* native-xcode-node-folder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "native-xcode-node-folder.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,6 +149,9 @@
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.Multipath = {
 								enabled = 1;
 							};
