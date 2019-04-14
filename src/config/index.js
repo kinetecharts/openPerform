@@ -1,15 +1,16 @@
 import config from './../../server/config';
 
 module.exports = {
+  audience: [],
   isAR: false,
   isVR: false,
   defaults: {
     inputPreset: 'Default',
     outputPreset: 'Default',
-    backgroundColor: '000000', // will be overridden by environment settings
+    backgroundColor: '333333', // will be overridden by environment settings
     gridColor: '000000', // will be overridden by environment settings
     floorColor: 'ffffff', // will be overridden by environment settings
-    environment: 'grid',
+    environment: 'forest',
     performer: {
       wireframe: false,
       color: null, // if null, will use color from performerColors (listed below)
@@ -31,6 +32,7 @@ module.exports = {
     'PerceptionNeuron',
     'OSCController',
     'MidiController', 'Gamepads',
+    'MQTT',
     'PoseNet', 'iPhoneX'], // keyboard, kinecttransport, myo, neurosky, perceptionNeuron, gamepads, midiController
   outputs: [/*'MidiController'*/],
   performerColors: ['c8ace0', 'D83437', 'FCF3C2', 'C6AC82', '6A695F', '162E2D'],
@@ -59,7 +61,7 @@ module.exports = {
     stats: true, // shows debug / stats
     io: true, // show io menu
     console2html: false,
-    axis: true,
+    axis: false,
     ar: false,
   },
   bvhFiles: [
@@ -165,6 +167,12 @@ module.exports = {
     ports: {
       incoming: config.iPhoneX.ports.incoming,
       outgoing: config.iPhoneX.ports.outgoing,
+    },
+  },
+  mqtt: {
+    ports: {
+      incoming: config.mqtt.ports.incoming,
+      outgoing: config.mqtt.ports.outgoing,
     },
   },
   data: [],

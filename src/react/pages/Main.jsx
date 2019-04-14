@@ -23,6 +23,7 @@ import DebugMenu from '../menus/DebugMenu';
 import VRMenu from '../menus/VRMenu';
 import ARMenu from '../menus/ARMenu';
 import RenderStyleMenu from '../menus/RenderStyleMenu';
+import Charts from '../charts/charts';
 
 import KeyboardHelpModal from './../modals/KeyboardHelpModal';
 import BVHChooserModal from '../modals/BVHChooserModal';
@@ -571,6 +572,17 @@ class Main extends React.Component {
       />);
   }
 
+  updateAudience(data) {
+    let d = _.cloneDeep(this.state.audience);
+    d.push(JSON.parse(data));
+    if (d.length > 5) {
+      d.pop();
+    }
+    this.setState({
+      audience: d,
+    });
+  }
+
   render() {
     return (
       <Grid className="container-no-padding" fluid>
@@ -659,6 +671,13 @@ class Main extends React.Component {
           <Grid fluid><Row><Col id="startOverlay" xs={12} md={12} /></Row></Grid>
           <Grid fluid><Row><Col id="blackOverlay" xs={12} md={12} /></Row></Grid>
           <Grid fluid><Row><Col id="endOverlay" xs={12} md={12} /></Row></Grid>
+          <Grid fluid><Row className="row-no-margin">
+              <Col xs={12} md={12}><img width="auto" height="200px" src={`data:image/png;base64,${(this.state.audience.length > 0) ? this.state.audience[this.state.audience.length-1].img : null}`}/></Col>
+            </Row>
+          </Grid>
+          <Grid fluid><Row className="row-no-margin">
+            <Col id="charts" xs={12} md={12}><Charts audience={this.state.audience}></Charts></Col>
+          </Row></Grid>
           <KeyboardHelpModal
             show={this.state.keyboardModal}
             closeKeyboardModal={this.closeKeyboardModal.bind(this)}

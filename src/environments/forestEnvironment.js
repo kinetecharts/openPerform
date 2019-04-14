@@ -45,6 +45,7 @@ class ForestEnvironment {
     };
 
     this.initForest();
+    this.initNPCs();
     this.initLights(200);
   }
 
@@ -56,6 +57,105 @@ class ForestEnvironment {
         this.elements.push(obj);
       });
     });
+  }
+
+  initNPCs() {
+    this.loader.loadGLTF('models/characters/belly_dance/scene.gltf', {}, (gltf) => {
+      this.gltf1 = gltf;
+
+      const s = 0.01;
+      this.gltf1.scene.scale.set(s, s, s);
+      this.gltf1.scene.position.set(10, 0, 0)
+      
+      if (this.gltf1.animations.length > 0) {
+        this.gltf1.clock = new THREE.Clock();
+        this.gltf1.mixer = new THREE.AnimationMixer(this.gltf1.scene);
+        let clip = this.gltf1.mixer.clipAction(this.gltf1.animations[0]);
+        clip.loop = THREE.LoopPingPong;
+        clip.play();
+
+        // clip.startAt(3).play();
+        // setTimeout(() => {
+        //   clip.paused = true;
+        // }, 1000);
+      }
+      
+      this.elements.push(this.gltf1.scene);
+      this.parent.add(this.gltf1.scene);
+    });
+
+    this.loader.loadGLTF('models/characters/mei_yin/scene.gltf', {}, (gltf) => {
+      this.gltf2 = gltf;
+
+      const s = 0.03;
+      this.gltf2.scene.scale.set(s, s, s);
+      this.gltf2.scene.position.x += 2;
+      
+      if (this.gltf2.animations.length > 0) {
+        this.gltf2.clock = new THREE.Clock();
+        this.gltf2.mixer = new THREE.AnimationMixer(this.gltf2.scene);
+        let clip = this.gltf2.mixer.clipAction(this.gltf2.animations[0]);
+        clip.loop = THREE.LoopPingPong;
+        clip.play();
+
+        // clip.startAt(3).play();
+        // setTimeout(() => {
+        //   clip.paused = true;
+        // }, 1000);
+      }
+      
+      this.elements.push(this.gltf2.scene);
+      this.parent.add(this.gltf2.scene);
+    });
+
+    this.loader.loadGLTF('models/characters/capoeira_zombie/scene.gltf', {}, (gltf) => {
+      this.gltf3 = gltf;
+
+      const s = 0.012;
+      this.gltf3.scene.scale.set(s, s, s);
+      this.gltf3.scene.position.x -= 1;
+      
+      if (this.gltf3.animations.length > 0) {
+        this.gltf3.clock = new THREE.Clock();
+        this.gltf3.mixer = new THREE.AnimationMixer(this.gltf3.scene);
+        let clip = this.gltf3.mixer.clipAction(this.gltf3.animations[0]);
+        clip.loop = THREE.LoopPingPong;
+        clip.play();
+
+        // clip.startAt(3).play();
+        // setTimeout(() => {
+        //   clip.paused = true;
+        // }, 1000);
+      }
+      
+      this.elements.push(this.gltf3.scene);
+      this.parent.add(this.gltf3.scene);
+    });
+
+    this.loader.loadGLTF('models/characters/ryubi/scene.gltf', {}, (gltf) => {
+      this.gltf4 = gltf;
+
+      const s = 0.02;
+      this.gltf4.scene.scale.set(s, s, s);
+      this.gltf4.scene.position.x -= 2;
+      
+      if (this.gltf4.animations.length > 0) {
+        this.gltf4.clock = new THREE.Clock();
+        this.gltf4.mixer = new THREE.AnimationMixer(this.gltf4.scene);
+        let clip = this.gltf4.mixer.clipAction(this.gltf4.animations[0]);
+        clip.loop = THREE.LoopPingPong;
+        clip.play();
+
+        // clip.startAt(3).play();
+        // setTimeout(() => {
+        //   clip.paused = true;
+        // }, 1000);
+      }
+      
+      this.elements.push(this.gltf4.scene);
+      this.parent.add(this.gltf4.scene);
+    });
+
   }
 
   toggleVisible(val) {
@@ -144,6 +244,10 @@ class ForestEnvironment {
 
   update(timeDelta) {
     // put frame updates here.
+    if (this.gltf1 && this.gltf1.mixer) { this.gltf1.mixer.update(this.gltf1.clock.getDelta()); }
+    if (this.gltf2 && this.gltf2.mixer) { this.gltf2.mixer.update(this.gltf2.clock.getDelta()); }
+    if (this.gltf3 && this.gltf3.mixer) { this.gltf3.mixer.update(this.gltf3.clock.getDelta()); }
+    if (this.gltf4 && this.gltf4.mixer) { this.gltf4.mixer.update(this.gltf4.clock.getDelta()); }
   }
 
   // updated options from gui

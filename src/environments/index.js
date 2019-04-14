@@ -11,6 +11,7 @@ import WaterEnvironment from './waterEnvironment';
 import EmptyEnvironment from './emptyEnvironment';
 import ForestEnvironment from './forestEnvironment';
 import SpacedEnvironment from './spacedEnvironment';
+import HackEnvironment from './hackEnvironment';
 
 import config from './../config';
 
@@ -44,7 +45,10 @@ class Environments {
   add(type, defaults) {
     this.removeAll();
     switch (type) {
-      case 'forest':
+      case 'hack':
+        this.environments.push(new HackEnvironment(this.renderer, this.parent, this.performers, defaults));
+        break;
+        case 'forest':
         this.environments.push(new ForestEnvironment(this.renderer, this.parent, this.performers, defaults));
         break;
       case 'water':

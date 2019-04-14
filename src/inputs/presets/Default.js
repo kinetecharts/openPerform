@@ -43,7 +43,14 @@ class DefaultPreset {
       case 'iphonex':
         this.initIPhoneXCallbacks();
         break;
+      case 'mqtt':
+        this.initMQTT();
+        break;
     }
+  }
+
+  initMQTT() {
+    this.inputManager.registerCallback('mqtt', 'message', 'MQTT', this.main.updateAudience.bind(this.main));
   }
 
   initPoseNetCallbacks() {

@@ -1,0 +1,263 @@
+.tab-content>.tab-pane {
+  display: block;
+}
+
+#chartsRow {
+  margin-top: 0;
+}
+
+#chartsRow .nav-tabs {
+  border: none;
+}
+
+#chartsRow > ul > li > a > h4 > .fa {
+  margin-right: 5px;
+  color: #337ab7;
+  opacity: 0.75;
+}
+
+#chartsRow > ul > li > a.active > h4 > .fa {
+  color: #fff;
+}
+
+#chartsRow > ul > li:nth-child(2) {
+  /* border-left: 1px solid #333; */
+}
+
+#chartsRow > ul > li :hover {
+  background: none;
+}
+
+#chartsRow > ul > li > a {
+  cursor: pointer;
+  font-weight: bold;
+  color: #337ab7;
+}
+
+#chartsRow > ul > li:last-child {
+  float: right;
+}
+
+#chartsRow > ul > li:last-child > a {
+  padding: 0;
+}
+
+#chartsRow > ul > li:last-child > a >button {
+  padding: 10px 15px;
+}
+
+#chartsRow > ul > li > a:hover {
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+#chartsRow > ul > li > a > h4 {
+  margin: 0;
+}
+
+#chartsRow > ul > li > a:focus {
+  background: none;
+  outline: none;
+  box-shadow: none;
+}
+
+#chartsRow > ul > li > a.active {
+  background-color: #000;
+  color: #FFF;
+  cursor: default;
+}
+
+#chartsRow > ul > li > a.active:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+#chartsRow > ul > li > a > h4 {
+  font-weight: bold;
+}
+
+.chartContainer > div.dc-chart {
+	float: none;
+}
+
+div.dc-chart > svg {
+	overflow: visible;
+}
+
+#empty-chart-title {
+	/* margin-left: 15px; */
+}
+
+.dc-legend {
+	visibility: hidden;
+}
+
+.dc-legend-item text, .dc-chart g.axis text, .dc-chart g.row text {
+	fill: #FFF;
+	font-family: 'lato-thin-webfont' !important;
+	text-shadow: 2px 2px 0px black;
+}
+
+#chartsRow {
+	/* margin-bottom: 0; */
+}
+
+.pie-title, .row-title, .line-title {
+	color: #FFF;
+	font-family: 'lato-thin-webfont' !important;
+	font-weight: normal;
+  margin-bottom: 0;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Line Charts */
+
+#chartsRow {
+	margin: 5px 0;
+  display: block;
+  width: 100%;
+}
+
+#chartsRow > div {
+  padding: 0;
+}
+
+
+#chartsRow .chartContainer {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  height: 250px;
+  overflow: hidden;
+  min-width: 215px;
+  background: none;
+}
+
+.dc-chart.line-chart .pie-label {
+	fill: none;
+}
+
+.dc-chart.line-chart path.line {
+	stroke-width: 0;
+}
+
+.dc-chart.line-chart path.area {
+	fill-opacity: 0.8;
+}
+
+/* .dc-chart.line-chart path.area.fadeout,
+.dc-chart.line-chart path.line.fadeout {
+	fill-opacity: 0.2;
+} */
+
+/* .line-chart .grid-line, .line-chart .axis .grid-line, .line-chart .grid-line line, .line-chart .axis .grid-line line {
+	opacity: 0.3;
+} */
+
+#line-chart-d3951edf-a475-c592-c243-4be457e61469 > svg > g:nth-child(1) > g.chart-body {
+	transform: translateX(0);
+}
+
+.dayTick, .monthTick, .yearTick {
+	font-weight: bold !important;
+}
+
+
+/* .dc-chart.line-chart:blur .dc-legend-item:not(.highlight) rect,
+.dc-chart.line-chart:blur .dc-legend-item:not(.highlight) text,
+.dc-chart.line-chart:blur path.line:not(.highlight),
+.dc-chart.line-chart:blur path.area:not(.highlight) {
+	fill-opacity: 0.8;
+}
+
+.dc-chart.line-chart:hover .dc-legend-item:not(.highlight) rect,
+.dc-chart.line-chart:hover .dc-legend-item:not(.highlight) text,
+.dc-chart.line-chart:hover path.line:not(.highlight),
+.dc-chart.line-chart:hover path.area:not(.highlight) {
+	fill-opacity: 0.2;
+}
+
+.dc-chart.line-chart .dc-legend-item.highlight rect,
+.dc-chart.line-chart .dc-legend-item.highlight text,
+.dc-chart.line-chart path.line.highlight,
+.dc-chart.line-chart path.area.highlight {
+	cursor: pointer;
+	fill-opacity: 0.8;
+} */
+
+
+#othersRow {
+  /* margin: 0;
+  padding: 0; */
+  /* height: 350px;
+  overflow: hidden; */
+}
+
+
+#othersRow .chartContainer {
+	margin-top: 5px;
+  margin-bottom: 5px;
+  height: 250px;
+  overflow: hidden;
+}
+
+#othersRow > .chartGroup {
+  /* height: 250px;
+  overflow: hidden; */
+  /* margin: 0; */
+  padding: 0;
+}
+
+/* Row Charts */
+
+.row-chart > svg > g > g.row > text {
+	display: none;
+}
+
+/* .dc-chart.row-chart:hover g.row:not(.highlight) rect,
+.dc-chart.row-chart:hover g.row:not(.highlight) text {
+	fill-opacity: 0.2;
+}
+
+.dc-chart.row-chart g.row.highlight rect,
+.dc-chart.row-chart g.row.highlight text {
+	cursor: pointer;
+	fill-opacity: 0.8;
+}
+
+.row-chart .grid-line, .row-chart .axis .grid-line, .row-chart .grid-line line, .row-chart .axis .grid-line line {
+	opacity: 0.1;
+}
+
+/* Pie Charts */
+
+.dc-chart.pie-chart:hover .pie-slice-group .pie-slice:not(.highlight),
+.dc-chart.pie-chart:hover .dc-legend-item:not(.highlight) rect,
+.dc-chart.pie-chart:hover .dc-legend-item:not(.highlight) text {
+	fill-opacity: 0.2;
+}
+
+.dc-chart.pie-chart .pie-slice-group .pie-slice.highlight,
+.dc-chart.pie-chart .dc-legend-item.highlight rect,
+.dc-chart.pie-chart .dc-legend-item.highlight text {
+	cursor: pointer;
+	fill-opacity: 0.8;
+} */
+
+@media (min-width: 768px) {
+	.line-chart {
+		/* min-height: 490px; */
+	}
+}
+
+@media (min-width: 992px) {
+	.line-chart {
+		/* min-height: 250px; */
+	}
+}
+
+@media (min-width: 1200px) {
+	.line-chart {
+		/* min-height: 250px; */
+	}
+}

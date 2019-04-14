@@ -48,3 +48,9 @@ if (config.iPhoneX.enabled) {
   const IPhoneXServer = require('./sockets/iPhoneX');
   new IPhoneXServer();
 }
+
+// init MQTT server
+if (config.mqtt.enabled) {
+  const MQTTServer = require('./sockets/MQTTServer');
+  new MQTTServer();
+}
